@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp5.0</TargetFramework>
+		<LangVersion>9.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\NClient.InterfaceProxy.Standalone\NClient.InterfaceProxy.Standalone.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
+	</ItemGroup>
+
+</Project>

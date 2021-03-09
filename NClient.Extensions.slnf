@@ -1,0 +1,8 @@
+{
+  "solution": {
+    "path": "All.sln",
+    "projects": [
+      "src\\NClient.Extensions\\NClient.Extensions.DependencyInjection.InterfaceProxy\\NClient.Extensions.DependencyInjection.InterfaceProxy.csproj"
+    ]
+  }
+}

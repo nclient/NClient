@@ -1,0 +1,78 @@
+﻿using System;
+using NClient.Testing.Common.Entities;
+using WireMock.Matchers;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
+
+namespace NClient.Testing.Common.Apis
+{
+    public class ReturnApiMockFactory
+    {
+        public Uri ApiUri { get; init; } = new("http://localhost:5001/");
+
+        public ReturnApiMockFactory(string? uriString = null)
+        {
+            if (uriString is not null)
+                ApiUri = new Uri(uriString);
+        }
+
+        public IWireMockServer MockGetAsyncMethod(int id, BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithParam("id", id.ToString())
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(entity));
+
+            return api;
+        }
+
+        public IWireMockServer MockGetMethod(int id, BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithParam("id", id.ToString())
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(entity));
+
+            return api;
+        }
+
+        public IWireMockServer MockPostAsyncMethod(BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(new JsonMatcher(entity))
+                    .UsingPost())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200));
+
+            return api;
+        }
+
+        public IWireMockServer MockPostMethod(BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(new JsonMatcher(entity))
+                    .UsingPost())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200));
+
+            return api;
+        }
+    }
+}

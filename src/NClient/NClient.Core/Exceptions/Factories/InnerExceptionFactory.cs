@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace NClient.Core.Exceptions.Factories
+{
+    internal static class InnerExceptionFactory
+    {
+        public static ArgumentNullException NullArgument(string argumentName) =>
+            new(argumentName);
+
+        public static ArgumentException TypeMustBeAttribute(string paramName) => 
+            new("Type must be an attribute.", paramName);
+    }
+}
