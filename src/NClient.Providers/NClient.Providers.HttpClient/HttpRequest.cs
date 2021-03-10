@@ -5,7 +5,7 @@ using System.Net.Http;
 namespace NClient.Providers.HttpClient
 {
     public record HttpParameter(string Name, object Value);
-    public record HttpHeader(string Name, string Value);
+    public record HttpHeader(string Name, string? Value);
 
     public class HttpRequest
     {
