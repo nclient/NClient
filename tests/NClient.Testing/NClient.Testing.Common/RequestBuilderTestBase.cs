@@ -25,7 +25,8 @@ namespace NClient.Testing.Common
         {
             RequestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteBuilder(AttributeHelper),
+                new RouteTemplateProvider(AttributeHelper),
+                new RouteProvider(AttributeHelper),
                 new HttpMethodProvider(AttributeHelper),
                 new ParameterProvider(AttributeHelper),
                 new ObjectToKeyValueConverter(),

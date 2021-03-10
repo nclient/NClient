@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
@@ -9,7 +11,7 @@ namespace NClient.Core.RequestBuilders
 {
     internal interface IParameterProvider
     {
-        Parameter[] Get(MethodInfo method, object[] arguments);
+        Parameter[] Get(RouteTemplate routeTemplate, MethodInfo method, object[] arguments);
     }
 
     internal class ParameterProvider : IParameterProvider
@@ -21,7 +23,7 @@ namespace NClient.Core.RequestBuilders
             _attributeHelper = attributeHelper;
         }
 
-        public Parameter[] Get(MethodInfo method, object[] arguments)
+        public Parameter[] Get(RouteTemplate routeTemplate, MethodInfo method, object[] arguments)
         {
             return method
                 .GetParameters()
@@ -39,11 +41,19 @@ namespace NClient.Core.RequestBuilders
                     return new Parameter(
                         Name: paramInfo.Name,
                         Value: arguments.ElementAtOrDefault(index),
-                        Attribute: paramAttribute ?? (paramInfo.ParameterType.IsSimple()
-                            ? _attributeHelper.CreateAttributeInstance(_attributeHelper.FromUriAttributeType)
-                            : _attributeHelper.CreateAttributeInstance(_attributeHelper.FromBodyAttributeType)));
+                        Attribute: paramAttribute ?? GetAttributeForImplicitParameter(paramInfo, routeTemplate));
                 })
                 .ToArray();
+        }
+
+        private Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)
+        {
+            if (routeTemplate.Parameters.Any(x => x.Name == paramInfo.Name))
+                return _attributeHelper.CreateAttributeInstance(_attributeHelper.RouteParamAttributeType);
+
+            return paramInfo.ParameterType.IsSimple()
+                ? _attributeHelper.CreateAttributeInstance(_attributeHelper.UriParamAttributeType)
+                : _attributeHelper.CreateAttributeInstance(_attributeHelper.BodyParamAttributeType);
         }
     }
 }
