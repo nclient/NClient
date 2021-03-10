@@ -15,10 +15,11 @@ namespace NClient.AspNetProxy.Attributes
         public override Type PostAttributeType { get; } = typeof(HttpPostAttribute);
         public override Type PutAttributeType { get; } = typeof(HttpPutAttribute);
         public override Type DeleteAttributeType { get; } = typeof(HttpDeleteAttribute);
-        
-        public override Type FromUriAttributeType { get; } = typeof(FromQueryAttribute);
-        public override Type FromHeaderAttributeType { get; } = typeof(FromHeaderAttribute);
-        public override Type FromBodyAttributeType { get; } = typeof(FromBodyAttribute);
+
+        public override Type RouteParamAttributeType { get; } = typeof(FromRouteAttribute);
+        public override Type UriParamAttributeType { get; } = typeof(FromQueryAttribute);
+        public override Type HeaderParamAttributeType { get; } = typeof(FromHeaderAttribute);
+        public override Type BodyParamAttributeType { get; } = typeof(FromBodyAttribute);
 
         public override IReadOnlyCollection<Type> NotSupportedMethodAttributes { get; } = new HashSet<Type>
         {

@@ -16,9 +16,10 @@ namespace NClient.InterfaceProxy.Attributes
         public override Type PutAttributeType { get; } = typeof(AsHttpPutAttribute);
         public override Type DeleteAttributeType { get; } = typeof(AsHttpDeleteAttribute);
 
-        public override Type FromUriAttributeType { get; } = typeof(ToQueryAttribute);
-        public override Type FromHeaderAttributeType { get; } = typeof(ToHeaderAttribute);
-        public override Type FromBodyAttributeType { get; } = typeof(ToBodyAttribute);
+        public override Type RouteParamAttributeType { get; } = typeof(ToRouteAttribute);
+        public override Type UriParamAttributeType { get; } = typeof(ToQueryAttribute);
+        public override Type HeaderParamAttributeType { get; } = typeof(ToHeaderAttribute);
+        public override Type BodyParamAttributeType { get; } = typeof(ToBodyAttribute);
 
         public override IReadOnlyCollection<Type> NotSupportedMethodAttributes { get; } = new HashSet<Type>();
     }

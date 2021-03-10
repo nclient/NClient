@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 
@@ -6,20 +7,23 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
-        public static InvalidRouteNClientException TokenFromTemplateNotExists(MethodInfo method, string tokenName) =>
-            new($"Token '{tokenName}' from route template does not exist. {GetClientInfo(method)}");
+        public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string clientName, string methodName, string[] paramNames) =>
+            new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template. {GetClientInfo(clientName, methodName)}");
+
+        public static InvalidRouteNClientException TokenFromTemplateNotExists(string clientName, string methodName, string tokenName) =>
+            new($"Token '{tokenName}' from route template does not exist. {GetClientInfo(clientName, methodName)}");
 
         public static InvalidRouteNClientException TemplateParsingError(ArgumentException e) =>
             new(e.Message, e);
 
-        public static InvalidRouteNClientException TemplatePartContainsComplexType(MethodInfo method, string parameterName) =>
-            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type. {GetClientInfo(method)}");
+        public static InvalidRouteNClientException TemplatePartContainsComplexType(string clientName, string methodName, string parameterName) =>
+            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type. {GetClientInfo(clientName, methodName)}");
 
-        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(MethodInfo method, string tokenName) =>
-            new($"Token '{tokenName}' in route template does not match any method parameters. {GetClientInfo(method)}");
+        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string clientName, string methodName, string tokenName) =>
+            new($"Token '{tokenName}' in route template does not match any method parameters. {GetClientInfo(clientName, methodName)}");
 
-        public static InvalidRouteNClientException TemplatePartWithoutTokenOrText(MethodInfo method) =>
-            new($"Template part does not contain a token or text. {GetClientInfo(method)}");
+        public static InvalidRouteNClientException TemplatePartWithoutTokenOrText(string clientName, string methodName) =>
+            new($"Template part does not contain a token or text. {GetClientInfo(clientName, methodName)}");
 
         public static AttributeNotFoundNClientException ClientAttributeNotFound(Type attributeType, Type client) =>
             new(attributeType, client);
@@ -63,7 +67,12 @@ namespace NClient.Core.Exceptions.Factories
 
         private static string GetClientInfo(MethodInfo method, string? parameterName = null)
         {
-            var result = $"Client name: {method.DeclaringType.Name}. Method name: {method.Name}.";
+            return GetClientInfo(method.DeclaringType.Name, method.Name, parameterName);
+        }
+
+        private static string GetClientInfo(string clientName, string methodName, string? parameterName = null)
+        {
+            var result = $"Client name: {clientName}. Method name: {methodName}.";
             return parameterName is null ? result : $"{result} Parameter name: {parameterName}.";
         }
     }
