@@ -9,7 +9,7 @@ namespace NClient.Providers.HttpClient
     {
         public Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
         {
-            var response = new HttpResponse(HttpStatusCode.OK);
+            var response = new HttpResponse { StatusCode = HttpStatusCode.OK };
             if (bodyType is null)
                 return Task.FromResult(response);
 
