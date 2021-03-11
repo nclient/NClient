@@ -8,7 +8,7 @@ using NClient.Providers.HttpClient.Abstractions;
 using NClient.Providers.Resilience.Abstractions;
 using Polly;
 
-namespace NClient.Extensions.DependencyInjection.InterfaceProxy
+namespace NClient.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
