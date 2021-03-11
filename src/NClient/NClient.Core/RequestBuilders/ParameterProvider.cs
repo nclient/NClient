@@ -39,9 +39,9 @@ namespace NClient.Core.RequestBuilders
                     var paramAttribute = paramAttributes.SingleOrDefault();
 
                     return new Parameter(
-                        Name: paramInfo.Name,
-                        Value: arguments.ElementAtOrDefault(index),
-                        Attribute: paramAttribute ?? GetAttributeForImplicitParameter(paramInfo, routeTemplate));
+                        paramInfo.Name,
+                        arguments.ElementAtOrDefault(index),
+                        paramAttribute ?? GetAttributeForImplicitParameter(paramInfo, routeTemplate));
                 })
                 .ToArray();
         }

@@ -36,16 +36,16 @@ namespace NClient.Core.RequestBuilders
                 .GetCustomAttributes()
                 .Select(x => _attributeHelper.IsNotSupportedMethodAttribute(x)
                     ? throw OuterExceptionFactory.MethodAttributeNotSupported(method, x.GetType().Name) : x)
-                .Where(x => x.GetType().IsAssignableTo(_attributeHelper.MethodAttributeType))
+                .Where(x => _attributeHelper.MethodAttributeType.IsInstanceOfType(x))
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
             var methodAttribute = methodAttributes.SingleOrDefault()
                 ?? throw OuterExceptionFactory.MethodAttributeNotFound(_attributeHelper.MethodAttributeType, method);
 
-            var routeTemplateStr = string.Join('/',
-                apiAttribute.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "",
-                methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "");
+            var apiTemplate = apiAttribute.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
+            var methodTemplate = methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "";
+            var routeTemplateStr = UriCombine(apiTemplate, methodTemplate);
 
             return Parse(routeTemplateStr);
         }
@@ -60,6 +60,13 @@ namespace NClient.Core.RequestBuilders
             {
                 throw OuterExceptionFactory.TemplateParsingError(e);
             }
+        }
+
+        public static string UriCombine(string uri1, string uri2)
+        {
+            uri1 = uri1.TrimEnd('/');
+            uri2 = uri2.TrimStart('/');
+            return $"{uri1}/{uri2}";
         }
     }
 }

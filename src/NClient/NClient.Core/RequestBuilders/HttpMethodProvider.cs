@@ -26,7 +26,7 @@ namespace NClient.Core.RequestBuilders
                 .GetCustomAttributes()
                 .Select(x => _attributeHelper.IsNotSupportedMethodAttribute(x)
                     ? throw OuterExceptionFactory.MethodAttributeNotSupported(method, x.GetType().Name) : x)
-                .Where(x => x.GetType().IsAssignableTo(_attributeHelper.MethodAttributeType))
+                .Where(x => _attributeHelper.MethodAttributeType.IsInstanceOfType(x))
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);

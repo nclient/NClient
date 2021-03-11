@@ -6,8 +6,6 @@ using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Helpers
 {
-    public record PropertyKeyValue(string Key, object? Value);
-
     internal interface IObjectToKeyValueConverter
     {
         PropertyKeyValue[] Convert(object? obj, string rootName);
@@ -77,9 +75,9 @@ namespace NClient.Core.Helpers
             if (IsPrimitive(value))
                 return false;
 
-            foreach (var (propName, propValue) in GetProperties(value))
+            foreach (var prop in GetProperties(value))
             {
-                ToKeyValue(stringValues, key: key + "." + propName, propValue);
+                ToKeyValue(stringValues, key: key + "." + prop.Key, prop.Value);
             }
 
             return true;
@@ -90,7 +88,7 @@ namespace NClient.Core.Helpers
             if (obj is null || obj is string)
                 return true;
 
-            if (obj.GetType().IsAssignableTo(typeof(IEnumerable)))
+            if (obj is IEnumerable)
                 return false;
 
             return obj.GetType().IsSerializable;
@@ -103,6 +101,18 @@ namespace NClient.Core.Helpers
                 .Where(property => property.CanRead)
                 .Select(property => new PropertyKeyValue(property.Name, property.GetValue(obj)))
                 .ToArray() ?? Array.Empty<PropertyKeyValue>();
+        }
+    }
+
+    public class PropertyKeyValue
+    {
+        public string Key { get; }
+        public object? Value { get; }
+
+        public PropertyKeyValue(string key, object? value)
+        {
+            Key = key;
+            Value = value;
         }
     }
 }
