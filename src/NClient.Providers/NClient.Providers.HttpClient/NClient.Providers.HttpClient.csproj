@@ -6,6 +6,7 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 </Project>
