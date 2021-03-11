@@ -1,0 +1,22 @@
+name: publish to nuget
+on:
+  push:
+    branches:
+      - alpha-release
+jobs:
+  publish:
+    name: build, pack & publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: publish on version change
+        id: publish_nuget
+        uses: rohith/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/NClient/NClient/NClient.csproj
+          PACKAGE_NAME: MyClient.Poc
+          VERSION_FILE_PATH: 0.0.1-alpha
+          TAG_COMMIT: true
+          TAG_FORMAT: v*
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_SOURCE: https://api.nuget.org
