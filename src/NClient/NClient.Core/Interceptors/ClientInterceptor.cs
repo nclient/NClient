@@ -98,7 +98,7 @@ namespace NClient.Core.Interceptors
 
             var client = _httpClientProvider.Create();
 
-            var responseBodyType = typeof(TResult).IsAssignableTo(typeof(HttpResponse)) && typeof(TResult).IsGenericType 
+            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType 
                 ? typeof(TResult).GetGenericArguments().First()
                 : typeof(TResult);
             var response = await resiliencePolicyProvider
@@ -107,7 +107,7 @@ namespace NClient.Core.Interceptors
                 .ConfigureAwait(false);
             _logger?.LogDebug($"Response with code {response.StatusCode} received.");
 
-            if (typeof(TResult).IsAssignableTo(typeof(HttpResponse)))
+            if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult)(object)response;
 
             if (!response.IsSuccessful)
@@ -143,7 +143,8 @@ namespace NClient.Core.Interceptors
                 return null;
 
             var interfaceMapping = implType.GetInterfaceMap(interfaceType);
-            var methodPairs = interfaceMapping.InterfaceMethods.Zip(interfaceMapping.TargetMethods);
+            var methodPairs = interfaceMapping.InterfaceMethods
+                .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
             return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
         }
 

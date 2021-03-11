@@ -33,14 +33,14 @@ namespace NClient.Providers.HttpClient.RestSharp
             Enum.TryParse(request.Method.ToString(), out Method method);
             var restRequest = new RestRequest(request.Uri, method, DataFormat.Json);
 
-            foreach (var (name, value) in request.Parameters)
+            foreach (var param in request.Parameters)
             {
-                restRequest.AddParameter(name, value, ParameterType.QueryString);
+                restRequest.AddParameter(param.Name, param.Value, ParameterType.QueryString);
             }
 
-            foreach (var (name, value) in request.Headers)
+            foreach (var header in request.Headers)
             {
-                restRequest.AddHeader(name, value);
+                restRequest.AddHeader(header.Name, header.Value);
             }
 
             if (request.Body is not null)

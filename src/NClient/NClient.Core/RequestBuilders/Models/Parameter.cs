@@ -2,5 +2,17 @@
 
 namespace NClient.Core.RequestBuilders.Models
 {
-    internal record Parameter(string Name, object? Value, Attribute Attribute);
+    internal class Parameter
+    {
+        public string Name { get; }
+        public object? Value { get; }
+        public Attribute Attribute { get; }
+
+        public Parameter(string name, object? value, Attribute attribute)
+        {
+            Name = name;
+            Value = value;
+            Attribute = attribute;
+        }
+    }
 }

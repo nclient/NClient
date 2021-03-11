@@ -81,8 +81,8 @@ namespace NClient.Core.RequestBuilders
             if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
                 name = new string(name.Skip(1).ToArray());
 
-            if (new string(name.TakeLast(10).ToArray()).Equals("Controller", StringComparison.Ordinal))
-                name = new string(name.SkipLast(10).ToArray());
+            if (new string(EnumerableExtensions.TakeLast(name, 10).ToArray()).Equals("Controller", StringComparison.Ordinal))
+                name = name.Remove(name.Length - 10, 10);
 
             return name;
         }
