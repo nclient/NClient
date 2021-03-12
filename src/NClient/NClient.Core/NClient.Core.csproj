@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<RootNamespace>NClient.Core</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
