@@ -6,13 +6,14 @@ on:
     branches:
       - alpha-release
       - beta-release
+      - rc-release
       - release
 
 jobs:
   build:
     env:
-      VERSION: 0.0.2
-      VERSION_SUFFIX: dev
+      VersionPrefix: 0.0.1
+      VersionSuffix: alpha
 
     runs-on: ubuntu-latest
 
@@ -21,13 +22,16 @@ jobs:
       run: |
        if [[ ${{ github.ref }} == refs/heads/alpha-release ]] 
        then
-         echo "alpha" >> $VERSION_SUFFIX
+         echo "alpha" >> $VersionSuffix
        elif [[ ${{ github.ref }} == refs/heads/beta-release ]]
        then
-         echo "beta" >> $VERSION_SUFFIX
+         echo "beta" >> $VersionSuffix
+       elif [[ ${{ github.ref }} == refs/heads/rc-release ]]
+       then
+         echo "rc" >> $VersionSuffix
        elif [[ ${{ github.ref }} == refs/heads/release ]]
        then
-         echo "" >> $VERSION_SUFFIX
+         echo "" >> $VersionSuffix
        fi
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -37,10 +41,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore --configuration Release -p:VersionPrefix=${{env.VERSION}} -p:VersionSuffix=${{env.VERSION_SUFFIX}} 
+      run: dotnet build --no-restore --configuration Release 
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release
     - name: Pack
-      run: dotnet pack src/NClient/NClient/NClient.csproj --version-suffix ${{env.VERSION_SUFFIX}} --no-build --output ./nupkgs --configuration Release -p:PackageId=MyTestClient.Poc  
+      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
     - name: Publish
-      run: dotnet nuget push --source https://api.nuget.org --api-key ${{secrets.NUGET_API_KEY}} ./nupkgs/
+      run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate

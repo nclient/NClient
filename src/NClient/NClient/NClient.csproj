@@ -1,5 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	
+	<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
+		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<Authors>smolchanovsky</Authors>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+		
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
