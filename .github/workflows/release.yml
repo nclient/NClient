@@ -1,22 +1,46 @@
-name: publish to nuget
+name: Release
+
 on:
+  workflow_dispatch:
   push:
     branches:
       - alpha-release
+      - beta-release
+      - release
+
 jobs:
-  publish:
-    name: build, pack & publish
+  build:
+    env:
+      VERSION: 0.0.2
+      VERSION_SUFFIX: dev
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: publish on version change
-        id: publish_nuget
-        uses: rohith/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/NClient/NClient/NClient.csproj
-          PACKAGE_NAME: MyClient.Poc
-          VERSION_FILE_PATH: 0.0.1-alpha
-          TAG_COMMIT: true
-          TAG_FORMAT: v*
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          NUGET_SOURCE: https://api.nuget.org
+    - name: Set env variables
+      run: |
+       if [[ ${{ github.ref }} == refs/heads/alpha-release ]] 
+       then
+         echo "alpha" >> $VERSION_SUFFIX
+       elif [[ ${{ github.ref }} == refs/heads/beta-release ]]
+       then
+         echo "beta" >> $VERSION_SUFFIX
+       elif [[ ${{ github.ref }} == refs/heads/release ]]
+       then
+         echo "" >> $VERSION_SUFFIX
+       fi
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration Release -p:VersionPrefix=${{env.VERSION}} -p:VersionSuffix=${{env.VERSION_SUFFIX}} 
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --configuration Release
+    - name: Pack
+      run: dotnet pack src/NClient/NClient/NClient.csproj --version-suffix ${{env.VERSION_SUFFIX}} --no-build --output ./nupkgs --configuration Release -p:PackageId=MyTestClient.Poc  
+    - name: Publish
+      run: dotnet nuget push --source https://api.nuget.org --api-key ${{secrets.NUGET_API_KEY}} ./nupkgs/
