@@ -9,7 +9,7 @@
 		<PackageTags>HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
 		<Description>The open source HTTP client that allows you to call web service API methods through annotated controllers. The Client supports asynchronous calls, retry policies and logging. All this is  simple and flexible to configure.</Description>
 		<Authors>smolchanovsky</Authors>
-		<PackageLicenseFile>../../../LICENSE</PackageLicenseFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
@@ -28,6 +28,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\NClient.Core\NClient.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 </Project>
