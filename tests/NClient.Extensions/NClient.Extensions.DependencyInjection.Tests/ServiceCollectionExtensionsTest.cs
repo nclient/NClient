@@ -14,7 +14,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_ClientProvider_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000", 
@@ -29,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_HttpClientAndResilienceProviders_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000", 
@@ -43,7 +43,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_HttpClientProvider_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000",
@@ -56,7 +56,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_AsyncPolicy_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000",
@@ -69,7 +69,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000");

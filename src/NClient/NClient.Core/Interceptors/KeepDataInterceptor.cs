@@ -5,7 +5,7 @@ namespace NClient.Core.Interceptors
 {
     internal class KeepDataInterceptor : IInterceptor
     {
-        public IInvocation Invocation { get; private set; }
+        public IInvocation? Invocation { get; private set; }
 
         public void Intercept(IInvocation invocation)
         {

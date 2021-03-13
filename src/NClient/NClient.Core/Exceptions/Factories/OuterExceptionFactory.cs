@@ -62,7 +62,7 @@ namespace NClient.Core.Exceptions.Factories
         public static NotSupportedNClientException ArrayWithComplexTypeNotSupported() =>
             new("Array with complex types cannot be passed through uri query.");        
         
-        public static HttpRequestNClientException HttpRequestFailed(HttpStatusCode statusCode, string errorMessage) =>
+        public static HttpRequestNClientException HttpRequestFailed(HttpStatusCode statusCode, string? errorMessage) =>
             new(statusCode, errorMessage);
 
         private static string GetClientInfo(MethodInfo method, string? parameterName = null)

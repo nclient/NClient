@@ -32,7 +32,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPrimitiveHeader>(KeepDataInterceptor)
                 .Get(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -49,7 +49,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IStringHeader>(KeepDataInterceptor)
                 .Get("value");
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -66,7 +66,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveHeaders>(KeepDataInterceptor)
                 .Get(1, "val");
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -83,7 +83,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeHeader>(KeepDataInterceptor)
                 .Get(new BasicEntity { Id = 1 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -100,7 +100,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMultiplyCustomTypeHeader>(KeepDataInterceptor)
                 .Get(new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())

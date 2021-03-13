@@ -32,7 +32,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICommonStaticRoute>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api"),
@@ -48,7 +48,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICommonStaticRouteWithControllerToken>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/CommonStaticRouteWithControllerToken"),
@@ -64,7 +64,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IStaticRouteWithControllerToken>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/StaticRouteWithControllerToken/entity"),
@@ -80,7 +80,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IStaticRouteWithControllerAndActionTokens>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/StaticRouteWithControllerAndActionTokens/Method"),
@@ -96,7 +96,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IStaticRoute>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/action"),
@@ -112,7 +112,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IStaticRouteWithActionToken>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/action/Method"),
@@ -128,7 +128,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IApiRouteWithActionToken>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/Method"),
@@ -144,7 +144,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMethodRouteWithControllerToken>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/MethodRouteWithControllerToken"),
@@ -160,7 +160,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMethodRouteWithPrimitiveParamTokenWithoutAttribute>(KeepDataInterceptor)
                 .Method(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/1"),
@@ -176,7 +176,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IApiRouteWithPrimitiveParamTokenWithoutAttribute>(KeepDataInterceptor)
                 .Method(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/1"),
@@ -192,7 +192,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPrimitiveRouteParam>(KeepDataInterceptor)
                 .Method(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/1"),
@@ -208,7 +208,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPrimitiveRouteParamWithoutTokenInRoute>(KeepDataInterceptor)
                 .Method(1);
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -225,7 +225,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMethodRouteWithCustomTypeParamToken>(KeepDataInterceptor)
                 .Method(new BasicEntity { Id = 1, Value = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -242,7 +242,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IApiRouteWithCustomTypeParamToken>(KeepDataInterceptor)
                 .Method(new BasicEntity { Id = 1, Value = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -259,7 +259,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeRouteParam>(KeepDataInterceptor)
                 .Method(new BasicEntity { Id = 1, Value = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -276,7 +276,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeRouteParamWithoutTokenInRoute>(KeepDataInterceptor)
                 .Method(new BasicEntity { Id = 1, Value = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())

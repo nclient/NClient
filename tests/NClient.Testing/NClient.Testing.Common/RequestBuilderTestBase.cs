@@ -40,7 +40,7 @@ namespace NClient.Testing.Common
 
         internal virtual HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.Method.DeclaringType, invocation.Method, invocation.Arguments);
+            return RequestBuilder.Build(invocation.Method.DeclaringType!, invocation.Method, invocation.Arguments);
         }
 
         protected static void AssertHttpRequest(

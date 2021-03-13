@@ -71,9 +71,8 @@ namespace NClient.Core.Interceptors
 
                 var keepDataInterceptor = new KeepDataInterceptor();
                 var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(typeof(T), keepDataInterceptor);
-                var clientInvocation = clientMethodInvocation as LambdaExpression;
-                clientInvocation.Compile().DynamicInvoke(proxyClient);
-                var innerInvocation = keepDataInterceptor.Invocation;
+                ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
+                var innerInvocation = keepDataInterceptor.Invocation!;
 
                 clientType = _controllerType ?? innerInvocation.Method.DeclaringType;
                 clientMethod = _controllerType is null
@@ -83,7 +82,7 @@ namespace NClient.Core.Interceptors
                 resiliencePolicyProvider = customResiliencePolicyProvider ?? _defaultResiliencePolicyProvider;
             }
 
-            var result = await ExecuteRequestAsync<TResult>(clientType, clientMethod, clientMethodArguments, resiliencePolicyProvider)
+            var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider)
                 .ConfigureAwait(false);
 
             _logger?.LogInformation("Processing request finished.");
@@ -116,7 +115,7 @@ namespace NClient.Core.Interceptors
                 throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
             }
 
-            return (TResult)response.GetType().GetProperty("Value")?.GetValue(response);
+            return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
 
         private async Task<TResult> InvokeWithLoggingExceptions<TResult>(Func<IInvocation, Task<TResult>> processInvocation, IInvocation invocation)

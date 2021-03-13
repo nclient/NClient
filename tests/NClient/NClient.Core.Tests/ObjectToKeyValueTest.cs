@@ -13,6 +13,10 @@ namespace NClient.Core.Tests
     {
         public static IEnumerable ConvertibleObjectSource = new[]
         {
+            new TestCaseData(null, new PropertyKeyValue[]
+            {
+                new("obj", null)
+            }).SetName("Null"),
             new TestCaseData(true, new PropertyKeyValue[]
             {
                 new("obj", true)
@@ -61,10 +65,6 @@ namespace NClient.Core.Tests
             {
                 new("obj", Guid.Parse("fa467be0-fcae-4935-8ecb-fa1cf720104b"))
             }).SetName("Guid"),
-            new TestCaseData((int[])null, new PropertyKeyValue[]
-            {
-                new("obj", null)
-            }).SetName("Array of int32: null"),
             new TestCaseData(new[] { 1 }, new PropertyKeyValue[]
             {
                 new("obj", 1)
