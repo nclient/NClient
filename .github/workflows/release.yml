@@ -13,26 +13,26 @@ jobs:
   build:
     env:
       VersionPrefix: 0.0.5
-      VersionSuffix: alpha
+      VersionSuffix: unbound
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set env variables
-      run: |
-       if [[ ${{ github.ref }} == refs/heads/alpha-release ]] 
-       then
-         echo "alpha" >> $VersionSuffix
-       elif [[ ${{ github.ref }} == refs/heads/beta-release ]]
-       then
-         echo "beta" >> $VersionSuffix
-       elif [[ ${{ github.ref }} == refs/heads/rc-release ]]
-       then
-         echo "rc" >> $VersionSuffix
-       elif [[ ${{ github.ref }} == refs/heads/release ]]
-       then
-         echo "" >> $VersionSuffix
-       fi
+    - name: Try set alpha version suffix
+      if: github.ref == 'refs/heads/alpha-release'
+      run: echo "VersionSuffix=alpha" >> $GITHUB_ENV
+    - name: Try set beta version suffix
+      if: github.ref == 'refs/heads/beta-release'
+      run: echo "VersionSuffix=beta" >> $GITHUB_ENV
+    - name: Try set rc version suffix
+      if: github.ref == 'refs/heads/rc-release'
+      run: echo "VersionSuffix=rc" >> $GITHUB_ENV
+    - name: Try set release version suffix
+      if: github.ref == 'refs/heads/release'
+      run: echo "VersionSuffix=" >> $GITHUB_ENV
+    - name: Exit because the branch is not released
+      if: env.VersionSuffix == 'unbound'
+      run: exit 1
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -48,3 +48,13 @@ jobs:
       run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
     - name: Publish
       run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
+    - name: Try set pre-release tag
+      if: env.VersionSuffix != ''
+      run: echo "ReleaseTag=v${VersionPrefix}-${VersionSuffix}" >> $GITHUB_ENV
+    - name: Try set release tag
+      if: env.VersionSuffix == ''
+      run: echo "ReleaseTag=v${VersionPrefix}" >> $GITHUB_ENV
+    - name: Create release tag
+      run: git tag ${{env.ReleaseTag}}
+    - name: Push release tag
+      run: git push origin ${{env.ReleaseTag}}
