@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NClient.Providers.HttpClient.Abstractions;
 using Newtonsoft.Json;
@@ -32,14 +33,14 @@ namespace NClient.Providers.HttpClient.RestSharp
             Enum.TryParse(request.Method.ToString(), out Method method);
             var restRequest = new RestRequest(request.Uri, method, DataFormat.Json);
 
-            foreach (var (name, value) in request.Parameters)
+            foreach (var param in request.Parameters)
             {
-                restRequest.AddParameter(name, value, ParameterType.QueryString);
+                restRequest.AddParameter(param.Name, param.Value, ParameterType.QueryString);
             }
 
-            foreach (var (name, value) in request.Headers)
+            foreach (var header in request.Headers)
             {
-                restRequest.AddHeader(name, value);
+                restRequest.AddHeader(header.Name, header.Value);
             }
 
             if (request.Body is not null)
@@ -52,12 +53,21 @@ namespace NClient.Providers.HttpClient.RestSharp
 
         private static HttpResponse BuildResponse(IRestResponse restResponse, Type? bodyType = null)
         {
-            var response = new HttpResponse(restResponse.StatusCode)
+            var response = new HttpResponse
             {
+                ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
+                ContentLength = restResponse.ContentLength,
+                ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
                 Content = string.IsNullOrEmpty(restResponse.Content) ? null : restResponse.Content,
-                ContentEncoding = restResponse.ContentEncoding,
+                StatusCode = restResponse.StatusCode,
+                StatusDescription = string.IsNullOrEmpty(restResponse.StatusDescription) ? null : restResponse.StatusDescription,
+                RawBytes = restResponse.RawBytes,
+                ResponseUri = restResponse.ResponseUri,
+                Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
+                Headers = restResponse.Headers.Select(x => new HttpHeader(x.Name, x.Value?.ToString())).ToArray(),
                 ErrorMessage = restResponse.ErrorMessage,
-                ErrorException = restResponse.ErrorException
+                ErrorException = restResponse.ErrorException,
+                ProtocolVersion = restResponse.ProtocolVersion
             };
 
             if (bodyType is null)

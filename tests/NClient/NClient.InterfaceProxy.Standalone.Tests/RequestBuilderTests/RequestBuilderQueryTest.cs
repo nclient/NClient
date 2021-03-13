@@ -33,7 +33,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPrimitiveParameter>(KeepDataInterceptor)
                 .Get(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -50,7 +50,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveParameters>(KeepDataInterceptor)
                 .Get(1, "val");
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -68,7 +68,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPrimitiveParameterWithoutAttribute>(KeepDataInterceptor)
                 .Get(1);
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -85,7 +85,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveParametersWithoutAttribute>(KeepDataInterceptor)
                 .Get(1, "val");
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -102,7 +102,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeParameter>(KeepDataInterceptor)
                 .Get(new BasicEntity { Id = 1, Value = 2 });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -119,7 +119,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IMultiplyCustomTypeParameters>(KeepDataInterceptor)
                 .Get(new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -142,7 +142,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IArrayOfPrimitivesParameter>(KeepDataInterceptor)
                 .Get(new [] { 1, 2 });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -159,7 +159,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IArrayOfCustomTypeParameter>(KeepDataInterceptor)
                 .Get(new[] { new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 } });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -176,7 +176,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IDictionaryOfPrimitivesParameter>(KeepDataInterceptor)
                 .Get(new Dictionary<int, string> { [1] = "val1", [2] = "val2" });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -193,7 +193,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IDictionaryOfPCustomTypesParameter>(KeepDataInterceptor)
                 .Get(new Dictionary<int, BasicEntity> { [1] = new() { Id = 1, Value = 2 }, [2] = new() { Id = 2, Value = 3 } });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -210,7 +210,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<INestedCustomTypesParameter>(KeepDataInterceptor)
                 .Get(new NestedEntity { Id = 1, Value = "val", InnerEntity = new BasicEntity { Id = 2, Value = 3 }});
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -233,7 +233,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeWithArrayParameter>(KeepDataInterceptor)
                 .Get(new EntityWithArray { Id = 1, Value = "val", Array = new[] { 1, 2 } });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -256,7 +256,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeWithArrayOfCustomTypesParameter>(KeepDataInterceptor)
                 .Get(new EntityWithCustomTypeArray { Id = 1, Value = "val", Array = new[] { new BasicEntity(), new BasicEntity() } });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -273,7 +273,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeWithDictionaryParameter>(KeepDataInterceptor)
                 .Get(new EntityWithDict { Id = 1, Value = "val", Dict = new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -296,7 +296,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<ICustomTypeWithDictionaryOfCustomTypesParameter>(KeepDataInterceptor)
                 .Get(new EntityWithCustomTypeDict { Id = 1, Value = "val", Dict = new Dictionary<int, BasicEntity> { [1] = new(), [2] = new() } });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
+		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
+		<Description>The open source HTTP client that allows you to call web service API methods through annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is simple and flexible to configure.</Description>
+		<Authors>smolchanovsky</Authors>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+		<LangVersion>9.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\NClient\NClient.InterfaceProxy\NClient.InterfaceProxy.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+</Project>

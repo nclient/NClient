@@ -16,9 +16,11 @@ namespace NClient.InterfaceProxy.Validators
         public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class, INClient
         {
             var attributeHelper = new AttributeHelper();
+
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteBuilder(attributeHelper),
+                new RouteTemplateProvider(attributeHelper),
+                new RouteProvider(attributeHelper),
                 new HttpMethodProvider(attributeHelper),
                 new ParameterProvider(attributeHelper),
                 new ObjectToKeyValueConverter(),

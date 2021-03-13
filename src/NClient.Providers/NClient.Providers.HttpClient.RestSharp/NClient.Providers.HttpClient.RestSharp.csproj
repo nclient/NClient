@@ -1,11 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp5.0</TargetFramework>
+		<PackageId>$(AssemblyName)</PackageId>
+		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
+		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NClient;RestSharp;HttpClient;Api;WebApi;Rest</PackageTags>
+		<Description>RestSharp based client provider for NClient.</Description>
+		<Authors>smolchanovsky</Authors>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,6 +29,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\NClient.Providers.HttpClient\NClient.Providers.HttpClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 </Project>

@@ -9,12 +9,11 @@ namespace NClient.Testing.Common.Apis
 {
     public class ReturnApiMockFactory
     {
-        public Uri ApiUri { get; init; } = new("http://localhost:5001/");
+        public Uri ApiUri { get; init; }
 
-        public ReturnApiMockFactory(string? uriString = null)
+        public ReturnApiMockFactory(int port)
         {
-            if (uriString is not null)
-                ApiUri = new Uri(uriString);
+            ApiUri = new UriBuilder("http", "localhost", port).Uri;
         }
 
         public IWireMockServer MockGetAsyncMethod(int id, BasicEntity entity)

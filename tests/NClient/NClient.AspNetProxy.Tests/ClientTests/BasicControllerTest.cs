@@ -18,7 +18,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _basicApiMockFactory = new BasicApiMockFactory();
+            _basicApiMockFactory = new BasicApiMockFactory(port: 5001);
 
             _basicClient = new AspNetClientProvider()
                 .Use<IBasicClient, BasicController>(_basicApiMockFactory.ApiUri)
