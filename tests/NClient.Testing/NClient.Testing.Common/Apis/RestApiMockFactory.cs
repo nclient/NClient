@@ -9,7 +9,12 @@ namespace NClient.Testing.Common.Apis
 {
     public class RestApiMockFactory
     {
-        public Uri ApiUri { get; } = new("http://localhost:5005/");
+        public Uri ApiUri { get; }
+
+        public RestApiMockFactory(int port)
+        {
+            ApiUri = new UriBuilder("http", "localhost", port).Uri;
+        }
 
         public IWireMockServer MockGetMethod(int id)
         {

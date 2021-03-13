@@ -2,7 +2,12 @@
   "solution": {
     "path": "All.sln",
     "projects": [
-      "src\\NClient.Extensions\\NClient.Extensions.DependencyInjection.InterfaceProxy\\NClient.Extensions.DependencyInjection.InterfaceProxy.csproj"
+      "src\\NClient.Extensions\\NClient.Extensions.DependencyInjection\\NClient.Extensions.DependencyInjection.csproj",
+      "src\\NClient\\NClient.Core\\NClient.Core.csproj",
+      "src\\NClient\\NClient.InterfaceProxy.Standalone\\NClient.InterfaceProxy.Standalone.csproj",
+      "src\\NClient\\NClient.InterfaceProxy\\NClient.InterfaceProxy.csproj",
+      "tests\\NClient.Extensions\\NClient.Extensions.DependencyInjection.Tests\\NClient.Extensions.DependencyInjection.Tests.csproj",
+      "tests\\NClient.Testing\\NClient.Testing.Common\\NClient.Testing.Common.csproj"
     ]
   }
 }

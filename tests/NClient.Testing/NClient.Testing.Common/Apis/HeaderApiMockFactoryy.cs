@@ -7,7 +7,12 @@ namespace NClient.Testing.Common.Apis
 {
     public class HeaderApiMockFactory
     {
-        public Uri ApiUri { get; } = new("http://localhost:5003/");
+        public Uri ApiUri { get; }
+
+        public HeaderApiMockFactory(int port)
+        {
+            ApiUri = new UriBuilder("http", "localhost", port).Uri;
+        }
 
         public IWireMockServer MockGetMethod(int id)
         {

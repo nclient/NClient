@@ -17,7 +17,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _basicApiMockFactory = new BasicApiMockFactory();
+            _basicApiMockFactory = new BasicApiMockFactory(port: 5007);
 
             _basicClient = new ClientProvider()
                 .Use<IBasicClientWithMetadata>(_basicApiMockFactory.ApiUri)

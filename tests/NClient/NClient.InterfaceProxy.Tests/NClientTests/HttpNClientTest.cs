@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using NClient.Core.Extensions;
 using NClient.InterfaceProxy.Extensions;
 using NClient.InterfaceProxy.Tests.Clients;
@@ -20,7 +22,7 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory("http://localhost:5007/");
+            _returnApiMockFactory = new ReturnApiMockFactory(port: 5013);
             _returnClient = new ClientProvider()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
@@ -36,10 +38,16 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = await _returnClient.AsHttp().GetHttpResponse(client => client.GetAsync(id));
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpStatusCode.OK, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(entity)
             {
-                Content = "{\"Id\":1,\"Value\":2}"
-            });
+                StatusCode = HttpStatusCode.OK,
+                Content = "{\"Id\":1,\"Value\":2}",
+                ContentLength = -1,
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
         }
 
         [Test]
@@ -50,10 +58,16 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpStatusCode.OK, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(entity)
             {
-                Content = "{\"Id\":1,\"Value\":2}"
-            });
+                StatusCode = HttpStatusCode.OK,
+                Content = "{\"Id\":1,\"Value\":2}",
+                ContentLength = -1,
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
         }
 
         [Test]
@@ -63,7 +77,15 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
 
             var httpResponse = await _returnClient.AsHttp().GetHttpResponse(client => client.PostAsync(entity));
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpStatusCode.OK));
+            httpResponse.Should().BeEquivalentTo(new HttpResponse
+            {
+                StatusCode = HttpStatusCode.OK,
+                ContentLength = 0,
+                ContentType = null,
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
         }
 
         [Test]
@@ -73,7 +95,15 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
             using var api = _returnApiMockFactory.MockPostMethod(entity);
 
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpStatusCode.OK));
+            httpResponse.Should().BeEquivalentTo(new HttpResponse
+            {
+                StatusCode = HttpStatusCode.OK,
+                ContentLength = 0,
+                ContentType = null,
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
         }
 
         [Test]
@@ -83,6 +113,24 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
 
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
             httpResponse.StatusCode.Should().Be((HttpStatusCode)0);
+        }
+
+        private EquivalencyAssertionOptions<HttpResponse<BasicEntity>> ExcludeInessentialFields(
+            EquivalencyAssertionOptions<HttpResponse<BasicEntity>> opts)
+        {
+            return opts
+                .Excluding(x => x.Headers)
+                .Excluding(x => x.RawBytes)
+                .Excluding(x => x.ResponseUri);
+        }
+
+        private EquivalencyAssertionOptions<HttpResponse> ExcludeInessentialFields(
+            EquivalencyAssertionOptions<HttpResponse> opts)
+        {
+            return opts
+                .Excluding(x => x.Headers)
+                .Excluding(x => x.RawBytes)
+                .Excluding(x => x.ResponseUri);
         }
     }
 }

@@ -102,14 +102,14 @@ namespace NClient.AspNetProxy
             return this;
         }
 
-
         public TInterface Build()
         {
             var attributeHelper = new AspNetCoreAttributeHelper();
 
             var requestBuilder = new RequestBuilder(
                 _host,
-                new RouteBuilder(attributeHelper),
+                new RouteTemplateProvider(attributeHelper),
+                new RouteProvider(attributeHelper),
                 new HttpMethodProvider(attributeHelper),
                 new ParameterProvider(attributeHelper),
                 new ObjectToKeyValueConverter(),

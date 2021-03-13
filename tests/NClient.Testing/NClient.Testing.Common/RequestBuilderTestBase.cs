@@ -25,7 +25,8 @@ namespace NClient.Testing.Common
         {
             RequestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteBuilder(AttributeHelper),
+                new RouteTemplateProvider(AttributeHelper),
+                new RouteProvider(AttributeHelper),
                 new HttpMethodProvider(AttributeHelper),
                 new ParameterProvider(AttributeHelper),
                 new ObjectToKeyValueConverter(),
@@ -39,7 +40,7 @@ namespace NClient.Testing.Common
 
         internal virtual HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.Method.DeclaringType, invocation.Method, invocation.Arguments);
+            return RequestBuilder.Build(invocation.Method.DeclaringType!, invocation.Method, invocation.Arguments);
         }
 
         protected static void AssertHttpRequest(

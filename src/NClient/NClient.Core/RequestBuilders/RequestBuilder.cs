@@ -16,7 +16,8 @@ namespace NClient.Core.RequestBuilders
     internal class RequestBuilder : IRequestBuilder
     {
         private readonly Uri _host;
-        private readonly IRouteBuilder _routeBuilder;
+        private readonly IRouteTemplateProvider _routeTemplateProvider;
+        private readonly IRouteProvider _routeProvider;
         private readonly IHttpMethodProvider _httpMethodProvider;
         private readonly IParameterProvider _parameterProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
@@ -24,14 +25,16 @@ namespace NClient.Core.RequestBuilders
 
         public RequestBuilder(
             Uri host,
-            IRouteBuilder routeBuilder,
+            IRouteTemplateProvider routeTemplateProvider,
+            IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider, 
             IParameterProvider parameterProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IAttributeHelper attributeHelper)
         {
             _host = host;
-            _routeBuilder = routeBuilder;
+            _routeTemplateProvider = routeTemplateProvider;
+            _routeProvider = routeProvider;
             _httpMethodProvider = httpMethodProvider;
             _parameterProvider = parameterProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
@@ -40,34 +43,35 @@ namespace NClient.Core.RequestBuilders
 
         public HttpRequest Build(Type clientType, MethodInfo method, object[] arguments)
         {
-            var route = _routeBuilder.Build(clientType, method, arguments);
             var httpMethod = _httpMethodProvider.Get(method);
-            var methodParams = _parameterProvider.Get(method, arguments);
+            var routeTemplate = _routeTemplateProvider.Get(clientType, method);
+            var methodParams = _parameterProvider.Get(routeTemplate, method, arguments);
+            var route = _routeProvider.Build(routeTemplate, clientType.Name, method.Name, methodParams);
             var uri = new Uri(_host, route);
 
             var request = new HttpRequest(uri, httpMethod);
 
             var urlParams = methodParams
-                .Where(x => _attributeHelper.IsFromUriAttribute(x.Attribute) && x.Value != null);
+                .Where(x => _attributeHelper.IsUriParamAttribute(x.Attribute) && x.Value != null);
             foreach (var uriParam in urlParams)
             {
                 foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name))
                 {
-                    request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value);
+                    request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value ?? "");
                 }
             }
 
             var headerParams = methodParams
-                .Where(x => _attributeHelper.IsFromHeaderAttribute(x.Attribute) && x.Value != null);
+                .Where(x => _attributeHelper.IsHeaderParamAttribute(x.Attribute) && x.Value != null);
             foreach (var headerParam in headerParams)
             {
-                if (!headerParam.Value.GetType().IsSimple())
+                if (!headerParam.Type.IsSimple())
                     throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(method, headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
             var bodyParams = methodParams
-                .Where(x => _attributeHelper.IsFromBodyAttributeType(x.Attribute) && x.Value != null)
+                .Where(x => _attributeHelper.IsBodyParamAttributeType(x.Attribute) && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
                 throw OuterExceptionFactory.MultipleBodyParametersNotSupported(method);
