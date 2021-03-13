@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace NClient.Packages.Tests.Helpers
@@ -12,14 +13,17 @@ namespace NClient.Packages.Tests.Helpers
 
         public static string GetCurrent<T>()
         {
-            return Assembly.GetAssembly(typeof(T))?.GetName().Version?.ToString()
+            var assembly = Assembly.GetAssembly(typeof(T))?.Location
                 ?? throw new Exception("Current assembly version not found.");
+            return FileVersionInfo.GetVersionInfo(assembly).ProductVersion
+                ?? throw new Exception("Product version not found in assembly.");
         }
 
         public static string GetCurrent(string name)
         {
-            return Assembly.Load(name).GetName().Version?.ToString() 
-                ?? throw new Exception("Current assembly version not found.");
+            var assembly = Assembly.Load(name).Location;
+            return FileVersionInfo.GetVersionInfo(assembly).ProductVersion
+                ?? throw new Exception("Product version not found in assembly.");
         }
     }
 }

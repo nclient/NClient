@@ -22,7 +22,6 @@ namespace NClient.Packages.Tests
 {
     [Parallelizable]
     [Category("Packages")]
-    [Explicit("There must be env variables")]
     public class ClientTest
     {
         public interface ITestController : INClient

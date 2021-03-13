@@ -6,7 +6,6 @@ namespace NClient.Packages.Tests
 {
     [Parallelizable]
     [Category("Packages")]
-    [Explicit("There must be env variables")]
     public class VersionTest
     {
         [Test]
