@@ -9,14 +9,13 @@ on:
       - rc-release
       - release
 
+env:
+  VersionPrefix: 0.0.8
+  VersionSuffix: unbound
+      
 jobs:
-  build:
-    env:
-      VersionPrefix: 0.0.7
-      VersionSuffix: unbound
-
+  publish:
     runs-on: ubuntu-latest
-
     steps:
     - name: Try set alpha version suffix
       if: github.ref == 'refs/heads/alpha-release'
@@ -33,6 +32,7 @@ jobs:
     - name: Exit because the branch is not released
       if: env.VersionSuffix == 'unbound'
       run: exit 1
+      
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -43,7 +43,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release 
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test --filter Category!=Packages --no-build --verbosity normal --configuration Release
     - name: Pack
       run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
     - name: Publish
@@ -58,3 +58,40 @@ jobs:
       run: git tag ${{env.ReleaseTag}}
     - name: Push release tag
       run: git push origin ${{env.ReleaseTag}}
+      
+  validation:
+    runs-on: ubuntu-latest
+    needs: publish 
+    steps:
+    - name: Try set alpha version suffix
+      if: github.ref == 'refs/heads/alpha-release'
+      run: echo "VersionSuffix=alpha" >> $GITHUB_ENV
+    - name: Try set beta version suffix
+      if: github.ref == 'refs/heads/beta-release'
+      run: echo "VersionSuffix=beta" >> $GITHUB_ENV
+    - name: Try set rc version suffix
+      if: github.ref == 'refs/heads/rc-release'
+      run: echo "VersionSuffix=rc" >> $GITHUB_ENV
+    - name: Try set release version suffix
+      if: github.ref == 'refs/heads/release'
+      run: echo "VersionSuffix=" >> $GITHUB_ENV
+    - name: Exit because the branch is not released
+      if: env.VersionSuffix == 'unbound'
+      run: exit 1
+      
+    - name: Wait verification packages (5 min)
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
+        
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration Release 
+    - name: Test
+      run: dotnet test --filter Category=Packages --no-build --verbosity normal --configuration Release
