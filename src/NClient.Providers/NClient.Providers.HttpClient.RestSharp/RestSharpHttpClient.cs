@@ -35,7 +35,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             foreach (var param in request.Parameters)
             {
-                restRequest.AddParameter(param.Name, param.Value, ParameterType.QueryString);
+                restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
             foreach (var header in request.Headers)
@@ -64,7 +64,9 @@ namespace NClient.Providers.HttpClient.RestSharp
                 RawBytes = restResponse.RawBytes,
                 ResponseUri = restResponse.ResponseUri,
                 Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
-                Headers = restResponse.Headers.Select(x => new HttpHeader(x.Name, x.Value?.ToString())).ToArray(),
+                Headers = restResponse.Headers
+                    .Where(x => x.Name != null)
+                    .Select(x => new HttpHeader(x.Name!, x.Value?.ToString() ?? "")).ToArray(),
                 ErrorMessage = restResponse.ErrorMessage,
                 ErrorException = restResponse.ErrorException,
                 ProtocolVersion = restResponse.ProtocolVersion
