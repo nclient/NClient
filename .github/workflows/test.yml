@@ -5,10 +5,10 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, alpha-release, beta-release, release ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
