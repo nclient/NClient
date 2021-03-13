@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      VersionPrefix: 0.0.5
+      VersionPrefix: 0.0.6
       VersionSuffix: unbound
 
     runs-on: ubuntu-latest
