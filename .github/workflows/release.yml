@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      VersionPrefix: 0.0.2
+      VersionPrefix: 0.0.5
       VersionSuffix: alpha
 
     runs-on: ubuntu-latest

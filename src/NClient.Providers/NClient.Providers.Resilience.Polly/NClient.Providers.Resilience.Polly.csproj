@@ -1,6 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<PackageId>$(AssemblyName)</PackageId>
+		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
+		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NClient;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
+		<Description>Polly based resilience policy provider for NClient.</Description>
+		<Authors>smolchanovsky</Authors>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
@@ -15,6 +28,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\NClient.Providers.Resilience\NClient.Providers.Resilience.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 </Project>
