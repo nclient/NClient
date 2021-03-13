@@ -27,7 +27,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IGetMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -43,7 +43,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPostMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -59,7 +59,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IPutMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -75,7 +75,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithoutTarget<IDeleteMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation);
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),

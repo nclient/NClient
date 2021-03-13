@@ -57,7 +57,7 @@ namespace NClient.Core.RequestBuilders
             {
                 foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name))
                 {
-                    request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value);
+                    request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value ?? "");
                 }
             }
 
@@ -65,7 +65,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => _attributeHelper.IsHeaderParamAttribute(x.Attribute) && x.Value != null);
             foreach (var headerParam in headerParams)
             {
-                if (!headerParam.Value.GetType().IsSimple())
+                if (!headerParam.Type.IsSimple())
                     throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(method, headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }

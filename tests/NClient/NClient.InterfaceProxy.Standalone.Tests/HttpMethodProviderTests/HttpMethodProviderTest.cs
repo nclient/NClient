@@ -42,7 +42,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .CreateInterfaceProxyWithoutTarget<IGetMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation.Method);
+            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation!.Method);
 
             httpMethod.Should().Be(HttpMethod.Get);
         }
@@ -56,7 +56,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .CreateInterfaceProxyWithoutTarget<IPostMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation.Method);
+            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation!.Method);
 
             httpMethod.Should().Be(HttpMethod.Post);
         }
@@ -70,7 +70,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .CreateInterfaceProxyWithoutTarget<IPutMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation.Method);
+            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation!.Method);
 
             httpMethod.Should().Be(HttpMethod.Put);
         }
@@ -84,7 +84,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .CreateInterfaceProxyWithoutTarget<IDeleteMethod>(KeepDataInterceptor)
                 .Method();
 
-            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation.Method);
+            var httpMethod = HttpMethodProvider.Get(KeepDataInterceptor.Invocation!.Method);
 
             httpMethod.Should().Be(HttpMethod.Delete);
         }
@@ -99,7 +99,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .Method();
 
             HttpMethodProvider
-                .Invoking(x => x.Get(KeepDataInterceptor.Invocation.Method))
+                .Invoking(x => x.Get(KeepDataInterceptor.Invocation!.Method))
                 .Should()
                 .Throw<NotSupportedNClientException>();
         }
@@ -114,7 +114,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .Method();
 
             HttpMethodProvider
-                .Invoking(x => x.Get(KeepDataInterceptor.Invocation.Method))
+                .Invoking(x => x.Get(KeepDataInterceptor.Invocation!.Method))
                 .Should()
                 .Throw<AttributeNotFoundNClientException>();
         }
@@ -129,7 +129,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .Method();
 
             HttpMethodProvider
-                .Invoking(x => x.Get(KeepDataInterceptor.Invocation.Method))
+                .Invoking(x => x.Get(KeepDataInterceptor.Invocation!.Method))
                 .Should()
                 .Throw<NotSupportedNClientException>();
         }

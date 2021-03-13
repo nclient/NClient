@@ -41,7 +41,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<INoAttributes>(new NoAttributes(), KeepDataInterceptor)
                 .Method();
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -64,7 +64,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<INoMethodAttribute>(new NoMethodAttribute(), KeepDataInterceptor)
                 .Method();
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -87,7 +87,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<IApiControllerAttribute>(new ApiControllerAttribute(), KeepDataInterceptor)
                 .Method();
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -111,7 +111,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<IMultiplyCommonRoutes>(new MultiplyCommonRoutes(), KeepDataInterceptor)
                 .Method();
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -137,7 +137,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<IMultiplyMethodRoutes>(new MultiplyMethodRoutes(), KeepDataInterceptor)
                 .Method(1);
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -163,7 +163,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<IMultiplyMethodRoutesWithRouteAttribute>(new MultiplyMethodRoutesWithRouteAttribute(), KeepDataInterceptor)
                 .Method(1);
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -189,7 +189,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
                 .CreateInterfaceProxyWithTarget<IMultiplyMethodRoutesWithRouteAndGetAttribute>(new MultiplyMethodRoutesWithRouteAndGetAttribute(), KeepDataInterceptor)
                 .Method(1);
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())

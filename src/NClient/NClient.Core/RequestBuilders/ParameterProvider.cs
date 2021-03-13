@@ -40,6 +40,7 @@ namespace NClient.Core.RequestBuilders
 
                     return new Parameter(
                         paramInfo.Name,
+                        paramInfo.ParameterType,
                         arguments.ElementAtOrDefault(index),
                         paramAttribute ?? GetAttributeForImplicitParameter(paramInfo, routeTemplate));
                 })

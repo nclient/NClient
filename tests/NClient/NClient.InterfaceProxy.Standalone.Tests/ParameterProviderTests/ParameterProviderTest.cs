@@ -48,10 +48,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 routeTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToRouteAttribute()));
         }
 
         public interface IPrimitiveRouteParam { void Method([ToRoute] int id); }
@@ -65,10 +65,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate, 
-                KeepDataInterceptor.Invocation.Method, 
+                KeepDataInterceptor.Invocation!.Method, 
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToRouteAttribute()));
         }
 
         public interface ICustomTypeRouteParamWithoutAttribute { void Method(BasicEntity entity); }
@@ -84,10 +84,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 routeTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToRouteAttribute()));
         }
 
         public interface ICustomTypeRouteParam { void Method([ToRoute] BasicEntity entity); }
@@ -102,10 +102,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToRouteAttribute()));
         }
 
         public interface IPrimitiveWithoutAttribute { void Method(int id); }
@@ -119,10 +119,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToQueryAttribute()));
         }
 
         public interface IPrimitiveQueryParam { void Method([ToQuery] int id); }
@@ -136,10 +136,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToQueryAttribute()));
         }
 
         public interface ICustomTypeQueryParam { void Method([ToQuery] BasicEntity entity); }
@@ -154,10 +154,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToQueryAttribute()));
         }
 
         public interface ICustomTypeWithoutAttribute { void Method(BasicEntity entity); }
@@ -172,10 +172,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToBodyAttribute()));
         }
 
         public interface ICustomTypeBodyParam { void Method([ToBody] BasicEntity entity); }
@@ -190,10 +190,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToBodyAttribute()));
         }
 
         public interface IPrimitiveBodyParam { void Method([ToBody] int id); }
@@ -207,10 +207,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToBodyAttribute()));
         }
 
         public interface IPrimitiveHeaderParam { void Method([ToHeader] int id); }
@@ -224,10 +224,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", 1, new ToHeaderAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToHeaderAttribute()));
         }
 
         public interface ICustomTypeHeaderParam { void Method([ToHeader] BasicEntity entity); }
@@ -242,10 +242,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
 
             var parameters = ParameterProvider.Get(
                 _emptyRouteTemplate,
-                KeepDataInterceptor.Invocation.Method,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", entity, new ToHeaderAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToHeaderAttribute()));
         }
 
         public interface IMultipleAttributeParam { void Method([ToQuery, ToBody] int id); }
@@ -260,7 +260,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
             ParameterProvider
                 .Invoking(x => x.Get(
                     _emptyRouteTemplate,
-                    KeepDataInterceptor.Invocation.Method,
+                    KeepDataInterceptor.Invocation!.Method,
                     KeepDataInterceptor.Invocation.Arguments))
                 .Should()
                 .Throw<NotSupportedNClientException>();

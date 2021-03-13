@@ -55,10 +55,10 @@ namespace NClient.Core.RequestBuilders
             var parameter = parameters.SingleOrDefault(x => x.Name == templatePart.Name);
             if (parameter is null)
                 throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name);
-            if (!parameter.Value.GetType().IsSimple())
+            if (!parameter.Type.IsSimple())
                 throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name);
 
-            return parameter.Value.ToString();
+            return parameter.Value?.ToString() ?? "";
         }
 
         private static string GetValueFromTextSegment(TemplatePart templatePart, string clientName, string methodName)
