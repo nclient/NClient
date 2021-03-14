@@ -8,7 +8,7 @@ using NClient.Providers.HttpClient.Abstractions;
 using NClient.Providers.Resilience.Abstractions;
 using Polly;
 
-namespace NClient.Extensions.DependencyInjection.InterfaceProxy
+namespace NClient.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
@@ -18,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection.InterfaceProxy
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new ClientProvider()
                     .Use<TInterface>(new Uri(host))
                     .SetDefaultHttpClientProvider()
@@ -34,7 +34,7 @@ namespace NClient.Extensions.DependencyInjection.InterfaceProxy
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new ClientProvider()
                     .Use<TInterface>(new Uri(host))
                     .SetDefaultHttpClientProvider()
@@ -50,7 +50,7 @@ namespace NClient.Extensions.DependencyInjection.InterfaceProxy
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 var clientProvider = new ClientProvider().Use<TInterface>(new Uri(host));
                 return configure(clientProvider).WithLogger(logger).Build();
             });
@@ -62,7 +62,7 @@ namespace NClient.Extensions.DependencyInjection.InterfaceProxy
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new ClientProvider()
                     .Use<TInterface>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)
@@ -78,7 +78,7 @@ namespace NClient.Extensions.DependencyInjection.InterfaceProxy
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new ClientProvider()
                     .Use<TInterface>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)

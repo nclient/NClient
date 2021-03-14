@@ -17,7 +17,7 @@ namespace NClient.AspNetProxy.Extensions
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 var clientProvider = new AspNetClientProvider().Use<TInterface, TController>(new Uri(host));
                 return configure(clientProvider).WithLogger(logger).Build();
             });
@@ -30,7 +30,7 @@ namespace NClient.AspNetProxy.Extensions
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new AspNetClientProvider()
                     .Use<TInterface, TController>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)
@@ -47,7 +47,7 @@ namespace NClient.AspNetProxy.Extensions
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var logger = serviceProvider.GetService<ILogger<TInterface>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
                 return new AspNetClientProvider()
                     .Use<TInterface, TController>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)

@@ -71,9 +71,8 @@ namespace NClient.Core.Interceptors
 
                 var keepDataInterceptor = new KeepDataInterceptor();
                 var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(typeof(T), keepDataInterceptor);
-                var clientInvocation = clientMethodInvocation as LambdaExpression;
-                clientInvocation.Compile().DynamicInvoke(proxyClient);
-                var innerInvocation = keepDataInterceptor.Invocation;
+                ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
+                var innerInvocation = keepDataInterceptor.Invocation!;
 
                 clientType = _controllerType ?? innerInvocation.Method.DeclaringType;
                 clientMethod = _controllerType is null
@@ -83,7 +82,7 @@ namespace NClient.Core.Interceptors
                 resiliencePolicyProvider = customResiliencePolicyProvider ?? _defaultResiliencePolicyProvider;
             }
 
-            var result = await ExecuteRequestAsync<TResult>(clientType, clientMethod, clientMethodArguments, resiliencePolicyProvider)
+            var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider)
                 .ConfigureAwait(false);
 
             _logger?.LogInformation("Processing request finished.");
@@ -98,7 +97,7 @@ namespace NClient.Core.Interceptors
 
             var client = _httpClientProvider.Create();
 
-            var responseBodyType = typeof(TResult).IsAssignableTo(typeof(HttpResponse)) && typeof(TResult).IsGenericType 
+            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType 
                 ? typeof(TResult).GetGenericArguments().First()
                 : typeof(TResult);
             var response = await resiliencePolicyProvider
@@ -107,7 +106,7 @@ namespace NClient.Core.Interceptors
                 .ConfigureAwait(false);
             _logger?.LogDebug($"Response with code {response.StatusCode} received.");
 
-            if (typeof(TResult).IsAssignableTo(typeof(HttpResponse)))
+            if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult)(object)response;
 
             if (!response.IsSuccessful)
@@ -116,7 +115,7 @@ namespace NClient.Core.Interceptors
                 throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
             }
 
-            return (TResult)response.GetType().GetProperty("Value")?.GetValue(response);
+            return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
 
         private async Task<TResult> InvokeWithLoggingExceptions<TResult>(Func<IInvocation, Task<TResult>> processInvocation, IInvocation invocation)
@@ -143,7 +142,8 @@ namespace NClient.Core.Interceptors
                 return null;
 
             var interfaceMapping = implType.GetInterfaceMap(interfaceType);
-            var methodPairs = interfaceMapping.InterfaceMethods.Zip(interfaceMapping.TargetMethods);
+            var methodPairs = interfaceMapping.InterfaceMethods
+                .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
             return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
         }
 

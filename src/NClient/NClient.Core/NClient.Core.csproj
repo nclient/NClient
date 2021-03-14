@@ -1,24 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp5.0</TargetFramework>
+		<PackageId>$(AssemblyName)</PackageId>
+		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
+		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
+		<Description>The core of NClient library for creating HTTP client that allows you to call web service API methods through annotated controllers.</Description>
+		<Authors>smolchanovsky</Authors>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<RootNamespace>NClient.Core</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-		<PackageReference Include="morelinq" Version="3.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient\NClient.Providers.HttpClient.csproj" />
 		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience\NClient.Providers.Resilience.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>

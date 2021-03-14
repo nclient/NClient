@@ -18,7 +18,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory();
+            _returnApiMockFactory = new ReturnApiMockFactory(port: 5005);
             _returnClient = new AspNetClientProvider()
                 .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
