@@ -82,7 +82,7 @@ jobs:
     - name: Wait verification packages (5 min)
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '2m'
         
     - uses: actions/checkout@v2
     - name: Setup .NET
