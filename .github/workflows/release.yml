@@ -10,7 +10,7 @@ on:
       - release
 
 env:
-  VersionPrefix: 0.0.8
+  VersionPrefix: 0.1.0
   VersionSuffix: unbound
       
 jobs:
