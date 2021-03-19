@@ -17,7 +17,7 @@ namespace NClient.Testing.Common
         internal RequestBuilder RequestBuilder = null!;
         internal KeepDataInterceptor KeepDataInterceptor = null!;
 
-        protected IAttributeHelper AttributeHelper = null!;
+        protected IAttributeMapper AttributeMapper = null!;
         protected ProxyGenerator ProxyGenerator = null!;
 
         [SetUp]
@@ -25,12 +25,11 @@ namespace NClient.Testing.Common
         {
             RequestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(AttributeHelper),
-                new RouteProvider(AttributeHelper),
-                new HttpMethodProvider(AttributeHelper),
-                new ParameterProvider(AttributeHelper),
-                new ObjectToKeyValueConverter(),
-                AttributeHelper);
+                new RouteTemplateProvider(AttributeMapper),
+                new RouteProvider(),
+                new HttpMethodProvider(AttributeMapper),
+                new ParameterProvider(AttributeMapper),
+                new ObjectToKeyValueConverter());
 
             ProxyGenerator = new ProxyGenerator();
         }

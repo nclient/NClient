@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.InterfaceProxy.Attributes
+namespace NClient.Core.Attributes.Clients
 {
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
     public class ApiAttribute : Attribute

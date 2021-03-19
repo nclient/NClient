@@ -1,4 +1,4 @@
-﻿namespace NClient.InterfaceProxy.Attributes.Methods
+﻿namespace NClient.Core.Attributes.Clients.Methods
 {
     public class AsHttpDeleteAttribute : AsHttpMethodAttribute
     {

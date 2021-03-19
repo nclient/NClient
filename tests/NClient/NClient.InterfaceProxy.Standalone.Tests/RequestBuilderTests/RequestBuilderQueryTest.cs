@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Interceptors;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
-using NClient.InterfaceProxy.Attributes.Parameters;
 using NClient.Providers.HttpClient;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
@@ -20,7 +21,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeHelper = new AttributeHelper();
+            AttributeMapper = new StubAttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 

@@ -104,16 +104,15 @@ namespace NClient.AspNetProxy
 
         public TInterface Build()
         {
-            var attributeHelper = new AspNetCoreAttributeHelper();
+            var attributeMapper = new AspNetAttributeMapper();
 
             var requestBuilder = new RequestBuilder(
                 _host,
-                new RouteTemplateProvider(attributeHelper),
-                new RouteProvider(attributeHelper),
-                new HttpMethodProvider(attributeHelper),
-                new ParameterProvider(attributeHelper),
-                new ObjectToKeyValueConverter(),
-                attributeHelper);
+                new RouteTemplateProvider(attributeMapper),
+                new RouteProvider(),
+                new HttpMethodProvider(attributeMapper),
+                new ParameterProvider(attributeMapper),
+                new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<TInterface>(
                 _proxyGenerator, 

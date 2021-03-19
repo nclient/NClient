@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.InterfaceProxy.Attributes.Methods
+namespace NClient.Core.Attributes.Clients.Methods
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class AsHttpMethodAttribute : Attribute

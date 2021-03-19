@@ -1,12 +1,12 @@
 ﻿using Castle.DynamicProxy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing.Template;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Parameters;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -23,8 +23,8 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
         [SetUp]
         public void SetUp()
         {
-            var attributeHelper = new AttributeHelper();
-            ParameterProvider = new ParameterProvider(attributeHelper);
+            var attributeMapper = new StubAttributeMapper();
+            ParameterProvider = new ParameterProvider(attributeMapper);
 
             _proxyGenerator = new ProxyGenerator();
             _emptyRouteTemplate = TemplateParser.Parse("");
