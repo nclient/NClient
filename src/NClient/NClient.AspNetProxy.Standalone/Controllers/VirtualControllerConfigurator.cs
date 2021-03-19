@@ -10,6 +10,8 @@ namespace NClient.AspNetProxy.Controllers
 {
     public class VirtualControllerConfigurator
     {
+        private static readonly ProxyGenerator ProxyGeneration = new ProxyGenerator();
+
         public IServiceCollection ServiceCollection { get; }
         public IList<(Type InterfaceType, Type ControllerType)> InterfaceControllerPairs { get; }
 
@@ -41,7 +43,7 @@ namespace NClient.AspNetProxy.Controllers
                 ServiceCollection.AddTransient(virtualControllerType, serviceProvider =>
                 {
                     var controller = serviceProvider.GetRequiredService(controllerType);
-                    return new ProxyGenerator().CreateClassProxy(virtualControllerType, new VirtualControllerInterceptor(controller));
+                    return ProxyGeneration.CreateClassProxy(virtualControllerType, new VirtualControllerInterceptor(controller));
                 });
             }
 
