@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;
@@ -16,11 +17,11 @@ namespace NClient.Core.RequestBuilders
 
     internal class ParameterProvider : IParameterProvider
     {
-        private readonly IAttributeHelper _attributeHelper;
+        private readonly IAttributeMapper _attributeMapper;
 
-        public ParameterProvider(IAttributeHelper attributeHelper)
+        public ParameterProvider(IAttributeMapper attributeMapper)
         {
-            _attributeHelper = attributeHelper;
+            _attributeMapper = attributeMapper;
         }
 
         public Parameter[] Get(RouteTemplate routeTemplate, MethodInfo method, object[] arguments)
@@ -30,9 +31,8 @@ namespace NClient.Core.RequestBuilders
                 .Select((paramInfo, index) =>
                 {
                     var paramAttributes = paramInfo.GetCustomAttributes()
-                        .Select(attribute => _attributeHelper.IsNotSupportedMethodAttribute(attribute)
-                            ? throw OuterExceptionFactory.UsedNotSupportedAttributeForParameter(method, paramInfo.Name, attribute.GetType().Name) : attribute)
-                        .Where(_attributeHelper.IsParameterAttribute)
+                        .Select(attribute => _attributeMapper.TryMap(attribute))
+                        .Where(x => x is ToParameterAttribute)
                         .ToArray();
                     if (paramAttributes.Length > 1)
                         throw OuterExceptionFactory.MultipleParameterAttributeNotSupported(method, paramInfo.Name);
@@ -47,14 +47,14 @@ namespace NClient.Core.RequestBuilders
                 .ToArray();
         }
 
-        private Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)
+        private static Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)
         {
             if (routeTemplate.Parameters.Any(x => x.Name == paramInfo.Name))
-                return _attributeHelper.CreateAttributeInstance(_attributeHelper.RouteParamAttributeType);
+                return new ToRouteAttribute();
 
             return paramInfo.ParameterType.IsSimple()
-                ? _attributeHelper.CreateAttributeInstance(_attributeHelper.UriParamAttributeType)
-                : _attributeHelper.CreateAttributeInstance(_attributeHelper.BodyParamAttributeType);
+                ? new ToQueryAttribute()
+                : new ToBodyAttribute();
         }
     }
 }

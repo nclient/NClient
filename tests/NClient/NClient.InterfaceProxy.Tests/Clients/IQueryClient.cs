@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
-using NClient.InterfaceProxy.Attributes.Parameters;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 

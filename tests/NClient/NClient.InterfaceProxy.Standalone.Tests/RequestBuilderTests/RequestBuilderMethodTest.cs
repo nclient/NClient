@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net.Http;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Interceptors;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
@@ -14,7 +15,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeHelper = new AttributeHelper();
+            AttributeMapper = new StubAttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 

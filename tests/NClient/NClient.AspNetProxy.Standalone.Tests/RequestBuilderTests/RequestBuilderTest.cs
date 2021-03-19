@@ -18,7 +18,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeHelper = new AspNetCoreAttributeHelper();
+            AttributeMapper = new AspNetAttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 

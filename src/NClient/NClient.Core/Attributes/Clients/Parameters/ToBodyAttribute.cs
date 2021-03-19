@@ -1,4 +1,4 @@
-﻿namespace NClient.InterfaceProxy.Attributes.Parameters
+﻿namespace NClient.Core.Attributes.Clients.Parameters
 {
     public class ToBodyAttribute : ToParameterAttribute
     {

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.RequestBuilders
@@ -14,34 +16,35 @@ namespace NClient.Core.RequestBuilders
 
     public class RouteTemplateProvider : IRouteTemplateProvider
     {
-        private readonly IAttributeHelper _attributeHelper;
+        private readonly IAttributeMapper _attributeMapper;
 
-        public RouteTemplateProvider(IAttributeHelper attributeHelper)
+        public RouteTemplateProvider(IAttributeMapper attributeMapper)
         {
-            _attributeHelper = attributeHelper;
+            _attributeMapper = attributeMapper;
         }
 
         public RouteTemplate Get(Type clientType, MethodInfo method)
         {
             var apiAttributes = clientType
-                .GetCustomAttributes(_attributeHelper.ApiAttributeType)
+                .GetCustomAttributes()
+                .Select(x => _attributeMapper.TryMap(x))
+                .Where(x => x is ApiAttribute)
                 .ToArray();
             if (apiAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, _attributeHelper.ApiAttributeType.Name);
+                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(ApiAttribute));
             var apiAttribute = apiAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.ClientAttributeNotFound(_attributeHelper.ApiAttributeType, clientType);
+                ?? throw OuterExceptionFactory.ClientAttributeNotFound(typeof(ApiAttribute), clientType);
 
             //TODO: Duplication here and in HttpMethodProvider
             var methodAttributes = method
                 .GetCustomAttributes()
-                .Select(x => _attributeHelper.IsNotSupportedMethodAttribute(x)
-                    ? throw OuterExceptionFactory.MethodAttributeNotSupported(method, x.GetType().Name) : x)
-                .Where(x => _attributeHelper.MethodAttributeType.IsInstanceOfType(x))
+                .Select(x => _attributeMapper.TryMap(x))
+                .Where(x => x is AsHttpMethodAttribute)
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(_attributeHelper.MethodAttributeType, method);
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(AsHttpMethodAttribute), method);
 
             var apiTemplate = apiAttribute.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
             var methodTemplate = methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "";
@@ -50,7 +53,7 @@ namespace NClient.Core.RequestBuilders
             return Parse(routeTemplateStr);
         }
 
-        private RouteTemplate Parse(string routeTemplateStr)
+        private static RouteTemplate Parse(string routeTemplateStr)
         {
             try
             {
