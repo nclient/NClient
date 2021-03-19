@@ -10,7 +10,7 @@ using Polly;
 
 namespace NClient.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class AddNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host, IAsyncPolicy asyncPolicy)
