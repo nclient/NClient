@@ -27,7 +27,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task GetHttpResponse_GetAsync_HttpResponseWithValue()
+        public async Task ReturnClient_GetAsync_HttpResponseWithValue()
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
@@ -38,7 +38,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public void GetHttpResponse_Get_HttpResponseWithValue()
+        public void ReturnClient_Get_HttpResponseWithValue()
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
@@ -49,7 +49,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task GetHttpResponse_PostAsync_HttpResponseWithoutValue()
+        public async Task ReturnClient_PostAsync_HttpResponseWithoutValue()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
@@ -58,7 +58,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public void GetHttpResponse_Post_HttpResponseWithoutValue()
+        public void ReturnClient_Post_HttpResponseWithoutValue()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostMethod(entity);
