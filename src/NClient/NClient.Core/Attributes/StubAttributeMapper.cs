@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Attributes
 {
@@ -6,6 +7,9 @@ namespace NClient.Core.Attributes
     {
         public Attribute? TryMap(Attribute attribute)
         {
+            if (attribute is null)
+                throw InnerExceptionFactory.NullArgument(nameof(attribute));
+
             return attribute;
         }
     }
