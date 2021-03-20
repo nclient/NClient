@@ -4,7 +4,7 @@ using NClient.AspNetProxy.Controllers;
 
 namespace NClient.AspNetProxy.Extensions
 {
-    public static class AddNClientControllerExtensions
+    public static class AddNClientControllersExtensions
     {
         public static IServiceCollection AddNClientControllers(this IServiceCollection serviceCollection,
             Func<IControllerListOptions, IControllerListOptions> configure)
