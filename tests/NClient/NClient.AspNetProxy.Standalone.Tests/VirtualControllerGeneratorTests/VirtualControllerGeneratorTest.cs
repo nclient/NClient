@@ -159,12 +159,11 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
         {
             var interfaceControllerPairs = new[]
             {
-                (typeof(IParameterAttributeController), typeof(ParameterAttributeController))
+                (typeof(IAspNetMethodAttributeController), typeof(AspNetMethodAttributeController))
             };
 
-            var r = _virtualControllerGenerator.Create(interfaceControllerPairs);
             _virtualControllerGenerator
-                .Invoking(x => x.Create(interfaceControllerPairs))
+                .Invoking(x => x.Create(interfaceControllerPairs).ToArray())
                 .Should()
                 .ThrowExactly<InvalidAttributeNClientException>();
         }
