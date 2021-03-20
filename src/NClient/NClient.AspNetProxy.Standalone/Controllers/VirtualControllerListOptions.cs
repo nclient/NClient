@@ -8,20 +8,25 @@ using NClient.AspNetProxy.Attributes;
 
 namespace NClient.AspNetProxy.Controllers
 {
-    public class VirtualControllerConfigurator
+    public interface IControllerListOptions
+    {
+        IControllerListOptions AddController<TInterface, TController>() where TController : ControllerBase, TInterface;
+    }
+
+    public class VirtualControllerListOptions : IControllerListOptions
     {
         private static readonly ProxyGenerator ProxyGeneration = new ProxyGenerator();
 
-        public IServiceCollection ServiceCollection { get; }
-        public IList<(Type InterfaceType, Type ControllerType)> InterfaceControllerPairs { get; }
+        internal IServiceCollection ServiceCollection { get; }
+        internal IList<(Type InterfaceType, Type ControllerType)> InterfaceControllerPairs { get; }
 
-        public VirtualControllerConfigurator(IServiceCollection serviceCollection)
+        public VirtualControllerListOptions(IServiceCollection serviceCollection)
         {
             ServiceCollection = serviceCollection;
             InterfaceControllerPairs = new List<(Type, Type)>();
         }
 
-        public VirtualControllerConfigurator AddNClientController<TInterface, TController>()
+        public IControllerListOptions AddController<TInterface, TController>()
             where TController : ControllerBase, TInterface
         {
             InterfaceControllerPairs.Add((typeof(TInterface), typeof(TController)));
