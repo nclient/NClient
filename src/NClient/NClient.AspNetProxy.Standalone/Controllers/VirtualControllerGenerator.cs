@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Core.Attributes;
+using NClient.Core.Exceptions.Factories;
 
 namespace NClient.AspNetProxy.Controllers
 {
@@ -26,7 +27,8 @@ namespace NClient.AspNetProxy.Controllers
         public IEnumerable<(Type VirtualControllerType, Type ControllerType)> Create(
             IEnumerable<(Type InterfaceType, Type ControllerType)> interfaceControllerPairs)
         {
-            var dynamicAssemblyName = new AssemblyName(NClientAssemblyNames.NClientDynamicControllerProxies);
+            // TODO: Use GuidProvider instead static Guid.NewGuid()
+            var dynamicAssemblyName = new AssemblyName($"{NClientAssemblyNames.NClientDynamicControllerProxies}.{Guid.NewGuid()}");
             var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(dynamicAssemblyName, AssemblyBuilderAccess.Run);
             var dynamicModule = dynamicAssembly.DefineDynamicModule(dynamicAssemblyName.Name!);
 
@@ -39,44 +41,52 @@ namespace NClient.AspNetProxy.Controllers
         private (Type VirtualControllerType, Type ControllerType) Create(
             ModuleBuilder moduleBuilder, Type interfaceType, Type controllerType)
         {
-            var typeBuilder = moduleBuilder.DefineType(controllerType.Name, attr: TypeAttributes.Public, parent: typeof(ControllerBase));
+            var typeBuilder = moduleBuilder.DefineType(
+                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}", 
+                attr: TypeAttributes.Public, 
+                parent: typeof(ControllerBase));
 
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
-            var controllerAttributes = GetAttributes(interfaceType);
+            var interfaceAttributes = GetAttributes(interfaceType);
             typeBuilder.SetCustomAttribute(CreateCustomAttribute(new ApiControllerAttribute()));
-            foreach (var controllerAttribute in controllerAttributes)
+            foreach (var interfaceAttribute in interfaceAttributes)
             {
-                typeBuilder.SetCustomAttribute(CreateCustomAttribute(controllerAttribute));
+                typeBuilder.SetCustomAttribute(CreateCustomAttribute(interfaceAttribute));
             }
 
             var interfaceMethods = interfaceType.GetMethods();
             foreach (var interfaceMethod in interfaceMethods)
             {
-                var method = DefineMethod(typeBuilder, interfaceMethod);
+                var methodBuilder = DefineMethod(typeBuilder, interfaceMethod);
 
-                var controllerMethodAttributes = GetAttributes(interfaceMethod); ;
-                foreach (var controllerMethodAttribute in controllerMethodAttributes)
+                var interfaceMethodAttributes = GetAttributes(interfaceMethod);
+                foreach (var interfaceMethodAttribute in interfaceMethodAttributes)
                 {
-                    method.SetCustomAttribute(CreateCustomAttribute(controllerMethodAttribute));
+                    methodBuilder.SetCustomAttribute(CreateCustomAttribute(interfaceMethodAttribute));
                 }
             }
 
             return (typeBuilder.CreateTypeInfo(), controllerType);
         }
 
-        private Attribute[] GetAttributes(MemberInfo memberInfo)
+        private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
         {
-            var interfaceAttributes = memberInfo.GetCustomAttributes();
-            return interfaceAttributes
-                .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x != null)
+            var attributes = attributeProvider.GetCustomAttributes(inherit: false).Cast<Attribute>();
+            return attributes
+                .Select(x =>
+                {
+                    if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
+                        throw OuterExceptionFactory.UsedInvalidAttributeInControllerInterface(attributeProvider.GetType().FullName);
+                    return _attributeMapper.TryMap(x);
+                })
+                .Where(x => x is not null)
                 .ToArray()!;
         }
 
         private static CustomAttributeBuilder CreateCustomAttribute(Attribute attribute)
         {
-            var attributeCtor = attribute.GetType().GetConstructors().First();
+            var attributeCtor = attribute.GetType().GetConstructors().Last();
             var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name));
             var attributeCtorParamValue = attribute.GetType()
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
@@ -102,7 +112,7 @@ namespace NClient.AspNetProxy.Controllers
                 attributeFieldValues!);
         }
 
-        private static MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo methodInfo)
+        private MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo methodInfo)
         {
             var methodParams = methodInfo.GetParameters();
             var methodBuilder = typeBuilder.DefineMethod(
@@ -113,7 +123,12 @@ namespace NClient.AspNetProxy.Controllers
 
             foreach (var (param, index) in methodParams.Select((x, i) => (Param: x, Index: i)))
             {
-                methodBuilder.DefineParameter(index + 1, param.Attributes, param.Name);
+                var paramBuilder = methodBuilder.DefineParameter(index + 1, param.Attributes, param.Name);
+                var paramAttributes = GetAttributes(param);
+                foreach (var paramAttribute in paramAttributes)
+                {
+                    paramBuilder.SetCustomAttribute(CreateCustomAttribute(paramAttribute));
+                }
             }
 
             ILGenerator ilGenerator = methodBuilder.GetILGenerator();

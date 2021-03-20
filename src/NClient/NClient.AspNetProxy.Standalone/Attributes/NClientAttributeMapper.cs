@@ -14,17 +14,17 @@ namespace NClient.AspNetProxy.Attributes
         { 
             return attribute switch
             {
-                ApiAttribute x => new RouteAttribute(x.Template),
+                ApiAttribute x => new RouteAttribute(x.Template ?? "") { Order = x.Order },
 
-                AsHttpGetAttribute x => x.Template is null ? new HttpGetAttribute() : new HttpGetAttribute(x.Template),
-                AsHttpPostAttribute x => x.Template is null ? new HttpPostAttribute() : new HttpPostAttribute(x.Template),
-                AsHttpPutAttribute x => x.Template is null ? new HttpPutAttribute() : new HttpPutAttribute(x.Template),
-                AsHttpDeleteAttribute x => x.Template is null ? new HttpDeleteAttribute() : new HttpDeleteAttribute(x.Template),
+                AsHttpGetAttribute x => new HttpGetAttribute(x.Template ?? "") { Order = x.Order },
+                AsHttpPostAttribute x => new HttpPostAttribute(x.Template ?? "") { Order = x.Order },
+                AsHttpPutAttribute x => new HttpPutAttribute(x.Template ?? "") { Order = x.Order },
+                AsHttpDeleteAttribute x => new HttpDeleteAttribute(x.Template ?? "") { Order = x.Order },
 
-                FromRouteAttribute => new ToRouteAttribute(),
-                FromQueryAttribute => new ToQueryAttribute(),
-                FromBodyAttribute => new ToBodyAttribute(),
-                FromHeaderAttribute => new ToHeaderAttribute(),
+                ToRouteAttribute => new FromRouteAttribute(),
+                ToQueryAttribute => new FromQueryAttribute(),
+                ToBodyAttribute => new FromBodyAttribute(),
+                ToHeaderAttribute => new FromHeaderAttribute(),
 
                 {} => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))

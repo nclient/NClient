@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace NClient.AspNetProxy.Controllers
 {
-    public class VirtualControllerFeatureProvider : ControllerFeatureProvider
+    internal class VirtualControllerFeatureProvider : ControllerFeatureProvider
     {
         private readonly Assembly _virtualControllerAssembly;
         private readonly HashSet<string> _virtualControllerNames;

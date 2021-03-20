@@ -3,7 +3,7 @@ using Castle.DynamicProxy;
 
 namespace NClient.AspNetProxy.Controllers
 {
-    public class VirtualControllerInterceptor : IInterceptor
+    internal class VirtualControllerInterceptor : IInterceptor
     {
         private readonly object _target;
 

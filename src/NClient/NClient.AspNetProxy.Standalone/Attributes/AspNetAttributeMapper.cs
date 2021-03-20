@@ -14,12 +14,12 @@ namespace NClient.AspNetProxy.Attributes
         {
             return attribute switch
             {
-                RouteAttribute x => new ApiAttribute(x.Template),
+                RouteAttribute x => new ApiAttribute(x.Template ?? "") { Order = x.Order },
                 
-                HttpGetAttribute x => new AsHttpGetAttribute(x.Template),
-                HttpPostAttribute x => new AsHttpPostAttribute(x.Template),
-                HttpPutAttribute x => new AsHttpPutAttribute(x.Template),
-                HttpDeleteAttribute x => new AsHttpDeleteAttribute(x.Template),
+                HttpGetAttribute x => new AsHttpGetAttribute(x.Template ?? "") { Order = x.Order },
+                HttpPostAttribute x => new AsHttpPostAttribute(x.Template ?? "") { Order = x.Order },
+                HttpPutAttribute x => new AsHttpPutAttribute(x.Template ?? "") { Order = x.Order },
+                HttpDeleteAttribute x => new AsHttpDeleteAttribute(x.Template ?? "") { Order = x.Order },
 
                 FromRouteAttribute => new ToRouteAttribute(),
                 FromQueryAttribute => new ToQueryAttribute(),

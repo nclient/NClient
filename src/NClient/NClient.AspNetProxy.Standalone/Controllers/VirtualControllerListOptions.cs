@@ -13,7 +13,7 @@ namespace NClient.AspNetProxy.Controllers
         IControllerListOptions AddController<TInterface, TController>() where TController : ControllerBase, TInterface;
     }
 
-    public class VirtualControllerListOptions : IControllerListOptions
+    internal class VirtualControllerListOptions : IControllerListOptions
     {
         private static readonly ProxyGenerator ProxyGeneration = new ProxyGenerator();
 
