@@ -4,6 +4,8 @@
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
 		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;HttpClient;Api;WebApi;Rest</PackageTags>
@@ -22,6 +24,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
