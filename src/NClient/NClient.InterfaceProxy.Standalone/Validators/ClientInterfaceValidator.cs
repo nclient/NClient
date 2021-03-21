@@ -15,7 +15,7 @@ namespace NClient.InterfaceProxy.Validators
     {
         public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class, INClient
         {
-            var attributeMapper = new StubAttributeMapper();
+            var attributeMapper = new AttributeMapper();
 
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),

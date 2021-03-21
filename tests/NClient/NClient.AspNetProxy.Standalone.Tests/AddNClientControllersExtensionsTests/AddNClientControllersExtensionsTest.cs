@@ -14,7 +14,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
     [Parallelizable]
     public class AddNClientControllersExtensionsTest
     {
-        [Api("api/[controller]")] public interface IGetController { int Get(int id); }
+        [Client("api/[controller]")] public interface IGetController { int Get(int id); }
         public class GetController : ControllerBase, IGetController { public int Get(int id) => id; }
 
         [Test]
@@ -29,7 +29,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Api("api/[controller]")] public interface IGetParameterlessController { int Get(); }
+        [Client("api/[controller]")] public interface IGetParameterlessController { int Get(); }
         public class GetParameterlessController : ControllerBase, IGetParameterlessController { public int Get() => 1; }
 
         [Test]
@@ -42,7 +42,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(1);
         }
 
-        [Api("api/[controller]")] public interface IGetWithMultipleParamsController { int Get(int id, string name); }
+        [Client("api/[controller]")] public interface IGetWithMultipleParamsController { int Get(int id, string name); }
         public class GetWithMultipleParamsController : ControllerBase, IGetWithMultipleParamsController { public int Get(int id, string name) => id; }
 
         [Test]
@@ -57,7 +57,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Api("api/[controller]")] public interface IGetAsyncController { Task<int> GetAsync(int id); }
+        [Client("api/[controller]")] public interface IGetAsyncController { Task<int> GetAsync(int id); }
         public class GetAsyncController : ControllerBase, IGetAsyncController { public Task<int> GetAsync(int id) => Task.FromResult(1); }
 
         [Test]
@@ -72,7 +72,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Api("api/[controller]")] public interface IPostController { [AsHttpPost] void Post(BasicEntity entity); }
+        [Client("api/[controller]")] public interface IPostController { [AsHttpPost] void Post(BasicEntity entity); }
         public class PostController : ControllerBase, IPostController { public void Post(BasicEntity entity) { } }
 
         [Test]
@@ -87,7 +87,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().BeNull();
         }
 
-        [Api("api/[controller]")] public interface IPostAndReturnController { [AsHttpPost] BasicEntity Post(BasicEntity entity); }
+        [Client("api/[controller]")] public interface IPostAndReturnController { [AsHttpPost] BasicEntity Post(BasicEntity entity); }
         public class PostAndReturnController : ControllerBase, IPostAndReturnController { public BasicEntity Post(BasicEntity entity) => entity; }
 
         [Test]

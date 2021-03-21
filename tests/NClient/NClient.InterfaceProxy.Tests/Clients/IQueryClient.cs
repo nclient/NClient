@@ -7,7 +7,7 @@ using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/query")]
+    [Client("api/query")]
     public interface IQueryClientWithMetadata : IQueryClient
     {
         [AsHttpGet]

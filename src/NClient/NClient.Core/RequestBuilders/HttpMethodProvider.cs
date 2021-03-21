@@ -28,8 +28,8 @@ namespace NClient.Core.RequestBuilders
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
                 .ToArray();
-            if (methodAttributes.Any(x => x is ApiAttribute))
-                throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(ApiAttribute));
+            if (methodAttributes.Any(x => x is ClientAttribute))
+                throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(ClientAttribute));
 
             var httpMethodAttributes = methodAttributes
                 .Where(x => x is AsHttpMethodAttribute)

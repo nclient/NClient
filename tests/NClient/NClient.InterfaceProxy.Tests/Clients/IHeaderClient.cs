@@ -6,7 +6,7 @@ using NClient.Testing.Common.Clients;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/header")]
+    [Client("api/header")]
     public interface IHeaderClientWithMetadata : IHeaderClient
     {
         [AsHttpGet]

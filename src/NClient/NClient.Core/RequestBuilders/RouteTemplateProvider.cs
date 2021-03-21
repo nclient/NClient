@@ -28,12 +28,12 @@ namespace NClient.Core.RequestBuilders
             var apiAttributes = clientType
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is ApiAttribute)
+                .Where(x => x is ClientAttribute)
                 .ToArray();
             if (apiAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(ApiAttribute));
+                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(ClientAttribute));
             var apiAttribute = apiAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.ClientAttributeNotFound(typeof(ApiAttribute), clientType);
+                ?? throw OuterExceptionFactory.ClientAttributeNotFound(typeof(ClientAttribute), clientType);
 
             //TODO: Duplication here and in HttpMethodProvider
             var methodAttributes = method

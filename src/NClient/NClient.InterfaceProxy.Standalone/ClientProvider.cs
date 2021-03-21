@@ -88,7 +88,7 @@ namespace NClient.InterfaceProxy
 
         public T Build()
         {
-            var attributeMapper = new StubAttributeMapper();
+            var attributeMapper = new AttributeMapper();
 
             var requestBuilder = new RequestBuilder(
                 _host,

@@ -6,7 +6,7 @@ using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/basic")]
+    [Client("api/basic")]
     public interface IBasicClientWithMetadata : IBasicClient
     {
         [AsHttpGet]

@@ -23,7 +23,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper);
         }
 
-        [Api] public interface IInterfaceAttributeController { }
+        [Client] public interface IInterfaceAttributeController { }
         public class InterfaceAttributeController : IInterfaceAttributeController { }
 
         [Test]
@@ -46,7 +46,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("") { Order = 0 });
         }
 
-        [Api("api/[controller]")] public interface IInterfaceAttributeWithTemplateController { }
+        [Client("api/[controller]")] public interface IInterfaceAttributeWithTemplateController { }
         public class InterfaceAttributeWithTemplateController : IInterfaceAttributeWithTemplateController { }
 
         [Test]
