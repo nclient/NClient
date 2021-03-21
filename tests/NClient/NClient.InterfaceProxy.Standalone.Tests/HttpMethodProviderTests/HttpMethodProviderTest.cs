@@ -21,7 +21,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
         [SetUp]
         public void SetUp()
         {
-            var attributeMapper = new StubAttributeMapper();
+            var attributeMapper = new AttributeMapper();
             HttpMethodProvider = new HttpMethodProvider(attributeMapper);
 
             ProxyGenerator = new ProxyGenerator();

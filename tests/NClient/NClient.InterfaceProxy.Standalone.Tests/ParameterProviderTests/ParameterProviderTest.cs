@@ -23,7 +23,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
         [SetUp]
         public void SetUp()
         {
-            var attributeMapper = new StubAttributeMapper();
+            var attributeMapper = new AttributeMapper();
             ParameterProvider = new ParameterProvider(attributeMapper);
 
             _proxyGenerator = new ProxyGenerator();

@@ -21,11 +21,11 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeMapper = new StubAttributeMapper();
+            AttributeMapper = new AttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Api] public interface IPrimitiveParameter { [AsHttpGet] int Get([ToQuery] int id); }
+        [Client] public interface IPrimitiveParameter { [AsHttpGet] int Get([ToQuery] int id); }
 
         [Test]
         public void Build_PrimitiveParameter_PrimitiveParameterInQuery()
@@ -42,7 +42,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("id", 1) });
         }
 
-        [Api] public interface IMultiplyPrimitiveParameters { [AsHttpGet] int Get([ToQuery] int id, [ToQuery] string value); }
+        [Client] public interface IMultiplyPrimitiveParameters { [AsHttpGet] int Get([ToQuery] int id, [ToQuery] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveParameters_PrimitiveParametersInQuery()
@@ -60,7 +60,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         }
 
 
-        [Api] public interface IPrimitiveParameterWithoutAttribute { [AsHttpGet] int Get(int id); }
+        [Client] public interface IPrimitiveParameterWithoutAttribute { [AsHttpGet] int Get(int id); }
 
         [Test]
         public void Build_PrimitiveParameterWithoutAttribute_PrimitiveParameterInQuery()
@@ -77,7 +77,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new [] { new HttpParameter("id", 1) });
         }
 
-        [Api] public interface IMultiplyPrimitiveParametersWithoutAttribute { [AsHttpGet] int Get(int id, string value); }
+        [Client] public interface IMultiplyPrimitiveParametersWithoutAttribute { [AsHttpGet] int Get(int id, string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveParametersWithoutAttribute_PrimitiveParametersInQuery()
@@ -94,7 +94,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("id", 1), new HttpParameter("value", "val") });
         }
 
-        [Api] public interface ICustomTypeParameter { [AsHttpGet] int Get([ToQuery] BasicEntity entity); }
+        [Client] public interface ICustomTypeParameter { [AsHttpGet] int Get([ToQuery] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeParameter_PropertiesInQuery()
@@ -111,7 +111,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("entity.Id", 1), new HttpParameter("entity.Value", 2) });
         }
 
-        [Api] public interface IMultiplyCustomTypeParameters { [AsHttpGet] int Get([ToQuery] BasicEntity entity1, [ToQuery] BasicEntity entity2); }
+        [Client] public interface IMultiplyCustomTypeParameters { [AsHttpGet] int Get([ToQuery] BasicEntity entity1, [ToQuery] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeParameters_PropertiesInQuery()
@@ -134,7 +134,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        [Api] public interface IArrayOfPrimitivesParameter { [AsHttpGet] int Get([ToQuery] int[] ids); }
+        [Client] public interface IArrayOfPrimitivesParameter { [AsHttpGet] int Get([ToQuery] int[] ids); }
 
         [Test]
         public void Build_ArrayOfPrimitivesParameter_ParameterWithSameNameInQuery()
@@ -151,7 +151,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("ids", 1), new HttpParameter("ids", 2) });
         }
 
-        [Api] public interface IArrayOfCustomTypeParameter { [AsHttpGet] int Get([ToQuery] BasicEntity[] entities); }
+        [Client] public interface IArrayOfCustomTypeParameter { [AsHttpGet] int Get([ToQuery] BasicEntity[] entities); }
 
         [Test]
         public void Build_ArrayOfCustomTypeParameter_ThrowNotSupportedNClientException()
@@ -168,7 +168,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        [Api] public interface IDictionaryOfPrimitivesParameter { [AsHttpGet] int Get([ToQuery] Dictionary<int, string> dict); }
+        [Client] public interface IDictionaryOfPrimitivesParameter { [AsHttpGet] int Get([ToQuery] Dictionary<int, string> dict); }
 
         [Test]
         public void Build_DictionaryOfPrimitivesParameter_KeyValueParametersInQuery()
@@ -185,7 +185,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("dict[1]", "val1"), new HttpParameter("dict[2]", "val2") });
         }
 
-        [Api] public interface IDictionaryOfPCustomTypesParameter { [AsHttpGet] int Get([ToQuery] Dictionary<int, BasicEntity> dict); }
+        [Client] public interface IDictionaryOfPCustomTypesParameter { [AsHttpGet] int Get([ToQuery] Dictionary<int, BasicEntity> dict); }
 
         [Test]
         public void Build_DictionaryOfPCustomTypesParameter_ThrowNotSupportedNClientException()
@@ -202,7 +202,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        [Api] public interface INestedCustomTypesParameter { [AsHttpGet] int Get([ToQuery] NestedEntity entity); }
+        [Client] public interface INestedCustomTypesParameter { [AsHttpGet] int Get([ToQuery] NestedEntity entity); }
 
         [Test]
         public void Build_NestedCustomTypesParameter_PropertiesInQuery()
@@ -225,7 +225,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        [Api] public interface ICustomTypeWithArrayParameter { [AsHttpGet] int Get([ToQuery] EntityWithArray entity); }
+        [Client] public interface ICustomTypeWithArrayParameter { [AsHttpGet] int Get([ToQuery] EntityWithArray entity); }
 
         [Test]
         public void Build_CustomTypeWithArrayParameter_PropertiesInQuery()
@@ -248,7 +248,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        [Api] public interface ICustomTypeWithArrayOfCustomTypesParameter { [AsHttpGet] int Get([ToQuery] EntityWithCustomTypeArray entity); }
+        [Client] public interface ICustomTypeWithArrayOfCustomTypesParameter { [AsHttpGet] int Get([ToQuery] EntityWithCustomTypeArray entity); }
 
         [Test]
         public void Build_ComplexCustomTypeWithCustomTypeArrayQueryParam_ThrowNotSupportedNClientException()
@@ -265,7 +265,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        [Api] public interface ICustomTypeWithDictionaryParameter { [AsHttpGet] int Get([ToQuery] EntityWithDict entity); }
+        [Client] public interface ICustomTypeWithDictionaryParameter { [AsHttpGet] int Get([ToQuery] EntityWithDict entity); }
 
         [Test]
         public void Build_CustomTypeWithDictionaryParameter_PropertiesInQuery()
@@ -288,7 +288,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        [Api] public interface ICustomTypeWithDictionaryOfCustomTypesParameter { [AsHttpGet] int Get([ToQuery] EntityWithCustomTypeDict entity); }
+        [Client] public interface ICustomTypeWithDictionaryOfCustomTypesParameter { [AsHttpGet] int Get([ToQuery] EntityWithCustomTypeDict entity); }
 
         [Test]
         public void Build_CustomTypeWithDictionaryOfCustomTypesParameter_ThrowNotSupportedNClientException()

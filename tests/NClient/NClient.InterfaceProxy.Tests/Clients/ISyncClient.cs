@@ -5,7 +5,7 @@ using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/sync")]
+    [Client("api/sync")]
     public interface ISyncClientWithMetadata : ISyncClient
     {
         [AsHttpGet]

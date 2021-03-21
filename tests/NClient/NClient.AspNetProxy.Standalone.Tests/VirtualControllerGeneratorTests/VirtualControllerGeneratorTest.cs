@@ -4,9 +4,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NClient.AspNetProxy.Attributes;
 using NClient.AspNetProxy.Controllers;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Services;
+using NClient.Core.Attributes.Services.Methods;
+using NClient.Core.Attributes.Services.Parameters;
 using NClient.Core.Exceptions;
 using NUnit.Framework;
 
@@ -23,7 +23,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper);
         }
 
-        [Api] public interface IInterfaceAttributeController { }
+        [Service] public interface IInterfaceAttributeController { }
         public class InterfaceAttributeController : IInterfaceAttributeController { }
 
         [Test]
@@ -46,7 +46,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("") { Order = 0 });
         }
 
-        [Api("api/[controller]")] public interface IInterfaceAttributeWithTemplateController { }
+        [Service("api/[controller]")] public interface IInterfaceAttributeWithTemplateController { }
         public class InterfaceAttributeWithTemplateController : IInterfaceAttributeWithTemplateController { }
 
         [Test]
@@ -69,7 +69,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        public interface IMethodAttributeController { [AsHttpGet] int Get(); }
+        public interface IMethodAttributeController { [ForHttpGet] int Get(); }
         public class MethodAttributeController : IMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -95,7 +95,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("") { Order = 0 });
         }
 
-        public interface IMethodAttributeWithTemplateController { [AsHttpGet("[action]")] int Get(); }
+        public interface IMethodAttributeWithTemplateController { [ForHttpGet("[action]")] int Get(); }
         public class MethodAttributeWithTemplateController : IMethodAttributeWithTemplateController { public int Get() => 1; }
 
         [Test]
@@ -121,7 +121,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("[action]") { Order = 0 });
         }
 
-        public interface IMultipleMethodController { [AsHttpGet] int Get(); [AsHttpPost] int Post(); }
+        public interface IMultipleMethodController { [ForHttpGet] int Get(); [ForHttpPost] int Post(); }
         public class MultipleMethodController : IMultipleMethodController { public int Get() => 1; public int Post() => 1; }
 
         [Test]
@@ -194,7 +194,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             methodAttributes.Length.Should().Be(0);
         }
 
-        public interface IParameterAttributeController { int Get([ToQuery] int id); }
+        public interface IParameterAttributeController { int Get([OutOfQuery] int id); }
         public class ParameterAttributeController : IParameterAttributeController { public int Get(int id) => 1; }
 
         [Test]
@@ -224,7 +224,7 @@ namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
             methodParamAttributes[0].Should().BeEquivalentTo(new FromQueryAttribute());
         }
 
-        public interface IMultipleParameterAttributeController { int Get([ToQuery] int id, [ToBody] string name); }
+        public interface IMultipleParameterAttributeController { int Get([OutOfQuery] int id, [OutOfBody] string name); }
         public class MultipleParameterAttributeController : IMultipleParameterAttributeController { public int Get(int id, string name) => 1; }
 
         [Test]

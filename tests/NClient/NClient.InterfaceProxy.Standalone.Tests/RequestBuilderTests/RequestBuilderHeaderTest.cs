@@ -20,11 +20,11 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeMapper = new StubAttributeMapper();
+            AttributeMapper = new AttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Api] public interface IPrimitiveHeader { [AsHttpGet] int Get([ToHeader] int id); }
+        [Client] public interface IPrimitiveHeader { [AsHttpGet] int Get([ToHeader] int id); }
 
         [Test]
         public void Build_PrimitiveHeader_PrimitiveInHeader()
@@ -41,7 +41,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1") });
         }
 
-        [Api] public interface IStringHeader {[AsHttpGet] int Get([ToHeader] string str); }
+        [Client] public interface IStringHeader {[AsHttpGet] int Get([ToHeader] string str); }
 
         [Test]
         public void Build_StringHeader_StringInHeader()
@@ -58,7 +58,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("str", "value") });
         }
 
-        [Api] public interface IMultiplyPrimitiveHeaders {[AsHttpGet] int Get([ToHeader] int id, [ToHeader] string value); }
+        [Client] public interface IMultiplyPrimitiveHeaders {[AsHttpGet] int Get([ToHeader] int id, [ToHeader] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveHeaders_MultiplyHeadersWithPrimitives()
@@ -75,7 +75,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1"), new HttpHeader("value", "val"), });
         }
 
-        [Api] public interface ICustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity); }
+        [Client] public interface ICustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeHeader_ThrowNClientException()
@@ -92,7 +92,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        [Api] public interface IMultiplyCustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity1, [ToHeader] BasicEntity entity2); }
+        [Client] public interface IMultiplyCustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity1, [ToHeader] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowNClientException()

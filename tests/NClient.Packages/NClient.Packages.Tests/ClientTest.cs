@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NClient.AspNetProxy;
 using NClient.AspNetProxy.Extensions;
 using NClient.Core;
+using NClient.Core.Attributes.Clients;
 using NClient.Extensions.DependencyInjection;
 using NClient.InterfaceProxy;
-using NClient.InterfaceProxy.Attributes;
 using NClient.InterfaceProxy.Attributes.Methods;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
@@ -58,7 +58,7 @@ namespace NClient.Packages.Tests
             result.Should().Be("result");
         }
 
-        [Api("api/[controller]")]
+        [Client("api/[controller]")]
         public interface ITest : INClient
         {
             [AsHttpGet("[action]")]

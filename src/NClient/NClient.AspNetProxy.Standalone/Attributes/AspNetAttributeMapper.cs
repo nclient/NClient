@@ -14,7 +14,7 @@ namespace NClient.AspNetProxy.Attributes
         {
             return attribute switch
             {
-                RouteAttribute x => new ApiAttribute(x.Template ?? "") { Order = x.Order },
+                RouteAttribute x => new ClientAttribute(x.Template ?? "") { Order = x.Order },
                 
                 HttpGetAttribute x => new AsHttpGetAttribute(x.Template ?? "") { Order = x.Order },
                 HttpPostAttribute x => new AsHttpPostAttribute(x.Template ?? "") { Order = x.Order },

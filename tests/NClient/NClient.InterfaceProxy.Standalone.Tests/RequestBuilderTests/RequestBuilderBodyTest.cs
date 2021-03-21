@@ -20,11 +20,11 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeMapper = new StubAttributeMapper();
+            AttributeMapper = new AttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Api] public interface ICustomTypeBody { [AsHttpGet] int Get([ToBody] BasicEntity entity); }
+        [Client] public interface ICustomTypeBody { [AsHttpGet] int Get([ToBody] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeBody_JsonObjectInBody()
@@ -41,7 +41,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        [Api] public interface IMultipleBodyParameters { [AsHttpGet] int Get([ToBody] BasicEntity entity1, [ToBody] BasicEntity entity2); }
+        [Client] public interface IMultipleBodyParameters { [AsHttpGet] int Get([ToBody] BasicEntity entity1, [ToBody] BasicEntity entity2); }
 
         [Test]
         public void Build_MultipleBodyParameters_ThrowNClientException()
@@ -58,7 +58,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        [Api] public interface ICustomTypeBodyWithoutAttribute { [AsHttpGet] int Get(BasicEntity entity); }
+        [Client] public interface ICustomTypeBodyWithoutAttribute { [AsHttpGet] int Get(BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeBodyWithoutAttribute_JsonObjectInBody()
@@ -75,7 +75,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        [Api] public interface IMultipleBodyParametersWithoutAttributes {[AsHttpGet] int Get(BasicEntity entity1, BasicEntity entity2); }
+        [Client] public interface IMultipleBodyParametersWithoutAttributes {[AsHttpGet] int Get(BasicEntity entity1, BasicEntity entity2); }
 
         [Test]
         public void Build_MultipleBodyParametersWithoutAttributes_NClientException()
@@ -92,7 +92,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        [Api] public interface IPrimitiveBody {[AsHttpGet] int Get([ToBody] int id); }
+        [Client] public interface IPrimitiveBody {[AsHttpGet] int Get([ToBody] int id); }
 
         [Test]
         public void Build_PrimitiveBody_PrimitiveInBody()
@@ -109,7 +109,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 body: 1);
         }
 
-        [Api("api")] public interface IMultiplyPrimitiveBodyParameters {[AsHttpGet] int Get([ToBody] int id, [ToBody] string value); }
+        [Client("api")] public interface IMultiplyPrimitiveBodyParameters {[AsHttpGet] int Get([ToBody] int id, [ToBody] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveBodyParameters_ThrowNClientException()
