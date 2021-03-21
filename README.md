@@ -1,4 +1,5 @@
-# NClient
+# <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient
+
 ![Nuget](https://img.shields.io/nuget/v/NClient)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nclient/nclient)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/nclient/Test)

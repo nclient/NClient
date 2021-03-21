@@ -4,10 +4,12 @@
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
 		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-		<Description>The core of NClient library for creating HTTP client that allows you to call web service API methods through annotated controllers.</Description>
+		<Description>The core of NClient library for creating HTTP client that allows you to call web service API methods using annotated controllers.</Description>
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
@@ -33,6 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
