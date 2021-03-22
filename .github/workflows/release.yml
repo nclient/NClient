@@ -11,7 +11,7 @@ on:
 env:
   VersionPrefix: 0.2.0
   VersionSuffix: ''
-  VersionSuffixPatch: ''
+  VersionSuffixPatch: 1
       
 jobs:
   publish:
@@ -19,10 +19,10 @@ jobs:
     steps:
     - name: Try set alpha version suffix
       if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha${VersionSuffixPatch}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set beta version suffix
       if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta${VersionSuffixPatch}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
       run: echo "VersionSuffix=" >> $GITHUB_ENV
@@ -62,10 +62,10 @@ jobs:
     steps:
     - name: Try set alpha version suffix
       if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha${VersionSuffixPatch}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set beta version suffix
       if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta${VersionSuffixPatch}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
       run: echo "VersionSuffix=" >> $GITHUB_ENV
