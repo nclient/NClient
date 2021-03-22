@@ -77,8 +77,13 @@ namespace NClient.Core.RequestBuilders
             if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
                 name = new string(name.Skip(1).ToArray());
 
-            if (new string(EnumerableExtensions.TakeLast(name, 10).ToArray()).Equals("Controller", StringComparison.Ordinal))
-                name = name.Remove(name.Length - 10, 10);
+            const string controllerSuffix = "Controller";
+            if (name.Length > controllerSuffix.Length && name.EndsWith(controllerSuffix))
+                name = name.Remove(name.Length - controllerSuffix.Length, controllerSuffix.Length);
+
+            const string clientSuffix = "Client";
+            if (name.Length > clientSuffix.Length && name.EndsWith(clientSuffix))
+                name = name.Remove(name.Length - clientSuffix.Length, clientSuffix.Length);
 
             return name;
         }
