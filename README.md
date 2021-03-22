@@ -12,36 +12,54 @@ Creating clients for web services can be quite a challenge because, in addition 
 ## How do I use NClient?
 To generate a client, you just need to create an interface describing available endpoints and input/output data. After that, you can generate and configure the client, using the `ClientProvider`.
 ### Usage with ASP.NET Core
-If you want to generate a client for a ASP.NET web service, then you don't even have to add attributes to the service interface. Everything you need:
+If you want to generate a client for a ASP.NET web service, then you need to extract an interface for your controller and annotate it with attributes from `NClient.Core.Attributes.Services`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
 #### Step 1: Create controller
 ```C#
-[ApiController, Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
-    [HttpGet]
     public async Task<WeatherForecast> GetAsync(DateTime date) =>
         new WeatherForecast(date: date, temperatureC: -25);
 }
 ```
-#### Step 2: Extract interface for your controller and add `INClient` interface
+Note that you don't need to annotate it with ASP.NET attributes.
+#### Step 2: Extract interface for your controller and inherit `INClient` interface
 ```C#
-public interface IWeatherForecastClient : INClient
+[Service(template: "[controller]")] // equivalent to: [ApiController, Route("[controller]")]
+public interface IWeatherForecastController : INClient
 {
-    Task<WeatherForecast> GetAsync(DateTime date);
+    [ForHttpGet] // equivalent to: [HttpGet]
+    Task<WeatherForecast> GetAsync([OutOfQuery] DateTime date); // equivalent to: [FromQuery]
 }
 
-[ApiController, Route("[controller]")]
-public class WeatherForecastController : ControllerBase, IWeatherForecastClient { ... }
+public class WeatherForecastController : ControllerBase, IWeatherForecastController { ... }
 ```
-#### Step 3: Create client
+The annotation in the interface instead of the controller allows you to put the interface in a separate assembly. Therefore, the client that will use this interface will not depend on the service.
+#### Step 3 (optional): Create interface for client
 ```C#
-IWeatherForecastClient client = new AspNetClientProvider()
-    .Use<IWeatherForecastClient, WeatherForecastController>(host: new Uri("http://localhost:8080"))
+public interface IWeatherForecastClient : IWeatherForecastController, INClient
+{
+}
+
+[Service(template: "[controller]")]
+public interface IWeatherForecastController
+{
+    [ForHttpGet]
+    Task<WeatherForecast> GetAsync([OutOfQuery] DateTime date);
+}
+
+public class WeatherForecastController : ControllerBase, IWeatherForecastController { ... }
+```
+This should be done if you want your client type to not contain "Сontroller" in the name.
+#### Step 4: Create client
+```C#
+IWeatherForecastController client = new ClientProvider()
+    .Use<IWeatherForecastController>(host: new Uri("http://localhost:8080"))
     .SetDefaultHttpClientProvider()
     .WithoutResiliencePolicy()
     .Build();
 ```
-#### Step 4: Send an http request
+If you decide to follow the 3 step, use `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
+#### Step 5: Send an http request
 ```C#
 // Equivalent to the following request: 
 // curl -X GET -H "Content-type: application/json" http://localhost:8080/WeatherForecast?date=2021-03-13T00:15Z
@@ -49,16 +67,17 @@ var forecast = await client.GetAsync(DateTime.Now);
 Console.WriteLine($"Date {forecast.Date}: {forecast.TemperatureC}°C");
 ```
 ### Usage with non .Net web service
-If you do not have the source code of the ASP.NET web service or you want to send requests to the non .Net service, then you need to create an interface and additionally declare it with attributes from `NClient.InterfaceProxy.Attributes`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
-#### Step 1: Create interface for your service and add `INClient` interface
+If you do not have the source code of the ASP.NET web service or you want to send requests to the non .Net service, then you need to create an interface and annotate it with attributes from `NClient.Core.Attributes.Clients`. They are very similar to attributes from `NClient.Core.Attributes.Services`. Follow the steps below:
+#### Step 1: Create interface for your service and inherit `INClient` interface
 ```C#
-[Api(template: "api")]
+[Client(template: "api")] // equivalent to: [Service(template: "api")]
 public interface IProductServiceClient : INClient
 {
-    [AsHttpPost(template: "products")]
-    Task PostAsync([ToBody] Product product);
+    [AsHttpPost(template: "products")] // equivalent to: [ForHttpPost(template: "products")]
+    Task PostAsync([ToBody] Product product); // equivalent to: [OutOfBody]
 }
 ```
+In truth, you can use attributes from `NClient.Core.Attributes.Services`, but their names don't really apply to clients.
 #### Step 2: Create client
 ```C#
 IProductServiceClient client = new ClientProvider()
