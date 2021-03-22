@@ -104,7 +104,7 @@ You can find NClient documentation [on the website](https://nclient.github.io/).
 
 ## NuGet Packages
 | Package name                                             | Description                                            | Dependencies                                           |
-| -------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| :------------------------------------------------------- | :----------------------------------------------------- |:------------------------------------------------------ |
 | [NClient](https://www.nuget.org/packages/NClient) | **Complete set** of tools **including third-party** | Castle, ASP.NET, Json.Net, RestSharp, Polly |
 | [	NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | **Complete set** of tools **without third-party**  | Castle, ASP.NET |
 | [NClient.AspNetProxy](https://www.nuget.org/packages/NClient.AspNetProxy) | Tools for **controller-based** clients **including third-party** | Castle, ASP.NET, Json.Net, RestSharp, Polly |
