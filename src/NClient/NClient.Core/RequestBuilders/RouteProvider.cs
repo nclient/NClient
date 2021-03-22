@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;
@@ -17,16 +18,11 @@ namespace NClient.Core.RequestBuilders
 
     internal class RouteProvider : IRouteProvider
     {
-        private readonly IAttributeHelper _attributeHelper;
-
-        public RouteProvider(IAttributeHelper attributeHelper)
-        {
-            _attributeHelper = attributeHelper;
-        }
-
         public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
         {
-            var routeParams = parameters.Where(x => _attributeHelper.IsRouteParamAttribute(x.Attribute)).ToArray();
+            var routeParams = parameters
+                .Where(x => x.Attribute is ToRouteAttribute)
+                .ToArray();
             var routeParamNamesWithoutToken = routeParams
                 .Select(x => x.Name)
                 .Except(routeTemplate.Parameters.Select(x => x.Name))

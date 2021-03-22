@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Providers.HttpClient;
@@ -21,7 +21,6 @@ namespace NClient.Core.RequestBuilders
         private readonly IHttpMethodProvider _httpMethodProvider;
         private readonly IParameterProvider _parameterProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
-        private readonly IAttributeHelper _attributeHelper;
 
         public RequestBuilder(
             Uri host,
@@ -29,8 +28,7 @@ namespace NClient.Core.RequestBuilders
             IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider, 
             IParameterProvider parameterProvider,
-            IObjectToKeyValueConverter objectToKeyValueConverter,
-            IAttributeHelper attributeHelper)
+            IObjectToKeyValueConverter objectToKeyValueConverter)
         {
             _host = host;
             _routeTemplateProvider = routeTemplateProvider;
@@ -38,7 +36,6 @@ namespace NClient.Core.RequestBuilders
             _httpMethodProvider = httpMethodProvider;
             _parameterProvider = parameterProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
-            _attributeHelper = attributeHelper;
         }
 
         public HttpRequest Build(Type clientType, MethodInfo method, object[] arguments)
@@ -52,7 +49,7 @@ namespace NClient.Core.RequestBuilders
             var request = new HttpRequest(uri, httpMethod);
 
             var urlParams = methodParams
-                .Where(x => _attributeHelper.IsUriParamAttribute(x.Attribute) && x.Value != null);
+                .Where(x => x.Attribute is ToQueryAttribute && x.Value != null);
             foreach (var uriParam in urlParams)
             {
                 foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name))
@@ -62,7 +59,7 @@ namespace NClient.Core.RequestBuilders
             }
 
             var headerParams = methodParams
-                .Where(x => _attributeHelper.IsHeaderParamAttribute(x.Attribute) && x.Value != null);
+                .Where(x => x.Attribute is ToHeaderAttribute && x.Value != null);
             foreach (var headerParam in headerParams)
             {
                 if (!headerParam.Type.IsSimple())
@@ -71,12 +68,11 @@ namespace NClient.Core.RequestBuilders
             }
 
             var bodyParams = methodParams
-                .Where(x => _attributeHelper.IsBodyParamAttributeType(x.Attribute) && x.Value != null)
+                .Where(x => x.Attribute is ToBodyAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
                 throw OuterExceptionFactory.MultipleBodyParametersNotSupported(method);
             request.Body = bodyParams.SingleOrDefault()?.Value;
-
 
             return request;
         }

@@ -2,10 +2,10 @@
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core;
+using NClient.Core.Attributes;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
-using NClient.InterfaceProxy.Attributes;
 using NClient.InterfaceProxy.Validators;
 using NClient.Providers.HttpClient.Abstractions;
 using NClient.Providers.Resilience;
@@ -88,16 +88,15 @@ namespace NClient.InterfaceProxy
 
         public T Build()
         {
-            var attributeHelper = new AttributeHelper();
+            var attributeMapper = new AttributeMapper();
 
             var requestBuilder = new RequestBuilder(
                 _host,
-                new RouteTemplateProvider(attributeHelper),
-                new RouteProvider(attributeHelper), 
-                new HttpMethodProvider(attributeHelper), 
-                new ParameterProvider(attributeHelper),
-                new ObjectToKeyValueConverter(),
-                attributeHelper);
+                new RouteTemplateProvider(attributeMapper),
+                new RouteProvider(), 
+                new HttpMethodProvider(attributeMapper), 
+                new ParameterProvider(attributeMapper),
+                new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<T>(
                 _proxyGenerator, 

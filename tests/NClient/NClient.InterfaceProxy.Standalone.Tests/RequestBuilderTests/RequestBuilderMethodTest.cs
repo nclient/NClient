@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net.Http;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Interceptors;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
@@ -14,11 +15,11 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeHelper = new AttributeHelper();
+            AttributeMapper = new AttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Api] public interface IGetMethod { [AsHttpGet] int Method(); }
+        [Client] public interface IGetMethod { [AsHttpGet] int Method(); }
 
         [Test]
         public void Build_GetMethod_GetHttpMethodRequest()
@@ -34,7 +35,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Api] public interface IPostMethod { [AsHttpPost] int Method(); }
+        [Client] public interface IPostMethod { [AsHttpPost] int Method(); }
 
         [Test]
         public void Build_PostMethod_PostHttpMethodRequest()
@@ -50,7 +51,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Post);
         }
 
-        [Api] public interface IPutMethod { [AsHttpPut] int Method(); }
+        [Client] public interface IPutMethod { [AsHttpPut] int Method(); }
 
         [Test]
         public void Build_PutMethod_PutHttpMethodRequest()
@@ -66,7 +67,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Put);
         }
 
-        [Api] public interface IDeleteMethod { [AsHttpDelete] int Method(); }
+        [Client] public interface IDeleteMethod { [AsHttpDelete] int Method(); }
 
         [Test]
         public void Build_DeleteMethod_DeleteHttpMethodRequest()

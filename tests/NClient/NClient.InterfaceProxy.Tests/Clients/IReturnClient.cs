@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api")]
+    [Client("api")]
     public interface IReturnClientWithMetadata : IReturnClient
     {
         [AsHttpGet]

@@ -7,6 +7,8 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
+        public static InvalidAttributeNClientException UsedInvalidAttributeInControllerInterface(string memberName) =>
+            new InvalidAttributeNClientException($"An invalid attribute is used for '{memberName}' in controller interface.");
         public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string clientName, string methodName, string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template. {GetClientInfo(clientName, methodName)}");
 

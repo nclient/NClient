@@ -1,11 +1,11 @@
 ﻿using System.Net.Http;
 using Castle.DynamicProxy;
 using FluentAssertions;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
 using NUnit.Framework;
 using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
@@ -21,8 +21,8 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
         [SetUp]
         public void SetUp()
         {
-            var attributeHelper = new AttributeHelper();
-            HttpMethodProvider = new HttpMethodProvider(attributeHelper);
+            var attributeMapper = new AttributeMapper();
+            HttpMethodProvider = new HttpMethodProvider(attributeMapper);
 
             ProxyGenerator = new ProxyGenerator();
         }

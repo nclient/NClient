@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Reflection;
 using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.RequestBuilders
@@ -13,33 +15,38 @@ namespace NClient.Core.RequestBuilders
 
     internal class HttpMethodProvider : IHttpMethodProvider
     {
-        private readonly IAttributeHelper _attributeHelper;
+        private readonly IAttributeMapper _attributeMapper;
 
-        public HttpMethodProvider(IAttributeHelper attributeHelper)
+        public HttpMethodProvider(IAttributeMapper attributeMapper)
         {
-            _attributeHelper = attributeHelper;
+            _attributeMapper = attributeMapper;
         }
 
         public HttpMethod Get(MethodInfo method)
         {
             var methodAttributes = method
                 .GetCustomAttributes()
-                .Select(x => _attributeHelper.IsNotSupportedMethodAttribute(x)
-                    ? throw OuterExceptionFactory.MethodAttributeNotSupported(method, x.GetType().Name) : x)
-                .Where(x => _attributeHelper.MethodAttributeType.IsInstanceOfType(x))
+                .Select(x => _attributeMapper.TryMap(x))
                 .ToArray();
-            if (methodAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
-            var methodAttribute = methodAttributes.SingleOrDefault() 
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(_attributeHelper.MethodAttributeType, method);
+            if (methodAttributes.Any(x => x is ClientAttribute))
+                throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(ClientAttribute));
 
-            return methodAttribute.GetType() switch
+            var httpMethodAttributes = methodAttributes
+                .Where(x => x is AsHttpMethodAttribute)
+                .ToArray();
+            if (httpMethodAttributes.Length > 1)
+                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
+            var httpMethodAttribute = httpMethodAttributes.SingleOrDefault() 
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(AsHttpMethodAttribute), method);
+
+            return httpMethodAttribute switch
             { 
-                { } type when type == _attributeHelper.GetAttributeType => HttpMethod.Get,
-                { } type when type == _attributeHelper.PostAttributeType => HttpMethod.Post,
-                { } type when type == _attributeHelper.PutAttributeType => HttpMethod.Put,
-                { } type when type == _attributeHelper.DeleteAttributeType => HttpMethod.Delete,
-                { } => throw OuterExceptionFactory.MethodAttributeNotSupported(method, methodAttribute.GetType().Name)
+                AsHttpGetAttribute => HttpMethod.Get,
+                AsHttpPostAttribute => HttpMethod.Post,
+                AsHttpPutAttribute => HttpMethod.Put,
+                AsHttpDeleteAttribute => HttpMethod.Delete,
+                { } => throw OuterExceptionFactory.MethodAttributeNotSupported(method, httpMethodAttribute.GetType().Name),
+                _ => throw InnerExceptionFactory.NullReference(nameof(httpMethodAttribute))
             };
         }
     }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using FluentAssertions;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
-using NClient.InterfaceProxy.Attributes.Parameters;
 using NClient.Providers.HttpClient;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
@@ -19,11 +20,11 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         [OneTimeSetUp]
         public override void OneTimeSetUp()
         {
-            AttributeHelper = new AttributeHelper();
+            AttributeMapper = new AttributeMapper();
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Api] public interface IPrimitiveHeader { [AsHttpGet] int Get([ToHeader] int id); }
+        [Client] public interface IPrimitiveHeader { [AsHttpGet] int Get([ToHeader] int id); }
 
         [Test]
         public void Build_PrimitiveHeader_PrimitiveInHeader()
@@ -40,7 +41,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1") });
         }
 
-        [Api] public interface IStringHeader {[AsHttpGet] int Get([ToHeader] string str); }
+        [Client] public interface IStringHeader {[AsHttpGet] int Get([ToHeader] string str); }
 
         [Test]
         public void Build_StringHeader_StringInHeader()
@@ -57,7 +58,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("str", "value") });
         }
 
-        [Api] public interface IMultiplyPrimitiveHeaders {[AsHttpGet] int Get([ToHeader] int id, [ToHeader] string value); }
+        [Client] public interface IMultiplyPrimitiveHeaders {[AsHttpGet] int Get([ToHeader] int id, [ToHeader] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveHeaders_MultiplyHeadersWithPrimitives()
@@ -74,7 +75,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1"), new HttpHeader("value", "val"), });
         }
 
-        [Api] public interface ICustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity); }
+        [Client] public interface ICustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeHeader_ThrowNClientException()
@@ -91,7 +92,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        [Api] public interface IMultiplyCustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity1, [ToHeader] BasicEntity entity2); }
+        [Client] public interface IMultiplyCustomTypeHeader { [AsHttpGet] int Get([ToHeader] BasicEntity entity1, [ToHeader] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowNClientException()

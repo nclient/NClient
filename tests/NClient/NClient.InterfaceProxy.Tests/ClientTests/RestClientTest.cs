@@ -26,7 +26,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_GetAsync_IntInBody()
+        public async Task RestClient_GetAsync_IntInBody()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockGetMethod(id);
@@ -36,7 +36,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_PostAsync_NotThrow()
+        public async Task RestClient_PostAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _restApiMockFactory.MockPostMethod(entity);
@@ -48,7 +48,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_PutAsync_NotThrow()
+        public async Task RestClient_PutAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _restApiMockFactory.MockPutMethod(entity);
@@ -60,7 +60,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_DeleteAsync_NotThrow()
+        public async Task RestClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockDeleteMethod(id);
