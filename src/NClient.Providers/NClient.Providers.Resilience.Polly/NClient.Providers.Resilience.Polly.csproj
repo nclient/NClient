@@ -21,6 +21,7 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,7 +34,7 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>
