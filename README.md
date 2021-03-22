@@ -4,7 +4,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/nclient/nclient)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/nclient/Test)
 
-## Introduction
 NClient is an HTTP client that allows you to call web service API methods usnig annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is  simple and flexible to configure.
 
 ## Why use NClient?
