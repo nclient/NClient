@@ -4,12 +4,18 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/nclient/nclient)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/nclient/Test)
 
-NClient is an HTTP client that allows you to call web service API methods through annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is  simple and flexible to configure.
+## Introduction
+NClient is an HTTP client that allows you to call web service API methods usnig annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is  simple and flexible to configure.
 
 ## Why use NClient?
 Creating clients for web services can be quite a challenge because, in addition to data transfer, you need to implement query building, serialization, retry policy, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs. What if you could create clients with a fraction of the effort? This is exactly what NClient hopes to achieve by allowing you to create clients declaratively.
 
-## How do I use NClient?
+## How to install?
+The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget. How to choose which package you need, see below in "NuGet packages" section. If you do not know how to install NuGet package you will need links:  
+- [Install and use a package in Visual Studio](https://docs.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-in-visual-studio)  
+- [Install and manage packages with the Package Manager Console in Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell)
+
+## How to use?
 To generate a client, you just need to create an interface describing available endpoints and input/output data. After that, you can generate and configure the client, using the `ClientProvider`.
 ### Usage with ASP.NET Core
 If you want to generate a client for a ASP.NET web service, then you need to extract an interface for your controller and annotate it with attributes from `NClient.Core.Attributes.Services`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
@@ -93,13 +99,16 @@ IProductServiceClient client = new ClientProvider()
 await client.PostAsync(new Product(id: 1));
 ```
 
+#### Documentation
+You can find NClient documentation [on the website](https://nclient.github.io/).
+
 ## NuGet Packages
-| Package name                                                                                                     | Description                                              |
-| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| [NClient](https://www.nuget.org/packages/NClient)                                                                | Provides a **complete set** of tools for creating http clients including third-party solutions: [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [RestSharp](https://github.com/restsharp/RestSharp) and [Polly](https://github.com/App-vNext/Polly) |
-| [	NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone)                                         | Provides the entire set of tools for creating clients but **no third-party** solutions. You can choose your own an http client and a retry policy tool. |
-| [NClient.AspNetProxy](https://www.nuget.org/packages/NClient.AspNetProxy)                                        | Provides a set of tools for creating **controller-based** clients including third-party solutions: [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [RestSharp](https://github.com/restsharp/RestSharp) and [Polly](https://github.com/App-vNext/Polly) |
-| [NClient.AspNetProxy.Standalone](https://www.nuget.org/packages/NClient.AspNetProxy.Standalone)                  | Provides a set of tools for creating **controller-based** clients but **no third-party** solutions. You can choose your own an http client and a retry policy tool. |
-| [NClient.InterfaceProxy](https://www.nuget.org/packages/NClient.InterfaceProxy)                                  | Provides a set of tools for creating **interface-based** clients. Including third-party solutions as follows: [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [RestSharp](https://github.com/restsharp/RestSharp) and [Polly](https://github.com/App-vNext/Polly)  |
-| [NClient.InterfaceProxy.Standalone](https://www.nuget.org/packages/NClient.InterfaceProxy.Standalone)            | Provides a set of tools for creating **interface-based** clients but **no third-party** solutions. You can choose your own an http client and a retry policy tool. |
-| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection)  | Provides an **extensions** for registration interface-based clients in ASP.NET app. |
+| Package name                                             | Description                                            | Dependencies                                           |
+| -------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| [NClient](https://www.nuget.org/packages/NClient) | **Complete set** of tools **including third-party** | Castle, ASP.NET, Json.Net, RestSharp, Polly |
+| [	NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | **Complete set** of tools **without third-party**  | Castle, ASP.NET |
+| [NClient.AspNetProxy](https://www.nuget.org/packages/NClient.AspNetProxy) | Tools for **controller-based** clients **including third-party** | Castle, ASP.NET, Json.Net, RestSharp, Polly |
+| [NClient.AspNetProxy.Standalone](https://www.nuget.org/packages/NClient.AspNetProxy.Standalone) | Tools for **controller-based** clients **without third-party** | Castle, ASP.NET |
+| [NClient.InterfaceProxy](https://www.nuget.org/packages/NClient.InterfaceProxy) | Tools for **interface-based** clients **including third-party** | Castle, Json.Net, RestSharp, Polly |
+| [NClient.InterfaceProxy.Standalone](https://www.nuget.org/packages/NClient.InterfaceProxy.Standalone) | Tools for **interface-based** clients **without third-party** | Castle |
+| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) | **Extensions** for registration interface-based clients in DI container | Castle, DependencyInjection, Json.Net, RestSharp, Polly |
