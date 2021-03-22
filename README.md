@@ -99,7 +99,7 @@ IProductServiceClient client = new ClientProvider()
 await client.PostAsync(new Product(id: 1));
 ```
 
-#### Documentation
+## Documentation
 You can find NClient documentation [on the website](https://nclient.github.io/).
 
 ## NuGet Packages
