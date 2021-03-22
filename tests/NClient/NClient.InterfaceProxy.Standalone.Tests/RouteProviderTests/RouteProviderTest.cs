@@ -50,21 +50,91 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_ControllerTokenForInterface_InterfaceNameWithoutPrefix()
+        public void Build_ControllerTokenForClientInterface_ClientNameWithoutPrefixAndSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("Client");
+            route.Should().Be("My");
         }
 
         [Test]
-        public void Build_ControllerTokenForController_ControllerNameWithoutSuffix()
+        public void Build_ControllerTokenForClientInterfaceLowerCase_ClientNameWithoutPrefix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyclient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Myclient");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerInterface_ControllerNameWithoutPrefixAndSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyController",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("My");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerInterfaceLowerCase_ControllerNameWithoutPrefix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMycontroller",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Mycontroller");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForClientClass_ClientNameWithoutSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "MyClient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("My");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForClientClassLowerCase_ClientName()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "Myclient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Myclient");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerClass_ControllerNameWithoutSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
@@ -77,18 +147,18 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
             route.Should().Be("My");
         }
 
-        [Test, Ignore("See todo in RouteProvider")]
-        public void Build_ControllerTokenForControllerWithInterfaceLikeName_ControllerNameWithoutSuffix()
+        [Test]
+        public void Build_ControllerTokenForControllerClassLowerCase_ControllerNameWithoutSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IMyController",
+                clientName: "Mycontroller",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("IMy");
+            route.Should().Be("Mycontroller");
         }
 
         [Test]
