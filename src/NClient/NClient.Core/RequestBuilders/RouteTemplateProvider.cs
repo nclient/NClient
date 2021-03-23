@@ -6,6 +6,7 @@ using NClient.Core.Attributes;
 using NClient.Core.Attributes.Clients;
 using NClient.Core.Attributes.Clients.Methods;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
 
 namespace NClient.Core.RequestBuilders
 {
@@ -25,8 +26,9 @@ namespace NClient.Core.RequestBuilders
 
         public RouteTemplate Get(Type clientType, MethodInfo method)
         {
-            var apiAttributes = clientType
-                .GetCustomAttributes()
+            var apiAttributes = (clientType.IsInterface 
+                ? clientType.GetInterfaceCustomAttributes(inherit: true) 
+                : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
                 .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is ClientAttribute)
                 .ToArray();
@@ -37,7 +39,8 @@ namespace NClient.Core.RequestBuilders
 
             //TODO: Duplication here and in HttpMethodProvider
             var methodAttributes = method
-                .GetCustomAttributes()
+                .GetCustomAttributes(inherit: true)
+                .Cast<Attribute>()
                 .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is AsHttpMethodAttribute)
                 .ToArray();
