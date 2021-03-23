@@ -9,9 +9,9 @@ on:
       - release
 
 env:
-  VersionPrefix: 0.2.0
+  VersionPrefix: ${{secrets.VERSION_PREFIX}}
   VersionSuffix: ''
-  VersionSuffixPatch: 1
+  VersionSuffixPatch: ${{secrets.VERSION_SUFFIX_PATH}}
       
 jobs:
   publish:
