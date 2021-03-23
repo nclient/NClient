@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Routing.Template;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;
@@ -20,7 +20,7 @@ namespace NClient.Core.RequestBuilders
         public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
         {
             var routeParams = parameters
-                .Where(x => x.Attribute is ToRouteAttribute)
+                .Where(x => x.Attribute is RouteParamAttribute)
                 .ToArray();
             var routeParamNamesWithoutToken = routeParams
                 .Select(x => x.Name)

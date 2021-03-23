@@ -4,8 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Methods;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 
@@ -31,26 +30,25 @@ namespace NClient.Core.RequestBuilders
                 ? clientType.GetInterfaceCustomAttributes(inherit: true) 
                 : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is ClientAttribute)
+                .Where(x => x is PathAttribute)
                 .ToArray();
             if (apiAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(ClientAttribute));
-            var apiAttribute = apiAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.ClientAttributeNotFound(typeof(ClientAttribute), clientType);
+                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(PathAttribute));
+            var apiAttribute = apiAttributes.SingleOrDefault();
 
             //TODO: Duplication here and in HttpMethodProvider
             var methodAttributes = method
                 .GetCustomAttributes(inherit: true)
                 .Cast<Attribute>()
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is AsHttpMethodAttribute)
+                .Where(x => x is MethodAttribute)
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(AsHttpMethodAttribute), method);
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(MethodAttribute), method);
 
-            var apiTemplate = apiAttribute.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
+            var apiTemplate = apiAttribute?.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
             var methodTemplate = methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "";
             var routeTemplateStr = Path.IsPathRooted(methodTemplate) 
                 ? methodTemplate

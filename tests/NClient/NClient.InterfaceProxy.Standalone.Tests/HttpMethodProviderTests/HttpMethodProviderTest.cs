@@ -2,12 +2,11 @@
 using Castle.DynamicProxy;
 using FluentAssertions;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Methods;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
-using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
 namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
 {
@@ -33,7 +32,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        public interface IGetMethod { [AsHttpGet] int Method(); }
+        public interface IGetMethod { [GetMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithGetAttribute_GetHttpMethodType()
@@ -47,7 +46,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Get);
         }
 
-        public interface IPostMethod { [AsHttpPost] int Method(); }
+        public interface IPostMethod { [PostMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithPostAttribute_PostHttpMethodType()
@@ -61,7 +60,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Post);
         }
 
-        public interface IPutMethod { [AsHttpPut] int Method(); }
+        public interface IPutMethod { [PutMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithPutAttribute_PutHttpMethodType()
@@ -75,7 +74,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Put);
         }
 
-        public interface IDeleteMethod { [AsHttpDelete] int Method(); }
+        public interface IDeleteMethod { [DeleteMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithDeleteAttribute_DeleteHttpMethodType()
@@ -89,7 +88,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Delete);
         }
 
-        public interface IMultipleAttributeMethod {[AsHttpDelete, AsHttpGet] int Method(); }
+        public interface IMultipleAttributeMethod {[DeleteMethod, GetMethod] int Method(); }
 
         [Test]
         public void Build_MultipleAttributeMethod_ThrowNotSupportedNClientException()
@@ -134,7 +133,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public class NotSupportedAttribute : AsHttpMethodAttribute
+        public class NotSupportedAttribute : MethodAttribute
         {
             public NotSupportedAttribute(string? template = null) : base(template)
             {

@@ -2,10 +2,8 @@
 using System.Net.Http;
 using FluentAssertions;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
-using NClient.Core.Attributes.Clients.Parameters;
-using NClient.Core.Attributes.Services;
+using NClient.Core.Attributes.Methods;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Providers.HttpClient;
@@ -26,7 +24,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
         }
 
         public interface IInheritanceClient : IInheritanceController { }
-        [Service("[controller]")] public interface IInheritanceController { [AsHttpGet] int Get([ToBody] BasicEntity entity); }
+        [Path("[controller]")] public interface IInheritanceController { [GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientInterfaceInheritControllerInterface_UsedControllerAttributes()
@@ -45,7 +43,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
 
         public interface IDeepInheritanceClient : IDeepInheritanceClientBase { }
         public interface IDeepInheritanceClientBase : IDeepInheritanceController { }
-        [Service("[controller]")] public interface IDeepInheritanceController {[AsHttpGet] int Get([ToBody] BasicEntity entity); }
+        [Path("[controller]")] public interface IDeepInheritanceController {[GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_DeepInheritanceControllerInterface_UsedControllerAttributes()
@@ -62,8 +60,8 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        [Client("OverrideClient")] public interface IOverrideClient : IOverrideController { }
-        [Service("[controller]")] public interface IOverrideController {[AsHttpGet] int Get([ToBody] BasicEntity entity); }
+        [Path("OverrideClient")] public interface IOverrideClient : IOverrideController { }
+        [Path("[controller]")] public interface IOverrideController {[GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientOverrideControllerAttribute_ThrowNotSupportedNClientException()
@@ -80,8 +78,8 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public interface IOverrideMethodClient : IOverrideMethodController { [AsHttpGet] new int Get([ToBody] BasicEntity entity); }
-        [Service("[controller]")] public interface IOverrideMethodController { [AsHttpPost] int Get([ToBody] BasicEntity entity); }
+        public interface IOverrideMethodClient : IOverrideMethodController { [GetMethod] new int Get([BodyParam] BasicEntity entity); }
+        [Path("[controller]")] public interface IOverrideMethodController { [PostMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientOverrideControllerMethodAttribute_UsedOverridenMethod()
@@ -98,8 +96,8 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        public interface IOverrideParamClient : IOverrideParamController { [AsHttpGet] new int Get([ToBody] BasicEntity entity); }
-        [Service("[controller]")] public interface IOverrideParamController { [AsHttpGet] int Get([ToQuery] BasicEntity entity); }
+        public interface IOverrideParamClient : IOverrideParamController { [GetMethod] new int Get([BodyParam] BasicEntity entity); }
+        [Path("[controller]")] public interface IOverrideParamController { [GetMethod] int Get([QueryParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientOverrideControllerParamAttribute_UsedOverridenParam()

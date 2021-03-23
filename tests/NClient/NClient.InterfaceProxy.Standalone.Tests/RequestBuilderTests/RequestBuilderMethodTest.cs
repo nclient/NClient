@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Methods;
 using NClient.Core.Interceptors;
 using NClient.Testing.Common;
 using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        [Client] public interface IGetMethod { [AsHttpGet] int Method(); }
+        public interface IGetMethod { [GetMethod] int Method(); }
 
         [Test]
         public void Build_GetMethod_GetHttpMethodRequest()
@@ -35,7 +34,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Client] public interface IPostMethod { [AsHttpPost] int Method(); }
+        public interface IPostMethod { [PostMethod] int Method(); }
 
         [Test]
         public void Build_PostMethod_PostHttpMethodRequest()
@@ -51,7 +50,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Post);
         }
 
-        [Client] public interface IPutMethod { [AsHttpPut] int Method(); }
+        public interface IPutMethod { [PutMethod] int Method(); }
 
         [Test]
         public void Build_PutMethod_PutHttpMethodRequest()
@@ -67,7 +66,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Put);
         }
 
-        [Client] public interface IDeleteMethod { [AsHttpDelete] int Method(); }
+        public interface IDeleteMethod { [DeleteMethod] int Method(); }
 
         [Test]
         public void Build_DeleteMethod_DeleteHttpMethodRequest()

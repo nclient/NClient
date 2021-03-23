@@ -2,8 +2,7 @@
 using System.Net.Http;
 using System.Reflection;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Methods;
 using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.RequestBuilders
@@ -28,23 +27,23 @@ namespace NClient.Core.RequestBuilders
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
                 .ToArray();
-            if (methodAttributes.Any(x => x is ClientAttribute))
-                throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(ClientAttribute));
+            if (methodAttributes.Any(x => x is PathAttribute))
+                throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(PathAttribute));
 
             var httpMethodAttributes = methodAttributes
-                .Where(x => x is AsHttpMethodAttribute)
+                .Where(x => x is MethodAttribute)
                 .ToArray();
             if (httpMethodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
             var httpMethodAttribute = httpMethodAttributes.SingleOrDefault() 
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(AsHttpMethodAttribute), method);
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(MethodAttribute), method);
 
             return httpMethodAttribute switch
             { 
-                AsHttpGetAttribute => HttpMethod.Get,
-                AsHttpPostAttribute => HttpMethod.Post,
-                AsHttpPutAttribute => HttpMethod.Put,
-                AsHttpDeleteAttribute => HttpMethod.Delete,
+                GetMethodAttribute => HttpMethod.Get,
+                PostMethodAttribute => HttpMethod.Post,
+                PutMethodAttribute => HttpMethod.Put,
+                DeleteMethodAttribute => HttpMethod.Delete,
                 { } => throw OuterExceptionFactory.MethodAttributeNotSupported(method, httpMethodAttribute.GetType().Name),
                 _ => throw InnerExceptionFactory.NullReference(nameof(httpMethodAttribute))
             };
