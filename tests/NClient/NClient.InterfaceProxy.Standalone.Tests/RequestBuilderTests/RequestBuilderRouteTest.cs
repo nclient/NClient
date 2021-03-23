@@ -104,6 +104,70 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
+        [Client("/api")] public interface IClientWithRootedRoute { [AsHttpGet("action")] int Method(); }
+
+        [Test]
+        public void Build_ClientWithRootedRoute_ExtraSlashRemoved()
+        {
+            ProxyGenerator
+                .CreateInterfaceProxyWithoutTarget<IClientWithRootedRoute>(KeepDataInterceptor)
+                .Method();
+
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/action"),
+                HttpMethod.Get);
+        }
+
+        [Client("api")] public interface IOverrideClientRoute { [AsHttpGet("/action")] int Method(); }
+
+        [Test]
+        public void Build_OverrideClientRoute_IgnoreClientRoute()
+        {
+            ProxyGenerator
+                .CreateInterfaceProxyWithoutTarget<IOverrideClientRoute>(KeepDataInterceptor)
+                .Method();
+
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/action"),
+                HttpMethod.Get);
+        }
+
+        [Client("api/")] public interface IClientRouteEndsWithSlash { [AsHttpGet("action")] int Method(); }
+
+        [Test]
+        public void Build_ClientRouteEndsWithSlash_ExtraSlashRemoved()
+        {
+            ProxyGenerator
+                .CreateInterfaceProxyWithoutTarget<IClientRouteEndsWithSlash>(KeepDataInterceptor)
+                .Method();
+
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/action"),
+                HttpMethod.Get);
+        }
+
+        [Client("api")] public interface IMethodRouteEndsWithSlash { [AsHttpGet("action/")] int Method(); }
+
+        [Test]
+        public void Build_MethodRouteEndsWithSlash_ExtraSlashRemoved()
+        {
+            ProxyGenerator
+                .CreateInterfaceProxyWithoutTarget<IMethodRouteEndsWithSlash>(KeepDataInterceptor)
+                .Method();
+
+            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/action"),
+                HttpMethod.Get);
+        }
+
         [Client("api")] public interface IStaticRouteWithActionToken { [AsHttpGet("action/[action]")] int Method(); }
 
         [Test]
