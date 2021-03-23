@@ -1,24 +1,24 @@
 ﻿using System.Threading.Tasks;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Client("api/basic")]
+    [Path("api/basic")]
     public interface IBasicClientWithMetadata : IBasicClient
     {
-        [AsHttpGet]
+        [GetMethod]
         new Task<int> GetAsync(int id);
 
-        [AsHttpPost]
+        [PostMethod]
         new Task PostAsync(BasicEntity entity);
 
-        [AsHttpPut]
+        [PutMethod]
         new Task PutAsync(BasicEntity entity);
 
-        [AsHttpDelete]
+        [DeleteMethod]
         new Task DeleteAsync(int id);
     }
 }

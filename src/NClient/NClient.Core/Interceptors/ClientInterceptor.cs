@@ -27,7 +27,7 @@ namespace NClient.Core.Interceptors
             IProxyGenerator proxyGenerator,
             IHttpClientProvider httpClientProvider, 
             IRequestBuilder requestBuilder,
-            IResiliencePolicyProvider defaultResiliencePolicyProvider, 
+            IResiliencePolicyProvider defaultResiliencePolicyProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
@@ -55,10 +55,10 @@ namespace NClient.Core.Interceptors
         {
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", Guid.NewGuid());
 
-            var clientType = _controllerType ?? invocation.Method.DeclaringType;
+            var clientType = _controllerType ?? typeof(T);
             var clientMethod = _controllerType is null
                 ? invocation.Method
-                : TryGetMethodImpl(_controllerType, invocation.Method.DeclaringType!, invocation.Method);
+                : TryGetMethodImpl(_controllerType, interfaceType: typeof(T), invocation.Method);
             var clientMethodArguments = invocation.Arguments;
             var resiliencePolicyProvider = _defaultResiliencePolicyProvider;
 
@@ -74,10 +74,10 @@ namespace NClient.Core.Interceptors
                 ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
                 var innerInvocation = keepDataInterceptor.Invocation!;
 
-                clientType = _controllerType ?? innerInvocation.Method.DeclaringType;
+                clientType = _controllerType ?? typeof(T);
                 clientMethod = _controllerType is null
                     ? innerInvocation.Method
-                    : TryGetMethodImpl(_controllerType, innerInvocation.Method.DeclaringType!, innerInvocation.Method);
+                    : TryGetMethodImpl(_controllerType, interfaceType: typeof(T), innerInvocation.Method);
                 clientMethodArguments = innerInvocation.Arguments;
                 resiliencePolicyProvider = customResiliencePolicyProvider ?? _defaultResiliencePolicyProvider;
             }

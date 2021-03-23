@@ -1,24 +1,24 @@
 ﻿using System.Threading.Tasks;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Client("api")]
+    [Path("api")]
     public interface IReturnClientWithMetadata : IReturnClient
     {
-        [AsHttpGet]
+        [GetMethod]
         new Task<BasicEntity> GetAsync(int id);
 
-        [AsHttpGet]
+        [GetMethod]
         new BasicEntity Get(int id);
 
-        [AsHttpPost]
+        [PostMethod]
         new Task PostAsync(BasicEntity entity);
 
-        [AsHttpPost]
+        [PostMethod]
         new void Post(BasicEntity entity);
     }
 }

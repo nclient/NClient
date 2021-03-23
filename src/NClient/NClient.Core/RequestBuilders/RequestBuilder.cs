@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Providers.HttpClient;
@@ -49,7 +49,7 @@ namespace NClient.Core.RequestBuilders
             var request = new HttpRequest(uri, httpMethod);
 
             var urlParams = methodParams
-                .Where(x => x.Attribute is ToQueryAttribute && x.Value != null);
+                .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);
             foreach (var uriParam in urlParams)
             {
                 foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name))
@@ -59,7 +59,7 @@ namespace NClient.Core.RequestBuilders
             }
 
             var headerParams = methodParams
-                .Where(x => x.Attribute is ToHeaderAttribute && x.Value != null);
+                .Where(x => x.Attribute is HeaderParamAttribute && x.Value != null);
             foreach (var headerParam in headerParams)
             {
                 if (!headerParam.Type.IsSimple())
@@ -68,7 +68,7 @@ namespace NClient.Core.RequestBuilders
             }
 
             var bodyParams = methodParams
-                .Where(x => x.Attribute is ToBodyAttribute && x.Value != null)
+                .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
                 throw OuterExceptionFactory.MultipleBodyParametersNotSupported(method);

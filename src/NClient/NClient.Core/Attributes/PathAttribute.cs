@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace NClient.Core.Attributes.Clients
+namespace NClient.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-    public class ClientAttribute : Attribute
+    public class PathAttribute : Attribute
     {
         public int Order { get; set; }
-        public string? Template { get; }
+        public string Template { get; }
 
-        public ClientAttribute(string? template = null)
+        public PathAttribute(string template)
         {
             Template = template;
         }

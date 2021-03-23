@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Castle.DynamicProxy;
 using FluentAssertions;
@@ -39,7 +40,7 @@ namespace NClient.Testing.Common
 
         internal virtual HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.Method.DeclaringType!, invocation.Method, invocation.Arguments);
+            return RequestBuilder.Build(invocation.Proxy.GetType().GetInterfaces().First(), invocation.Method, invocation.Arguments);
         }
 
         protected static void AssertHttpRequest(

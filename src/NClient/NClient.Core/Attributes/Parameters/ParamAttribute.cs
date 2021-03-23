@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace NClient.Core.Attributes.Clients.Parameters
+namespace NClient.Core.Attributes.Parameters
 {
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public abstract class ToParameterAttribute : Attribute
+    public abstract class ParamAttribute : Attribute
     {
     }
 }
