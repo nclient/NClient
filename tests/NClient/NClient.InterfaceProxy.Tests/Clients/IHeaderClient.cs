@@ -1,18 +1,18 @@
 ﻿using System.Threading.Tasks;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes;
+using NClient.Core.Attributes.Methods;
+using NClient.Core.Attributes.Parameters;
 using NClient.Testing.Common.Clients;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Client("api/header")]
+    [Path("api/header")]
     public interface IHeaderClientWithMetadata : IHeaderClient
     {
-        [AsHttpGet]
-        new Task<int> GetAsync([ToHeader] int id);
+        [GetMethod]
+        new Task<int> GetAsync([HeaderParam] int id);
 
-        [AsHttpDelete]
-        new Task DeleteAsync([ToHeader] int id);
+        [DeleteMethod]
+        new Task DeleteAsync([HeaderParam] int id);
     }
 }

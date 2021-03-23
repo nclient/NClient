@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing.Template;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
@@ -228,7 +228,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new []
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("1");
@@ -245,7 +245,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("api/1");
@@ -262,7 +262,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("1");
@@ -279,7 +279,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), int.MaxValue, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                 });
 
             route.Should().Be(int.MaxValue.ToString());
@@ -296,7 +296,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("api/Client/Method/1");
@@ -344,7 +344,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                        new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();
@@ -362,7 +362,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), int.MaxValue, new ToRouteAttribute())
+                        new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();
@@ -380,7 +380,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new ToRouteAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();

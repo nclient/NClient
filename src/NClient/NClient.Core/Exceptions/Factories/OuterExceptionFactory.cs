@@ -27,9 +27,6 @@ namespace NClient.Core.Exceptions.Factories
         public static InvalidRouteNClientException TemplatePartWithoutTokenOrText(string clientName, string methodName) =>
             new($"Template part does not contain a token or text. {GetClientInfo(clientName, methodName)}");
 
-        public static AttributeNotFoundNClientException ClientAttributeNotFound(Type attributeType, Type client) =>
-            new(attributeType, client);
-
         public static NotSupportedNClientException MultipleAttributeForClientNotSupported(string clientName, string attributeName) =>
             new($"Multiple attributes '{attributeName}' for client are not supported. Client name: {clientName}.");
 
