@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Helpers
 {
@@ -15,6 +18,25 @@ namespace NClient.Core.Helpers
                    || typeInfo.IsEnum
                    || type == typeof(string)
                    || type == typeof(decimal);
+        }
+
+        public static Attribute[] GetInterfaceCustomAttributes(this Type type, bool inherit = false)
+        {
+            if (!type.IsInterface)
+                throw InnerExceptionFactory.ArgumentException(nameof(type), "Type is not interface.");
+            if (inherit == false)
+                return type.GetCustomAttributes().ToArray();
+
+            var attributes = new HashSet<Attribute>(type.GetCustomAttributes());
+            foreach (var interfaceType in type.GetInterfaces())
+            {
+                foreach (var attribute in GetInterfaceCustomAttributes(interfaceType, inherit: true))
+                {
+                    attributes.Add(attribute);
+                }
+            }
+
+            return attributes.ToArray();
         }
     }
 }

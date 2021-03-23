@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Routing.Template;
-using NClient.Core.Attributes;
 using NClient.Core.Attributes.Clients.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
