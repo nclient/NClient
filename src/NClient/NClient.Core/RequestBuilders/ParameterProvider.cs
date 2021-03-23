@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;
@@ -32,7 +32,7 @@ namespace NClient.Core.RequestBuilders
                 {
                     var paramAttributes = paramInfo.GetCustomAttributes()
                         .Select(attribute => _attributeMapper.TryMap(attribute))
-                        .Where(x => x is ToParameterAttribute)
+                        .Where(x => x is ParamAttribute)
                         .ToArray();
                     if (paramAttributes.Length > 1)
                         throw OuterExceptionFactory.MultipleParameterAttributeNotSupported(method, paramInfo.Name);
@@ -50,11 +50,11 @@ namespace NClient.Core.RequestBuilders
         private static Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)
         {
             if (routeTemplate.Parameters.Any(x => x.Name == paramInfo.Name))
-                return new ToRouteAttribute();
+                return new RouteParamAttribute();
 
             return paramInfo.ParameterType.IsSimple()
-                ? new ToQueryAttribute()
-                : new ToBodyAttribute();
+                ? new QueryParamAttribute()
+                : new BodyParamAttribute();
         }
     }
 }

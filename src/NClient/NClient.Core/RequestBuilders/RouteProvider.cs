@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Routing.Template;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;
@@ -21,7 +20,7 @@ namespace NClient.Core.RequestBuilders
         public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
         {
             var routeParams = parameters
-                .Where(x => x.Attribute is ToRouteAttribute)
+                .Where(x => x.Attribute is RouteParamAttribute)
                 .ToArray();
             var routeParamNamesWithoutToken = routeParams
                 .Select(x => x.Name)
@@ -77,8 +76,13 @@ namespace NClient.Core.RequestBuilders
             if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
                 name = new string(name.Skip(1).ToArray());
 
-            if (new string(EnumerableExtensions.TakeLast(name, 10).ToArray()).Equals("Controller", StringComparison.Ordinal))
-                name = name.Remove(name.Length - 10, 10);
+            const string controllerSuffix = "Controller";
+            if (name.Length > controllerSuffix.Length && name.EndsWith(controllerSuffix))
+                name = name.Remove(name.Length - controllerSuffix.Length, controllerSuffix.Length);
+
+            const string clientSuffix = "Client";
+            if (name.Length > clientSuffix.Length && name.EndsWith(clientSuffix))
+                name = name.Remove(name.Length - clientSuffix.Length, clientSuffix.Length);
 
             return name;
         }

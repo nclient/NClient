@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace NClient.Core.Attributes.Services.Methods
+namespace NClient.Core.Attributes.Methods
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class ForHttpMethodAttribute : Attribute
+    public abstract class MethodAttribute : Attribute
     {
         public int Order { get; set; }
         public string? Template { get; }
 
-        protected ForHttpMethodAttribute(string? template)
+        protected MethodAttribute(string? template)
         {
             Template = template;
         }

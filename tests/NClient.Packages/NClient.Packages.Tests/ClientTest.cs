@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NClient.AspNetProxy;
 using NClient.AspNetProxy.Extensions;
 using NClient.Core;
-using NClient.Core.Attributes.Clients;
+using NClient.Core.Attributes;
 using NClient.Extensions.DependencyInjection;
 using NClient.InterfaceProxy;
-using NClient.InterfaceProxy.Attributes.Methods;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
@@ -58,10 +56,10 @@ namespace NClient.Packages.Tests
             result.Should().Be("result");
         }
 
-        [Client("api/[controller]")]
+        [Path("api/[controller]")]
         public interface ITest : INClient
         {
-            [AsHttpGet("[action]")]
+            [Get("[action]")]
             public Task<string> GetAsync(int id) => Task.FromResult("result");
         }
 
@@ -80,7 +78,6 @@ namespace NClient.Packages.Tests
                 .GetRequiredService<ITest>();
             using var server = RunMockServer(host, id);
 
-            var assemblyVersion = Assembly.GetAssembly(typeof(ClientProvider))?.GetName().Version?.ToString();
             var result = await client.GetAsync(id);
 
             PackagesVersionProvider.GetCurrent<ClientProvider>().Should().Be(PackagesVersionProvider.GetNew());

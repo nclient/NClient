@@ -1,11 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients;
-using NClient.Core.Attributes.Clients.Methods;
+using NClient.Core.Attributes.Methods;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
 
 namespace NClient.Core.RequestBuilders
 {
@@ -25,30 +26,33 @@ namespace NClient.Core.RequestBuilders
 
         public RouteTemplate Get(Type clientType, MethodInfo method)
         {
-            var apiAttributes = clientType
-                .GetCustomAttributes()
+            var apiAttributes = (clientType.IsInterface 
+                ? clientType.GetInterfaceCustomAttributes(inherit: true) 
+                : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is ClientAttribute)
+                .Where(x => x is PathAttribute)
                 .ToArray();
             if (apiAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(ClientAttribute));
-            var apiAttribute = apiAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.ClientAttributeNotFound(typeof(ClientAttribute), clientType);
+                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(clientType.Name, nameof(PathAttribute));
+            var apiAttribute = apiAttributes.SingleOrDefault();
 
             //TODO: Duplication here and in HttpMethodProvider
             var methodAttributes = method
-                .GetCustomAttributes()
+                .GetCustomAttributes(inherit: true)
+                .Cast<Attribute>()
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is AsHttpMethodAttribute)
+                .Where(x => x is MethodAttribute)
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(AsHttpMethodAttribute), method);
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(MethodAttribute), method);
 
-            var apiTemplate = apiAttribute.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
+            var apiTemplate = apiAttribute?.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
             var methodTemplate = methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "";
-            var routeTemplateStr = UriCombine(apiTemplate, methodTemplate);
+            var routeTemplateStr = Path.IsPathRooted(methodTemplate) 
+                ? methodTemplate
+                : UriCombine(apiTemplate, methodTemplate);
 
             return Parse(routeTemplateStr);
         }
@@ -65,11 +69,11 @@ namespace NClient.Core.RequestBuilders
             }
         }
 
-        public static string UriCombine(string uri1, string uri2)
+        public static string UriCombine(string left, string right)
         {
-            uri1 = uri1.TrimEnd('/');
-            uri2 = uri2.TrimStart('/');
-            return $"{uri1}/{uri2}";
+            left = left.TrimEnd('/');
+            right = right.TrimStart('/');
+            return $"{left}/{right}";
         }
     }
 }

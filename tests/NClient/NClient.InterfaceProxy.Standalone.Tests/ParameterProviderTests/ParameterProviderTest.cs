@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing.Template;
 using NClient.Core.Attributes;
-using NClient.Core.Attributes.Clients.Parameters;
+using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
@@ -51,10 +51,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new RouteParamAttribute()));
         }
 
-        public interface IPrimitiveRouteParam { void Method([ToRoute] int id); }
+        public interface IPrimitiveRouteParam { void Method([RouteParam] int id); }
 
         [Test]
         public void Get_PrimitiveRouteParam_RouteParam()
@@ -68,7 +68,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method, 
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new RouteParamAttribute()));
         }
 
         public interface ICustomTypeRouteParamWithoutAttribute { void Method(BasicEntity entity); }
@@ -87,10 +87,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new RouteParamAttribute()));
         }
 
-        public interface ICustomTypeRouteParam { void Method([ToRoute] BasicEntity entity); }
+        public interface ICustomTypeRouteParam { void Method([RouteParam] BasicEntity entity); }
 
         [Test]
         public void Get_CustomTypeRouteParam_RouteParam()
@@ -105,7 +105,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToRouteAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new RouteParamAttribute()));
         }
 
         public interface IPrimitiveWithoutAttribute { void Method(int id); }
@@ -122,10 +122,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new QueryParamAttribute()));
         }
 
-        public interface IPrimitiveQueryParam { void Method([ToQuery] int id); }
+        public interface IPrimitiveQueryParam { void Method([QueryParam] int id); }
 
         [Test]
         public void Get_PrimitiveQueryParam_QueryParam()
@@ -139,10 +139,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new QueryParamAttribute()));
         }
 
-        public interface ICustomTypeQueryParam { void Method([ToQuery] BasicEntity entity); }
+        public interface ICustomTypeQueryParam { void Method([QueryParam] BasicEntity entity); }
 
         [Test]
         public void Get_CustomTypeQueryParam_QueryParam()
@@ -157,7 +157,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToQueryAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new QueryParamAttribute()));
         }
 
         public interface ICustomTypeWithoutAttribute { void Method(BasicEntity entity); }
@@ -175,10 +175,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new BodyParamAttribute()));
         }
 
-        public interface ICustomTypeBodyParam { void Method([ToBody] BasicEntity entity); }
+        public interface ICustomTypeBodyParam { void Method([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Get_CustomTypeBodyParam_BodyParam()
@@ -193,10 +193,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new BodyParamAttribute()));
         }
 
-        public interface IPrimitiveBodyParam { void Method([ToBody] int id); }
+        public interface IPrimitiveBodyParam { void Method([BodyParam] int id); }
 
         [Test]
         public void Get_PrimitiveBodyParam_BodyParam()
@@ -210,10 +210,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToBodyAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new BodyParamAttribute()));
         }
 
-        public interface IPrimitiveHeaderParam { void Method([ToHeader] int id); }
+        public interface IPrimitiveHeaderParam { void Method([HeaderParam] int id); }
 
         [Test]
         public void Get_PrimitiveHeaderParam_HeaderParam()
@@ -227,10 +227,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new ToHeaderAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new HeaderParamAttribute()));
         }
 
-        public interface ICustomTypeHeaderParam { void Method([ToHeader] BasicEntity entity); }
+        public interface ICustomTypeHeaderParam { void Method([HeaderParam] BasicEntity entity); }
 
         [Test]
         public void Get_CustomTypeHeaderParam_HeaderParam()
@@ -245,10 +245,10 @@ namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
                 KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
-            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new ToHeaderAttribute()));
+            parameters.Should().BeEquivalentTo(new Parameter("entity", typeof(BasicEntity), entity, new HeaderParamAttribute()));
         }
 
-        public interface IMultipleAttributeParam { void Method([ToQuery, ToBody] int id); }
+        public interface IMultipleAttributeParam { void Method([QueryParam, BodyParam] int id); }
 
         [Test]
         public void Get_MultipleAttributeParam_ThrowNotSupportedNClientException()

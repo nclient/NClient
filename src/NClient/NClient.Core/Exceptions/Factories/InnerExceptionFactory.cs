@@ -4,6 +4,9 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class InnerExceptionFactory
     {
+        public static ArgumentException ArgumentException(string message, string argumentName) =>
+            new(message, argumentName);
+
         public static ArgumentNullException NullArgument(string argumentName) =>
             new(argumentName);
 
