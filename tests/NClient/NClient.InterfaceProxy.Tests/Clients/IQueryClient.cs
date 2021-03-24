@@ -1,25 +1,25 @@
 ﻿using System.Threading.Tasks;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
-using NClient.InterfaceProxy.Attributes.Parameters;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/query")]
+    [Path("api/query")]
     public interface IQueryClientWithMetadata : IQueryClient
     {
-        [AsHttpGet]
+        [GetMethod]
         new Task<int> GetAsync(int id);
 
-        [AsHttpPost]
-        new Task PostAsync([ToQuery] BasicEntity entity);
+        [PostMethod]
+        new Task PostAsync([QueryParam] BasicEntity entity);
 
-        [AsHttpPut]
-        new Task PutAsync([ToQuery] BasicEntity entity);
+        [PutMethod]
+        new Task PutAsync([QueryParam] BasicEntity entity);
 
-        [AsHttpDelete]
+        [DeleteMethod]
         new Task DeleteAsync(int id);
     }
 }

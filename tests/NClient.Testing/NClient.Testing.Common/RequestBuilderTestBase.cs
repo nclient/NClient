@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Castle.DynamicProxy;
 using FluentAssertions;
-using NClient.Core.Attributes;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.Providers.HttpClient;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace NClient.Testing.Common
         internal RequestBuilder RequestBuilder = null!;
         internal KeepDataInterceptor KeepDataInterceptor = null!;
 
-        protected IAttributeHelper AttributeHelper = null!;
+        protected IAttributeMapper AttributeMapper = null!;
         protected ProxyGenerator ProxyGenerator = null!;
 
         [SetUp]
@@ -25,12 +26,11 @@ namespace NClient.Testing.Common
         {
             RequestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(AttributeHelper),
-                new RouteProvider(AttributeHelper),
-                new HttpMethodProvider(AttributeHelper),
-                new ParameterProvider(AttributeHelper),
-                new ObjectToKeyValueConverter(),
-                AttributeHelper);
+                new RouteTemplateProvider(AttributeMapper),
+                new RouteProvider(),
+                new HttpMethodProvider(AttributeMapper),
+                new ParameterProvider(AttributeMapper),
+                new ObjectToKeyValueConverter());
 
             ProxyGenerator = new ProxyGenerator();
         }
@@ -40,7 +40,7 @@ namespace NClient.Testing.Common
 
         internal virtual HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.Method.DeclaringType!, invocation.Method, invocation.Arguments);
+            return RequestBuilder.Build(invocation.Proxy.GetType().GetInterfaces().First(), invocation.Method, invocation.Arguments);
         }
 
         protected static void AssertHttpRequest(

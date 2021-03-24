@@ -4,10 +4,12 @@
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
 		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;RestSharp;HttpClient;Api;WebApi;Rest</PackageTags>
-		<Description>RestSharp based client provider for NClient.</Description>
+		<Description>RestSharp based HTTP client provider for NClient.</Description>
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
@@ -19,6 +21,7 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,7 +34,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>

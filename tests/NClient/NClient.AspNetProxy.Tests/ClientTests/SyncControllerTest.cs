@@ -18,7 +18,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         public void Setup()
         {
             _syncApiMockFactory = new SyncApiMockFactory(port: 5006);
-            _syncClient = new AspNetClientProvider()
+            _syncClient = new ControllerClientProvider()
                 .Use<ISyncClient, SyncController>(_syncApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
                 .WithoutResiliencePolicy()

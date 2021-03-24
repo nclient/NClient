@@ -1,23 +1,23 @@
-﻿using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Methods;
+﻿using NClient.Annotations;
+using NClient.Annotations.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.InterfaceProxy.Tests.Clients
 {
-    [Api("api/sync")]
+    [Path("api/sync")]
     public interface ISyncClientWithMetadata : ISyncClient
     {
-        [AsHttpGet]
+        [GetMethod]
         new int Get(int id);
 
-        [AsHttpPost]
+        [PostMethod]
         new void Post(BasicEntity entity);
 
-        [AsHttpPut]
+        [PutMethod]
         new void Put(BasicEntity entity);
 
-        [AsHttpDelete]
+        [DeleteMethod]
         new void Delete(int id);
     }
 }

@@ -19,7 +19,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         public void Setup()
         {
             _restApiMockFactory = new RestApiMockFactory(port: 5004);
-            _restClient = new AspNetClientProvider()
+            _restClient = new ControllerClientProvider()
                 .Use<IRestClient, RestController>(_restApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
                 .WithoutResiliencePolicy()
@@ -27,7 +27,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_GetAsync_IntInBody()
+        public async Task RestClient_GetAsync_IntInBody()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockGetMethod(id);
@@ -37,7 +37,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_PostAsync_NotThrow()
+        public async Task RestClient_PostAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _restApiMockFactory.MockPostMethod(entity);
@@ -49,7 +49,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_PutAsync_NotThrow()
+        public async Task RestClient_PutAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _restApiMockFactory.MockPutMethod(entity);
@@ -61,7 +61,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_DeleteAsync_NotThrow()
+        public async Task RestClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockDeleteMethod(id);
