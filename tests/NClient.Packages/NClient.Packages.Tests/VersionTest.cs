@@ -9,8 +9,12 @@ namespace NClient.Packages.Tests
     public class VersionTest
     {
         [Test]
-        public void NClient() => 
+        public void NClient() =>
             PackagesVersionProvider.GetCurrent("NClient").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Annotations() => 
+            PackagesVersionProvider.GetCurrent("NClient.Annotations").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_AspNetProxy() => 
