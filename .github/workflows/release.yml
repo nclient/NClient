@@ -6,12 +6,12 @@ on:
     branches:
       - alpha-release
       - beta-release
-      - rc-release
       - release
 
 env:
-  VersionPrefix: 0.1.0
-  VersionSuffix: unbound
+  VersionPrefix: ${{secrets.VERSION_PREFIX}}
+  VersionSuffix: ''
+  VersionSuffixPatch: ${{secrets.VERSION_SUFFIX_PATH}}
       
 jobs:
   publish:
@@ -19,18 +19,15 @@ jobs:
     steps:
     - name: Try set alpha version suffix
       if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set beta version suffix
       if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta" >> $GITHUB_ENV
-    - name: Try set rc version suffix
-      if: github.ref == 'refs/heads/rc-release'
-      run: echo "VersionSuffix=rc" >> $GITHUB_ENV
+      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
       run: echo "VersionSuffix=" >> $GITHUB_ENV
     - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
+      if: env.VersionSuffix == ''
       run: exit 1
       
     - uses: actions/checkout@v2
@@ -38,12 +35,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Release 
+    - name: Restore dependencies and build
+      run: dotnet build --configuration Release
     - name: Test
-      run: dotnet test --filter Category!=Packages --no-build --verbosity normal --configuration Release
+      run: dotnet test --no-build --verbosity normal --configuration Release
     - name: Pack
       run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
     - name: Publish
@@ -65,33 +60,28 @@ jobs:
     steps:
     - name: Try set alpha version suffix
       if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set beta version suffix
       if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta" >> $GITHUB_ENV
-    - name: Try set rc version suffix
-      if: github.ref == 'refs/heads/rc-release'
-      run: echo "VersionSuffix=rc" >> $GITHUB_ENV
+      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
       run: echo "VersionSuffix=" >> $GITHUB_ENV
     - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
+      if: env.VersionSuffix == ''
       run: exit 1
       
     - name: Wait verification packages (5 min)
       uses: jakejarvis/wait-action@master
       with:
-        time: '2m'
+        time: '5m'
         
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Release 
+    - name: Restore dependencies and build
+      run: dotnet build --configuration TestRelease
     - name: Test
-      run: dotnet test --filter Category=Packages --no-build --verbosity normal --configuration Release
+      run: dotnet test --no-build --verbosity normal --configuration TestRelease

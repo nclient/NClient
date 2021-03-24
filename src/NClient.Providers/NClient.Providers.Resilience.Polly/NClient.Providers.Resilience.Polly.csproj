@@ -4,6 +4,8 @@
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
 		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
@@ -19,6 +21,7 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,7 +33,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>

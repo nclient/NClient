@@ -1,11 +1,10 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing.Template;
+using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
-using NClient.InterfaceProxy.Attributes;
-using NClient.InterfaceProxy.Attributes.Parameters;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -19,7 +18,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
         [SetUp]
         public void SetUp()
         {
-            RouteProvider = new RouteProvider(new AttributeHelper());
+            RouteProvider = new RouteProvider();
         }
 
         [Test]
@@ -51,21 +50,91 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_ControllerTokenForInterface_InterfaceNameWithoutPrefix()
+        public void Build_ControllerTokenForClientInterface_ClientNameWithoutPrefixAndSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("Client");
+            route.Should().Be("My");
         }
 
         [Test]
-        public void Build_ControllerTokenForController_ControllerNameWithoutSuffix()
+        public void Build_ControllerTokenForClientInterfaceLowerCase_ClientNameWithoutPrefix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyclient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Myclient");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerInterface_ControllerNameWithoutPrefixAndSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyController",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("My");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerInterfaceLowerCase_ControllerNameWithoutPrefix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMycontroller",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Mycontroller");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForClientClass_ClientNameWithoutSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "MyClient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("My");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForClientClassLowerCase_ClientName()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "Myclient",
+                methodName: "Method",
+                parameters: Array.Empty<Parameter>());
+
+            route.Should().Be("Myclient");
+        }
+
+        [Test]
+        public void Build_ControllerTokenForControllerClass_ControllerNameWithoutSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
@@ -78,18 +147,18 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
             route.Should().Be("My");
         }
 
-        [Test, Ignore("See todo in RouteProvider")]
-        public void Build_ControllerTokenForControllerWithInterfaceLikeName_ControllerNameWithoutSuffix()
+        [Test]
+        public void Build_ControllerTokenForControllerClassLowerCase_ControllerNameWithoutSuffix()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IMyController",
+                clientName: "Mycontroller",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("IMy");
+            route.Should().Be("Mycontroller");
         }
 
         [Test]
@@ -159,7 +228,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new []
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("1");
@@ -176,7 +245,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("api/1");
@@ -193,7 +262,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("1");
@@ -210,7 +279,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), int.MaxValue, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                 });
 
             route.Should().Be(int.MaxValue.ToString());
@@ -227,7 +296,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
             route.Should().Be("api/Client/Method/1");
@@ -275,7 +344,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), 1, new ToRouteAttribute())
+                        new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();
@@ -293,7 +362,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), int.MaxValue, new ToRouteAttribute())
+                        new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();
@@ -311,7 +380,7 @@ namespace NClient.InterfaceProxy.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new ToRouteAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new RouteParamAttribute())
                     }))
                 .Should()
                 .Throw<InvalidRouteNClientException>();

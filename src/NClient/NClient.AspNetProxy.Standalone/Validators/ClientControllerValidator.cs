@@ -18,16 +18,15 @@ namespace NClient.AspNetProxy.Validators
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
-            var attributeHelper = new AspNetCoreAttributeHelper();
+            var attributeMapper = new AspNetAttributeMapper();
 
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(attributeHelper),
-                new RouteProvider(attributeHelper),
-                new HttpMethodProvider(attributeHelper),
-                new ParameterProvider(attributeHelper),
-                new ObjectToKeyValueConverter(),
-                attributeHelper);
+                new RouteTemplateProvider(attributeMapper),
+                new RouteProvider(),
+                new HttpMethodProvider(attributeMapper),
+                new ParameterProvider(attributeMapper),
+                new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<TInterface>(
                 proxyGenerator, 

@@ -4,10 +4,12 @@
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
 		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-		<Description>The open source HTTP client that allows you to call web service API methods through annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is simple and flexible to configure.</Description>
+		<Description>The open source HTTP client that allows you to call web service API methods using annotated controllers or interfaces. The client supports asynchronous calls, retry policies and logging. All this is simple and flexible to configure. The package provides the entire set of tools for creating clients but no third-party solutions. You can choose your own an http client and a retry policy tool.</Description>
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
@@ -19,6 +21,7 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -27,6 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
