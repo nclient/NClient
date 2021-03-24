@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Routing.Template;
-using NClient.Core.Attributes.Parameters;
+using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;

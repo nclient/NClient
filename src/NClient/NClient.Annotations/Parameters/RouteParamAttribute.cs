@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.Attributes.Parameters
+﻿namespace NClient.Annotations.Parameters
 {
     public class RouteParamAttribute : ParamAttribute
     {
