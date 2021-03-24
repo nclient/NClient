@@ -7,8 +7,8 @@ namespace NClient.AspNetProxy.Extensions
 {
     public static class ClientProviderResilienceExtensions
     {
-        public static IClientProviderLogger<TInterface, TController> WithPollyResiliencePolicy<TInterface, TController>(
-            this IClientProviderResilience<TInterface, TController> clientProvider, IAsyncPolicy asyncPolicy)
+        public static IControllerClientProviderLogger<TInterface, TController> WithPollyResiliencePolicy<TInterface, TController>(
+            this IControllerClientProviderResilience<TInterface, TController> clientProvider, IAsyncPolicy asyncPolicy)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
