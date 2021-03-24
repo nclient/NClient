@@ -6,8 +6,8 @@ namespace NClient.AspNetProxy.Extensions
 {
     public static class ClientProviderHttpExtensions
     {
-        public static IClientProviderResilience<TInterface, TController> SetDefaultHttpClientProvider<TInterface, TController>(
-            this IClientProviderHttp<TInterface, TController>  clientProvider)
+        public static IControllerClientProviderResilience<TInterface, TController> SetDefaultHttpClientProvider<TInterface, TController>(
+            this IControllerClientProviderHttp<TInterface, TController>  clientProvider)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {

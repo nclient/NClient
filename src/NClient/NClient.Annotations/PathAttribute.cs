@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Attributes
+namespace NClient.Annotations
 {
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
     public class PathAttribute : Attribute

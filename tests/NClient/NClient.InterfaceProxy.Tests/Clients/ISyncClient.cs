@@ -1,5 +1,5 @@
-﻿using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
+﻿using NClient.Annotations;
+using NClient.Annotations.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 

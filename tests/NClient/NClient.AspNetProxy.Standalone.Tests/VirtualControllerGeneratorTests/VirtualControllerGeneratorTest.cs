@@ -2,14 +2,13 @@
 using System.Linq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
 using NClient.AspNetProxy.Attributes;
 using NClient.AspNetProxy.Controllers;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
-using NClient.Core.Attributes.Parameters;
 using NClient.Core.Exceptions;
 using NUnit.Framework;
-using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
 {

@@ -13,6 +13,7 @@
       "src\\NClient\\NClient.InterfaceProxy.Standalone\\NClient.InterfaceProxy.Standalone.csproj",
       "src\\NClient\\NClient.InterfaceProxy\\NClient.InterfaceProxy.csproj",
       "src\\NClient\\NClient.Standalone\\NClient.Standalone.csproj",
+      "src\\NClient\\NClient.Annotations\\NClient.Annotations.csproj",
       "src\\NClient\\NClient\\NClient.csproj"
     ]
   }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Attributes.Methods
+namespace NClient.Annotations.Methods
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public abstract class MethodAttribute : Attribute

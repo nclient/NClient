@@ -33,6 +33,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient\NClient.Providers.HttpClient.csproj" />
 		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience\NClient.Providers.Resilience.csproj" />
+		<ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

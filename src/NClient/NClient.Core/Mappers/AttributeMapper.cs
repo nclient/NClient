@@ -1,7 +1,7 @@
 ﻿using System;
 using NClient.Core.Exceptions.Factories;
 
-namespace NClient.Core.Attributes
+namespace NClient.Core.Mappers
 {
     public interface IAttributeMapper
     {

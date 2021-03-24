@@ -35,10 +35,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Release 
+    - name: Restore dependencies and build
+      run: dotnet build --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release
     - name: Pack
@@ -73,19 +71,17 @@ jobs:
       if: env.VersionSuffix == ''
       run: exit 1
       
-    - name: Wait verification packages (3 min)
+    - name: Wait verification packages (5 min)
       uses: jakejarvis/wait-action@master
       with:
-        time: '3m'
+        time: '5m'
         
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration TestRelease 
+    - name: Restore dependencies and build
+      run: dotnet build --configuration TestRelease
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration TestRelease

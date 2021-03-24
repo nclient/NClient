@@ -2,9 +2,9 @@
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core;
-using NClient.Core.Attributes;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.InterfaceProxy.Validators;
 using NClient.Providers.HttpClient.Abstractions;
@@ -15,6 +15,7 @@ namespace NClient.InterfaceProxy
 {
     public interface IClientProvider
     {
+        IClientProviderHttp<T> Use<T>(string host) where T : class, INClient;
         IClientProviderHttp<T> Use<T>(Uri host) where T : class, INClient;
     }
 
@@ -40,6 +41,11 @@ namespace NClient.InterfaceProxy
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientInterfaceValidator Validator = new();
 
+        public IClientProviderHttp<T> Use<T>(string host) where T : class, INClient
+        {
+            return Use<T>(new Uri(host));
+        }
+
         public IClientProviderHttp<T> Use<T>(Uri host) where T : class, INClient
         {
             Validator.Ensure<T>(ProxyGenerator);
@@ -47,7 +53,7 @@ namespace NClient.InterfaceProxy
         }
     }
 
-    public class ClientProvider<T> : IClientProviderHttp<T>, IClientProviderResilience<T>, IClientProviderLogger<T> where T : class, INClient
+    internal class ClientProvider<T> : IClientProviderHttp<T>, IClientProviderResilience<T>, IClientProviderLogger<T> where T : class, INClient
     {
         private readonly Uri _host;
         private readonly IProxyGenerator _proxyGenerator;

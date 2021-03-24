@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
+using NClient.Annotations.Methods;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 

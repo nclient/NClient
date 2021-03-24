@@ -1,10 +1,10 @@
 ﻿using System.Net.Http;
 using Castle.DynamicProxy;
 using FluentAssertions;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
+using NClient.Annotations.Methods;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
 

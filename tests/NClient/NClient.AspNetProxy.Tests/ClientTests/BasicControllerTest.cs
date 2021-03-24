@@ -20,7 +20,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         {
             _basicApiMockFactory = new BasicApiMockFactory(port: 5001);
 
-            _basicClient = new AspNetClientProvider()
+            _basicClient = new ControllerClientProvider()
                 .Use<IBasicClient, BasicController>(_basicApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
                 .WithoutResiliencePolicy()

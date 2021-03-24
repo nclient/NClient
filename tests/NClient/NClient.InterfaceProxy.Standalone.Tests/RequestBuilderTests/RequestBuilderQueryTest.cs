@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
-using NClient.Core.Attributes.Parameters;
+using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
+using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Providers.HttpClient;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
-using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
 namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
 {
