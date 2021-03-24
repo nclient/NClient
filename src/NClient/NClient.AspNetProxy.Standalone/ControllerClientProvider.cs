@@ -14,54 +14,54 @@ using NClient.Providers.Resilience.Abstractions;
 
 namespace NClient.AspNetProxy
 {
-    public interface IClientProvider
+    public interface IControllerClientProvider
     {
-        IClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
+        IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface;
     }
 
-    public interface IClientProviderHttp<TInterface, TController>
+    public interface IControllerClientProviderHttp<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
-        IClientProviderResilience<TInterface, TController> SetHttpClientProvider(IHttpClientProvider httpClientProvider);
+        IControllerClientProviderResilience<TInterface, TController> SetHttpClientProvider(IHttpClientProvider httpClientProvider);
     }
 
-    public interface IClientProviderResilience<TInterface, TController>
+    public interface IControllerClientProviderResilience<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
-        IClientProviderLogger<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
-        IClientProviderLogger<TInterface, TController> WithoutResiliencePolicy();
+        IControllerClientProviderLogger<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
+        IControllerClientProviderLogger<TInterface, TController> WithoutResiliencePolicy();
     }
 
-    public interface IClientProviderLogger<TInterface, TController>
+    public interface IControllerClientProviderLogger<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
-        IClientProviderLogger<TInterface, TController> WithLogger(ILogger<TInterface> logger);
+        IControllerClientProviderLogger<TInterface, TController> WithLogger(ILogger<TInterface> logger);
         TInterface Build();
     }
 
-    public class AspNetClientProvider : IClientProvider
+    public class ControllerClientProvider : IControllerClientProvider
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientControllerValidator Validator = new();
 
-        public IClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
+        public IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
             Validator.Ensure<TInterface, TController>(ProxyGenerator);
-            return new AspNetClientProvider<TInterface, TController>(host, ProxyGenerator);
+            return new ControllerClientProvider<TInterface, TController>(host, ProxyGenerator);
         }
     }
 
-    public class AspNetClientProvider<TInterface, TController> : 
-        IClientProviderHttp<TInterface, TController>, 
-        IClientProviderResilience<TInterface, TController>, 
-        IClientProviderLogger<TInterface, TController>
+    internal class ControllerClientProvider<TInterface, TController> : 
+        IControllerClientProviderHttp<TInterface, TController>, 
+        IControllerClientProviderResilience<TInterface, TController>, 
+        IControllerClientProviderLogger<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
@@ -71,32 +71,32 @@ namespace NClient.AspNetProxy
         private IResiliencePolicyProvider _resiliencePolicyProvider = null!;
         private ILogger<TInterface>? _logger;
 
-        public AspNetClientProvider(Uri host, IProxyGenerator proxyGenerator)
+        public ControllerClientProvider(Uri host, IProxyGenerator proxyGenerator)
         {
             _host = host;
             _proxyGenerator = proxyGenerator;
         }
 
-        public IClientProviderResilience<TInterface, TController> SetHttpClientProvider(IHttpClientProvider httpClientProvider)
+        public IControllerClientProviderResilience<TInterface, TController> SetHttpClientProvider(IHttpClientProvider httpClientProvider)
         {
             _httpClientProvider = httpClientProvider;
             return this;
         }
 
 
-        public IClientProviderLogger<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public IControllerClientProviderLogger<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
-        public IClientProviderLogger<TInterface, TController> WithoutResiliencePolicy()
+        public IControllerClientProviderLogger<TInterface, TController> WithoutResiliencePolicy()
         {
             _resiliencePolicyProvider = new StubResiliencePolicyProvider();
             return this;
         }
 
-        public IClientProviderLogger<TInterface, TController> WithLogger(ILogger<TInterface> logger)
+        public IControllerClientProviderLogger<TInterface, TController> WithLogger(ILogger<TInterface> logger)
         {
             _logger = logger;
             return this;

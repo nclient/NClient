@@ -11,14 +11,14 @@ namespace NClient.AspNetProxy.Extensions
     public static class AddNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
-            string host, Func<IClientProviderHttp<TInterface, TController>, IClientProviderLogger<TInterface, TController>> configure)
+            string host, Func<IControllerClientProviderHttp<TInterface, TController>, IControllerClientProviderLogger<TInterface, TController>> configure)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                var clientProvider = new AspNetClientProvider().Use<TInterface, TController>(new Uri(host));
+                var clientProvider = new ControllerClientProvider().Use<TInterface, TController>(new Uri(host));
                 return configure(clientProvider).WithLogger(logger).Build();
             });
         }
@@ -31,7 +31,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new AspNetClientProvider()
+                return new ControllerClientProvider()
                     .Use<TInterface, TController>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)
                     .WithResiliencePolicy(resiliencePolicyProvider)
@@ -48,7 +48,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new AspNetClientProvider()
+                return new ControllerClientProvider()
                     .Use<TInterface, TController>(new Uri(host))
                     .SetHttpClientProvider(httpClientProvider)
                     .WithoutResiliencePolicy()

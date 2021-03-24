@@ -47,7 +47,7 @@ namespace NClient.InterfaceProxy
         }
     }
 
-    public class ClientProvider<T> : IClientProviderHttp<T>, IClientProviderResilience<T>, IClientProviderLogger<T> where T : class, INClient
+    internal class ClientProvider<T> : IClientProviderHttp<T>, IClientProviderResilience<T>, IClientProviderLogger<T> where T : class, INClient
     {
         private readonly Uri _host;
         private readonly IProxyGenerator _proxyGenerator;

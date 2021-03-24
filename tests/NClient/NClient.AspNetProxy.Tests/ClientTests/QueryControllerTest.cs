@@ -19,7 +19,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         public void Setup()
         {
             _queryApiMockFactory = new QueryApiMockFactory(port: 5003);
-            _queryClient = new AspNetClientProvider()
+            _queryClient = new ControllerClientProvider()
                 .Use<IQueryClient, QueryController>(_queryApiMockFactory.ApiUri)
                 .SetDefaultHttpClientProvider()
                 .WithoutResiliencePolicy()
