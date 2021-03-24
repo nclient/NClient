@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
 using NClient.AspNetProxy.Extensions;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

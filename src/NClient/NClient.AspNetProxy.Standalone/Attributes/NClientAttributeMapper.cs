@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
-using NClient.Core.Attributes.Parameters;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Mappers;
 
 namespace NClient.AspNetProxy.Attributes
 {

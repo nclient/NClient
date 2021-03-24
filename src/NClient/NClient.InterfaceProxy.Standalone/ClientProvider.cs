@@ -2,9 +2,9 @@
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core;
-using NClient.Core.Attributes;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.InterfaceProxy.Validators;
 using NClient.Providers.HttpClient.Abstractions;

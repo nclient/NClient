@@ -1,9 +1,9 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using NClient.Core;
-using NClient.Core.Attributes;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Validators;
 using NClient.Providers.HttpClient;

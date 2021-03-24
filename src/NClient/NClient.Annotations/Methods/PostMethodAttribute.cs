@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.Attributes.Methods
+﻿namespace NClient.Annotations.Methods
 {
     public class PostMethodAttribute : MethodAttribute
     {

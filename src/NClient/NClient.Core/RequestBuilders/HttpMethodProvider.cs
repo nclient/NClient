@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using NClient.Core.Attributes;
-using NClient.Core.Attributes.Methods;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Mappers;
 
 namespace NClient.Core.RequestBuilders
 {
