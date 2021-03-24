@@ -15,6 +15,7 @@ namespace NClient.InterfaceProxy
 {
     public interface IClientProvider
     {
+        IClientProviderHttp<T> Use<T>(string host) where T : class, INClient;
         IClientProviderHttp<T> Use<T>(Uri host) where T : class, INClient;
     }
 
@@ -39,6 +40,11 @@ namespace NClient.InterfaceProxy
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientInterfaceValidator Validator = new();
+
+        public IClientProviderHttp<T> Use<T>(string host) where T : class, INClient
+        {
+            return Use<T>(new Uri(host));
+        }
 
         public IClientProviderHttp<T> Use<T>(Uri host) where T : class, INClient
         {

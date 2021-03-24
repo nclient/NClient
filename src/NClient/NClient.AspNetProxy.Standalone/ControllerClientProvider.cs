@@ -16,6 +16,9 @@ namespace NClient.AspNetProxy
 {
     public interface IControllerClientProvider
     {
+        IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(string host)
+            where TInterface : class, INClient
+            where TController : ControllerBase, TInterface;
         IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface;
@@ -48,6 +51,13 @@ namespace NClient.AspNetProxy
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientControllerValidator Validator = new();
+
+        public IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(string host)
+            where TInterface : class, INClient
+            where TController : ControllerBase, TInterface
+        {
+            return Use<TInterface, TController>(new Uri(host));
+        }
 
         public IControllerClientProviderHttp<TInterface, TController> Use<TInterface, TController>(Uri host)
             where TInterface : class, INClient
