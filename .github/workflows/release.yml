@@ -73,10 +73,10 @@ jobs:
       if: env.VersionSuffix == ''
       run: exit 1
       
-    - name: Wait verification packages (3 min)
+    - name: Wait verification packages (5 min)
       uses: jakejarvis/wait-action@master
       with:
-        time: '3m'
+        time: '5m'
         
     - uses: actions/checkout@v2
     - name: Setup .NET
