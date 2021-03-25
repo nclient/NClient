@@ -7,11 +7,44 @@ using NClient.InterfaceProxy.Extensions;
 using NClient.Providers.HttpClient.Abstractions;
 using NClient.Providers.Resilience.Abstractions;
 using Polly;
+using RestSharp.Authenticators;
 
 namespace NClient.Extensions.DependencyInjection
 {
     public static class AddNClientExtensions
     {
+        public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
+            string host, IAuthenticator authenticator, IAsyncPolicy asyncPolicy)
+            where TInterface : class, INClient
+        {
+            return serviceCollection.AddSingleton(serviceProvider =>
+            {
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
+                return new ClientProvider()
+                    .Use<TInterface>(new Uri(host))
+                    .SetDefaultHttpClientProvider(authenticator)
+                    .WithPollyResiliencePolicy(asyncPolicy)
+                    .WithLogger(logger)
+                    .Build();
+            });
+        }
+
+        public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
+            string host, IAuthenticator authenticator)
+            where TInterface : class, INClient
+        {
+            return serviceCollection.AddSingleton(serviceProvider =>
+            {
+                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
+                return new ClientProvider()
+                    .Use<TInterface>(new Uri(host))
+                    .SetDefaultHttpClientProvider(authenticator)
+                    .WithoutResiliencePolicy()
+                    .WithLogger(logger)
+                    .Build();
+            });
+        }
+
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host, IAsyncPolicy asyncPolicy)
             where TInterface : class, INClient
