@@ -1,7 +1,7 @@
 ﻿using Castle.DynamicProxy;
 using FluentAssertions;
-using Microsoft.AspNetCore.Routing.Template;
 using NClient.Annotations.Parameters;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
