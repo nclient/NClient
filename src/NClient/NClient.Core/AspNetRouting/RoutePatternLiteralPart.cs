@@ -6,7 +6,7 @@ namespace NClient.Core.AspNetRouting
     /// Resprents a literal text part of a route pattern. Instances of <see cref="RoutePatternLiteralPart"/>
     /// are immutable.
     /// </summary>
-    public sealed class RoutePatternLiteralPart : RoutePatternPart
+    internal sealed class RoutePatternLiteralPart : RoutePatternPart
     {
         internal RoutePatternLiteralPart(string content)
             : base(RoutePatternPartKind.Literal)

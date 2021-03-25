@@ -5,7 +5,7 @@ namespace NClient.Core.AspNetRouting
     /// <summary>
     /// The parsed representation of an inline constraint in a route parameter.
     /// </summary>
-    public class InlineConstraint
+    internal class InlineConstraint
     {
         /// <summary>
         /// Creates a new instance of <see cref="InlineConstraint"/>.

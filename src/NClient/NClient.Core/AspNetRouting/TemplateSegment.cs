@@ -7,7 +7,7 @@ namespace NClient.Core.AspNetRouting
     /// <summary>
     /// Represents a segment of a route template.
     /// </summary>
-    public class TemplateSegment
+    internal class TemplateSegment
     {
         /// <summary>
         /// Constructs a new <see cref="TemplateSegment"/> instance.

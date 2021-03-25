@@ -7,7 +7,7 @@ namespace NClient.Core.AspNetRouting
     /// <summary>
     /// Computes precedence for a route template.
     /// </summary>
-    public static class RoutePrecedence
+    internal static class RoutePrecedence
     {
         /// <summary>
         ///  Compute the precedence for matching a provided url

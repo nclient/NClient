@@ -15,7 +15,7 @@ namespace NClient.Core.AspNetRouting
     ///
     /// strings are compared using <see cref="StringComparison.OrdinalIgnoreCase"/>.
     /// </remarks>
-    public class RouteValueEqualityComparer : IEqualityComparer<object?>
+    internal class RouteValueEqualityComparer : IEqualityComparer<object?>
     {
         /// <summary>
         /// A default instance of the <see cref="RouteValueEqualityComparer"/>.

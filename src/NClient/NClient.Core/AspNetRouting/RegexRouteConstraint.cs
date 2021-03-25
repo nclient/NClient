@@ -9,7 +9,7 @@ namespace NClient.Core.AspNetRouting
     /// <summary>
     /// Constrains a route parameter to match a regular expression.
     /// </summary>
-    public class RegexRouteConstraint : IRouteConstraint
+    internal class RegexRouteConstraint : IRouteConstraint
     {
         private static readonly TimeSpan RegexMatchTimeout = TimeSpan.FromSeconds(10);
 

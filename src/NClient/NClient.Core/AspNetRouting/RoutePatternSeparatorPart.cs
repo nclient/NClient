@@ -23,7 +23,7 @@ namespace NClient.Core.AspNetRouting
     /// of a request for the route pattern to match.
     /// </para>
     /// </remarks>
-    public sealed class RoutePatternSeparatorPart : RoutePatternPart
+    internal sealed class RoutePatternSeparatorPart : RoutePatternPart
     {
         internal RoutePatternSeparatorPart(string content)
             : base(RoutePatternPartKind.Separator)

@@ -7,7 +7,7 @@ namespace NClient.Core.AspNetRouting
     /// Represents a parameter part in a route pattern. Instances of <see cref="RoutePatternParameterPart"/>
     /// are immutable.
     /// </summary>
-    public sealed class RoutePatternParameterPart : RoutePatternPart
+    internal sealed class RoutePatternParameterPart : RoutePatternPart
     {
         internal RoutePatternParameterPart(
             string parameterName,

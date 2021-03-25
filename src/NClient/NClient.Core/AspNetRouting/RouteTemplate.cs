@@ -7,7 +7,7 @@ namespace NClient.Core.AspNetRouting
     /// <summary>
     /// Represents the template for a route.
     /// </summary>
-    public class RouteTemplate
+    internal class RouteTemplate
     {
         private const string SeparatorString = "/";
 

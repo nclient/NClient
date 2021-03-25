@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the kinds of <see cref="RoutePatternParameterPart"/> instances.
     /// </summary>
-    public enum RoutePatternParameterKind
+    internal enum RoutePatternParameterKind
     {
         /// <summary>
         /// The <see cref="RoutePatternParameterKind"/> of a standard parameter

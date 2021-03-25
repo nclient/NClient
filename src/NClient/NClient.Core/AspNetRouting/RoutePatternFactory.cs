@@ -12,7 +12,7 @@ namespace NClient.Core.AspNetRouting
     /// Use <see cref="Parse(string)"/> to parse a route pattern in
     /// string format.
     /// </summary>
-    public static class RoutePatternFactory
+    internal static class RoutePatternFactory
     {
         private static readonly IReadOnlyDictionary<string, object?> EmptyDictionary =
             new ReadOnlyDictionary<string, object?>(new Dictionary<string, object?>());

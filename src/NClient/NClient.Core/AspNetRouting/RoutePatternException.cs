@@ -7,7 +7,7 @@ namespace NClient.Core.AspNetRouting
     /// An exception that is thrown for error constructing a <see cref="RoutePattern"/>.
     /// </summary>
     [Serializable]
-    public sealed class RoutePatternException : Exception
+    internal sealed class RoutePatternException : Exception
     {
         private RoutePatternException(SerializationInfo info, StreamingContext context)
             : base(info, context)

@@ -10,7 +10,7 @@ namespace NClient.Core.AspNetRouting
     /// Use <see cref="RoutePatternFactory"/> to create <see cref="RoutePattern"/>
     /// instances. Instances of <see cref="RoutePattern"/> are immutable.
     /// </summary>
-    public sealed class RoutePattern
+    internal sealed class RoutePattern
     {
         /// <summary>
         /// A marker object that can be used in <see cref="RequiredValues"/> to designate that

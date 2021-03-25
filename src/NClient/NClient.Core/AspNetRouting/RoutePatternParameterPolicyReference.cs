@@ -6,7 +6,7 @@ namespace NClient.Core.AspNetRouting
     /// The parsed representation of a policy in a <see cref="RoutePattern"/> parameter. Instances
     /// of <see cref="RoutePatternParameterPolicyReference"/> are immutable.
     /// </summary>
-    public sealed class RoutePatternParameterPolicyReference
+    internal sealed class RoutePatternParameterPolicyReference
     {
         internal RoutePatternParameterPolicyReference(string content)
         {

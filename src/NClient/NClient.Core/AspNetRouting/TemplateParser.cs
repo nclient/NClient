@@ -2,7 +2,7 @@
 
 namespace NClient.Core.AspNetRouting
 {
-    public static class TemplateParser
+    internal static class TemplateParser
     {
         public static RouteTemplate Parse(string routeTemplate)
         {

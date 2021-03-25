@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a part of a route pattern.
     /// </summary>
-    public abstract class RoutePatternPart
+    internal abstract class RoutePatternPart
     {
         // This class is **not** an extensibility point - every part of the routing system
         // needs to be aware of what kind of parts we support.

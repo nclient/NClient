@@ -13,7 +13,7 @@ namespace NClient.Core.AspNetRouting
     /// <see cref="RoutePatternPart"/> that represent the structure of a segment
     /// in a route pattern.
     /// </remarks>
-    public sealed class RoutePatternPathSegment
+    internal sealed class RoutePatternPathSegment
     {
         internal RoutePatternPathSegment(IReadOnlyList<RoutePatternPart> parts)
         {

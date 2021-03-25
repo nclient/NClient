@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the kinds of <see cref="RoutePatternPart"/> instances.
     /// </summary>
-    public enum RoutePatternPartKind
+    internal enum RoutePatternPartKind
     {
         /// <summary>
         /// The <see cref="RoutePatternPartKind"/> of a <see cref="RoutePatternLiteralPart"/>.
