@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     public static class TemplateParser
     {

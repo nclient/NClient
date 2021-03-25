@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// Represents a parsed route template with default values and constraints.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// The parsed representation of an inline constraint in a route parameter.

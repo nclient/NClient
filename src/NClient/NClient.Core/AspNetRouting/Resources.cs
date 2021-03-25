@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Resources;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     internal static class Resources
     {

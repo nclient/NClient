@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// An exception that is thrown for error constructing a <see cref="RoutePattern"/>.

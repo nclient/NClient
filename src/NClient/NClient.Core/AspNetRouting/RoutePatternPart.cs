@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.Helpers.TemplateParsers
+﻿namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// Represents a part of a route pattern.

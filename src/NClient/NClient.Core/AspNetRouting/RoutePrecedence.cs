@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// Computes precedence for a route template.

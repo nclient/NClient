@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Helpers.TemplateParsers
+namespace NClient.Core.AspNetRouting
 {
     internal static class RouteParameterParser
     {
