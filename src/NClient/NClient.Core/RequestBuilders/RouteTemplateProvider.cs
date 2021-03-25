@@ -11,12 +11,12 @@ using NClient.Core.Mappers;
 
 namespace NClient.Core.RequestBuilders
 {
-    public interface IRouteTemplateProvider
+    internal interface IRouteTemplateProvider
     {
         RouteTemplate Get(Type clientType, MethodInfo method);
     }
 
-    public class RouteTemplateProvider : IRouteTemplateProvider
+    internal class RouteTemplateProvider : IRouteTemplateProvider
     {
         private readonly IAttributeMapper _attributeMapper;
 
