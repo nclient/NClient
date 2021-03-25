@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Routing.Template;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.TemplateParsers;
 using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders.Models;
 
