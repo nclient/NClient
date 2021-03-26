@@ -1,4 +1,4 @@
-﻿namespace NClient.Providers.HttpClient
+﻿namespace NClient.Abstractions.HttpClients
 {
     public class HttpParameter
     {

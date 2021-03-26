@@ -1,6 +1,6 @@
-﻿using NClient.Providers.HttpClient.Abstractions;
+﻿using NClient.Abstractions.HttpClients;
 
-namespace NClient.Providers.HttpClient
+namespace NClient.Core.HttpClients
 {
     public class StubHttpClientProvider : IHttpClientProvider
     {

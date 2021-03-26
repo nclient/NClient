@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Core;
-using NClient.Providers.HttpClient.Abstractions;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 
 namespace NClient.AspNetProxy.Extensions
 {

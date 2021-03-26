@@ -1,4 +1,5 @@
-﻿using NClient.Core;
+﻿using NClient.Abstractions.Clients;
+using NClient.Core;
 using NClient.Providers.Resilience.Polly;
 using Polly;
 

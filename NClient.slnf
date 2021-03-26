@@ -3,11 +3,11 @@
     "path": "All.sln",
     "projects": [
       "src\\NClient.Providers\\NClient.Providers.HttpClient.RestSharp\\NClient.Providers.HttpClient.RestSharp.csproj",
-      "src\\NClient.Providers\\NClient.Providers.HttpClient\\NClient.Providers.HttpClient.csproj",
       "src\\NClient.Providers\\NClient.Providers.Resilience.Polly\\NClient.Providers.Resilience.Polly.csproj",
-      "src\\NClient.Providers\\NClient.Providers.Resilience\\NClient.Providers.Resilience.csproj",
       "src\\NClient\\NClient.AspNetProxy.Standalone\\NClient.AspNetProxy.Standalone.csproj",
       "src\\NClient\\NClient.AspNetProxy\\NClient.AspNetProxy.csproj",
+      "src\\NClient\\NClient.Abstractions\\NClient.Abstractions.csproj",
+      "src\\NClient\\NClient.Annotations\\NClient.Annotations.csproj",
       "src\\NClient\\NClient.Core\\NClient.Core.csproj",
       "src\\NClient\\NClient.InterfaceProxy.Standalone\\NClient.InterfaceProxy.Standalone.csproj",
       "src\\NClient\\NClient.InterfaceProxy\\NClient.InterfaceProxy.csproj",

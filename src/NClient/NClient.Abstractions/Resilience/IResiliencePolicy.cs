@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NClient.Providers.Resilience.Abstractions
+namespace NClient.Abstractions.Resilience
 {
     public interface IResiliencePolicy
     {

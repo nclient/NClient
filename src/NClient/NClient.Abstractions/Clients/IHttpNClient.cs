@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using NClient.Providers.HttpClient;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 
-namespace NClient.Core
+namespace NClient.Abstractions.Clients
 {
     public interface IHttpNClient<T> where T : INClient
     {

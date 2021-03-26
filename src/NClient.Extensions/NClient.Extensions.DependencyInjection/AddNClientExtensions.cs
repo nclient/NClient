@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Core;
+using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.InterfaceProxy;
 using NClient.InterfaceProxy.Extensions;
-using NClient.Providers.HttpClient.Abstractions;
-using NClient.Providers.Resilience.Abstractions;
 using Polly;
 using RestSharp.Authenticators;
 

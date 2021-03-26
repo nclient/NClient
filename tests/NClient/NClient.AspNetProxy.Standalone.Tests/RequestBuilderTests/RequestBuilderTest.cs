@@ -2,13 +2,12 @@
 using Castle.DynamicProxy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using NClient.Abstractions.HttpClients;
 using NClient.AspNetProxy.Attributes;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
-using NClient.Providers.HttpClient;
 using NClient.Testing.Common;
 using NUnit.Framework;
-using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
 namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
 {

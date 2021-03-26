@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Abstractions.Resilience;
 
-namespace NClient.Core
+namespace NClient.Abstractions.Clients
 {
     public interface IResilienceNClient<T> where T : INClient
     {

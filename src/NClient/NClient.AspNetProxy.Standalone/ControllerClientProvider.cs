@@ -2,15 +2,15 @@
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.AspNetProxy.Attributes;
 using NClient.AspNetProxy.Validators;
-using NClient.Core;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
-using NClient.Providers.HttpClient.Abstractions;
-using NClient.Providers.Resilience;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Core.Resilience;
 
 namespace NClient.AspNetProxy
 {

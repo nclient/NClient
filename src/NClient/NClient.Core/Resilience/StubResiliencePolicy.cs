@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Abstractions.Resilience;
 
-namespace NClient.Providers.Resilience
+namespace NClient.Core.Resilience
 {
     public class StubResiliencePolicy : IResiliencePolicy
     {

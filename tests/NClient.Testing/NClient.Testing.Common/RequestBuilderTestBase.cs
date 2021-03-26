@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net.Http;
 using Castle.DynamicProxy;
 using FluentAssertions;
+using NClient.Abstractions.HttpClients;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
-using NClient.Providers.HttpClient;
 using NUnit.Framework;
 
 namespace NClient.Testing.Common

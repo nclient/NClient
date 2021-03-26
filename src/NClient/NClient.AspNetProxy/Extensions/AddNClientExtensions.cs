@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Clients;
 using NClient.Core;
 using Polly;
 using RestSharp.Authenticators;

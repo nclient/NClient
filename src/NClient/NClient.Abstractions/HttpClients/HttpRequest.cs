@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace NClient.Providers.HttpClient
+namespace NClient.Abstractions.HttpClients
 {
     public class HttpRequest
     {

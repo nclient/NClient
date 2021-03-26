@@ -3,15 +3,14 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using NClient.Abstractions.HttpClients;
 using NClient.AspNetProxy.Extensions;
 using NClient.AspNetProxy.Tests.Controllers;
 using NClient.Core.Extensions;
-using NClient.Providers.HttpClient;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
-using HttpResponse = NClient.Providers.HttpClient.HttpResponse;
 
 namespace NClient.AspNetProxy.Tests.NClientTests
 {
