@@ -20,9 +20,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
             _headerApiMockFactory = new HeaderApiMockFactory(port: 5002);
 
             _headerClient = new ControllerClientProvider()
-                .Use<IHeaderClient, HeaderController>(_headerApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+                .Use<IHeaderClient, HeaderController>(_headerApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

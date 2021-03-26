@@ -16,11 +16,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClient<IBasicClient>(
-                host: "http://localhost:5000", 
-                configure: provider => provider
-                    .SetHttpClientProvider(new RestSharpHttpClientProvider())
-                    .WithoutResiliencePolicy());
+            serviceCollection.AddNClient(provider => 
+                provider.Use<IBasicClient>(host: "http://localhost:5000", new RestSharpHttpClientProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();
@@ -33,8 +30,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000", 
-                httpClientProvider: new RestSharpHttpClientProvider(),
-                resiliencePolicyProvider: new PollyResiliencePolicyProvider(Policy.NoOpAsync()));
+                new RestSharpHttpClientProvider(),
+                new PollyResiliencePolicyProvider(Policy.NoOpAsync()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();
@@ -47,7 +44,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<IBasicClient>(
                 host: "http://localhost:5000",
-                httpClientProvider: new RestSharpHttpClientProvider());
+                new RestSharpHttpClientProvider());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();

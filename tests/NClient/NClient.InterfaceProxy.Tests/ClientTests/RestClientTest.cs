@@ -19,9 +19,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         {
             _restApiMockFactory = new RestApiMockFactory(port: 5010);
             _restClient = new ClientProvider()
-                .Use<IRestClientWithMetadata>(_restApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+                .Use<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

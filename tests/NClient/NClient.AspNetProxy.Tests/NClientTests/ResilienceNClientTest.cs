@@ -22,9 +22,7 @@ namespace NClient.AspNetProxy.Tests.NClientTests
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5016);
             _returnClient = new ControllerClientProvider()
-                .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+                .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

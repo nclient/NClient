@@ -18,9 +18,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         {
             _syncApiMockFactory = new SyncApiMockFactory(port: 5012);
             _syncClient = new ClientProvider()
-                .Use<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+                .Use<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

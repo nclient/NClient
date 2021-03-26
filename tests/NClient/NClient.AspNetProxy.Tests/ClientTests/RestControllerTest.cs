@@ -20,9 +20,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         {
             _restApiMockFactory = new RestApiMockFactory(port: 5004);
             _restClient = new ControllerClientProvider()
-                .Use<IRestClient, RestController>(_restApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+                .Use<IRestClient, RestController>(_restApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 
