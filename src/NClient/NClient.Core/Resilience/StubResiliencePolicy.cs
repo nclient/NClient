@@ -4,7 +4,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Resilience
 {
-    public class StubResiliencePolicy : IResiliencePolicy
+    internal class StubResiliencePolicy : IResiliencePolicy
     {
         public Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action)
         {

@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Resilience
 {
-    public class StubResiliencePolicyProvider : IResiliencePolicyProvider
+    internal class StubResiliencePolicyProvider : IResiliencePolicyProvider
     {
         public IResiliencePolicy Create()
         {

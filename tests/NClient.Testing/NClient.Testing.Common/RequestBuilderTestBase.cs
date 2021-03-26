@@ -18,7 +18,7 @@ namespace NClient.Testing.Common
         internal RequestBuilder RequestBuilder = null!;
         internal KeepDataInterceptor KeepDataInterceptor = null!;
 
-        protected IAttributeMapper AttributeMapper = null!;
+        internal IAttributeMapper AttributeMapper = null!;
         protected ProxyGenerator ProxyGenerator = null!;
 
         [SetUp]

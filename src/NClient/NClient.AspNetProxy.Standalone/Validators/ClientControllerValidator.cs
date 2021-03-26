@@ -2,7 +2,7 @@
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Abstractions.Clients;
-using NClient.AspNetProxy.Attributes;
+using NClient.AspNetProxy.Mappers;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;

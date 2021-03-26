@@ -2,7 +2,7 @@
 
 namespace NClient.Core.HttpClients
 {
-    public class StubHttpClientProvider : IHttpClientProvider
+    internal class StubHttpClientProvider : IHttpClientProvider
     {
         public IHttpClient Create()
         {
