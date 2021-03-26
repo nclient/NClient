@@ -11,7 +11,7 @@ using Polly;
 namespace NClient.AspNetProxy.Tests
 {
     [Parallelizable]
-    public class ServiceCollectionExtensionsTest
+    public class AddNClientExtensionsTest
     {
         [Test]
         public void AddNClient_ClientProvider_NotBeNull()

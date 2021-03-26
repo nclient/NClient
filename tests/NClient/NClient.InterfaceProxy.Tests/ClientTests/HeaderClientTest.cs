@@ -18,7 +18,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         {
             _headerApiMockFactory = new HeaderApiMockFactory(port: 5008);
 
-            _headerClient = new ClientProvider()
+            _headerClient = new NClientProvider()
                 .Use<IHeaderClientWithMetadata>(_headerApiMockFactory.ApiUri.ToString())
                 .Build();
         }

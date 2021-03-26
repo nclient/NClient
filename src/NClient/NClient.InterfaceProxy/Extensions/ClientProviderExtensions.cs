@@ -8,19 +8,19 @@ namespace NClient.InterfaceProxy.Extensions
 {
     public static class ClientProviderExtensions
     {
-        public static IClientProvider<T> Use<T>(this IClientProvider clientProvider, string host) where T : class, INClient
+        public static INClientProvider<T> Use<T>(this INClientProvider clientProvider, string host) where T : class, INClient
         {
             return clientProvider.Use<T>(host, new RestSharpHttpClientProvider());
         }
 
-        public static IClientProvider<T> Use<T>(
-            this IClientProvider clientProvider, string host, IAuthenticator authenticator) where T : class, INClient
+        public static INClientProvider<T> Use<T>(
+            this INClientProvider clientProvider, string host, IAuthenticator authenticator) where T : class, INClient
         {
             return clientProvider.Use<T>(host, new RestSharpHttpClientProvider(authenticator));
         }
 
-        public static IClientProvider<T> WithResiliencePolicy<T>(
-            this IClientProvider<T> clientProvider, IAsyncPolicy asyncPolicy) where T : class, INClient
+        public static INClientProvider<T> WithResiliencePolicy<T>(
+            this INClientProvider<T> clientProvider, IAsyncPolicy asyncPolicy) where T : class, INClient
         {
             return clientProvider.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }

@@ -5,6 +5,7 @@ using NClient.AspNetProxy.Tests.Controllers;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NUnit.Framework;
+#pragma warning disable 618
 
 namespace NClient.AspNetProxy.Tests.ClientTests
 {
@@ -19,7 +20,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         {
             _headerApiMockFactory = new HeaderApiMockFactory(port: 5002);
 
-            _headerClient = new ControllerClientProvider()
+            _headerClient = new NClientControllerProvider()
                 .Use<IHeaderClient, HeaderController>(_headerApiMockFactory.ApiUri.ToString())
                 .Build();
         }

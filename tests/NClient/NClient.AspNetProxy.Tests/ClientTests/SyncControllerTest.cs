@@ -5,6 +5,7 @@ using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
+#pragma warning disable 618
 
 namespace NClient.AspNetProxy.Tests.ClientTests
 {
@@ -18,7 +19,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         public void Setup()
         {
             _syncApiMockFactory = new SyncApiMockFactory(port: 5006);
-            _syncClient = new ControllerClientProvider()
+            _syncClient = new NClientControllerProvider()
                 .Use<ISyncClient, SyncController>(_syncApiMockFactory.ApiUri.ToString())
                 .Build();
         }

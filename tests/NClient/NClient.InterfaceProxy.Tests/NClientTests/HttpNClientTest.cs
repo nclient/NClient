@@ -23,7 +23,7 @@ namespace NClient.InterfaceProxy.Tests.NClientTests
         public void Setup()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5013);
-            _returnClient = new ClientProvider()
+            _returnClient = new NClientProvider()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }

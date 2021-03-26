@@ -5,17 +5,18 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+#pragma warning disable 618
 
 namespace NClient.AspNetProxy.Extensions
 {
     public static class AddNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
-            Func<IControllerClientProvider, IControllerClientProvider<TInterface, TController>> configure)
+            Func<INClientControllerProvider, INClientControllerProvider<TInterface, TController>> configure)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
-            return serviceCollection.AddSingleton(_ => configure(new ControllerClientProvider()).Build());
+            return serviceCollection.AddSingleton(_ => configure(new NClientControllerProvider()).Build());
         }
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
@@ -26,7 +27,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
+                return new NClientControllerProvider()
                     .Use<TInterface, TController>(host, httpClientProvider)
                     .WithResiliencePolicy(resiliencePolicyProvider)
                     .WithLogging(logger)
@@ -42,7 +43,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
+                return new NClientControllerProvider()
                     .Use<TInterface, TController>(host, httpClientProvider)
                     .WithLogging(logger)
                     .Build();
