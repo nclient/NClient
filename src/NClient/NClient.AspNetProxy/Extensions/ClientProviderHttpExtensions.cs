@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NClient.Abstractions.Clients;
 using NClient.Core;
 using NClient.Providers.HttpClient.RestSharp;
 using RestSharp.Authenticators;

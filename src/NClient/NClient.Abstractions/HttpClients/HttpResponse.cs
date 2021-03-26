@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace NClient.Providers.HttpClient
+namespace NClient.Abstractions.HttpClients
 {
     public class HttpResponse<T> : HttpResponse
     {

@@ -1,4 +1,4 @@
-﻿namespace NClient.Providers.HttpClient.Abstractions
+﻿namespace NClient.Abstractions.HttpClients
 {
     public interface IHttpClientProvider
     {

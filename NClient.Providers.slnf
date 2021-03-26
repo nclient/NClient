@@ -2,10 +2,9 @@
   "solution": {
     "path": "All.sln",
     "projects": [
+      "src\\NClient\\NClient.Abstractions\\NClient.Abstractions.csproj",
       "src\\NClient.Providers\\NClient.Providers.HttpClient.RestSharp\\NClient.Providers.HttpClient.RestSharp.csproj",
-      "src\\NClient.Providers\\NClient.Providers.HttpClient\\NClient.Providers.HttpClient.csproj",
       "src\\NClient.Providers\\NClient.Providers.Resilience.Polly\\NClient.Providers.Resilience.Polly.csproj",
-      "src\\NClient.Providers\\NClient.Providers.Resilience\\NClient.Providers.Resilience.csproj"
     ]
   }
 }

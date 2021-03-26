@@ -13,6 +13,10 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
+        public void NClient_Providers_Resilience() =>
+            PackagesVersionProvider.GetCurrent("NClient.Abstractions").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
         public void NClient_Annotations() => 
             PackagesVersionProvider.GetCurrent("NClient.Annotations").Should().Be(PackagesVersionProvider.GetNew());
 
@@ -41,16 +45,8 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Standalone").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_HttpClient() => 
-            PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
         public void NClient_Providers_HttpClient_RestSharp() => 
             PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_Providers_Resilience() => 
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Resilience_Polly() => 

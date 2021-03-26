@@ -1,15 +1,16 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.Core;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
+using NClient.Core.Resilience;
 using NClient.InterfaceProxy.Validators;
-using NClient.Providers.HttpClient.Abstractions;
-using NClient.Providers.Resilience;
-using NClient.Providers.Resilience.Abstractions;
 
 namespace NClient.InterfaceProxy
 {

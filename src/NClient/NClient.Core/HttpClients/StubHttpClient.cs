@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using NClient.Providers.HttpClient.Abstractions;
+using NClient.Abstractions.HttpClients;
 
-namespace NClient.Providers.HttpClient
+namespace NClient.Core.HttpClients
 {
-    public class StubHttpClient : IHttpClient
+    internal class StubHttpClient : IHttpClient
     {
         public Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
         {

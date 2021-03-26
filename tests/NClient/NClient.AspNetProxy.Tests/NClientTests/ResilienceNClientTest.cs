@@ -3,7 +3,7 @@ using FluentAssertions;
 using NClient.AspNetProxy.Extensions;
 using NClient.AspNetProxy.Tests.Controllers;
 using NClient.Core.Extensions;
-using NClient.Providers.Resilience;
+using NClient.Core.Resilience;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;

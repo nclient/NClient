@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
+using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
-using NClient.Providers.HttpClient;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;

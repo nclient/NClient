@@ -4,7 +4,7 @@ using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.AspNetProxy.Attributes;
+using NClient.AspNetProxy.Mappers;
 
 namespace NClient.AspNetProxy.Controllers
 {

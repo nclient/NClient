@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NClient.Providers.HttpClient.Abstractions
+namespace NClient.Abstractions.HttpClients
 {
     public interface IHttpClient
     {

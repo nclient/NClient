@@ -1,14 +1,14 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
-using NClient.AspNetProxy.Attributes;
-using NClient.Core;
+using NClient.Abstractions.Clients;
+using NClient.AspNetProxy.Mappers;
 using NClient.Core.Helpers;
+using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
+using NClient.Core.Resilience;
 using NClient.Core.Validators;
-using NClient.Providers.HttpClient;
-using NClient.Providers.Resilience;
 
 namespace NClient.AspNetProxy.Validators
 {
