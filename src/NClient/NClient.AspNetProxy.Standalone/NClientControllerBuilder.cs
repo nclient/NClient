@@ -14,41 +14,41 @@ using NClient.Core.Resilience;
 
 namespace NClient.AspNetProxy
 {
-    [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientProvider.")]
-    public interface INClientControllerProvider
+    [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientBuilder.")]
+    public interface INClientControllerBuilder
     {
-        INClientControllerProvider<TInterface, TController> Use<TInterface, TController>(
+        INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             string host, IHttpClientProvider httpClientProvider)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface;
     }
 
-    public interface INClientControllerProvider<TInterface, TController>
+    public interface INClientControllerBuilder<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
-        INClientControllerProvider<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
-        INClientControllerProvider<TInterface, TController> WithLogging(ILogger<TInterface> logger);
+        INClientControllerBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
+        INClientControllerBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger);
         TInterface Build();
     }
 
-    [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientProvider.")]
-    public class NClientControllerProvider : INClientControllerProvider
+    [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientBuilder.")]
+    public class NClientControllerBuilder : INClientControllerBuilder
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientControllerValidator Validator = new();
 
-        public INClientControllerProvider<TInterface, TController> Use<TInterface, TController>(
+        public INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             string host, IHttpClientProvider httpClientProvider)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
             Validator.Ensure<TInterface, TController>(ProxyGenerator);
-            return new ControllerClientProvider<TInterface, TController>(new Uri(host), httpClientProvider, ProxyGenerator);
+            return new NClientControllerBuilder<TInterface, TController>(new Uri(host), httpClientProvider, ProxyGenerator);
         }
     }
 
-    internal class ControllerClientProvider<TInterface, TController> : INClientControllerProvider<TInterface, TController>
+    internal class NClientControllerBuilder<TInterface, TController> : INClientControllerBuilder<TInterface, TController>
         where TInterface : class, INClient
         where TController : ControllerBase, TInterface
     {
@@ -58,20 +58,20 @@ namespace NClient.AspNetProxy
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILogger<TInterface>? _logger;
 
-        public ControllerClientProvider(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
+        public NClientControllerBuilder(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;
             _httpClientProvider = httpClientProvider;
             _proxyGenerator = proxyGenerator;
         }
 
-        public INClientControllerProvider<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public INClientControllerBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
-        public INClientControllerProvider<TInterface, TController> WithLogging(ILogger<TInterface> logger)
+        public INClientControllerBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger)
         {
             _logger = logger;
             return this;

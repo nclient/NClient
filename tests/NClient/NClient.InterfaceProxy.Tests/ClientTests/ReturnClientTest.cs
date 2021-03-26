@@ -18,7 +18,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         public void Setup()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5011);
-            _returnClient = new NClientProvider()
+            _returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }

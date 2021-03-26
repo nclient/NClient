@@ -18,7 +18,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host, authenticator)
                     .WithPollyResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
@@ -34,7 +34,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host, authenticator)
                     .WithLogging(logger)
                     .Build();
@@ -49,7 +49,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host)
                     .WithPollyResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
@@ -65,7 +65,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host)
                     .WithLogging(logger)
                     .Build();

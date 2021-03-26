@@ -20,7 +20,7 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         {
             _headerApiMockFactory = new HeaderApiMockFactory(port: 5002);
 
-            _headerClient = new NClientControllerProvider()
+            _headerClient = new NClientControllerBuilder()
                 .Use<IHeaderClient, HeaderController>(_headerApiMockFactory.ApiUri.ToString())
                 .Build();
         }

@@ -12,11 +12,11 @@ namespace NClient.AspNetProxy.Extensions
     public static class AddNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
-            Func<INClientControllerProvider, INClientControllerProvider<TInterface, TController>> configure)
+            Func<INClientControllerBuilder, INClientControllerBuilder<TInterface, TController>> configure)
             where TInterface : class, INClient
             where TController : ControllerBase, TInterface
         {
-            return serviceCollection.AddSingleton(_ => configure(new NClientControllerProvider()).Build());
+            return serviceCollection.AddSingleton(_ => configure(new NClientControllerBuilder()).Build());
         }
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
@@ -27,7 +27,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host, httpClientProvider)
                     .WithResiliencePolicy(resiliencePolicyProvider)
                     .WithLogging(logger)
@@ -43,7 +43,7 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientControllerProvider()
+                return new NClientControllerBuilder()
                     .Use<TInterface, TController>(host, httpClientProvider)
                     .WithLogging(logger)
                     .Build();

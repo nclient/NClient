@@ -13,31 +13,31 @@ using NClient.InterfaceProxy.Validators;
 
 namespace NClient.InterfaceProxy
 {
-    public interface INClientProvider
+    public interface INClientBuilder
     {
-        INClientProvider<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient;
+        INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient;
     }
 
-    public interface INClientProvider<T> where T : class, INClient
+    public interface INClientBuilder<T> where T : class, INClient
     {
-        INClientProvider<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
-        INClientProvider<T> WithLogging(ILogger<T> logger);
+        INClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
+        INClientBuilder<T> WithLogging(ILogger<T> logger);
         T Build();
     }
 
-    public class NClientProvider : INClientProvider
+    public class NClientBuilder : INClientBuilder
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientInterfaceValidator Validator = new();
 
-        public INClientProvider<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient
+        public INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient
         {
             Validator.Ensure<T>(ProxyGenerator);
-            return new NClientProvider<T>(new Uri(host), httpClientProvider, ProxyGenerator);
+            return new NClientBuilder<T>(new Uri(host), httpClientProvider, ProxyGenerator);
         }
     }
 
-    internal class NClientProvider<T> : INClientProvider<T> where T : class, INClient
+    internal class NClientBuilder<T> : INClientBuilder<T> where T : class, INClient
     {
         private readonly Uri _host;
         private readonly IHttpClientProvider _httpClientProvider;
@@ -45,7 +45,7 @@ namespace NClient.InterfaceProxy
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILogger<T>? _logger;
 
-        public NClientProvider(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
+        public NClientBuilder(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;
             _httpClientProvider = httpClientProvider;
@@ -53,13 +53,13 @@ namespace NClient.InterfaceProxy
         }
 
 
-        public INClientProvider<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public INClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
-        public INClientProvider<T> WithLogging(ILogger<T> logger)
+        public INClientBuilder<T> WithLogging(ILogger<T> logger)
         {
             _logger = logger;
             return this;

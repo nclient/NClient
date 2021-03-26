@@ -18,7 +18,7 @@ namespace NClient.InterfaceProxy.Tests.ClientTests
         public void Setup()
         {
             _queryApiMockFactory = new QueryApiMockFactory(port: 5009);
-            _queryClient = new NClientProvider()
+            _queryClient = new NClientBuilder()
                 .Use<IQueryClientWithMetadata>(_queryApiMockFactory.ApiUri.ToString())
                 .Build();
         }
