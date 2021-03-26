@@ -6,6 +6,7 @@ using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
+#pragma warning disable 618
 
 namespace NClient.AspNetProxy.Tests.ClientTests
 {
@@ -19,10 +20,8 @@ namespace NClient.AspNetProxy.Tests.ClientTests
         public void Setup()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5005);
-            _returnClient = new ControllerClientProvider()
-                .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri)
-                .SetDefaultHttpClientProvider()
-                .WithoutResiliencePolicy()
+            _returnClient = new NClientControllerBuilder()
+                .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

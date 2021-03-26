@@ -6,8 +6,9 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.InterfaceProxy;
 using NClient.InterfaceProxy.Extensions;
-using Polly;
+using NClient.Providers.HttpClient.RestSharp;
 using RestSharp.Authenticators;
+using Polly;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -20,11 +21,10 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetDefaultHttpClientProvider(authenticator)
-                    .WithPollyResiliencePolicy(asyncPolicy)
-                    .WithLogger(logger)
+                return new NClientBuilder()
+                    .Use<TInterface>(host, authenticator)
+                    .WithResiliencePolicy(asyncPolicy)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -36,11 +36,9 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetDefaultHttpClientProvider(authenticator)
-                    .WithoutResiliencePolicy()
-                    .WithLogger(logger)
+                return new NClientBuilder()
+                    .Use<TInterface>(host, authenticator)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -52,11 +50,10 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetDefaultHttpClientProvider()
-                    .WithPollyResiliencePolicy(asyncPolicy)
-                    .WithLogger(logger)
+                return new NClientBuilder()
+                    .Use<TInterface>(host)
+                    .WithResiliencePolicy(asyncPolicy)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -68,25 +65,18 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetDefaultHttpClientProvider()
-                    .WithoutResiliencePolicy()
-                    .WithLogger(logger)
+                return new NClientBuilder()
+                    .Use<TInterface>(host, new RestSharpHttpClientProvider())
+                    .WithLogging(logger)
                     .Build();
             });
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
-            string host, Func<IClientProviderHttp<TInterface>, IClientProviderLogger<TInterface>> configure) 
+            Func<INClientBuilder, INClientBuilder<TInterface>> configure) 
             where TInterface : class, INClient
         {
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                var clientProvider = new ClientProvider().Use<TInterface>(new Uri(host));
-                return configure(clientProvider).WithLogger(logger).Build();
-            });
+            return serviceCollection.AddSingleton(_ => configure(new NClientBuilder()).Build());
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
@@ -96,11 +86,10 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetHttpClientProvider(httpClientProvider)
+                return new NClientBuilder()
+                    .Use<TInterface>(host, httpClientProvider)
                     .WithResiliencePolicy(resiliencePolicyProvider)
-                    .WithLogger(logger)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -112,11 +101,9 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ClientProvider()
-                    .Use<TInterface>(new Uri(host))
-                    .SetHttpClientProvider(httpClientProvider)
-                    .WithoutResiliencePolicy()
-                    .WithLogger(logger)
+                return new NClientBuilder()
+                    .Use<TInterface>(host, httpClientProvider)
+                    .WithLogging(logger)
                     .Build();
             });
         }

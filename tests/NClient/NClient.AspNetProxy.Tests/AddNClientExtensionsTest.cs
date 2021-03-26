@@ -11,18 +11,16 @@ using Polly;
 namespace NClient.AspNetProxy.Tests
 {
     [Parallelizable]
-    public class ServiceCollectionExtensionsTest
+    public class AddNClientExtensionsTest
     {
         [Test]
         public void AddNClient_ClientProvider_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClient<IBasicClient, BasicController>(
-                host: "http://localhost:5000", 
+            serviceCollection.AddNClient(
                 configure: provider => provider
-                    .SetHttpClientProvider(new RestSharpHttpClientProvider())
-                    .WithoutResiliencePolicy());
+                    .Use<IBasicClient, BasicController>(host: "http://localhost:5000", new RestSharpHttpClientProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();
@@ -35,8 +33,8 @@ namespace NClient.AspNetProxy.Tests
 
             serviceCollection.AddNClient<IBasicClient, BasicController>(
                 host: "http://localhost:5000", 
-                httpClientProvider: new RestSharpHttpClientProvider(),
-                resiliencePolicyProvider: new PollyResiliencePolicyProvider(Policy.NoOpAsync()));
+                new RestSharpHttpClientProvider(),
+                new PollyResiliencePolicyProvider(Policy.NoOpAsync()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();
@@ -49,7 +47,7 @@ namespace NClient.AspNetProxy.Tests
 
             serviceCollection.AddNClient<IBasicClient, BasicController>(
                 host: "http://localhost:5000",
-                httpClientProvider: new RestSharpHttpClientProvider());
+                new RestSharpHttpClientProvider());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();
             client.Should().NotBeNull();

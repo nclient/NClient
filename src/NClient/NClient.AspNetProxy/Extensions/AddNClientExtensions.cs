@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
-using NClient.Core;
 using Polly;
 using RestSharp.Authenticators;
+#pragma warning disable 618
 
 namespace NClient.AspNetProxy.Extensions
 {
@@ -19,11 +18,10 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
-                    .Use<TInterface, TController>(new Uri(host))
-                    .SetDefaultHttpClientProvider(authenticator)
+                return new NClientControllerBuilder()
+                    .Use<TInterface, TController>(host, authenticator)
                     .WithPollyResiliencePolicy(asyncPolicy)
-                    .WithLogger(logger)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -36,11 +34,9 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
-                    .Use<TInterface, TController>(new Uri(host))
-                    .SetDefaultHttpClientProvider(authenticator)
-                    .WithoutResiliencePolicy()
-                    .WithLogger(logger)
+                return new NClientControllerBuilder()
+                    .Use<TInterface, TController>(host, authenticator)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -53,11 +49,10 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
-                    .Use<TInterface, TController>(new Uri(host))
-                    .SetDefaultHttpClientProvider()
+                return new NClientControllerBuilder()
+                    .Use<TInterface, TController>(host)
                     .WithPollyResiliencePolicy(asyncPolicy)
-                    .WithLogger(logger)
+                    .WithLogging(logger)
                     .Build();
             });
         }
@@ -70,11 +65,9 @@ namespace NClient.AspNetProxy.Extensions
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new ControllerClientProvider()
-                    .Use<TInterface, TController>(new Uri(host))
-                    .SetDefaultHttpClientProvider()
-                    .WithoutResiliencePolicy()
-                    .WithLogger(logger)
+                return new NClientControllerBuilder()
+                    .Use<TInterface, TController>(host)
+                    .WithLogging(logger)
                     .Build();
             });
         }
