@@ -10,5 +10,9 @@
 		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\src\NClient\NClient.AspNetProxy.Standalone\NClient.AspNetProxy.Standalone.csproj" />
+	</ItemGroup>
+
 
 </Project>
