@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
@@ -7,7 +6,7 @@ namespace NClient.InterfaceProxy
 {
     public interface INClientFactory
     {
-        T Create<T>(string host) where T : class, INClient;
+        T Create<T>(string host) where T : class;
     }
 
     public class NClientFactory : INClientFactory
@@ -26,7 +25,7 @@ namespace NClient.InterfaceProxy
             _loggerFactory = loggerFactory;
         }
 
-        public T Create<T>(string host) where T : class, INClient
+        public T Create<T>(string host) where T : class
         {
             return new NClientBuilder()
                 .Use<T>(host, _httpClientProvider)

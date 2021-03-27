@@ -1,7 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
@@ -11,8 +9,8 @@ namespace NClient.AspNetProxy
     public interface INClientControllerFactory
     {
         TInterface Create<TInterface, TController>(string host)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface;
+            where TInterface : class
+            where TController : TInterface;
     }
 
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientFactory.")]
@@ -33,8 +31,8 @@ namespace NClient.AspNetProxy
         }
 
         public TInterface Create<TInterface, TController>(string host)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return new NClientControllerBuilder()
                 .Use<TInterface, TController>(host, _httpClientProvider)

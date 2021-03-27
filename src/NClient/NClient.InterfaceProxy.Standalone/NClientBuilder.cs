@@ -15,10 +15,10 @@ namespace NClient.InterfaceProxy
 {
     public interface INClientBuilder
     {
-        INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient;
+        INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class;
     }
 
-    public interface INClientBuilder<T> where T : class, INClient
+    public interface INClientBuilder<T> where T : class
     {
         INClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
         INClientBuilder<T> WithLogging(ILogger<T> logger);
@@ -30,14 +30,14 @@ namespace NClient.InterfaceProxy
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         private static readonly ClientInterfaceValidator Validator = new();
 
-        public INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class, INClient
+        public INClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider) where T : class
         {
             Validator.Ensure<T>(ProxyGenerator);
             return new NClientBuilder<T>(new Uri(host), httpClientProvider, ProxyGenerator);
         }
     }
 
-    internal class NClientBuilder<T> : INClientBuilder<T> where T : class, INClient
+    internal class NClientBuilder<T> : INClientBuilder<T> where T : class
     {
         private readonly Uri _host;
         private readonly IHttpClientProvider _httpClientProvider;

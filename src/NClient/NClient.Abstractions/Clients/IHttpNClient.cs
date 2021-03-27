@@ -6,7 +6,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions.Clients
 {
-    public interface IHttpNClient<T> where T : INClient
+    public interface IHttpNClient<T>
     {
         HttpResponse GetHttpResponse(Expression<Action<T>> apiMethodCall, IResiliencePolicyProvider? resiliencePolicyProvider = null);
         HttpResponse<TResult> GetHttpResponse<TResult>(Expression<Func<T, TResult>> apiMethodCall, IResiliencePolicyProvider? resiliencePolicyProvider = null);

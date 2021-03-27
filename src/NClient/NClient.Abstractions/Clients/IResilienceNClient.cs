@@ -4,7 +4,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions.Clients
 {
-    public interface IResilienceNClient<T> where T : INClient
+    public interface IResilienceNClient<T>
     {
         TResult InvokeResiliently<TResult>(Expression<Func<T, TResult>> apiMethodCall, IResiliencePolicyProvider resiliencePolicyProvider);
     }

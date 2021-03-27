@@ -1,6 +1,5 @@
 ﻿using System;
 using Castle.DynamicProxy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
@@ -19,13 +18,13 @@ namespace NClient.AspNetProxy
     {
         INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             string host, IHttpClientProvider httpClientProvider)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface;
+            where TInterface : class
+            where TController : TInterface;
     }
 
     public interface INClientControllerBuilder<TInterface, TController>
-        where TInterface : class, INClient
-        where TController : ControllerBase, TInterface
+        where TInterface : class
+        where TController : TInterface
     {
         INClientControllerBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
         INClientControllerBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger);
@@ -40,8 +39,8 @@ namespace NClient.AspNetProxy
 
         public INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             string host, IHttpClientProvider httpClientProvider)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             Validator.Ensure<TInterface, TController>(ProxyGenerator);
             return new NClientControllerBuilder<TInterface, TController>(new Uri(host), httpClientProvider, ProxyGenerator);
@@ -49,8 +48,8 @@ namespace NClient.AspNetProxy
     }
 
     internal class NClientControllerBuilder<TInterface, TController> : INClientControllerBuilder<TInterface, TController>
-        where TInterface : class, INClient
-        where TController : ControllerBase, TInterface
+        where TInterface : class
+        where TController : TInterface
     {
         private readonly Uri _host;
         private readonly IHttpClientProvider _httpClientProvider;
