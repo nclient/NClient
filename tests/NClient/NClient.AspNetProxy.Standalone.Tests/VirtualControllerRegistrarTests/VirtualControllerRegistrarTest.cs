@@ -1,24 +1,43 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Castle.DynamicProxy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.AspNetProxy.Extensions;
+using NClient.AspNetProxy.Controllers;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTests
+namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerRegistrarTests
 {
+    [Path("api/[controller]")] public interface IGetController { int Get(int id); }
+    public class GetController : ControllerBase, IGetController { public int Get(int id) => id; }
+
+    [Path("api/[controller]")] public interface IGetParameterlessController { int Get(); }
+    public class GetParameterlessController : ControllerBase, IGetParameterlessController { public int Get() => 1; }
+
+    [Path("api/[controller]")] public interface IGetWithMultipleParamsController { int Get(int id, string name); }
+    public class GetWithMultipleParamsController : ControllerBase, IGetWithMultipleParamsController { public int Get(int id, string name) => id; }
+
+    [Path("api/[controller]")] public interface IGetAsyncController { Task<int> GetAsync(int id); }
+    public class GetAsyncController : ControllerBase, IGetAsyncController { public Task<int> GetAsync(int id) => Task.FromResult(1); }
+
+    [Path("api/[controller]")] public interface IPostController {[PostMethod] void Post(BasicEntity entity); }
+    public class PostController : ControllerBase, IPostController { public void Post(BasicEntity entity) { } }
+
+    [Path("api/[controller]")] public interface IPostAndReturnController {[PostMethod] BasicEntity Post(BasicEntity entity); }
+    public class PostAndReturnController : ControllerBase, IPostAndReturnController { public BasicEntity Post(BasicEntity entity) => entity; }
+
+
     [Parallelizable]
-    public class AddNClientControllersExtensionsTest
+    public class VirtualControllerRegistrarTest
     {
-        [Path("api/[controller]")] public interface IGetController { int Get(int id); }
-        public class GetController : ControllerBase, IGetController { public int Get(int id) => id; }
+        private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
 
         [Test]
-        public void AddNClientControllers_GetController_ReturnInputValue()
+        public void Registrar_GetController_ReturnInputValue()
         {
             const int id = 1;
 
@@ -29,11 +48,8 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Path("api/[controller]")] public interface IGetParameterlessController { int Get(); }
-        public class GetParameterlessController : ControllerBase, IGetParameterlessController { public int Get() => 1; }
-
         [Test]
-        public void AddNClientControllers_GetParameterlessController_ReturnValue()
+        public void Registrar_GetParameterlessController_ReturnValue()
         {
             var actualResult = InvokeMethod<IGetParameterlessController, GetParameterlessController, int>(
                 methodName: nameof(GetParameterlessController.Get),
@@ -42,11 +58,8 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(1);
         }
 
-        [Path("api/[controller]")] public interface IGetWithMultipleParamsController { int Get(int id, string name); }
-        public class GetWithMultipleParamsController : ControllerBase, IGetWithMultipleParamsController { public int Get(int id, string name) => id; }
-
         [Test]
-        public void AddNClientControllers_GetWithMultipleParamsController_ReturnInputValue()
+        public void Registrar_GetWithMultipleParamsController_ReturnInputValue()
         {
             const int id = 1;
 
@@ -57,11 +70,8 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Path("api/[controller]")] public interface IGetAsyncController { Task<int> GetAsync(int id); }
-        public class GetAsyncController : ControllerBase, IGetAsyncController { public Task<int> GetAsync(int id) => Task.FromResult(1); }
-
         [Test]
-        public async Task AddNClientControllers_GetAsyncController_ReturnValue()
+        public async Task Registrar_GetAsyncController_ReturnValue()
         {
             const int id = 1;
 
@@ -72,11 +82,8 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().Be(id);
         }
 
-        [Path("api/[controller]")] public interface IPostController { [PostMethod] void Post(BasicEntity entity); }
-        public class PostController : ControllerBase, IPostController { public void Post(BasicEntity entity) { } }
-
         [Test]
-        public void AddNClientControllers_PostController_NotThrow()
+        public void Registrar_PostController_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
 
@@ -87,11 +94,8 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
             actualResult.Should().BeNull();
         }
 
-        [Path("api/[controller]")] public interface IPostAndReturnController { [PostMethod] BasicEntity Post(BasicEntity entity); }
-        public class PostAndReturnController : ControllerBase, IPostAndReturnController { public BasicEntity Post(BasicEntity entity) => entity; }
-
         [Test]
-        public void AddNClientControllers_PostAndReturnController_ReturnInputEntity()
+        public void Registrar_PostAndReturnController_ReturnInputEntity()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
 
@@ -105,8 +109,13 @@ namespace NClient.AspNetProxy.Standalone.Tests.AddNClientControllersExtensionsTe
         private static TResult? InvokeMethod<TInterface, TController, TResult>(string methodName, object[] parameters) 
             where TController : ControllerBase, TInterface
         {
-            var services = new ServiceCollection()
-                .AddNClientControllers(options => options.AddController<TInterface, TController>());
+            var services = new ServiceCollection();
+            var appTypes = new[] {typeof(TInterface), typeof(TController)};
+                //.Concat(typeof(System.Math).Assembly.GetTypes());
+
+            var virtualControllerRegistrar = new VirtualControllerRegistrar(ProxyGenerator);
+            virtualControllerRegistrar.Register(services, appTypes);
+
             var virtualControllerName = $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{typeof(TController).Name}";
             var virtualControllerType = services
                 .Single(x => x.ServiceType.FullName == virtualControllerName)
