@@ -1,6 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 
 namespace NClient.AspNetProxy
@@ -10,8 +8,8 @@ namespace NClient.AspNetProxy
     {
         public static INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             string host, IHttpClientProvider httpClientProvider)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return new NClientControllerBuilder().Use<TInterface, TController>(host, httpClientProvider);
         }

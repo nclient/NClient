@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Clients;
 using Polly;
 using RestSharp.Authenticators;
 #pragma warning disable 618
@@ -12,8 +10,8 @@ namespace NClient.AspNetProxy.Extensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
             string host, IAuthenticator authenticator, IAsyncPolicy asyncPolicy)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -28,8 +26,8 @@ namespace NClient.AspNetProxy.Extensions
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, IAuthenticator authenticator)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -43,8 +41,8 @@ namespace NClient.AspNetProxy.Extensions
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, IAsyncPolicy asyncPolicy)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -59,8 +57,8 @@ namespace NClient.AspNetProxy.Extensions
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection, 
             string host)
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {

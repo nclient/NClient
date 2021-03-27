@@ -1,7 +1,5 @@
 ﻿using System;
 using Castle.DynamicProxy;
-using Microsoft.AspNetCore.Mvc;
-using NClient.Abstractions.Clients;
 using NClient.AspNetProxy.Mappers;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
@@ -15,8 +13,8 @@ namespace NClient.AspNetProxy.Validators
     internal class ClientControllerValidator
     {
         public void Ensure<TInterface, TController>(IProxyGenerator proxyGenerator) 
-            where TInterface : class, INClient
-            where TController : ControllerBase, TInterface
+            where TInterface : class
+            where TController : TInterface
         {
             var attributeMapper = new AspNetAttributeMapper();
 

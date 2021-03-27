@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.InterfaceProxy;
@@ -16,7 +15,7 @@ namespace NClient.Extensions.DependencyInjection
     {
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
             string host, IAuthenticator authenticator, IAsyncPolicy asyncPolicy)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -31,7 +30,7 @@ namespace NClient.Extensions.DependencyInjection
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
             string host, IAuthenticator authenticator)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -45,7 +44,7 @@ namespace NClient.Extensions.DependencyInjection
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host, IAsyncPolicy asyncPolicy)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -60,7 +59,7 @@ namespace NClient.Extensions.DependencyInjection
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -74,14 +73,14 @@ namespace NClient.Extensions.DependencyInjection
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             Func<INClientBuilder, INClientBuilder<TInterface>> configure) 
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(_ => configure(new NClientBuilder()).Build());
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host, IHttpClientProvider httpClientProvider, IResiliencePolicyProvider resiliencePolicyProvider)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
@@ -96,7 +95,7 @@ namespace NClient.Extensions.DependencyInjection
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection, 
             string host, IHttpClientProvider httpClientProvider)
-            where TInterface : class, INClient
+            where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {

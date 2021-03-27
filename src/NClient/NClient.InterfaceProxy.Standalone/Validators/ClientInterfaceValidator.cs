@@ -1,7 +1,5 @@
 ﻿using System;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Clients;
-using NClient.Core;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
@@ -14,7 +12,7 @@ namespace NClient.InterfaceProxy.Validators
 {
     internal class ClientInterfaceValidator
     {
-        public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class, INClient
+        public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class
         {
             var attributeMapper = new AttributeMapper();
 
