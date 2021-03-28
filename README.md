@@ -61,7 +61,7 @@ public class WeatherForecastController : ControllerBase, IWeatherForecastControl
 ```
 This should be done if you want your client type to not contain "Сontroller" in the name. If you add `INClient` interface, you will get additional NClient features: receive a full http response and change a resilience policy for requests.
 #### Step 6: Add controller to ServiceCollection in Startup.cs
-```
+```C#
 public void ConfigureServices(IServiceCollection services)
 {
     // ...
