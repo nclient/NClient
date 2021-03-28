@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Castle.DynamicProxy;
 
-namespace NClient.AspNetProxy.Controllers
+namespace NClient.AspNetCore.Controllers
 {
     internal class VirtualControllerInterceptor : IInterceptor
     {

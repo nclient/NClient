@@ -6,9 +6,9 @@ using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Core.Validators;
-using NClient.Standalone.Mappers;
+using NClient.Mappers;
 
-namespace NClient.Standalone.ControllerBasedClients
+namespace NClient.ControllerBasedClients
 {
     internal class ControllerBasedClientValidator
     {

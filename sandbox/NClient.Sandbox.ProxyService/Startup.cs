@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NClient.AspNetProxy.Extensions;
+using NClient.AspNetCore.Extensions;
 using NClient.Extensions.DependencyInjection;
 using NClient.Sandbox.ProxyService.Clients;
 

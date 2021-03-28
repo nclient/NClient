@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
-using NClient.Standalone.Mappers;
+using NClient.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 

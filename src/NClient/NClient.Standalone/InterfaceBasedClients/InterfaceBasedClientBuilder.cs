@@ -10,7 +10,7 @@ using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 
-namespace NClient.Standalone.InterfaceBasedClients
+namespace NClient.InterfaceBasedClients
 {
     public interface IInterfaceBasedClientBuilder<T> where T : class
     {

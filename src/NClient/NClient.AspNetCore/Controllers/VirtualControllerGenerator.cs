@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
-namespace NClient.AspNetProxy.Controllers
+namespace NClient.AspNetCore.Controllers
 {
     internal interface IVirtualControllerGenerator
     {

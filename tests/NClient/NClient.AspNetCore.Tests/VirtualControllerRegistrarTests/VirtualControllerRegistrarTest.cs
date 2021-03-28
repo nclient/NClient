@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.AspNetProxy;
-using NClient.AspNetProxy.Controllers;
+using NClient.AspNetCore.Controllers;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -111,8 +110,8 @@ namespace NClient.AspNetCore.Tests.VirtualControllerRegistrarTests
             where TController : ControllerBase, TInterface
         {
             var services = new ServiceCollection();
-            var appTypes = new[] {typeof(TInterface), typeof(TController)};
-                //.Concat(typeof(System.Math).Assembly.GetTypes());
+            var appTypes = new[] {typeof(TInterface), typeof(TController)}
+                .Concat(typeof(System.Math).Assembly.GetTypes());
 
             var virtualControllerRegistrar = new VirtualControllerRegistrar(ProxyGenerator);
             virtualControllerRegistrar.Register(services, appTypes);

@@ -1,9 +1,9 @@
 ﻿using System;
 using NClient.Abstractions.HttpClients;
-using NClient.Standalone.ControllerBasedClients;
-using NClient.Standalone.InterfaceBasedClients;
+using NClient.ControllerBasedClients;
+using NClient.InterfaceBasedClients;
 
-namespace NClient.Standalone
+namespace NClient
 {
     public static class NClientStandaloneProvider
     {
