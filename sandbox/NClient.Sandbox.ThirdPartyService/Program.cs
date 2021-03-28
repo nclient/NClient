@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace NClient.Sandboxes.AspNetWebService
+namespace NClient.Sandbox.ThirdPartyService
 {
     public class Program
     {

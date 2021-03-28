@@ -1,8 +1,8 @@
 using System;
 
-namespace NClient.Sandboxes.AspNetWebService
+namespace NClient.Sandbox.ProxyService.Facade.Dto
 {
-    public class WeatherForecast
+    public class WeatherForecastDto
     {
         public DateTime Date { get; set; }
 
