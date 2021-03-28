@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Providers.Resilience.Abstractions;
+using NClient.Abstractions.Resilience;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly

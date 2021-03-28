@@ -3,13 +3,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.AspNetProxy.Extensions;
-using NClient.Core;
+using NClient.Abstractions.Clients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.AspNetProxy;
 using NClient.Extensions.DependencyInjection;
-using NClient.InterfaceProxy;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
@@ -37,7 +34,7 @@ namespace NClient.Packages.Tests
         }
 
         [Test]
-        public async Task AspNetProxy()
+        public async Task ControllerBasedClient()
         {
             const int id = 1;
             const string host = "http://localhost:5001";
@@ -53,7 +50,7 @@ namespace NClient.Packages.Tests
 
             var result = await client.GetAsync(id);
 
-            PackagesVersionProvider.GetCurrent<ControllerClientProvider>().Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent<NClientBuilder>().Should().Be(PackagesVersionProvider.GetNew());
             result.Should().Be("result");
         }
 
@@ -65,7 +62,7 @@ namespace NClient.Packages.Tests
         }
 
         [Test]
-        public async Task InterfaceProxy()
+        public async Task InterfaceBasedClient()
         {
             const int id = 1;
             const string host = "http://localhost:5002";
@@ -81,7 +78,7 @@ namespace NClient.Packages.Tests
 
             var result = await client.GetAsync(id);
 
-            PackagesVersionProvider.GetCurrent<ClientProvider>().Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent<NClientBuilder>().Should().Be(PackagesVersionProvider.GetNew());
             result.Should().Be("result");
         }
 

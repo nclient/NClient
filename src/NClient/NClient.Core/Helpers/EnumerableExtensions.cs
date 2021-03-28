@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NClient.Core.Helpers
 {
-    public static class EnumerableExtensions
+    internal static class EnumerableExtensions
     {
         public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int count)
         {

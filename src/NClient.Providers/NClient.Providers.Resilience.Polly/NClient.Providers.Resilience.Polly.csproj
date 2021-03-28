@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\NClient.Providers.Resilience\NClient.Providers.Resilience.csproj" />
+		<ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

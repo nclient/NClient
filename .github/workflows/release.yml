@@ -68,7 +68,7 @@ jobs:
       if: github.ref == 'refs/heads/release'
       run: echo "VersionSuffix=" >> $GITHUB_ENV
     - name: Exit because the branch is not released
-      if: env.VersionSuffix == ''
+      if: env.VersionSuffix == 'unbound'
       run: exit 1
       
     - name: Wait verification packages (5 min)
