@@ -1,4 +1,4 @@
-﻿namespace NClient.AspNetProxy
+﻿namespace NClient.AspNetCore
 {
     public class NClientAssemblyNames
     {

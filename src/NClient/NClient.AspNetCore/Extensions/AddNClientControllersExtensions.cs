@@ -4,9 +4,9 @@ using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.AspNetProxy.Controllers;
+using NClient.AspNetCore.Controllers;
 
-namespace NClient.AspNetProxy.Extensions
+namespace NClient.AspNetCore.Extensions
 {
     public static class AddNClientControllersExtensions
     {

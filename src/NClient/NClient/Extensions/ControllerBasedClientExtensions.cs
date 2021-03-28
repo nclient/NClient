@@ -1,8 +1,7 @@
 ﻿using System;
+using NClient.ControllerBasedClients;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
-using NClient.Standalone;
-using NClient.Standalone.ControllerBasedClients;
 using Polly;
 using RestSharp.Authenticators;
 

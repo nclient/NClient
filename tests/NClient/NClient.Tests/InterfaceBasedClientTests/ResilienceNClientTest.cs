@@ -3,7 +3,6 @@ using FluentAssertions;
 using NClient.Core.Extensions;
 using NClient.Core.Resilience;
 using NClient.Extensions;
-using NClient.Standalone;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
 using NClient.Tests.Clients;

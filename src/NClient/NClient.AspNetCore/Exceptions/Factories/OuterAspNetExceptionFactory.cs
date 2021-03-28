@@ -1,6 +1,6 @@
 ﻿using NClient.Core.Exceptions;
 
-namespace NClient.AspNetProxy.Exceptions.Factories
+namespace NClient.AspNetCore.Exceptions.Factories
 {
     internal static class OuterAspNetExceptionFactory
     {
