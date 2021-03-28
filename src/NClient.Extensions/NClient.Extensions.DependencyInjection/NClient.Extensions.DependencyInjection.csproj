@@ -9,7 +9,7 @@
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
-		<Description>Provides an extensions for registration interface-based clients in ASP.NET app.</Description>
+		<Description>Extension methods for registration of clients in ServiceCollection.</Description>
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\NClient\NClient.InterfaceProxy\NClient.InterfaceProxy.csproj" />
+		<ProjectReference Include="..\..\NClient\NClient\NClient.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

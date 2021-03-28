@@ -9,8 +9,8 @@ namespace NClient.Packages.Tests
     public class VersionTest
     {
         [Test]
-        public void NClient() =>
-            PackagesVersionProvider.GetCurrent("NClient").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Core() =>
+            PackagesVersionProvider.GetCurrent("NClient.Core").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Resilience() =>
@@ -21,39 +21,27 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Annotations").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_AspNetProxy() => 
-            PackagesVersionProvider.GetCurrent("NClient.AspNetProxy").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient() =>
+            PackagesVersionProvider.GetCurrent("NClient").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_AspNetProxy_Standalone() => 
-            PackagesVersionProvider.GetCurrent("NClient.AspNetProxy.Standalone").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_Core() => 
-            PackagesVersionProvider.GetCurrent("NClient.Core").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_InterfaceProxy() => 
-            PackagesVersionProvider.GetCurrent("NClient.InterfaceProxy").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_InterfaceProxy_Standalone() => 
-            PackagesVersionProvider.GetCurrent("NClient.InterfaceProxy.Standalone").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_Standalone() => 
+        public void NClient_Standalone() =>
             PackagesVersionProvider.GetCurrent("NClient.Standalone").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_HttpClient_RestSharp() => 
+        public void NClient_AspNetProxy() => 
+            PackagesVersionProvider.GetCurrent("NClient.AspNetCore").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Providers_HttpClient_RestSharp() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Resilience_Polly() => 
+        public void NClient_Providers_Resilience_Polly() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Extensions_DependencyInjection() => 
+        public void NClient_Extensions_DependencyInjection() =>
             PackagesVersionProvider.GetCurrent("NClient.Extensions.DependencyInjection").Should().Be(PackagesVersionProvider.GetNew());
     }
 }

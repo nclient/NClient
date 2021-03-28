@@ -37,7 +37,7 @@ namespace NClient.Packages.Tests
         }
 
         [Test]
-        public async Task AspNetProxy()
+        public async Task ControllerBasedClient()
         {
             const int id = 1;
             const string host = "http://localhost:5001";
@@ -65,7 +65,7 @@ namespace NClient.Packages.Tests
         }
 
         [Test]
-        public async Task InterfaceProxy()
+        public async Task InterfaceBasedClient()
         {
             const int id = 1;
             const string host = "http://localhost:5002";

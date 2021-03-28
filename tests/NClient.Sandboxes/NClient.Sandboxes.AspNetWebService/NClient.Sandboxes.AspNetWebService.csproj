@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
@@ -11,8 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\src\NClient\NClient.AspNetProxy.Standalone\NClient.AspNetProxy.Standalone.csproj" />
+		<ProjectReference Include="..\..\..\src\NClient\NClient.AspNetCore\NClient.AspNetCore.csproj" />
 	</ItemGroup>
-
 
 </Project>
