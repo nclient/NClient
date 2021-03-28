@@ -1,4 +1,4 @@
-﻿using NClient.Providers.HttpClient.Abstractions;
+﻿using NClient.Abstractions.HttpClients;
 using RestSharp.Authenticators;
 
 namespace NClient.Providers.HttpClient.RestSharp
