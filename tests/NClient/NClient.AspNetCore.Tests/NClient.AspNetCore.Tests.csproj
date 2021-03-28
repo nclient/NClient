@@ -15,10 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\NClient\NClient.AspNetProxy.Standalone\NClient.AspNetProxy.Standalone.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<ProjectReference Include="..\..\..\src\NClient\NClient.AspNetCore\NClient.AspNetCore.csproj" />
 		<ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
 	</ItemGroup>
 

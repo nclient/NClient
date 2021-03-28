@@ -25,12 +25,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\NClient.InterfaceProxy\NClient.InterfaceProxy.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	  <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+	  <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
+	  <ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
 	</ItemGroup>
 
 </Project>

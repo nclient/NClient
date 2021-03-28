@@ -25,13 +25,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\NClient.AspNetProxy.Standalone\NClient.AspNetProxy.Standalone.csproj" />
-		<ProjectReference Include="..\NClient.InterfaceProxy.Standalone\NClient.InterfaceProxy.Standalone.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	  <ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
+	  <ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
+	  <ProjectReference Include="..\NClient.Core\NClient.Core.csproj" />
 	</ItemGroup>
 
 </Project>

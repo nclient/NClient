@@ -15,10 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\NClient\NClient.InterfaceProxy\NClient.InterfaceProxy.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\NClient.InterfaceProxy.Standalone.Tests\NClient.InterfaceProxy.Standalone.Tests.csproj" />
 		<ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
 	</ItemGroup>

@@ -29,12 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\NClient\NClient.InterfaceProxy\NClient.InterfaceProxy.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	  <ProjectReference Include="..\..\NClient\NClient\NClient.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\NClient\NClient.InterfaceProxy.Standalone\NClient.InterfaceProxy.Standalone.csproj" />
+		<ProjectReference Include="..\..\..\src\NClient\NClient.Standalone\NClient.Standalone.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

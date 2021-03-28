@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\src\NClient\NClient.AspNetProxy.Standalone\NClient.AspNetProxy.Standalone.csproj" />
+	  <ProjectReference Include="..\..\..\src\NClient\NClient.AspNetCore\NClient.AspNetCore.csproj" />
 	</ItemGroup>
 
 
