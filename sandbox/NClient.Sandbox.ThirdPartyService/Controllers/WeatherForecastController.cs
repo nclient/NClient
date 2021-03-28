@@ -1,21 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.Annotations;
-using NClient.Annotations.Methods;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NClient.Sandbox.ThirdPartyService.Models;
 
-namespace NClient.Sandboxes.AspNetWebService.Controllers
+namespace NClient.Sandbox.ThirdPartyService.Controllers
 {
-    [Path("[controller]")]
-    public interface IWeatherForecastController
-    {
-        [GetMethod]
-        IEnumerable<WeatherForecast> Get();
-    }
-
-    public class WeatherForecastController : ControllerBase, IWeatherForecastController
+    [ApiController]
+    [Route("[controller]")]
+    public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
@@ -29,6 +23,7 @@ namespace NClient.Sandboxes.AspNetWebService.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

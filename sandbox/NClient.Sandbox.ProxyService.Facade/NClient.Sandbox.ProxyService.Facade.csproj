@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -11,7 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\NClient\NClient.AspNetCore\NClient.AspNetCore.csproj" />
+	  <ProjectReference Include="..\..\src\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\src\NClient\NClient.Annotations\NClient.Annotations.csproj" />
 	</ItemGroup>
 
 </Project>

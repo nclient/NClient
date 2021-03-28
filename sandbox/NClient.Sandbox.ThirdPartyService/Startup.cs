@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NClient.AspNetProxy.Extensions;
 
-namespace NClient.Sandboxes.AspNetWebService
+namespace NClient.Sandbox.ThirdPartyService
 {
     public class Startup
     {
@@ -18,7 +17,7 @@ namespace NClient.Sandboxes.AspNetWebService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddNClientControllers();
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
