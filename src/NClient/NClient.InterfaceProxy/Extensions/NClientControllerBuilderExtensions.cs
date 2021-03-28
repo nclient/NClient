@@ -24,7 +24,7 @@ namespace NClient.AspNetProxy.Extensions
             return clientBuilder.Use<TInterface, TController>(host, new RestSharpHttpClientProvider(authenticator));
         }
 
-        public static INClientControllerBuilder<TInterface, TController> WithPollyResiliencePolicy<TInterface, TController>(
+        public static INClientControllerBuilder<TInterface, TController> WithResiliencePolicy<TInterface, TController>(
             this INClientControllerBuilder<TInterface, TController> clientBuilder, IAsyncPolicy asyncPolicy)
             where TInterface : class
             where TController : TInterface

@@ -3,16 +3,16 @@ using Castle.DynamicProxy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Abstractions.HttpClients;
-using NClient.AspNetProxy.Mappers;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
+using NClient.InterfaceProxy.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
 namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
-    public class RequestBuilderTest : RequestBuilderTestBase
+    public class ControllerRequestBuilderTest : RequestBuilderTestBase
     {
         [OneTimeSetUp]
         public override void OneTimeSetUp()

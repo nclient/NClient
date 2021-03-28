@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.AspNetProxy.Mappers;
 using NClient.AspNetProxy.Validators;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
+using NClient.InterfaceProxy.Mappers;
 
 namespace NClient.AspNetProxy
 {

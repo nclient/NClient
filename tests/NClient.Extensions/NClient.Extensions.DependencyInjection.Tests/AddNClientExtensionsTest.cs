@@ -1,10 +1,20 @@
-﻿using FluentAssertions;
+﻿//using FluentAssertions;
+//using Microsoft.Extensions.DependencyInjection;
+//using NClient.AspNetProxy.Tests.Controllers;
+//using NClient.Extensions.DependencyInjection;
+//using NClient.Providers.HttpClient.RestSharp;
+//using NClient.Providers.Resilience.Polly;
+//using NClient.Testing.Common.Clients;
+//using NUnit.Framework;
+//using Polly;
+
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.AspNetProxy.Extensions;
-using NClient.AspNetProxy.Tests.Controllers;
+using NClient.Extensions.DependencyInjection;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
 using NClient.Testing.Common.Clients;
+using NClient.AspNetProxy;
 using NUnit.Framework;
 using Polly;
 
