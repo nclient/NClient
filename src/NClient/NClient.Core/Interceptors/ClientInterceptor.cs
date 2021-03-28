@@ -85,7 +85,7 @@ namespace NClient.Core.Interceptors
             var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider)
                 .ConfigureAwait(false);
 
-            _logger?.LogInformation("Processing request finished.");
+            _logger?.LogDebug("Processing request finished.");
             return result;
         }
 
