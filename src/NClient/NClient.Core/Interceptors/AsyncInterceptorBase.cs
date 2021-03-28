@@ -18,7 +18,7 @@ namespace NClient.Core.Interceptors
         "Design",
         "CA1031:Do not catch general exception types",
         Justification = "Must propagate the same exceptions.")]
-    public abstract class AsyncInterceptorBase : IAsyncInterceptor
+    internal abstract class AsyncInterceptorBase : IAsyncInterceptor
     {
 #if !NETSTANDARD2_0 && !NET5_0
         /// <summary>

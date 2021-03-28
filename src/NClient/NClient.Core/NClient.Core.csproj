@@ -9,7 +9,7 @@
 		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-		<Description>The core of NClient library for creating HTTP client that allows you to call web service API methods using annotated controllers.</Description>
+		<Description>The core of NClient library for creating HTTP client that allows you to call web service API methods using annotated interfaces or controllers.</Description>
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
@@ -26,13 +26,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient\NClient.Providers.HttpClient.csproj" />
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience\NClient.Providers.Resilience.csproj" />
+		<ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
 		<ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
 	</ItemGroup>
 
@@ -46,31 +46,28 @@
 			<_Parameter1>NClient</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.AspNetProxy</_Parameter1>
+			<_Parameter1>NClient.Standalone</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.AspNetProxy.Standalone</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.InterfaceProxy</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.InterfaceProxy.Standalone</_Parameter1>
+			<_Parameter1>NClient.AspNetCore</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.Core.Tests</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NClient.Testing.Common</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.AspNetProxy.Standalone.Tests</_Parameter1>
+			<_Parameter1>NClient.Core.Tests</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.InterfaceProxy.Standalone.Tests</_Parameter1>
+			<_Parameter1>NClient.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.Standalone.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.AspNetCore.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 
