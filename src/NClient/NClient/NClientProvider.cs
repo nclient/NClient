@@ -1,8 +1,7 @@
 ﻿using System;
+using NClient.ControllerBasedClients;
+using NClient.InterfaceBasedClients;
 using NClient.Providers.HttpClient.RestSharp;
-using NClient.Standalone;
-using NClient.Standalone.ControllerBasedClients;
-using NClient.Standalone.InterfaceBasedClients;
 using RestSharp.Authenticators;
 
 namespace NClient

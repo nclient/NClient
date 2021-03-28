@@ -1,7 +1,6 @@
-﻿using NClient.Providers.HttpClient.RestSharp;
+﻿using NClient.InterfaceBasedClients;
+using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
-using NClient.Standalone;
-using NClient.Standalone.InterfaceBasedClients;
 using Polly;
 using RestSharp.Authenticators;
 

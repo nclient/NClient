@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace NClient.AspNetProxy.Controllers
+namespace NClient.AspNetCore.Controllers
 {
     internal class VirtualControllerFeatureProvider : ControllerFeatureProvider
     {

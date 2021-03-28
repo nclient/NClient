@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.AspNetProxy.Exceptions.Factories;
-using NClient.AspNetProxy.Mappers;
+using NClient.AspNetCore.Exceptions.Factories;
+using NClient.AspNetCore.Mappers;
 
-namespace NClient.AspNetProxy.Controllers
+namespace NClient.AspNetCore.Controllers
 {
     public interface IVirtualControllerRegistrar
     {

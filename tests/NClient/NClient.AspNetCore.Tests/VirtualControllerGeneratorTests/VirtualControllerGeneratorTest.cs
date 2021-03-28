@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
-using NClient.AspNetProxy.Controllers;
-using NClient.AspNetProxy.Mappers;
+using NClient.AspNetCore.Controllers;
+using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
 using NUnit.Framework;
 

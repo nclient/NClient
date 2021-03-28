@@ -8,7 +8,7 @@ using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Core.Validators;
 
-namespace NClient.Standalone.InterfaceBasedClients
+namespace NClient.InterfaceBasedClients
 {
     internal class InterfaceBasedClientValidator
     {

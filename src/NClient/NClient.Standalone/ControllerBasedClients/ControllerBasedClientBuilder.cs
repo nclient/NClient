@@ -8,9 +8,9 @@ using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
-using NClient.Standalone.Mappers;
+using NClient.Mappers;
 
-namespace NClient.Standalone.ControllerBasedClients
+namespace NClient.ControllerBasedClients
 {
     public interface IControllerBasedClientBuilder<TInterface, TController>
         where TInterface : class

@@ -5,7 +5,7 @@ using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
-namespace NClient.Standalone.Mappers
+namespace NClient.Mappers
 {
     public class AspNetAttributeMapper : IAttributeMapper
     {
