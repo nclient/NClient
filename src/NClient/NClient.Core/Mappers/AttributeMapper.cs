@@ -3,12 +3,12 @@ using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Mappers
 {
-    public interface IAttributeMapper
+    internal interface IAttributeMapper
     {
         Attribute? TryMap(Attribute attribute);
     }
 
-    public class AttributeMapper : IAttributeMapper
+    internal class AttributeMapper : IAttributeMapper
     {
         public Attribute TryMap(Attribute attribute)
         {

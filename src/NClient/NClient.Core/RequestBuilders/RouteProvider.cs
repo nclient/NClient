@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Routing.Template;
 using NClient.Annotations.Parameters;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.RequestBuilders.Models;

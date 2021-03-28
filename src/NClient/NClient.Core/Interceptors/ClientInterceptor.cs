@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.RequestBuilders;
-using NClient.Providers.HttpClient;
-using NClient.Providers.HttpClient.Abstractions;
-using NClient.Providers.Resilience.Abstractions;
 
 namespace NClient.Core.Interceptors
 {

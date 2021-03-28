@@ -11,10 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="5.10.3" />
 		<PackageReference Include="Moq" Version="4.16.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />
@@ -24,23 +20,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.AspNetProxy.Standalone.Tests</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.AspNetProxy.Tests</_Parameter1>
-		</AssemblyAttribute>
+		<ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NClient.Core.Tests</_Parameter1>
 		</AssemblyAttribute>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.InterfaceProxy.Standalone.Tests</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.InterfaceProxy.Tests</_Parameter1>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NClient.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.Standalone.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.AspNetCore.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
 

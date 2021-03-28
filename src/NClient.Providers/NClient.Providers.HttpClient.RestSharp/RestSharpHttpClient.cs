@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using NClient.Providers.HttpClient.Abstractions;
+using NClient.Abstractions.HttpClients;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
+using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
+using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
+
 
 namespace NClient.Providers.HttpClient.RestSharp
 {

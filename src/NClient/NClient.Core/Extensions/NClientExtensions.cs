@@ -1,4 +1,6 @@
-﻿namespace NClient.Core.Extensions
+﻿using NClient.Abstractions.Clients;
+
+namespace NClient.Core.Extensions
 {
     public static class NClientExtensions
     {

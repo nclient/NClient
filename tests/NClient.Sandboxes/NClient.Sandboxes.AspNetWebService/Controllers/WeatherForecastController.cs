@@ -3,12 +3,19 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NClient.Annotations;
+using NClient.Annotations.Methods;
 
 namespace NClient.Sandboxes.AspNetWebService.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    [Path("[controller]")]
+    public interface IWeatherForecastController
+    {
+        [GetMethod]
+        IEnumerable<WeatherForecast> Get();
+    }
+
+    public class WeatherForecastController : ControllerBase, IWeatherForecastController
     {
         private static readonly string[] Summaries = new[]
         {
@@ -22,7 +29,6 @@ namespace NClient.Sandboxes.AspNetWebService.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();

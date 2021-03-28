@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Providers.HttpClient;
 
 namespace NClient.Core.RequestBuilders
 {
