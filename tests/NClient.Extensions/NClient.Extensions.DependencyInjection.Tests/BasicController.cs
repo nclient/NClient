@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Extensions.DependencyInjection
+namespace NClient.Extensions.DependencyInjection.Tests
 {
     [ApiController]
     [Route("api/basic")]

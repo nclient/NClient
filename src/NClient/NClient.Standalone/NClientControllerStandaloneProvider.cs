@@ -1,7 +1,7 @@
 ﻿using System;
 using NClient.Abstractions.HttpClients;
 
-namespace NClient.AspNetProxy
+namespace NClient.Standalone
 {
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientStandaloneProvider.")]
     public static class NClientControllerStandaloneProvider

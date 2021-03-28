@@ -6,9 +6,9 @@ using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Core.Validators;
-using NClient.InterfaceProxy.Mappers;
+using NClient.Standalone.Mappers;
 
-namespace NClient.AspNetProxy.Validators
+namespace NClient.Standalone.Validators
 {
     internal class ClientControllerValidator
     {

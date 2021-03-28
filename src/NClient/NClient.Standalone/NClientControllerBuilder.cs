@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.AspNetProxy.Validators;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
-using NClient.InterfaceProxy.Mappers;
+using NClient.Standalone.Mappers;
+using NClient.Standalone.Validators;
 
-namespace NClient.AspNetProxy
+namespace NClient.Standalone
 {
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientBuilder.")]
     public interface INClientControllerBuilder

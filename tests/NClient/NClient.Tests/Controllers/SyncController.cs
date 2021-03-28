@@ -2,7 +2,7 @@
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.AspNetProxy.Tests.Controllers
+namespace NClient.Tests.Controllers
 {
     [ApiController]
     [Route("api/sync")]

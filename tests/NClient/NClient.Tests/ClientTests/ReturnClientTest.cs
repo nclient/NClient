@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.InterfaceProxy.Extensions;
-using NClient.InterfaceProxy.Tests.Clients;
+using NClient.Extensions;
+using NClient.Standalone;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.Clients;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Tests.ClientTests
+namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
     public class ReturnClientTest

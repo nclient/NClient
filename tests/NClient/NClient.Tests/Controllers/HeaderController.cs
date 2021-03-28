@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NClient.Testing.Common.Clients;
 
-namespace NClient.AspNetProxy.Tests.Controllers
+namespace NClient.Tests.Controllers
 {
     [ApiController]
     [Route("api/header")]

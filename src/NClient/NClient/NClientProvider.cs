@@ -1,7 +1,8 @@
 ﻿using NClient.Providers.HttpClient.RestSharp;
+using NClient.Standalone;
 using RestSharp.Authenticators;
 
-namespace NClient.InterfaceProxy
+namespace NClient
 {
     public static class NClientProvider
     {

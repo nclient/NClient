@@ -1,6 +1,6 @@
 ﻿using NClient.Abstractions.HttpClients;
 
-namespace NClient.InterfaceProxy
+namespace NClient.Standalone
 {
     public static class NClientStandaloneProvider
     {

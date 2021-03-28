@@ -9,9 +9,9 @@ using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
-using NClient.InterfaceProxy.Validators;
+using NClient.Standalone.Validators;
 
-namespace NClient.InterfaceProxy
+namespace NClient.Standalone
 {
     public interface INClientBuilder
     {

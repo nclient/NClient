@@ -1,24 +1,12 @@
-﻿//using FluentAssertions;
-//using Microsoft.Extensions.DependencyInjection;
-//using NClient.AspNetProxy.Tests.Controllers;
-//using NClient.Extensions.DependencyInjection;
-//using NClient.Providers.HttpClient.RestSharp;
-//using NClient.Providers.Resilience.Polly;
-//using NClient.Testing.Common.Clients;
-//using NUnit.Framework;
-//using Polly;
-
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Extensions.DependencyInjection;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
 using NClient.Testing.Common.Clients;
-using NClient.AspNetProxy;
 using NUnit.Framework;
 using Polly;
 
-namespace NClient.AspNetProxy.Tests
+namespace NClient.Extensions.DependencyInjection.Tests
 {
     [Parallelizable]
     public class AddNClientExtensionsTest
@@ -28,8 +16,7 @@ namespace NClient.AspNetProxy.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClient(
-                configure: provider => provider
+            serviceCollection.AddNClient(configure: provider => provider
                     .Use<IBasicClient, BasicController>(host: "http://localhost:5000", new RestSharpHttpClientProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClient>();

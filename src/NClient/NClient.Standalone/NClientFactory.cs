@@ -2,7 +2,7 @@
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.InterfaceProxy
+namespace NClient.Standalone
 {
     public interface INClientFactory
     {

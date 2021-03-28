@@ -8,7 +8,7 @@ using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Standalone.Tests.HttpMethodProviderTests
+namespace NClient.Standalone.Tests.HttpMethodProviderTests
 {
     [Parallelizable]
     public class HttpMethodProviderTest

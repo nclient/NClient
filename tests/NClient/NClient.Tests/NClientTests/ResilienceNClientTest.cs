@@ -2,13 +2,14 @@
 using FluentAssertions;
 using NClient.Core.Extensions;
 using NClient.Core.Resilience;
-using NClient.InterfaceProxy.Extensions;
-using NClient.InterfaceProxy.Tests.Clients;
+using NClient.Extensions;
+using NClient.Standalone;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.Clients;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Tests.NClientTests
+namespace NClient.Tests.NClientTests
 {
     [Parallelizable]
     public class ResilienceNClientTest

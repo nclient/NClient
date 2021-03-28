@@ -3,7 +3,7 @@ using NClient.Annotations.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.InterfaceProxy.Tests.Clients
+namespace NClient.Tests.Clients
 {
     [Path("api/sync")]
     public interface ISyncClientWithMetadata : ISyncClient

@@ -1,9 +1,10 @@
 ﻿using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
-using RestSharp.Authenticators;
+using NClient.Standalone;
 using Polly;
+using RestSharp.Authenticators;
 
-namespace NClient.InterfaceProxy.Extensions
+namespace NClient.Extensions
 {
     public static class NClientBuilderExtensions
     {

@@ -6,7 +6,7 @@ using NClient.Core.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
+namespace NClient.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
     public class RequestBuilderMethodTest : RequestBuilderTestBase

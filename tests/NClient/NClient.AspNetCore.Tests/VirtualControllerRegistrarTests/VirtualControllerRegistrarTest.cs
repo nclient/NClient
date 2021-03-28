@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.AspNetProxy;
 using NClient.AspNetProxy.Controllers;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerRegistrarTests
+namespace NClient.AspNetCore.Tests.VirtualControllerRegistrarTests
 {
     [Path("api/[controller]")] public interface IGetController { int Get(int id); }
     public class GetController : ControllerBase, IGetController { public int Get(int id) => id; }

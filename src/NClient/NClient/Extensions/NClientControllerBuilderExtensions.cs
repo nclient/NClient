@@ -1,12 +1,14 @@
 ﻿using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
-using RestSharp.Authenticators;
+using NClient.Standalone;
 using Polly;
+using RestSharp.Authenticators;
+
 #pragma warning disable 618
 
-namespace NClient.AspNetProxy.Extensions
+namespace NClient.Extensions
 {
-    public static class NClientBuilderExtensions
+    public static class NClientControllerBuilderExtensions
     {
         public static INClientControllerBuilder<TInterface, TController> Use<TInterface, TController>(
             this INClientControllerBuilder clientBuilder, string host)

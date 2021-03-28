@@ -12,7 +12,7 @@ using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Standalone.Tests.RequestBuilderTests
+namespace NClient.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
     public class RequestBuilderRouteTest : RequestBuilderTestBase

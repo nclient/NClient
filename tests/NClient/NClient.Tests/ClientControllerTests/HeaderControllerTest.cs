@@ -1,13 +1,15 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.AspNetProxy.Extensions;
-using NClient.AspNetProxy.Tests.Controllers;
+using NClient.Extensions;
+using NClient.Standalone;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.Controllers;
 using NUnit.Framework;
+
 #pragma warning disable 618
 
-namespace NClient.AspNetProxy.Tests.ClientTests
+namespace NClient.Tests.ClientControllerTests
 {
     [Parallelizable]
     public class HeaderControllerTest

@@ -10,7 +10,7 @@ using NClient.AspNetProxy.Mappers;
 using NClient.Core.Exceptions;
 using NUnit.Framework;
 
-namespace NClient.AspNetProxy.Standalone.Tests.VirtualControllerGeneratorTests
+namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
 {
     public class VirtualControllerGeneratorTest
     {

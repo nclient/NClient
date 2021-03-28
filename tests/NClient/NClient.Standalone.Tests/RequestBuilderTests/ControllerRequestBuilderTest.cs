@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
-using NClient.InterfaceProxy.Mappers;
+using NClient.Standalone.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
-namespace NClient.AspNetProxy.Standalone.Tests.RequestBuilderTests
+namespace NClient.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
     public class ControllerRequestBuilderTest : RequestBuilderTestBase

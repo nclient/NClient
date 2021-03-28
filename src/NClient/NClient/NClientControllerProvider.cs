@@ -1,8 +1,9 @@
 ﻿using System;
 using NClient.Providers.HttpClient.RestSharp;
+using NClient.Standalone;
 using RestSharp.Authenticators;
 
-namespace NClient.AspNetProxy
+namespace NClient
 {
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use NClientProvider.")]
     public static class NClientControllerProvider

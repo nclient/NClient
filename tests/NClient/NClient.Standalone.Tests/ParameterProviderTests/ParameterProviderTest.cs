@@ -10,7 +10,7 @@ using NClient.Core.RequestBuilders.Models;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.InterfaceProxy.Standalone.Tests.ParameterProviderTests
+namespace NClient.Standalone.Tests.ParameterProviderTests
 {
     [Parallelizable]
     public class ParameterProviderTest

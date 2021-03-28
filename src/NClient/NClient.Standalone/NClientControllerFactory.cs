@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.AspNetProxy
+namespace NClient.Standalone
 {
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use INClientFactory.")]
     public interface INClientControllerFactory
