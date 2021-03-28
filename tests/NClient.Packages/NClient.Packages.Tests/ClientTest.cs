@@ -8,7 +8,6 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Extensions.DependencyInjection;
 using NClient.Packages.Tests.Helpers;
-using NClient.Standalone;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
