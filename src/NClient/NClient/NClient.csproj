@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	
+
 	<PropertyGroup>
 		<PackageId>$(AssemblyName)</PackageId>
 		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
@@ -14,7 +14,7 @@
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>
-		
+
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
@@ -25,14 +25,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
+		<ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
-	  <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
-	  <ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>

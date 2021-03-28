@@ -29,12 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+		<ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>

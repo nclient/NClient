@@ -13,27 +13,12 @@ namespace NClient.Standalone.Mappers
         {
             return attribute.GetType() switch
             {
-                { Name: "RouteAttribute" } x => new PathAttribute((string)x.GetProperty("Template")!.GetValue(attribute))
-                {
-                    Order = (int)x.GetProperty("Order")!.GetValue(attribute)
-                },
+                { Name: "RouteAttribute" } => new PathAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
-                { Name: "HttpGetAttribute" } x => new GetMethodAttribute((string)x.GetProperty("Template")!.GetValue(attribute))
-                {
-                    Order = (int)x.GetProperty("Order")!.GetValue(attribute)
-                },
-                { Name: "HttpPostAttribute" } x => new PostMethodAttribute((string)x.GetProperty("Template")!.GetValue(attribute))
-                {
-                    Order = (int)x.GetProperty("Order")!.GetValue(attribute)
-                },
-                { Name: "HttpPutAttribute" } x => new PutMethodAttribute((string)x.GetProperty("Template")!.GetValue(attribute))
-                {
-                    Order = (int)x.GetProperty("Order")!.GetValue(attribute)
-                },
-                { Name: "HttpDeleteAttribute" } x => new DeleteMethodAttribute((string)x.GetProperty("Template")!.GetValue(attribute))
-                {
-                    Order = (int)x.GetProperty("Order")!.GetValue(attribute)
-                },
+                { Name: "HttpGetAttribute" } x => new GetMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpPostAttribute" } x => new PostMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpPutAttribute" } x => new PutMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpDeleteAttribute" } x => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "FromRouteAttribute" } => new RouteParamAttribute(),
                 { Name: "FromQueryAttribute" } => new QueryParamAttribute(),
@@ -43,6 +28,16 @@ namespace NClient.Standalone.Mappers
                 {} => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
             };
+        }
+
+        private static string GetTemplate(Attribute attribute)
+        {
+            return (string)attribute.GetType().GetProperty("Template")!.GetValue(attribute);
+        }
+
+        private static int GetOrder(Attribute attribute)
+        {
+            return (int)attribute.GetType().GetProperty("Order")!.GetValue(attribute);
         }
     }
 }

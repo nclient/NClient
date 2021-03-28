@@ -25,14 +25,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+		<ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
+		<ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
+		<ProjectReference Include="..\NClient.Core\NClient.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
-	  <ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
-	  <ProjectReference Include="..\NClient.Core\NClient.Core.csproj" />
+		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>
