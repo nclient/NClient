@@ -33,18 +33,29 @@ namespace NClient.Core.RequestBuilders
                     var paramAttributes = paramInfo.GetCustomAttributes()
                         .Select(attribute => _attributeMapper.TryMap(attribute))
                         .Where(x => x is ParamAttribute)
+                        .Cast<ParamAttribute>()
                         .ToArray();
                     if (paramAttributes.Length > 1)
                         throw OuterExceptionFactory.MultipleParameterAttributeNotSupported(method, paramInfo.Name);
                     var paramAttribute = paramAttributes.SingleOrDefault();
 
                     return new Parameter(
-                        paramInfo.Name,
+                        GetParamName(paramInfo, paramAttribute),
                         paramInfo.ParameterType,
                         arguments.ElementAtOrDefault(index),
                         paramAttribute ?? GetAttributeForImplicitParameter(paramInfo, routeTemplate));
                 })
                 .ToArray();
+        }
+
+        private static string GetParamName(ParameterInfo paramInfo, ParamAttribute? paramAttribute)
+        {
+            var nameFromAttribute = paramAttribute?
+                .GetType()
+                .GetProperty("Name", typeof(string))?
+                .GetValue(paramAttribute) as string;
+
+            return nameFromAttribute ?? paramInfo.Name;
         }
 
         private static Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)
