@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Extensions;
@@ -10,7 +11,7 @@ namespace NClient.Sandbox.Client
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var retryPolicy = Policy
                 .Handle<Exception>()
@@ -27,8 +28,8 @@ namespace NClient.Sandbox.Client
                 .WithLogging(logger)
                 .Build();
 
-            var weatherForecasts = client.Get();
-            Console.WriteLine($"Forecast length: {weatherForecasts.Count()}.");
+            var weatherForecasts = await client.GetAsync(id: 1);
+            Console.WriteLine($"Forecast summary: {weatherForecasts.Summary}.");
         }
     }
 }
