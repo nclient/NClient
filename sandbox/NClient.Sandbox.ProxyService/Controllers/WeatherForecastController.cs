@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NClient.Sandbox.ProxyService.Clients;
@@ -20,9 +21,9 @@ namespace NClient.Sandbox.ProxyService.Controllers
             _logger = logger;
         }
 
-        public IEnumerable<WeatherForecastDto> Get()
+        public Task<WeatherForecastDto> GetAsync(int id)
         {
-            return _thirdPartyWeatherForecastClient.Get();
+            return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
         }
     }
 }
