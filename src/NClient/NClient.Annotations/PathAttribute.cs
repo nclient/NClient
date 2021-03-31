@@ -11,7 +11,7 @@ namespace NClient.Annotations
 
         public PathAttribute(string template)
         {
-            Template = template;
+            Template = template ?? throw new ArgumentNullException(nameof(template));
         }
     }
 }

@@ -13,6 +13,8 @@ namespace NClient.Mappers
         {
             return attribute.GetType() switch
             {
+                { Name: "ApiControllerAttribute" } => new ApiAttribute(),
+
                 { Name: "RouteAttribute" } => new PathAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "HttpGetAttribute" } x => new GetMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },

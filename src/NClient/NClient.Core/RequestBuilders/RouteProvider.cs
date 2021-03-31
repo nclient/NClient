@@ -16,6 +16,8 @@ namespace NClient.Core.RequestBuilders
 
     internal class RouteProvider : IRouteProvider
     {
+        private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
+
         public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
         {
             var routeParams = parameters
@@ -69,19 +71,27 @@ namespace NClient.Core.RequestBuilders
 
         private static string GetControllerName(string clientName)
         {
-            var name = clientName;
+            clientName = GetNameWithoutPrefix(clientName);
+            clientName = GetNameWithoutSuffix(clientName);
+            return clientName;
+        }
 
+        private static string GetNameWithoutPrefix(string name)
+        {
             //TODO: Check interface or not
             if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
-                name = new string(name.Skip(1).ToArray());
+                return new string(name.Skip(1).ToArray());
 
-            const string controllerSuffix = "Controller";
-            if (name.Length > controllerSuffix.Length && name.EndsWith(controllerSuffix))
-                name = name.Remove(name.Length - controllerSuffix.Length, controllerSuffix.Length);
+            return name;
+        }
 
-            const string clientSuffix = "Client";
-            if (name.Length > clientSuffix.Length && name.EndsWith(clientSuffix))
-                name = name.Remove(name.Length - clientSuffix.Length, clientSuffix.Length);
+        private static string GetNameWithoutSuffix(string name)
+        {
+            foreach (var suffix in Suffixes)
+            {
+                if (name.Length > suffix.Length && name.EndsWith(suffix))
+                    return name.Remove(name.Length - suffix.Length, suffix.Length);
+            }
 
             return name;
         }

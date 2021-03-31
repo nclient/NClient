@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
@@ -49,10 +50,9 @@ namespace NClient.AspNetCore.Controllers
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
             var interfaceAttributes = GetAttributes(interfaceType);
-            typeBuilder.SetCustomAttribute(CreateCustomAttribute(new ApiControllerAttribute()));
             foreach (var interfaceAttribute in interfaceAttributes)
             {
-                typeBuilder.SetCustomAttribute(CreateCustomAttribute(interfaceAttribute));
+                typeBuilder.SetCustomAttribute(CreateAttribute(interfaceAttribute));
             }
 
             var interfaceMethods = interfaceType.GetMethods();
@@ -63,7 +63,7 @@ namespace NClient.AspNetCore.Controllers
                 var interfaceMethodAttributes = GetAttributes(interfaceMethod);
                 foreach (var interfaceMethodAttribute in interfaceMethodAttributes)
                 {
-                    methodBuilder.SetCustomAttribute(CreateCustomAttribute(interfaceMethodAttribute));
+                    methodBuilder.SetCustomAttribute(CreateAttribute(interfaceMethodAttribute));
                 }
             }
 
@@ -82,6 +82,37 @@ namespace NClient.AspNetCore.Controllers
                 })
                 .Where(x => x is not null)
                 .ToArray()!;
+        }
+
+        private static CustomAttributeBuilder CreateAttribute(Attribute attribute)
+        {
+            return attribute is IRouteTemplateProvider routeTemplateProvider
+                ? CreateRouteTemplateProviderAttribute(routeTemplateProvider)
+                : CreateCustomAttribute(attribute);
+        }
+
+        private static CustomAttributeBuilder CreateRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
+        {
+            // TODO: Remove duplication (see CreateCustomAttribute())
+            var attributeProps = attribute.GetType()
+                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanWrite)
+                .ToArray();
+            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
+
+            var attributeFields = attribute.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
+            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
+
+            if (attribute.Template is null)
+                return new CustomAttributeBuilder(
+                    attribute.GetType().GetConstructors().First(),
+                    Array.Empty<object>(),
+                    attributeProps,
+                    attributePropValues!,
+                    attributeFields,
+                    attributeFieldValues!);
+            
+            return CreateCustomAttribute((Attribute)attribute);
         }
 
         private static CustomAttributeBuilder CreateCustomAttribute(Attribute attribute)
