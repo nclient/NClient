@@ -6,7 +6,7 @@ using NClient.Sandbox.ProxyService.Facade.Dto;
 
 namespace NClient.Sandbox.ProxyService.Facade
 {
-    [Path("[controller]")]
+    [Path("api/nclient/[controller]")]
     public interface IWeatherForecastController
     {
         [GetMethod]
