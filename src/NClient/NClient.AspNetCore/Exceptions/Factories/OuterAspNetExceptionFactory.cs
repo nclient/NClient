@@ -9,5 +9,8 @@ namespace NClient.AspNetCore.Exceptions.Factories
 
         public static NClientException ControllerInterfaceNotFound(string controllerName) =>
             new($"NClient interface for controller '{controllerName}' not found.");
+
+        public static NClientException ControllersNotFound() =>
+            new($"NClient controllers not found.");
     }
 }
