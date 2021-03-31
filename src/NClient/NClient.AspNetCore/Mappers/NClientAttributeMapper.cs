@@ -14,12 +14,22 @@ namespace NClient.AspNetCore.Mappers
         { 
             return attribute switch
             {
+                ApiAttribute => new ApiControllerAttribute(),
+
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
-                GetMethodAttribute x => new HttpGetAttribute(x.Template ?? "") { Order = x.Order, Name = x.Name },
-                PostMethodAttribute x => new HttpPostAttribute(x.Template ?? "") { Order = x.Order, Name = x.Name },
-                PutMethodAttribute x => new HttpPutAttribute(x.Template ?? "") { Order = x.Order, Name = x.Name },
-                DeleteMethodAttribute x => new HttpDeleteAttribute(x.Template ?? "") { Order = x.Order, Name = x.Name },
+                GetMethodAttribute x => x.Template is null 
+                    ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                PostMethodAttribute x => x.Template is null
+                    ? new HttpPostAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPostAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                PutMethodAttribute x => x.Template is null
+                    ? new HttpPutAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPutAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                DeleteMethodAttribute x => x.Template is null
+                    ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
                 RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
                 QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },

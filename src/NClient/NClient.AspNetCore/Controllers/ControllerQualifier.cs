@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
 
 namespace NClient.AspNetCore.Controllers
 {
     public static class ControllerQualifier
     {
-        private const string ControllerSuffix = "Controller";
-        private const string ClientSuffix = "Client";
-
         public static bool IsNClientController(Type type)
         {
             if (!type.IsClass)
@@ -32,7 +29,7 @@ namespace NClient.AspNetCore.Controllers
 
         public static bool IsNClientControllerInterface(Type type)
         {
-            if (type.IsClass)
+            if (!type.IsInterface)
                 return false;
 
             if (!type.IsPublic)
@@ -41,15 +38,11 @@ namespace NClient.AspNetCore.Controllers
             if (type.ContainsGenericParameters)
                 return false;
 
-            if (!type.Name.EndsWith(ControllerSuffix, StringComparison.OrdinalIgnoreCase)
-                && !type.Name.EndsWith(ClientSuffix, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            if (!type.IsDefined(typeof(PathAttribute), inherit: true)
-                && !type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true)))
-                return false;
-
-            return true;
+            return type.IsDefined(typeof(FacadeAttribute), inherit: true) 
+                   || type.IsDefined(typeof(ApiAttribute), inherit: true)
+                   || type.IsDefined(typeof(PathAttribute), inherit: true)
+                   || type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true))
+                   || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));
         }
     }
 }
