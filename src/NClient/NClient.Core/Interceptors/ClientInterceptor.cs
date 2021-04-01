@@ -110,10 +110,7 @@ namespace NClient.Core.Interceptors
                 return (TResult)(object)response;
 
             if (!response.IsSuccessful)
-            {
-                _logger?.LogError($"Request finished with error code {response.StatusCode}: {response.ErrorMessage}");
                 throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
-            }
 
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
@@ -123,6 +120,11 @@ namespace NClient.Core.Interceptors
             try
             {
                 return await processInvocation(invocation).ConfigureAwait(false);
+            }
+            catch (HttpRequestNClientException e)
+            {
+                _logger?.LogError(e.Message);
+                throw;
             }
             catch (NClientException e)
             {
