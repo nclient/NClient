@@ -22,6 +22,7 @@
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<Configurations>Debug;Release;ReleaseTest</Configurations>
+		<RootNamespace>NClient</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

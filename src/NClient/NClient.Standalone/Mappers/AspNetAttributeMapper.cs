@@ -5,7 +5,7 @@ using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
-namespace NClient.Standalone.Mappers
+namespace NClient.Mappers
 {
     public class AspNetAttributeMapper : IAttributeMapper
     {
@@ -13,6 +13,8 @@ namespace NClient.Standalone.Mappers
         {
             return attribute.GetType() switch
             {
+                { Name: "ApiControllerAttribute" } => new ApiAttribute(),
+
                 { Name: "RouteAttribute" } => new PathAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "HttpGetAttribute" } x => new GetMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },

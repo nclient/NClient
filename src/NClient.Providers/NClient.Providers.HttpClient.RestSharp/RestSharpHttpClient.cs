@@ -78,9 +78,26 @@ namespace NClient.Providers.HttpClient.RestSharp
             if (bodyType is null)
                 return response;
 
-            var responseValue = JsonConvert.DeserializeObject(restResponse.Content, bodyType);
+            var responseValue = TryParseJson(restResponse.Content, bodyType, out var deserializationException);
+            if (deserializationException is not null && response.IsSuccessful)
+                throw deserializationException!;
+
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
             return (HttpResponse)Activator.CreateInstance(genericResponse, response, responseValue);
+        }
+
+        private static object? TryParseJson(string body, Type bodyType, out Exception? exception)
+        {
+            try
+            {
+                exception = null;
+                return JsonConvert.DeserializeObject(body, bodyType);
+            }
+            catch (Exception e)
+            {
+                exception = e;
+                return null;
+            }
         }
     }
 }

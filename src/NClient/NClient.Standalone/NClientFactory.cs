@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Standalone
+namespace NClient
 {
     public interface INClientFactory
     {

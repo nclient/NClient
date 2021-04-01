@@ -21,7 +21,6 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<RootNamespace>NClient.AspNetProxy</RootNamespace>
 		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 

@@ -3,15 +3,16 @@ using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.AspNetProxy.Controllers;
+using NClient.AspNetCore.Controllers;
+using NClient.AspNetCore.Mappers;
 
-namespace NClient.AspNetProxy.Extensions
+namespace NClient.AspNetCore.Extensions
 {
     public static class AddNClientControllersExtensions
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
-        private static readonly IVirtualControllerRegistrar VirtualControllerRegistrar = new VirtualControllerRegistrar(ProxyGenerator);
 
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)
         {
@@ -24,8 +25,23 @@ namespace NClient.AspNetProxy.Extensions
                 .Cast<AssemblyPart>()
                 .Select(x => x.Assembly);
             var appTypes = appAssemblies.SelectMany(x => x.GetTypes());
-            var assemblyWithVirtualControllers = VirtualControllerRegistrar.Register(serviceCollection, appTypes);
+            var interfaceControllerPairs = new VirtualControllerFinder()
+                .FindInterfaceControllerPairs(appTypes);
+            var virtualControllerPairs = new VirtualControllerGenerator(new NClientAttributeMapper())
+                .Create(interfaceControllerPairs)
+                .ToArray();
 
+            foreach (var (virtualControllerType, controllerType) in virtualControllerPairs)
+            {
+                serviceCollection.AddTransient(controllerType);
+                serviceCollection.AddTransient(virtualControllerType, serviceProvider =>
+                {
+                    var controller = serviceProvider.GetRequiredService(controllerType);
+                    return ProxyGenerator.CreateClassProxy(virtualControllerType, new VirtualControllerInterceptor(controller));
+                });
+            }
+
+            var assemblyWithVirtualControllers = virtualControllerPairs.First().VirtualControllerType.Assembly;
             var builder = mvcCoreBuilder
                 .AddApiExplorer()
                 .AddAuthorization()
@@ -36,7 +52,12 @@ namespace NClient.AspNetProxy.Extensions
                 .AddControllersAsServices()
                 .ConfigureApplicationPartManager(manager =>
                 {
-                    manager.FeatureProviders.Add(new VirtualControllerFeatureProvider(assemblyWithVirtualControllers));
+                    var defaultControllerFeatureProvider = manager.FeatureProviders
+                        .SingleOrDefault(x => x.GetType() == typeof(ControllerFeatureProvider));
+                    if (defaultControllerFeatureProvider is not null)
+                        manager.FeatureProviders.Remove(defaultControllerFeatureProvider);
+
+                    manager.FeatureProviders.Add(new VirtualControllerFeatureProvider());
                 });
 
             if (configure != null)
