@@ -229,11 +229,15 @@ namespace NClient.Core.AspNetRouting
             {
                 for (var i = 0; i < formatterNames.Length; i++)
                 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     value = value.Replace("{" + formatterNames[i] + "}", "{" + i + "}");
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 }
             }
 
+#pragma warning disable CS8603 // Possible null reference return.
             return value;
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

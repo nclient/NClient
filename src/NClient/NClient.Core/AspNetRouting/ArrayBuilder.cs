@@ -102,8 +102,12 @@ namespace NClient.Core.AspNetRouting
 
             Debug.Assert(_array != null); // Nonzero _count should imply this
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             T[] result = _array;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (_count < result.Length)
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             {
                 // Avoid a bit of overhead (method call, some branches, extra codegen)
                 // which would be incurred by using Array.Resize
@@ -114,7 +118,9 @@ namespace NClient.Core.AspNetRouting
 #if DEBUG
             // Try to prevent callers from using the ArrayBuilder after ToArray, if _count != 0.
             _count = -1;
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             _array = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 #endif
 
             return result;

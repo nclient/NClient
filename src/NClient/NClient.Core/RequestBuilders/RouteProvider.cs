@@ -28,7 +28,7 @@ namespace NClient.Core.RequestBuilders
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
             if (routeParamNamesWithoutToken.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, routeParamNamesWithoutToken);
+                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, routeParamNamesWithoutToken!);
 
             var routeParts = new List<string>(routeTemplate.Segments.Count);
             foreach (var segment in routeTemplate.Segments)
@@ -50,9 +50,9 @@ namespace NClient.Core.RequestBuilders
         {
             var parameter = parameters.SingleOrDefault(x => x.Name == templatePart.Name);
             if (parameter is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name);
+                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
             if (!parameter.Type.IsSimple())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name);
+                throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
 
             return parameter.Value?.ToString() ?? "";
         }
@@ -65,7 +65,7 @@ namespace NClient.Core.RequestBuilders
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
                     throw OuterExceptionFactory.TokenFromTemplateNotExists(clientName, methodName, token),
-                _ => templatePart.Text
+                _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
 
