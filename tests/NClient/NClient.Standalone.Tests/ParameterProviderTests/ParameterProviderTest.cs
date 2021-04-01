@@ -64,8 +64,8 @@ namespace NClient.Standalone.Tests.ParameterProviderTests
                 .Method(1);
 
             var parameters = ParameterProvider.Get(
-                _emptyRouteTemplate, 
-                KeepDataInterceptor.Invocation!.Method, 
+                _emptyRouteTemplate,
+                KeepDataInterceptor.Invocation!.Method,
                 KeepDataInterceptor.Invocation.Arguments);
 
             parameters.Should().BeEquivalentTo(new Parameter("id", typeof(int), 1, new RouteParamAttribute()));

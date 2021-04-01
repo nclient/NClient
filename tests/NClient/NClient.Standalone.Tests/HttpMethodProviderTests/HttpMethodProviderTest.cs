@@ -32,7 +32,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        public interface IGetMethod { [GetMethod] int Method(); }
+        public interface IGetMethod {[GetMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithGetAttribute_GetHttpMethodType()
@@ -46,7 +46,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Get);
         }
 
-        public interface IPostMethod { [PostMethod] int Method(); }
+        public interface IPostMethod {[PostMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithPostAttribute_PostHttpMethodType()
@@ -60,7 +60,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Post);
         }
 
-        public interface IPutMethod { [PutMethod] int Method(); }
+        public interface IPutMethod {[PutMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithPutAttribute_PutHttpMethodType()
@@ -74,7 +74,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
             httpMethod.Should().Be(HttpMethod.Put);
         }
 
-        public interface IDeleteMethod { [DeleteMethod] int Method(); }
+        public interface IDeleteMethod {[DeleteMethod] int Method(); }
 
         [Test]
         public void Build_MethodWithDeleteAttribute_DeleteHttpMethodType()
@@ -118,7 +118,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
                 .Throw<AttributeNotFoundNClientException>();
         }
 
-        public interface IWithNotSupportedMethodAttribute { [NotSupported] int Method(); }
+        public interface IWithNotSupportedMethodAttribute {[NotSupported] int Method(); }
 
         [Test]
         public void Build_MethodWithNotSupportedAttribute_ThrowException()

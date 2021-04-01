@@ -63,7 +63,7 @@ namespace NClient.Core.RequestBuilders
             {
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
-                { Length: > 2 } token when token.First() == '[' && token.Last() == ']' => 
+                { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
                     throw OuterExceptionFactory.TokenFromTemplateNotExists(clientName, methodName, token),
                 _ => templatePart.Text
             };

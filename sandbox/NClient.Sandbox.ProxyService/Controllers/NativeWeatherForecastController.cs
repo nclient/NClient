@@ -15,7 +15,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         private readonly ILogger<NativeWeatherForecastController> _logger;
 
         public NativeWeatherForecastController(
-            IThirdPartyWeatherForecastClient thirdPartyWeatherForecastClient, 
+            IThirdPartyWeatherForecastClient thirdPartyWeatherForecastClient,
             ILogger<NativeWeatherForecastController> logger)
         {
             _thirdPartyWeatherForecastClient = thirdPartyWeatherForecastClient;

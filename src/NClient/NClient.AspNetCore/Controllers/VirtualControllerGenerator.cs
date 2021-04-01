@@ -43,8 +43,8 @@ namespace NClient.AspNetCore.Controllers
             ModuleBuilder moduleBuilder, Type interfaceType, Type controllerType)
         {
             var typeBuilder = moduleBuilder.DefineType(
-                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}", 
-                attr: TypeAttributes.Public, 
+                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}",
+                attr: TypeAttributes.Public,
                 parent: typeof(ControllerBase));
 
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
@@ -111,7 +111,7 @@ namespace NClient.AspNetCore.Controllers
                     attributePropValues!,
                     attributeFields,
                     attributeFieldValues!);
-            
+
             return CreateCustomAttribute((Attribute)attribute);
         }
 

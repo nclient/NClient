@@ -24,7 +24,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        public interface ICustomTypeBody { [GetMethod] int Get([BodyParam] BasicEntity entity); }
+        public interface ICustomTypeBody {[GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeBody_JsonObjectInBody()
@@ -41,7 +41,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        public interface IMultipleBodyParameters { [GetMethod] int Get([BodyParam] BasicEntity entity1, [BodyParam] BasicEntity entity2); }
+        public interface IMultipleBodyParameters {[GetMethod] int Get([BodyParam] BasicEntity entity1, [BodyParam] BasicEntity entity2); }
 
         [Test]
         public void Build_MultipleBodyParameters_ThrowNClientException()
@@ -58,7 +58,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        public interface ICustomTypeBodyWithoutAttribute { [GetMethod] int Get(BasicEntity entity); }
+        public interface ICustomTypeBodyWithoutAttribute {[GetMethod] int Get(BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeBodyWithoutAttribute_JsonObjectInBody()
@@ -69,13 +69,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
 
-            AssertHttpRequest(httpRequest, 
-                new Uri("http://localhost:5000/"), 
-                HttpMethod.Get, 
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Get,
                 body: new BasicEntity { Id = 1 });
         }
 
-        public interface IMultipleBodyParametersWithoutAttributes { [GetMethod] int Get(BasicEntity entity1, BasicEntity entity2); }
+        public interface IMultipleBodyParametersWithoutAttributes {[GetMethod] int Get(BasicEntity entity1, BasicEntity entity2); }
 
         [Test]
         public void Build_MultipleBodyParametersWithoutAttributes_NClientException()
@@ -92,7 +92,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        public interface IPrimitiveBody { [GetMethod] int Get([BodyParam] int id); }
+        public interface IPrimitiveBody {[GetMethod] int Get([BodyParam] int id); }
 
         [Test]
         public void Build_PrimitiveBody_PrimitiveInBody()
@@ -109,7 +109,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 body: 1);
         }
 
-        [Path("api")] public interface IMultiplyPrimitiveBodyParameters { [GetMethod] int Get([BodyParam] int id, [BodyParam] string value); }
+        [Path("api")] public interface IMultiplyPrimitiveBodyParameters {[GetMethod] int Get([BodyParam] int id, [BodyParam] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveBodyParameters_ThrowNClientException()

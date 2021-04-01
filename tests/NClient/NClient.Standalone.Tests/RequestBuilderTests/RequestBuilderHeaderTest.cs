@@ -23,7 +23,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        public interface IPrimitiveHeader { [GetMethod] int Get([HeaderParam] int id); }
+        public interface IPrimitiveHeader {[GetMethod] int Get([HeaderParam] int id); }
 
         [Test]
         public void Build_PrimitiveHeader_PrimitiveInHeader()
@@ -74,7 +74,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1"), new HttpHeader("value", "val"), });
         }
 
-        public interface ICustomTypeHeader { [GetMethod] int Get([HeaderParam] BasicEntity entity); }
+        public interface ICustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeHeader_ThrowNClientException()
@@ -91,7 +91,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        public interface IMultiplyCustomTypeHeader { [GetMethod] int Get([HeaderParam] BasicEntity entity1, [HeaderParam] BasicEntity entity2); }
+        public interface IMultiplyCustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity1, [HeaderParam] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowNClientException()

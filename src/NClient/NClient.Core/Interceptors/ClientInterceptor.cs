@@ -25,7 +25,7 @@ namespace NClient.Core.Interceptors
 
         public ClientInterceptor(
             IProxyGenerator proxyGenerator,
-            IHttpClientProvider httpClientProvider, 
+            IHttpClientProvider httpClientProvider,
             IRequestBuilder requestBuilder,
             IResiliencePolicyProvider defaultResiliencePolicyProvider,
             Type? controllerType = null,
@@ -97,7 +97,7 @@ namespace NClient.Core.Interceptors
 
             var client = _httpClientProvider.Create();
 
-            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType 
+            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
                 ? typeof(TResult).GetGenericArguments().First()
                 : typeof(TResult);
             var response = await resiliencePolicyProvider
