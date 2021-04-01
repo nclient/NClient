@@ -14,9 +14,9 @@ namespace NClient.Providers.Resilience.Polly
         {
             _asyncPolicy = asyncPolicy;
         }
-        public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action)
+        public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action, string policyKey)
         {
-            return _asyncPolicy.ExecuteAsync(action);
+            return _asyncPolicy.WithPolicyKey(policyKey).ExecuteAsync(action);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace NClient.Abstractions.Resilience
 {
     public interface IResiliencePolicy
     {
-        Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action);
+        Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action, string policyKey);
     }
 }

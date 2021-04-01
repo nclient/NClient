@@ -15,6 +15,7 @@ namespace NClient.Sandbox.Client
         {
             var retryPolicy = Policy
                 .HandleResult<HttpResponse>(x => !x.IsSuccessful)
+                .Or<Exception>()
                 .WaitAndRetryAsync(retryCount: 3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             var logger = new ServiceCollection()
