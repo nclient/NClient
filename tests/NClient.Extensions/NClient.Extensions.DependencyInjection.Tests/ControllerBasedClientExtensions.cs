@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using NClient.Abstractions.HttpClients;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000", 
                 new RestSharpHttpClientProvider(),
-                new PollyResiliencePolicyProvider(Policy.NoOpAsync()));
+                new PollyResiliencePolicyProvider(Policy.NoOpAsync<HttpResponse>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
@@ -56,7 +57,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000",
-                Policy.NoOpAsync());
+                Policy.NoOpAsync<HttpResponse>());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
