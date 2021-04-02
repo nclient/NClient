@@ -13,7 +13,7 @@ namespace NClient.Extensions.DependencyInjection
     public static class ControllerBasedClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host, IAuthenticator authenticator, IAsyncPolicy asyncPolicy)
+            string host, IAuthenticator authenticator, IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
             where TController : TInterface
         {
@@ -44,7 +44,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host, IAsyncPolicy asyncPolicy)
+            string host, IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
             where TController : TInterface
         {
