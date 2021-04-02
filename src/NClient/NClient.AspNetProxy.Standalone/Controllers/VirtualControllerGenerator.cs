@@ -42,8 +42,8 @@ namespace NClient.AspNetProxy.Controllers
             ModuleBuilder moduleBuilder, Type interfaceType, Type controllerType)
         {
             var typeBuilder = moduleBuilder.DefineType(
-                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}", 
-                attr: TypeAttributes.Public, 
+                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}",
+                attr: TypeAttributes.Public,
                 parent: typeof(ControllerBase));
 
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
