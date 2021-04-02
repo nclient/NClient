@@ -16,7 +16,7 @@ namespace NClient.InterfaceProxy
         private readonly ILoggerFactory _loggerFactory;
 
         public NClientFactory(
-            IHttpClientProvider httpClientProvider, 
+            IHttpClientProvider httpClientProvider,
             IResiliencePolicyProvider resiliencePolicyProvider,
             ILoggerFactory loggerFactory)
         {

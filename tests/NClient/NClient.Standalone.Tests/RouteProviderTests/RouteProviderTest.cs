@@ -27,9 +27,9 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             var routeTemplate = TemplateParser.Parse("");
 
             var route = RouteProvider.Build(
-                routeTemplate, 
-                clientName: "IClient", 
-                methodName: "Method", 
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
             route.Should().BeEmpty();
@@ -226,7 +226,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IClient",
                 methodName: "Method",
-                parameters: new []
+                parameters: new[]
                 {
                     new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });

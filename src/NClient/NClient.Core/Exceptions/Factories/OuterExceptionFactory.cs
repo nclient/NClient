@@ -51,15 +51,15 @@ namespace NClient.Core.Exceptions.Factories
             new($"Multiple attributes for a method are not supported. {GetClientInfo(method)}");
 
         //TODO: Should contains client and method info
-        public static NotSupportedNClientException DictionaryWithComplexTypeOfKeyNotSupported() => 
+        public static NotSupportedNClientException DictionaryWithComplexTypeOfKeyNotSupported() =>
             new("Dictionary with complex key types cannot be passed through uri query.");
 
         public static NotSupportedNClientException DictionaryWithComplexTypeOfValueNotSupported() =>
             new("Dictionary with complex value types cannot be passed through uri query.");
 
         public static NotSupportedNClientException ArrayWithComplexTypeNotSupported() =>
-            new("Array with complex types cannot be passed through uri query.");        
-        
+            new("Array with complex types cannot be passed through uri query.");
+
         public static HttpRequestNClientException HttpRequestFailed(HttpStatusCode statusCode, string? errorMessage) =>
             new(statusCode, errorMessage);
 

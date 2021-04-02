@@ -27,7 +27,7 @@ namespace NClient.Mappers
                 { Name: "FromHeaderAttribute" } => new HeaderParamAttribute(),
                 { Name: "FromBodyAttribute" } => new BodyParamAttribute(),
 
-                {} => null,
+                { } => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
             };
         }

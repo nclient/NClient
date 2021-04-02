@@ -172,7 +172,9 @@ namespace NClient.Core.AspNetRouting
             else if (part is RoutePatternParameterPart parameterPart)
             {
                 Debug.Assert(parameterPart != null);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var digit = parameterPart.IsCatchAll ? 1 : 3;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 if (parameterPart.ParameterPolicies.Count > 0)
                 {

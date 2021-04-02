@@ -26,7 +26,7 @@ namespace NClient.Core.RequestBuilders
             Uri host,
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
-            IHttpMethodProvider httpMethodProvider, 
+            IHttpMethodProvider httpMethodProvider,
             IParameterProvider parameterProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter)
         {
