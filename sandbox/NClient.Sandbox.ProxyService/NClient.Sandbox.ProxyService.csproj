@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="NSwag.AspNetCore" Version="13.10.8" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\NClient.Extensions\NClient.Extensions.DependencyInjection\NClient.Extensions.DependencyInjection.csproj" />
 		<ProjectReference Include="..\..\src\NClient\NClient.AspNetCore\NClient.AspNetCore.csproj" />
 	</ItemGroup>
