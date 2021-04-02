@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NClient.Abstractions.HttpClients;
 
 namespace NClient.Abstractions.Resilience
 {
     public interface IResiliencePolicy
     {
-        Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> action);
+        Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action, string policyKey);
     }
 }

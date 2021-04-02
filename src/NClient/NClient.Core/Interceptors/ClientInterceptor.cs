@@ -42,18 +42,20 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            await InvokeWithLoggingExceptions(ProcessInvocationAsync<HttpRequest>, invocation).ConfigureAwait(false);
+            var requestId = Guid.NewGuid();
+            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpRequest>, invocation, requestId).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            return await InvokeWithLoggingExceptions(ProcessInvocationAsync<TResult>, invocation).ConfigureAwait(false);
+            var requestId = Guid.NewGuid();
+            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, invocation, requestId).ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation)
+        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation, Guid requestId)
         {
-            using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", Guid.NewGuid());
+            using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
             var clientType = _controllerType ?? typeof(T);
             var clientMethod = _controllerType is null
@@ -82,56 +84,77 @@ namespace NClient.Core.Interceptors
                 resiliencePolicyProvider = customResiliencePolicyProvider ?? _defaultResiliencePolicyProvider;
             }
 
-            var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider)
+            var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider, requestId)
                 .ConfigureAwait(false);
 
-            _logger?.LogDebug("Processing request finished.");
+            _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
             return result;
         }
 
         private async Task<TResult> ExecuteRequestAsync<TResult>(
-            Type clientType, MethodInfo clientMethod, object[] clientMethodArguments, IResiliencePolicyProvider resiliencePolicyProvider)
+            Type clientType, MethodInfo clientMethod, object[] clientMethodArguments, IResiliencePolicyProvider resiliencePolicyProvider, Guid requestId)
         {
             var request = _requestBuilder.Build(clientType, clientMethod, clientMethodArguments);
-            _logger?.LogDebug($"Start sending {request.Method} request to '{request.Uri}'.");
-
-            var client = _httpClientProvider.Create();
+            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, requestId);
 
             var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType 
                 ? typeof(TResult).GetGenericArguments().First()
                 : typeof(TResult);
+
             var response = await resiliencePolicyProvider
                 .Create()
-                .ExecuteAsync(() => client.ExecuteAsync(request, responseBodyType))
+                .ExecuteAsync(() => ExecuteRequestWithLoggingAsync(request, requestId, responseBodyType), requestId.ToString())
                 .ConfigureAwait(false);
-            _logger?.LogDebug($"Response with code {response.StatusCode} received.");
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
-                return (TResult)(object)response;
-
-            if (!response.IsSuccessful)
             {
-                _logger?.LogError($"Request finished with error code {response.StatusCode}: {response.ErrorMessage}");
-                throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
+                _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
+                return (TResult)(object)response;
             }
 
+            if (!response.IsSuccessful)
+                throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
+
+            _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
 
-        private async Task<TResult> InvokeWithLoggingExceptions<TResult>(Func<IInvocation, Task<TResult>> processInvocation, IInvocation invocation)
+        private async Task<HttpResponse> ExecuteRequestWithLoggingAsync(HttpRequest request, Guid requestId, Type? bodyType = null)
+        {
+            var client = _httpClientProvider.Create();
+            try
+            {
+                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", requestId);
+                var response = await client.ExecuteAsync(request, bodyType).ConfigureAwait(false);
+                if (response.IsSuccessful)
+                    _logger?.LogDebug("Request attempt finished with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
+                else
+                    _logger?.LogWarning(response.ErrorException, "Request attempt failed with code {responseStatusCode} and error message: '{errorMessage}'. Request id: '{requestId}'.",
+                        response.StatusCode, response.ErrorMessage, requestId);
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", requestId);
+                throw;
+            }
+        }
+
+        private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
+            Func<IInvocation, Guid, Task<TResult>> processInvocation, IInvocation invocation, Guid requestId)
         {
             try
             {
-                return await processInvocation(invocation).ConfigureAwait(false);
+                return await processInvocation(invocation, requestId).ConfigureAwait(false);
             }
             catch (NClientException e)
             {
-                _logger?.LogError($"Processing request error: {e.Message}");
+                _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
                 throw;
             }
             catch (Exception e)
             {
-                _logger?.LogError($"Unexpected processing request error: {e.Message}");
+                _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
                 throw;
             }
         }

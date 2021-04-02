@@ -1,4 +1,5 @@
-﻿using NClient.InterfaceBasedClients;
+﻿using NClient.Abstractions.HttpClients;
+using NClient.InterfaceBasedClients;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.Resilience.Polly;
 using Polly;
@@ -20,7 +21,7 @@ namespace NClient.Extensions
         }
 
         public static IInterfaceBasedClientBuilder<T> WithResiliencePolicy<T>(
-            this IInterfaceBasedClientBuilder<T> clientBuilder, IAsyncPolicy asyncPolicy) where T : class
+            this IInterfaceBasedClientBuilder<T> clientBuilder, IAsyncPolicy<HttpResponse> asyncPolicy) where T : class
         {
             return clientBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }

@@ -13,7 +13,7 @@ namespace NClient.Extensions.DependencyInjection
     public static class InterfaceBasedClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, IAuthenticator authenticator, IAsyncPolicy asyncPolicy)
+            string host, IAuthenticator authenticator, IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>
@@ -42,7 +42,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, IAsyncPolicy asyncPolicy)
+            string host, IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
         {
             return serviceCollection.AddSingleton(serviceProvider =>

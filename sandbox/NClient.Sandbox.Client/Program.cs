@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.HttpClients;
 using NClient.Extensions;
 using NClient.Sandbox.ProxyService.Facade;
 using Polly;
@@ -14,7 +14,8 @@ namespace NClient.Sandbox.Client
         public static async Task Main(string[] args)
         {
             var retryPolicy = Policy
-                .Handle<Exception>()
+                .HandleResult<HttpResponse>(x => !x.IsSuccessful)
+                .Or<Exception>()
                 .WaitAndRetryAsync(retryCount: 3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             var logger = new ServiceCollection()
