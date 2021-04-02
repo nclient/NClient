@@ -2,5 +2,6 @@
 {
     public class HeaderParamAttribute : ParamAttribute
     {
+        public string? Name { get; set; }
     }
 }

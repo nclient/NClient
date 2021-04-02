@@ -14,17 +14,27 @@ namespace NClient.AspNetCore.Mappers
         { 
             return attribute switch
             {
-                PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order },
+                ApiAttribute => new ApiControllerAttribute(),
 
-                GetMethodAttribute x => new HttpGetAttribute(x.Template ?? "") { Order = x.Order },
-                PostMethodAttribute x => new HttpPostAttribute(x.Template ?? "") { Order = x.Order },
-                PutMethodAttribute x => new HttpPutAttribute(x.Template ?? "") { Order = x.Order },
-                DeleteMethodAttribute x => new HttpDeleteAttribute(x.Template ?? "") { Order = x.Order },
+                PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
-                RouteParamAttribute => new FromRouteAttribute(),
-                QueryParamAttribute => new FromQueryAttribute(),
+                GetMethodAttribute x => x.Template is null 
+                    ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                PostMethodAttribute x => x.Template is null
+                    ? new HttpPostAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPostAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                PutMethodAttribute x => x.Template is null
+                    ? new HttpPutAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPutAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                DeleteMethodAttribute x => x.Template is null
+                    ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
+
+                RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
+                QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
                 BodyParamAttribute => new FromBodyAttribute(),
-                HeaderParamAttribute => new FromHeaderAttribute(),
+                HeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
                 {} => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
