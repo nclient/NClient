@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+#pragma warning disable 8618
+
 namespace NClient.Core.AspNetRouting
 {
     /// <summary>
