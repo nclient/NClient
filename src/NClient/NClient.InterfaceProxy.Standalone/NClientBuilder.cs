@@ -72,22 +72,22 @@ namespace NClient.InterfaceProxy
             var requestBuilder = new RequestBuilder(
                 _host,
                 new RouteTemplateProvider(attributeMapper),
-                new RouteProvider(), 
-                new HttpMethodProvider(attributeMapper), 
+                new RouteProvider(),
+                new HttpMethodProvider(attributeMapper),
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<T>(
-                _proxyGenerator, 
-                _httpClientProvider, 
-                requestBuilder, 
-                _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(), 
-                controllerType: null, 
+                _proxyGenerator,
+                _httpClientProvider,
+                requestBuilder,
+                _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
+                controllerType: null,
                 _logger);
 
-            return (T) _proxyGenerator.CreateInterfaceProxyWithoutTarget(
-                interfaceToProxy: typeof(T), 
-                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<T>), typeof(IHttpNClient<T>) }, 
+            return (T)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
+                interfaceToProxy: typeof(T),
+                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<T>), typeof(IHttpNClient<T>) },
                 interceptors: interceptor.ToInterceptor());
         }
     }

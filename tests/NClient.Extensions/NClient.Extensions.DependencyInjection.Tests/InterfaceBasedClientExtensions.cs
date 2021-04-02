@@ -31,7 +31,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000", 
+                host: "http://localhost:5000",
                 new RestSharpHttpClientProvider(),
                 new PollyResiliencePolicyProvider(Policy.NoOpAsync<HttpResponse>()));
 

@@ -16,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClient(builder => 
+            serviceCollection.AddNClient(builder =>
                 builder.Use<ITestClient>(host: "http://localhost:5000", new RestSharpHttpClientProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
@@ -29,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClient>(
-                host: "http://localhost:5000", 
+                host: "http://localhost:5000",
                 new RestSharpHttpClientProvider(),
                 new PollyResiliencePolicyProvider(Policy.NoOpAsync<HttpResponse>()));
 

@@ -17,7 +17,7 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Abstractions").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Annotations() => 
+        public void NClient_Annotations() =>
             PackagesVersionProvider.GetCurrent("NClient.Annotations").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
@@ -29,7 +29,7 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Standalone").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_AspNetProxy() => 
+        public void NClient_AspNetProxy() =>
             PackagesVersionProvider.GetCurrent("NClient.AspNetCore").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]

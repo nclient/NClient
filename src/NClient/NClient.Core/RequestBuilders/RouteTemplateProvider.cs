@@ -27,8 +27,8 @@ namespace NClient.Core.RequestBuilders
 
         public RouteTemplate Get(Type clientType, MethodInfo method)
         {
-            var apiAttributes = (clientType.IsInterface 
-                ? clientType.GetInterfaceCustomAttributes(inherit: true) 
+            var apiAttributes = (clientType.IsInterface
+                ? clientType.GetInterfaceCustomAttributes(inherit: true)
                 : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
                 .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is PathAttribute)
@@ -51,7 +51,7 @@ namespace NClient.Core.RequestBuilders
 
             var apiTemplate = apiAttribute?.GetType().GetProperty("Template")!.GetValue(apiAttribute, null) as string ?? "";
             var methodTemplate = methodAttribute.GetType().GetProperty("Template")!.GetValue(methodAttribute, null) as string ?? "";
-            var routeTemplateStr = Path.IsPathRooted(methodTemplate) 
+            var routeTemplateStr = Path.IsPathRooted(methodTemplate)
                 ? methodTemplate
                 : UriCombine(apiTemplate, methodTemplate);
 
