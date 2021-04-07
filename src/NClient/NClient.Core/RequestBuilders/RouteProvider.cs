@@ -49,9 +49,9 @@ namespace NClient.Core.RequestBuilders
         private static string GetValueFromNamedSegment(
             TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> routeParameters, IEnumerable<Parameter> allParameter)
         {
-            var (objectName, propertyPath) = ObjectPropertyManager.ParseNextPath(templatePart.Name!);
+            var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
 
-            if (propertyPath is null)
+            if (memberPath is null)
             {
                 var parameter = routeParameters.SingleOrDefault(x => x.Name == objectName);
                 if (parameter is null)
@@ -69,7 +69,7 @@ namespace NClient.Core.RequestBuilders
                 if (parameter.Value is null)
                     throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
 
-                return ObjectPropertyManager.GetPropertyValue(parameter.Value, propertyPath)?.ToString() ?? "";
+                return ObjectMemberManager.GetMemberValue(parameter.Value, memberPath)?.ToString() ?? "";
             }
         }
 

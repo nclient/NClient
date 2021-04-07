@@ -10,12 +10,12 @@ namespace NClient.AspNetCore.Binding
         public static void ExtendWithRouteParams(ModelBindingContext bindingContext, object model)
         {
             foreach (var routeParameter in bindingContext.ActionContext.RouteData.Values
-                .Where(routeDataValue => ObjectPropertyManager.IsPropertyPath(routeDataValue.Key)))
+                .Where(routeDataValue => ObjectMemberManager.IsMemberPath(routeDataValue.Key)))
             {
-                var (objectName, propertyPath) = ObjectPropertyManager.ParseNextPath(routeParameter.Key);
+                var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(routeParameter.Key);
                 if (!objectName.Equals(bindingContext.ModelName))
                     throw OuterAspNetExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
-                ObjectPropertyManager.SetPropertyValue(model, routeParameter.Value, propertyPath!);
+                ObjectMemberManager.SetMemberValue(model, (string)routeParameter.Value, memberPath!);
             }
         }
     }

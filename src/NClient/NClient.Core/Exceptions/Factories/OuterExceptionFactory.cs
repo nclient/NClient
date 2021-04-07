@@ -6,17 +6,17 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
-        public static NClientException RoutePropertyConvertError(string propertyName, string propertyTypeName, string? actualValue) =>
-            new($"Property '{propertyName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
+        public static NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
+            new($"Object member '{memberName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
 
-        public static NClientException PropertyNotFound(string propertyName, string objectName) =>
-            new($"Property '{propertyName}' not found in '{objectName}' object type.");
+        public static NClientException MemberNotFound(string memberName, string objectName) =>
+            new($"Object member '{memberName}' not found in '{objectName}' object type.");
 
         public static NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
             new($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
 
-        public static NClientException PropertyValueOfObjectInRouteIsNull(string parameterName, string objectName) =>
-            new($"Value of '{parameterName}' property in {objectName} object is null. The value from the path cannot be set.");
+        public static NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
+            new($"Value of '{memberName}' member in {objectName} object is null. The value from the path cannot be set.");
 
         public static NClientException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
