@@ -10,7 +10,10 @@ namespace NClient.Sandbox.ProxyService.Facade
     [Path("api/nclient/[controller]")]
     public interface IWeatherForecastController
     {
-        [GetMethod]
-        Task<WeatherForecastDto> GetAsync([QueryParam(Name = "forecastId")] int id);
+        [GetMethod("{filter.Id}")]
+        Task<WeatherForecastDto> GetAsync([QueryParam(Name = "filter")] WeatherForecastFilter weatherForecastFilter);
+
+        [PostMethod("{weatherForecastDto.Id}")]
+        Task PostAsync(WeatherForecastDto weatherForecastDto);
     }
 }

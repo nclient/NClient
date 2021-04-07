@@ -4,6 +4,8 @@ namespace NClient.Sandbox.ProxyService.Facade.Dto
 {
     public class WeatherForecastDto
     {
+        public int Id { get; set; }
+
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }

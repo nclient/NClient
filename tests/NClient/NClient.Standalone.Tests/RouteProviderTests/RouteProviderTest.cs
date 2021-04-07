@@ -286,6 +286,114 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
+        public void Build_BodyCustomObjectPropertyToken_ObjectPropertyValue()
+        {
+            const int id = 1;
+            var routeTemplate = TemplateParser.Parse("{entity.Id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id , Value = 2 }, new BodyParamAttribute())
+                });
+
+            route.Should().Be(id.ToString());
+        }
+
+        [Test]
+        public void Build_BodyCustomObjectPropertyTokenWithInvalidObjectCase_ThrowNClientException()
+        {
+            var routeTemplate = TemplateParser.Parse("{Entity.Id}");
+
+            RouteProvider
+                .Invoking(x => x.Build(
+                    routeTemplate,
+                    clientName: "IClient",
+                    methodName: "Method",
+                    parameters: new[]
+                    {
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new BodyParamAttribute())
+                    }))
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        [Test]
+        public void Build_BodyCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowNClientException()
+        {
+            var routeTemplate = TemplateParser.Parse("{entity.id}");
+
+            RouteProvider
+                .Invoking(x => x.Build(
+                    routeTemplate,
+                    clientName: "IClient",
+                    methodName: "Method",
+                    parameters: new[]
+                    {
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new BodyParamAttribute())
+                    }))
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        [Test]
+        public void Build_QueryCustomObjectPropertyToken_ObjectPropertyValue()
+        {
+            const int id = 1;
+            var routeTemplate = TemplateParser.Parse("{entity.Id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id , Value = 2 }, new QueryParamAttribute())
+                });
+
+            route.Should().Be(id.ToString());
+        }
+
+        [Test]
+        public void Build_QueryCustomObjectPropertyTokenWithInvalidObjectCase_ThrowNClientException()
+        {
+            var routeTemplate = TemplateParser.Parse("{Entity.Id}");
+
+            RouteProvider
+                .Invoking(x => x.Build(
+                    routeTemplate,
+                    clientName: "IClient",
+                    methodName: "Method",
+                    parameters: new[]
+                    {
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new QueryParamAttribute())
+                    }))
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        [Test]
+        public void Build_QueryCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowNClientException()
+        {
+            var routeTemplate = TemplateParser.Parse("{entity.id}");
+
+            RouteProvider
+                .Invoking(x => x.Build(
+                    routeTemplate,
+                    clientName: "IClient",
+                    methodName: "Method",
+                    parameters: new[]
+                    {
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new QueryParamAttribute())
+                    }))
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        [Test]
         public void Build_AllTypesOfTokensWithStaticPart_StaticPartWithReplacedTokens()
         {
             var routeTemplate = TemplateParser.Parse("api/[controller]/[action]/{id}");
