@@ -36,7 +36,7 @@ namespace NClient.Core.RequestBuilders
                 var templatePart = segment.Parts.Single();
                 var routePart = templatePart switch
                 {
-                    { } when templatePart.Name is not null => GetValueFromNamedSegment(templatePart, clientName, methodName, routeParams),
+                    { } when templatePart.Name is not null => GetValueFromNamedSegment(templatePart, clientName, methodName, routeParams, parameters),
                     { } when templatePart.Text is not null => GetValueFromTextSegment(templatePart, clientName, methodName),
                     _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText(clientName, methodName)
                 };
@@ -46,15 +46,31 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueFromNamedSegment(TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> parameters)
+        private static string GetValueFromNamedSegment(
+            TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> routeParameters, IEnumerable<Parameter> allParameter)
         {
-            var parameter = parameters.SingleOrDefault(x => x.Name == templatePart.Name);
-            if (parameter is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
-            if (!parameter.Type.IsSimple())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
+            var (objectName, propertyPath) = ObjectPropertyManager.ParseNextPath(templatePart.Name!);
 
-            return parameter.Value?.ToString() ?? "";
+            if (propertyPath is null)
+            {
+                var parameter = routeParameters.SingleOrDefault(x => x.Name == objectName);
+                if (parameter is null)
+                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
+                if (!parameter.Type.IsSimple())
+                    throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
+
+                return parameter.Value?.ToString() ?? "";
+            }
+            else
+            {
+                var parameter = allParameter.SingleOrDefault(x => x.Name == objectName);
+                if (parameter is null)
+                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
+                if (parameter.Value is null)
+                    throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
+
+                return ObjectPropertyManager.GetPropertyValue(parameter.Value, propertyPath)?.ToString() ?? "";
+            }
         }
 
         private static string GetValueFromTextSegment(TemplatePart templatePart, string clientName, string methodName)

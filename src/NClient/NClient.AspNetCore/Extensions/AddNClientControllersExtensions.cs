@@ -4,7 +4,10 @@ using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Mappers;
 
@@ -43,6 +46,28 @@ namespace NClient.AspNetCore.Extensions
 
             var assemblyWithVirtualControllers = virtualControllerPairs.First().VirtualControllerType.Assembly;
             var builder = mvcCoreBuilder
+                .AddMvcOptions(options =>
+                {
+                    var serviceProvider = mvcCoreBuilder.Services.BuildServiceProvider();
+
+                    var bodyModelBinderProvider = options.ModelBinderProviders
+                        .SingleOrDefault(x => x.GetType() == typeof(Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider));
+                    var bodyModelBinderProviderIndex = options.ModelBinderProviders.IndexOf(bodyModelBinderProvider);
+                    options.ModelBinderProviders.Remove(bodyModelBinderProvider);
+                    options.ModelBinderProviders.Insert(bodyModelBinderProviderIndex, new BodyModelBinderProvider(
+                        options.InputFormatters,
+                        serviceProvider.GetRequiredService<IHttpRequestStreamReaderFactory>(),
+                        serviceProvider.GetRequiredService<ILoggerFactory>(),
+                        options));
+
+                    var complexObjectModelBinderProvider = options.ModelBinderProviders
+                        .SingleOrDefault(x => x.GetType().FullName == "Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider");
+                    var complexTypeModelBinderProvider = options.ModelBinderProviders
+                        .SingleOrDefault(x => x.GetType() == typeof(Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexTypeModelBinderProvider));
+                    var complexModelBinderProviderIndex = options.ModelBinderProviders.IndexOf(complexObjectModelBinderProvider ?? complexTypeModelBinderProvider);
+                    options.ModelBinderProviders.Remove(complexObjectModelBinderProvider ?? complexTypeModelBinderProvider);
+                    options.ModelBinderProviders.Insert(complexModelBinderProviderIndex, new ComplexTypeModelBinderProvider());
+                })
                 .AddApiExplorer()
                 .AddAuthorization()
                 .AddCors()
