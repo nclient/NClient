@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Extensions;
 using NClient.Sandbox.ProxyService.Facade;
+using NClient.Sandbox.ProxyService.Facade.Dto;
 using Polly;
 
 namespace NClient.Sandbox.Client
@@ -29,8 +30,13 @@ namespace NClient.Sandbox.Client
                 .WithLogging(logger)
                 .Build();
 
-            var weatherForecasts = await client.GetAsync(id: 1);
-            Console.WriteLine($"Forecast summary: {weatherForecasts.Summary}.");
+            var filter = new WeatherForecastFilter { Id = 1, Date = null };
+            var weatherForecast = await client.GetAsync(filter);
+            Console.WriteLine($"Forecast summary: {weatherForecast.Summary}.");
+
+            var newWeatherForecast = new WeatherForecastDto { Id = 1, Date = DateTime.Now, Summary = "Cold", TemperatureC = -30 };
+            await client.PostAsync(newWeatherForecast);
+            Console.WriteLine("Forecast is posted.");
         }
     }
 }

@@ -22,9 +22,16 @@ namespace NClient.Sandbox.ProxyService.Controllers
             _logger = logger;
         }
 
-        public Task<WeatherForecastDto> GetAsync(int id)
+        public Task<WeatherForecastDto> GetAsync(WeatherForecastFilter weatherForecastFilter)
         {
+            _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
+        }
+
+        public Task PostAsync(WeatherForecastDto weatherForecastDto)
+        {
+            _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
+            return Task.FromResult(0);
         }
     }
 }

@@ -10,4 +10,8 @@
 		<Configurations>Debug;Release;ReleaseTest</Configurations>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="NSwag.AspNetCore" Version="13.10.8" />
+	</ItemGroup>
+
 </Project>
