@@ -31,7 +31,7 @@ namespace NClient.Core.Helpers
                 if (nextPropertyPath is not null)
                 {
                     var property = GetPropertyByName(obj, nextObjName);
-                    obj = property!.GetValue(obj) 
+                    obj = property!.GetValue(obj)
                           ?? throw OuterExceptionFactory.PropertyValueOfObjectInRouteIsNull(property.Name, obj.GetType().Name);
                     propertyPath = nextPropertyPath;
                 }
