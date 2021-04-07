@@ -30,8 +30,6 @@ namespace NClient.Core.Tests
 
             new TestCaseData(new { Prop = 1 }, "Prop", 1)
                 .SetName("Top level primitive property"),
-            new TestCaseData(new { Prop = 1 }, "prop", 1)
-                .SetName("Top level property with ignore case"),
             new TestCaseData(new { Prop = "test" }, "Prop", "test")
                 .SetName("Top level string property"),
             new TestCaseData(new { Prop = new[] { 1, 2 } }, "Prop", new[] { 1, 2 })
@@ -40,8 +38,6 @@ namespace NClient.Core.Tests
                 .SetName("Top level custom object property"),
             new TestCaseData(new { Prop = new { Prop = 1 } }, "Prop.Prop", 1)
                 .SetName("Inner property"),
-            new TestCaseData(new { Prop = new { Prop = 1 } }, "prop.prop", 1)
-                .SetName("Inner property with ignore case"),
             new TestCaseData(new { Prop = new { Prop = new { Prop = 1 } } }, "Prop.Prop.Prop", 1)
                 .SetName("Deep property")
 
@@ -66,7 +62,11 @@ namespace NClient.Core.Tests
             new TestCaseData(new { Prop = 1 }, "NonexistentProp", typeof(NClientException))
                 .SetName("Object and nonexistent path"),
             new TestCaseData(new { Prop = new { Prop = 1 } }, "Prop.NonexistentProp", typeof(NClientException))
-                .SetName("Object and inner nonexistent path")
+                .SetName("Object and inner nonexistent path"),
+            new TestCaseData(new { Prop = 1 }, "prop", typeof(NClientException))
+                .SetName("Top level property with invalid case"),
+            new TestCaseData(new { Prop = new { Prop = 1 } }, "prop.prop", typeof(NClientException))
+                .SetName("Inner property with invalid case"),
         };
 
         public static IEnumerable ValidTestCasesForSetMemberValue = new[] 
@@ -83,18 +83,12 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop",
                     new TestObjWithIntProp { Prop = 2 })
                 .SetName("Top level primitive property"),
-            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "prop", 
-                    new TestObjWithIntProp { Prop = 2 })
-                .SetName("Top level property with ignore case"),
             new TestCaseData(new TestObjWithStringProp { Prop = "test" }, "test2", "Prop", 
                     new TestObjWithStringProp { Prop = "test2" })
                 .SetName("Top level string property"),
             new TestCaseData(new TestObjWithObjectProp { Prop = new() { Prop = 1 } }, "2", "Prop.Prop", 
                     new TestObjWithObjectProp { Prop = new() { Prop = 2 } })
                 .SetName("Inner property"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop", 
-                    new TestObjWithObjectProp { Prop = new() { Prop = 2 } })
-                .SetName("Inner property with ignore case"),
             new TestCaseData(new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 1 } } }, "2", "Prop.Prop.Prop", 
                     new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 2 } } })
                 .SetName("Deep property")
@@ -120,6 +114,10 @@ namespace NClient.Core.Tests
                 .SetName("Object and nonexistent path"),
             new TestCaseData(new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } }, "2", "Prop.NonexistentProp", typeof(NClientException))
                 .SetName("Object and inner nonexistent path"),
+            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "prop", typeof(NClientException))
+                .SetName("Top level property with invalid case"),
+            new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop", typeof(NClientException))
+                .SetName("Inner property with invalid case"),
         };
 
         [TestCaseSource(nameof(ValidTestCasesForGetMemberValue))]

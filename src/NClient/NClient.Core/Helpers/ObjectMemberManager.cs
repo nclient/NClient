@@ -95,8 +95,8 @@ namespace NClient.Core.Helpers
 
         private static MemberInfo GetMemberByName(object obj, string memberName)
         {
-            MemberInfo? property = obj.GetType().GetProperty(memberName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            MemberInfo? field = obj.GetType().GetField(memberName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            MemberInfo? property = obj.GetType().GetProperty(memberName, BindingFlags.Public | BindingFlags.Instance);
+            MemberInfo? field = obj.GetType().GetField(memberName, BindingFlags.Public | BindingFlags.Instance);
             if (property is null && field is null)
                 throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
             return property ?? field!;
