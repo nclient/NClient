@@ -69,7 +69,7 @@ namespace NClient.Core.Tests
                 .SetName("Inner property with invalid case"),
         };
 
-        public static IEnumerable ValidTestCasesForSetMemberValue = new[] 
+        public static IEnumerable ValidTestCasesForSetMemberValue = new[]
         {
             new TestCaseData(new TestObjWithIntField { Field = 1 }, "2", "Field", new TestObjWithIntField { Field = 2 })
                 .SetName("Top level primitive field"),
@@ -83,13 +83,13 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop",
                     new TestObjWithIntProp { Prop = 2 })
                 .SetName("Top level primitive property"),
-            new TestCaseData(new TestObjWithStringProp { Prop = "test" }, "test2", "Prop", 
+            new TestCaseData(new TestObjWithStringProp { Prop = "test" }, "test2", "Prop",
                     new TestObjWithStringProp { Prop = "test2" })
                 .SetName("Top level string property"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new() { Prop = 1 } }, "2", "Prop.Prop", 
+            new TestCaseData(new TestObjWithObjectProp { Prop = new() { Prop = 1 } }, "2", "Prop.Prop",
                     new TestObjWithObjectProp { Prop = new() { Prop = 2 } })
                 .SetName("Inner property"),
-            new TestCaseData(new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 1 } } }, "2", "Prop.Prop.Prop", 
+            new TestCaseData(new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 1 } } }, "2", "Prop.Prop.Prop",
                     new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 2 } } })
                 .SetName("Deep property")
         };
