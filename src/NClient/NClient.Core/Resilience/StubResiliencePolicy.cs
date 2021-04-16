@@ -7,7 +7,7 @@ namespace NClient.Core.Resilience
 {
     internal class StubResiliencePolicy : IResiliencePolicy
     {
-        public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action, string policyKey)
+        public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action)
         {
             return action.Invoke();
         }
