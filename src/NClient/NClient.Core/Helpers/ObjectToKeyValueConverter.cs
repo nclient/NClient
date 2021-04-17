@@ -2,24 +2,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Castle.Core.Internal;
+using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers.MemberNameSelectors;
 
 namespace NClient.Core.Helpers
 {
     internal interface IObjectToKeyValueConverter
     {
-        PropertyKeyValue[] Convert(object? obj, string rootName);
+        PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector);
     }
 
     internal class ObjectToKeyValueConverter : IObjectToKeyValueConverter
     {
-        public PropertyKeyValue[] Convert(object? obj, string rootName)
+        public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector)
         {
             var stringValues = new List<PropertyKeyValue>();
-            return ToKeyValue(stringValues, rootName, obj).ToArray();
+            return ToKeyValue(stringValues, rootName, obj, memberNameSelector).ToArray();
         }
 
-        internal static List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value)
+        private static List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
         {
             if (TryAddAsPrimitive(stringValues, key, value))
                 return stringValues;
@@ -27,14 +31,14 @@ namespace NClient.Core.Helpers
             if (TryAddAsEnumerable(stringValues, key, value))
                 return stringValues;
 
-            if (TryAddAsObject(stringValues, key, value))
+            if (TryAddAsObject(stringValues, key, value, memberNameSelector))
                 return stringValues;
 
             stringValues.Add(new PropertyKeyValue(key, value));
             return stringValues;
         }
 
-        internal static bool TryAddAsPrimitive(List<PropertyKeyValue> stringValues, string key, object? value)
+        private static bool TryAddAsPrimitive(List<PropertyKeyValue> stringValues, string key, object? value)
         {
             if (!IsPrimitive(value))
                 return false;
@@ -43,7 +47,7 @@ namespace NClient.Core.Helpers
             return true;
         }
 
-        internal static bool TryAddAsEnumerable(List<PropertyKeyValue> stringValues, string key, object? value)
+        private static bool TryAddAsEnumerable(List<PropertyKeyValue> stringValues, string key, object? value)
         {
             if (IsPrimitive(value) || value is not IEnumerable enumerable)
                 return false;
@@ -70,14 +74,14 @@ namespace NClient.Core.Helpers
             return true;
         }
 
-        internal static bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value)
+        private static bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
         {
             if (IsPrimitive(value))
                 return false;
 
-            foreach (var prop in GetProperties(value))
+            foreach (var prop in GetMembers(value, memberNameSelector))
             {
-                ToKeyValue(stringValues, key: key + "." + prop.Key, prop.Value);
+                ToKeyValue(stringValues, key: key + "." + prop.Key, prop.Value, memberNameSelector);
             }
 
             return true;
@@ -94,13 +98,17 @@ namespace NClient.Core.Helpers
             return obj.GetType().IsSerializable;
         }
 
-        private static IEnumerable<PropertyKeyValue> GetProperties(object? obj)
+        private static IEnumerable<PropertyKeyValue> GetMembers(object? obj, IMemberNameSelector memberNameSelector)
         {
-            return obj?.GetType()
-                .GetProperties()
-                .Where(property => property.CanRead)
-                .Select(property => new PropertyKeyValue(property.Name, property.GetValue(obj)))
-                .ToArray() ?? Array.Empty<PropertyKeyValue>();
+            if (obj is null)
+                return Array.Empty<PropertyKeyValue>();
+
+            return ObjectMemberManager
+                .GetPublicMembers(obj)
+                .Select(member => new PropertyKeyValue(
+                    memberNameSelector.GetName(member),
+                    ObjectMemberManager.GetMemberValue(member, obj)))
+                .ToArray();
         }
     }
 

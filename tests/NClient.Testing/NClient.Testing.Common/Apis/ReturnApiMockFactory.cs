@@ -9,7 +9,7 @@ namespace NClient.Testing.Common.Apis
 {
     public class ReturnApiMockFactory
     {
-        public Uri ApiUri { get; init; }
+        public Uri ApiUri { get; }
 
         public ReturnApiMockFactory(int port)
         {
@@ -51,11 +51,12 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
-                    .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200));
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json"));
 
             return api;
         }
@@ -65,11 +66,22 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
-                    .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200));
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json"));
+
+            return api;
+        }
+
+        public IWireMockServer MockInternalServerError()
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create().UsingAnyMethod())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(500));
 
             return api;
         }

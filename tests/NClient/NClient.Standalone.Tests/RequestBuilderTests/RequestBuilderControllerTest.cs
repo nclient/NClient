@@ -123,9 +123,9 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Route("api")]
         public class MultiplyMethodRoutes : ControllerBase, IMultiplyMethodRoutes
         {
-            [HttpGet] 
-            [HttpGet("[action]")] 
-            [HttpGet("[action]/{id}")] 
+            [HttpGet]
+            [HttpGet("[action]")]
+            [HttpGet("[action]/{id}")]
             public int Method(int id) => 1;
         }
 

@@ -11,7 +11,7 @@ namespace NClient.AspNetProxy.Mappers
     public class NClientAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
-        { 
+        {
             return attribute switch
             {
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order },
@@ -26,7 +26,7 @@ namespace NClient.AspNetProxy.Mappers
                 BodyParamAttribute => new FromBodyAttribute(),
                 HeaderParamAttribute => new FromHeaderAttribute(),
 
-                {} => null,
+                { } => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
             };
         }

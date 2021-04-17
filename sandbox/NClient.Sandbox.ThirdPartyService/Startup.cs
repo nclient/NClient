@@ -17,6 +17,7 @@ namespace NClient.Sandbox.ThirdPartyService
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerDocument();
             services.AddControllers();
         }
 
@@ -26,6 +27,10 @@ namespace NClient.Sandbox.ThirdPartyService
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
+            app.UseReDoc();
 
             app.UseRouting();
 

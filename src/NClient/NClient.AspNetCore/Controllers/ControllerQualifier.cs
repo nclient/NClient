@@ -38,7 +38,7 @@ namespace NClient.AspNetCore.Controllers
             if (type.ContainsGenericParameters)
                 return false;
 
-            return type.IsDefined(typeof(FacadeAttribute), inherit: true) 
+            return type.IsDefined(typeof(FacadeAttribute), inherit: true)
                    || type.IsDefined(typeof(ApiAttribute), inherit: true)
                    || type.IsDefined(typeof(PathAttribute), inherit: true)
                    || type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true))

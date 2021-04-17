@@ -98,7 +98,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             {
                 (typeof(IInterfaceWithApiAndPathAttributes), typeof(InterfaceWithApiAndPathAttributes))
             };
-            
+
             var actualResult = _virtualControllerGenerator
                 .Create(interfaceControllerPairs)
                 .ToArray();
@@ -111,7 +111,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        public interface IMethodAttributeController { [GetMethod] int Get(); }
+        public interface IMethodAttributeController {[GetMethod] int Get(); }
         public class MethodAttributeController : IMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -136,7 +136,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
         }
 
-        public interface IMethodAttributeWithTemplateController { [GetMethod("[action]")] int Get(); }
+        public interface IMethodAttributeWithTemplateController {[GetMethod("[action]")] int Get(); }
         public class MethodAttributeWithTemplateController : IMethodAttributeWithTemplateController { public int Get() => 1; }
 
         [Test]
@@ -161,7 +161,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("[action]") { Order = 0 });
         }
 
-        public interface IMultipleMethodController { [GetMethod] int Get(); [PostMethod] int Post(); }
+        public interface IMultipleMethodController {[GetMethod] int Get();[PostMethod] int Post(); }
         public class MultipleMethodController : IMultipleMethodController { public int Get() => 1; public int Post() => 1; }
 
         [Test]
@@ -208,7 +208,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         }
 
         public class CustomAttribute : Attribute { }
-        public interface INotNClientMethodAttributeController { [Custom] int Get(); }
+        public interface INotNClientMethodAttributeController {[Custom] int Get(); }
         public class NotNClientMethodAttributeController : INotNClientMethodAttributeController { public int Get() => 1; }
 
         [Test]

@@ -25,7 +25,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         }
 
         public interface IInheritanceClient : IInheritanceController { }
-        [Path("[controller]")] public interface IInheritanceController { [GetMethod] int Get([BodyParam] BasicEntity entity); }
+        [Path("[controller]")] public interface IInheritanceController {[GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientInterfaceInheritControllerInterface_UsedControllerAttributes()
@@ -79,8 +79,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public interface IOverrideMethodClient : IOverrideMethodController { [GetMethod] new int Get([BodyParam] BasicEntity entity); }
-        [Path("[controller]")] public interface IOverrideMethodController { [PostMethod] int Get([BodyParam] BasicEntity entity); }
+        public interface IOverrideMethodClient : IOverrideMethodController {[GetMethod] new int Get([BodyParam] BasicEntity entity); }
+        [Path("[controller]")] public interface IOverrideMethodController {[PostMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientOverrideControllerMethodAttribute_UsedOverridenMethod()
@@ -97,8 +97,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 body: new BasicEntity { Id = 1 });
         }
 
-        public interface IOverrideParamClient : IOverrideParamController { [GetMethod] new int Get([BodyParam] BasicEntity entity); }
-        [Path("[controller]")] public interface IOverrideParamController { [GetMethod] int Get([QueryParam] BasicEntity entity); }
+        public interface IOverrideParamClient : IOverrideParamController {[GetMethod] new int Get([BodyParam] BasicEntity entity); }
+        [Path("[controller]")] public interface IOverrideParamController {[GetMethod] int Get([QueryParam] BasicEntity entity); }
 
         [Test]
         public void Build_ClientOverrideControllerParamAttribute_UsedOverridenParam()

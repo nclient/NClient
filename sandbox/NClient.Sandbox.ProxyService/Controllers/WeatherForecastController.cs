@@ -15,16 +15,29 @@ namespace NClient.Sandbox.ProxyService.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(
-            IThirdPartyWeatherForecastClient thirdPartyWeatherForecastClient, 
+            IThirdPartyWeatherForecastClient thirdPartyWeatherForecastClient,
             ILogger<WeatherForecastController> logger)
         {
             _thirdPartyWeatherForecastClient = thirdPartyWeatherForecastClient;
             _logger = logger;
         }
 
-        public Task<WeatherForecastDto> GetAsync(int id)
+        public Task<WeatherForecastDto> GetAsync(WeatherForecastFilter weatherForecastFilter)
         {
+            _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
+        }
+
+        public Task PostAsync(WeatherForecastDto weatherForecastDto)
+        {
+            _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was inserted (not really).");
+            return Task.FromResult(0);
+        }
+
+        public Task PutAsync(WeatherForecastDto weatherForecastDto)
+        {
+            _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was updated (not really).");
+            return Task.FromResult(0);
         }
     }
 }

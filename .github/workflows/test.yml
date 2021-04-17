@@ -19,6 +19,6 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies and build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release /warnaserror
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release

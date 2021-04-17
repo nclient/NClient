@@ -5,7 +5,7 @@ namespace NClient.Core.RequestBuilders.Models
     internal class Parameter
     {
         public string Name { get; }
-        public Type Type { get; set; }
+        public Type Type { get; }
         public object? Value { get; }
         public Attribute Attribute { get; }
 

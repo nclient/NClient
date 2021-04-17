@@ -11,14 +11,14 @@ namespace NClient.AspNetCore.Mappers
     public class NClientAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
-        { 
+        {
             return attribute switch
             {
                 ApiAttribute => new ApiControllerAttribute(),
 
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
-                GetMethodAttribute x => x.Template is null 
+                GetMethodAttribute x => x.Template is null
                     ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
                     : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
                 PostMethodAttribute x => x.Template is null
@@ -36,7 +36,7 @@ namespace NClient.AspNetCore.Mappers
                 BodyParamAttribute => new FromBodyAttribute(),
                 HeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
-                {} => null,
+                { } => null,
                 _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
             };
         }

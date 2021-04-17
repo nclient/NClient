@@ -21,7 +21,6 @@ namespace NClient.Abstractions.HttpClients
             Content = httpResponse.Content;
             StatusCode = httpResponse.StatusCode;
             StatusDescription = httpResponse.StatusDescription;
-            RawBytes = httpResponse.RawBytes;
             ResponseUri = httpResponse.ResponseUri;
             Server = httpResponse.Server;
             Headers = httpResponse.Headers;
@@ -34,12 +33,11 @@ namespace NClient.Abstractions.HttpClients
     public class HttpResponse
     {
         public string? ContentType { get; set; }
-        public long ContentLength { get; set; }
+        public long? ContentLength { get; set; }
         public string? ContentEncoding { get; set; }
         public string? Content { get; set; }
         public HttpStatusCode StatusCode { get; set; }
         public string? StatusDescription { get; set; }
-        public byte[]? RawBytes { get; set; }
         public Uri? ResponseUri { get; set; }
         public string? Server { get; set; }
         public HttpHeader[]? Headers { get; set; }
