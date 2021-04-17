@@ -302,7 +302,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(id.ToString());
         }
-        
+
         [Test]
         public void Build_BodyCustomObjectPropertyTokenWithCustomName_ObjectPropertyValue()
         {
@@ -374,7 +374,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(id.ToString());
         }
-        
+
         [Test]
         public void Build_QueryCustomObjectPropertyTokenWithCustomName_ObjectPropertyValue()
         {
@@ -392,7 +392,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(id.ToString());
         }
-        
+
         [Test]
         public void Build_QueryCustomObjectPropertyTokenWithCustomAspNetName_ObjectPropertyValue()
         {

@@ -13,10 +13,10 @@ namespace NClient.Core.Tests
 {
     public class ObjectMemberManagerTest
     {
-        public class TestObjWithCustomQueryPropName { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomFromQueryName { [FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomJsonPropertyName { [JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
-        
+        public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
+
         public class TestObjWithIntField { public int Field = 1; }
         public class TestObjWithNestedField : TestObjWithIntField { }
         public class TestObjWithIntProp { public int Prop { get; set; } = 1; }
@@ -33,7 +33,7 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "MyProp", 1, new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName"),
-            
+
             new TestCaseData(new TestObjWithIntField { Field = 1 }, "Field", 1, null)
                 .SetName("Top level primitive field"),
             new TestCaseData(new TestObjWithNestedField { Field = 1 }, "Field", 1, null)
@@ -66,7 +66,7 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name but used real prop name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "Prop", typeof(NClientException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
-            
+
             new TestCaseData(null, null, typeof(ArgumentNullException), null)
                 .SetName("Null object and null path"),
             new TestCaseData(null, "", typeof(ArgumentNullException), null)
@@ -99,7 +99,7 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "MyProp", new TestObjWithCustomJsonPropertyName { Prop = 2 }, new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName"),
-            
+
             new TestCaseData(new TestObjWithIntField { Field = 1 }, "2", "Field", new TestObjWithIntField { Field = 2 }, null)
                 .SetName("Top level primitive field"),
             new TestCaseData(new TestObjWithNestedField { Field = 1 },"2", "Field", new TestObjWithNestedField { Field = 2 }, null)
@@ -131,7 +131,7 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name but used real prop name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "Prop", typeof(NClientException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
-            
+
             new TestCaseData(null, "2", null, typeof(ArgumentNullException), null)
                 .SetName("Null object and null path"),
             new TestCaseData(null, "2", "", typeof(ArgumentNullException), null)
@@ -160,7 +160,7 @@ namespace NClient.Core.Tests
         public void GetMemberValue_ValidTestCases(object obj, string memberPath, object expectedResult, IMemberNameSelector? memberNameSelector = null)
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
-            
+
             var actualResult = ObjectMemberManager.GetMemberValue(obj, memberPath, memberNameSelector);
 
             actualResult.Should().BeEquivalentTo(expectedResult);
@@ -170,7 +170,7 @@ namespace NClient.Core.Tests
         public void GetMemberValue_InvalidTestCases(object obj, string memberPath, Type exceptionType, IMemberNameSelector? memberNameSelector = null)
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
-            
+
             Func<object?> func = () => ObjectMemberManager.GetMemberValue(obj, memberPath, memberNameSelector);
 
             func.Should().Throw<Exception>().Where(x => x.GetType() == exceptionType);
@@ -180,7 +180,7 @@ namespace NClient.Core.Tests
         public void SetMemberValue_ValidTestCases(object obj, string value, string memberPath, object expectedResult, IMemberNameSelector? memberNameSelector = null)
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
-            
+
             ObjectMemberManager.SetMemberValue(obj, value, memberPath, memberNameSelector);
 
             obj.Should().BeEquivalentTo(expectedResult);
@@ -190,7 +190,7 @@ namespace NClient.Core.Tests
         public void SetMemberValue_InvalidTestCases(object obj, string value, string memberPath, Type exceptionType, IMemberNameSelector? memberNameSelector = null)
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
-            
+
             Action func = () => ObjectMemberManager.SetMemberValue(obj, value, memberPath, memberNameSelector);
 
             func.Should().Throw<Exception>().Where(x => x.GetType() == exceptionType);

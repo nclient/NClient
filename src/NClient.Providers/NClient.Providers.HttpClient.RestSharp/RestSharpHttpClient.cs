@@ -27,7 +27,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             {
                 Authenticator = _authenticator,
             }.UseSystemTextJson();
-            
+
             var restRequest = BuildRestRequest(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
             return BuildResponse(restResponse, bodyType);

@@ -15,7 +15,7 @@ namespace NClient.Sandbox.ProxyService.Facade
 
         [PostMethod]
         Task PostAsync(WeatherForecastDto weatherForecastDto);
-        
+
         [PutMethod("{weatherForecastDto.id}")]
         Task PutAsync(WeatherForecastDto weatherForecastDto);
     }

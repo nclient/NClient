@@ -16,7 +16,7 @@ namespace NClient.Core.Helpers.MemberNameSelectors
 
             return sonPropertyName ?? memberInfo.Name;
         }
-        
+
         private static Attribute? FindJsonPropertyNameAttribute(MemberInfo memberInfo)
         {
             return memberInfo

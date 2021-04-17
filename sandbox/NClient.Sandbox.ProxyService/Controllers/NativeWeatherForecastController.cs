@@ -35,7 +35,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
             return Task.FromResult(0);
         }
-        
+
         [HttpPut("{weatherForecastDto.id}")]
         public Task PutAsync(WeatherForecastDto weatherForecastDto)
         {

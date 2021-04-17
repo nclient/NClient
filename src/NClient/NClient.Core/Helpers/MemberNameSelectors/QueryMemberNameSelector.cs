@@ -14,14 +14,14 @@ namespace NClient.Core.Helpers.MemberNameSelectors
                 .GetType()
                 .GetProperty("Name")!
                 .GetValue(fromQueryAttribute) as string;
-                    
+
             var queryParamName = memberInfo
                 .GetCustomAttribute<QueryParamAttribute>()?
                 .Name;
-                    
+
             return fromQueryName ?? queryParamName ?? memberInfo.Name;
         }
-        
+
         private static Attribute? FindFromQueryAttribute(MemberInfo memberInfo)
         {
             return memberInfo

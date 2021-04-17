@@ -102,15 +102,15 @@ namespace NClient.Core.Helpers
             var property = obj
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo) prop))
+                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo)prop))
                 .SingleOrDefault(x => x.Name == memberName);
-            
+
             var field = obj
                 .GetType()
                 .GetFields(BindingFlags.Public | BindingFlags.Instance)
-                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo) prop))
+                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo)prop))
                 .SingleOrDefault(x => x.Name == memberName);
-            
+
             if (property.Member is null && field.Member is null)
                 throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
             return property.Member ?? field.Member!;
