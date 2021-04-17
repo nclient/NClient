@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
+using Castle.Core.Internal;
+using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers.MemberNameSelectors;
 
 namespace NClient.Core.Helpers
 {
@@ -21,7 +25,7 @@ namespace NClient.Core.Helpers
             return (objectName, nextMemberPath);
         }
 
-        public static object? GetMemberValue(object obj, string memberPath)
+        public static object? GetMemberValue(object obj, string memberPath, IMemberNameSelector memberNameSelector)
         {
             if (obj is null)
                 throw new ArgumentNullException(nameof(obj));
@@ -38,14 +42,14 @@ namespace NClient.Core.Helpers
                 var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
                 if (nextMemberPath is not null)
                 {
-                    var member = GetMemberByName(obj, nextObjName);
+                    var member = GetMemberByName(obj, nextObjName, memberNameSelector);
                     obj = GetMemberValue(member, obj)
                           ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
                 {
-                    var member = GetMemberByName(obj, memberPath);
+                    var member = GetMemberByName(obj, memberPath, memberNameSelector);
                     return GetMemberValue(member, obj);
                 }
 
@@ -53,7 +57,7 @@ namespace NClient.Core.Helpers
             }
         }
 
-        public static void SetMemberValue(object obj, string? value, string memberPath)
+        public static void SetMemberValue(object obj, string? value, string memberPath, IMemberNameSelector memberNameSelector)
         {
             if (obj is null)
                 throw new ArgumentNullException(nameof(obj));
@@ -70,14 +74,14 @@ namespace NClient.Core.Helpers
                 var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
                 if (nextMemberPath is not null)
                 {
-                    var member = GetMemberByName(obj, nextObjName);
+                    var member = GetMemberByName(obj, nextObjName, memberNameSelector);
                     obj = GetMemberValue(member, obj)
                           ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
                 {
-                    var member = GetMemberByName(obj, memberPath);
+                    var member = GetMemberByName(obj, memberPath, memberNameSelector);
                     SetMemberValue(obj, member, value);
                     return;
                 }
@@ -93,13 +97,23 @@ namespace NClient.Core.Helpers
                 throw OuterExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
         }
 
-        private static MemberInfo GetMemberByName(object obj, string memberName)
+        private static MemberInfo GetMemberByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
         {
-            MemberInfo? property = obj.GetType().GetProperty(memberName, BindingFlags.Public | BindingFlags.Instance);
-            MemberInfo? field = obj.GetType().GetField(memberName, BindingFlags.Public | BindingFlags.Instance);
-            if (property is null && field is null)
+            var property = obj
+                .GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo) prop))
+                .SingleOrDefault(x => x.Name == memberName);
+            
+            var field = obj
+                .GetType()
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo) prop))
+                .SingleOrDefault(x => x.Name == memberName);
+            
+            if (property.Member is null && field.Member is null)
                 throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
-            return property ?? field!;
+            return property.Member ?? field.Member!;
         }
 
         private static void SetMemberValue(object obj, MemberInfo member, string? value)

@@ -302,6 +302,24 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(id.ToString());
         }
+        
+        [Test]
+        public void Build_BodyCustomObjectPropertyTokenWithCustomName_ObjectPropertyValue()
+        {
+            const int id = 1;
+            var routeTemplate = TemplateParser.Parse("{entity.MyId}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomJsonName { Id = id , Value = 2 }, new BodyParamAttribute())
+                });
+
+            route.Should().Be(id.ToString());
+        }
 
         [Test]
         public void Build_BodyCustomObjectPropertyTokenWithInvalidObjectCase_ThrowNClientException()
@@ -352,6 +370,42 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 parameters: new[]
                 {
                     new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id , Value = 2 }, new QueryParamAttribute())
+                });
+
+            route.Should().Be(id.ToString());
+        }
+        
+        [Test]
+        public void Build_QueryCustomObjectPropertyTokenWithCustomName_ObjectPropertyValue()
+        {
+            const int id = 1;
+            var routeTemplate = TemplateParser.Parse("{entity.MyId}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomQueryName { Id = id , Value = 2 }, new QueryParamAttribute())
+                });
+
+            route.Should().Be(id.ToString());
+        }
+        
+        [Test]
+        public void Build_QueryCustomObjectPropertyTokenWithCustomAspNetName_ObjectPropertyValue()
+        {
+            const int id = 1;
+            var routeTemplate = TemplateParser.Parse("{entity.MyId}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomFromQueryName { Id = id , Value = 2 }, new QueryParamAttribute())
                 });
 
             route.Should().Be(id.ToString());
