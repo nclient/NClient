@@ -33,6 +33,10 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.AspNetCore").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
+        public void NClient_Providers_HttpClient_System() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.System").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
         public void NClient_Providers_HttpClient_RestSharp() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
 
