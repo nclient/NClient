@@ -26,6 +26,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Text.Json" Version="5.0.2" />
     </ItemGroup>
@@ -37,12 +38,6 @@
     <ItemGroup>
         <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
         <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-        <HintPath>..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.Http.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>
