@@ -70,7 +70,7 @@ namespace NClient.Core.RequestBuilders
             }
         }
 
-        public static string UriCombine(string left, string right)
+        private static string UriCombine(string left, string right)
         {
             left = left.TrimEnd('/');
             right = right.TrimStart('/');

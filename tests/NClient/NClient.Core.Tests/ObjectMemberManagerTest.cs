@@ -16,6 +16,7 @@ namespace NClient.Core.Tests
         public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithMemberNameConflict {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; public int MyProp { get; set; } = 2; }
 
         public class TestObjWithIntField { public int Field = 1; }
         public class TestObjWithNestedField : TestObjWithIntField { }
@@ -66,6 +67,8 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name but used real prop name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "Prop", typeof(NClientException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
+            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "MyProp", typeof(NClientException), new QueryMemberNameSelector())
+                .SetName("Object with member name conflict"),
 
             new TestCaseData(null, null, typeof(ArgumentNullException), null)
                 .SetName("Null object and null path"),
@@ -131,6 +134,8 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom FromQuery name but used real prop name"),
             new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "Prop", typeof(NClientException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
+            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "2", "MyProp", typeof(NClientException), new QueryMemberNameSelector())
+                .SetName("Object with member name conflict"),
 
             new TestCaseData(null, "2", null, typeof(ArgumentNullException), null)
                 .SetName("Null object and null path"),
