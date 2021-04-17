@@ -106,7 +106,7 @@ namespace NClient.Core.Helpers
             return ObjectMemberManager
                 .GetPublicMembers(obj)
                 .Select(member => new PropertyKeyValue(
-                    memberNameSelector.GetName(member), 
+                    memberNameSelector.GetName(member),
                     ObjectMemberManager.GetMemberValue(member, obj)))
                 .ToArray();
         }

@@ -13,11 +13,11 @@ namespace NClient.Core.Tests
 {
     public class ObjectMemberManagerTest
     {
-        public class TestObjWithCustomQueryPropName { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomFromQueryName { [FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomJsonPropertyName { [JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithMemberNameConflict { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; public int MyProp { get; set; } = 2; }
-        
+        public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithMemberNameConflict {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; public int MyProp { get; set; } = 2; }
+
         public class TestObjWithIntField { public int Field = 1; }
         public class TestObjWithNestedField : TestObjWithIntField { }
         public class TestObjWithIntProp { public int Prop { get; set; } = 1; }
@@ -136,7 +136,7 @@ namespace NClient.Core.Tests
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
             new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "2", "MyProp", typeof(NClientException), new QueryMemberNameSelector())
                 .SetName("Object with member name conflict"),
-            
+
             new TestCaseData(null, "2", null, typeof(ArgumentNullException), null)
                 .SetName("Null object and null path"),
             new TestCaseData(null, "2", "", typeof(ArgumentNullException), null)

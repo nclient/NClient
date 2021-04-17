@@ -8,7 +8,7 @@ namespace NClient.Core.Exceptions.Factories
     {
         public static NClientException MemberNameConflict(string memberName, string objectName) =>
             new($"Object member '{memberName}' not found in '{objectName}' object type.");
-        
+
         public static NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
             new($"Object member '{memberName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
 

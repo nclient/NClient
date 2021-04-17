@@ -144,7 +144,7 @@ namespace NClient.Core.Helpers
             (member as PropertyInfo)?.SetValue(obj, value);
             (member as FieldInfo)?.SetValue(obj, value);
         }
-        
+
         private static void AvoidInfiniteLoop(int iterationCount, string processingObjectName)
         {
             const int iterationLimit = 10;
