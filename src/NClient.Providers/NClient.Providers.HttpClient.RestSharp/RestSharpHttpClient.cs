@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
-using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
+using RestSharp.Serializers.SystemTextJson;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
@@ -24,8 +25,9 @@ namespace NClient.Providers.HttpClient.RestSharp
         {
             var restClient = new RestClient
             {
-                Authenticator = _authenticator
-            };
+                Authenticator = _authenticator,
+            }.UseSystemTextJson();
+
             var restRequest = BuildRestRequest(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
             return BuildResponse(restResponse, bodyType);
@@ -91,7 +93,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             try
             {
                 exception = null;
-                return JsonConvert.DeserializeObject(body, bodyType);
+                return JsonSerializer.Deserialize(body, bodyType);
             }
             catch (Exception e)
             {

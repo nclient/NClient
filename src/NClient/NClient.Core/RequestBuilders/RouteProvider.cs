@@ -5,6 +5,7 @@ using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.MemberNameSelectors;
 using NClient.Core.RequestBuilders.Models;
 
 namespace NClient.Core.RequestBuilders
@@ -69,7 +70,13 @@ namespace NClient.Core.RequestBuilders
                 if (parameter.Value is null)
                     throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
 
-                return ObjectMemberManager.GetMemberValue(parameter.Value, memberPath)?.ToString() ?? "";
+                return (parameter.Attribute switch
+                {
+                    BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new BodyMemberNameSelector()),
+                    QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new QueryMemberNameSelector()),
+                    { } => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new DefaultMemberNameSelector()),
+                    _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
+                })?.ToString() ?? "";
             }
         }
 

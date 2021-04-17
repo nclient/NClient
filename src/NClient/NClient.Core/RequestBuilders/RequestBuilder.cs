@@ -5,6 +5,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.MemberNameSelectors;
 
 namespace NClient.Core.RequestBuilders
 {
@@ -52,7 +53,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);
             foreach (var uriParam in urlParams)
             {
-                foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name))
+                foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name, new QueryMemberNameSelector()))
                 {
                     request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value ?? "");
                 }

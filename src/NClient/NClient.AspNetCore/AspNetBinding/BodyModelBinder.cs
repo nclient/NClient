@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.Binding;
+using NClient.Core.Helpers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.AspNetBinding
 {
@@ -165,7 +166,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 if (result.IsModelSet)
                 {
                     var model = result.Model;
-                    ModelExtender.ExtendWithRouteParams(bindingContext, model);
+                    ModelExtender.ExtendWithRouteParams(bindingContext, model, new BodyMemberNameSelector());
                     bindingContext.Result = ModelBindingResult.Success(model);
                 }
                 else

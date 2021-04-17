@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.Binding;
+using NClient.Core.Helpers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.AspNetBinding
 {
@@ -227,7 +227,7 @@ namespace NClient.AspNetCore.AspNetBinding
             }
 
             var model = bindingContext.Model;
-            ModelExtender.ExtendWithRouteParams(bindingContext, model);
+            ModelExtender.ExtendWithRouteParams(bindingContext, model, new QueryMemberNameSelector());
             bindingContext.Result = ModelBindingResult.Success(model);
         }
 

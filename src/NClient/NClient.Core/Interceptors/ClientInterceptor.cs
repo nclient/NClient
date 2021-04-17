@@ -43,7 +43,7 @@ namespace NClient.Core.Interceptors
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
             var requestId = Guid.NewGuid();
-            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpRequest>, invocation, requestId).ConfigureAwait(false);
+            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, invocation, requestId).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
@@ -99,7 +99,9 @@ namespace NClient.Core.Interceptors
 
             var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
                 ? typeof(TResult).GetGenericArguments().First()
-                : typeof(TResult);
+                : typeof(HttpResponse) == typeof(TResult)
+                    ? null
+                    : typeof(TResult);
 
             var response = await resiliencePolicyProvider
                 .Create()
