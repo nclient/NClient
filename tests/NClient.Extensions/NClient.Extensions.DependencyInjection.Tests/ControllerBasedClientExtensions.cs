@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.HttpClients;
-using NClient.Providers.HttpClient.RestSharp;
+using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
@@ -17,7 +17,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient(builder =>
-                builder.Use<ITestClient>(host: "http://localhost:5000", new RestSharpHttpClientProvider()));
+                builder.Use<ITestClient>(host: "http://localhost:5000", new SystemHttpClientProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000",
-                new RestSharpHttpClientProvider(),
+                new SystemHttpClientProvider(),
                 new PollyResiliencePolicyProvider(Policy.NoOpAsync<HttpResponse>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
@@ -44,7 +44,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000",
-                new RestSharpHttpClientProvider());
+                new SystemHttpClientProvider());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
@@ -53,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_AsyncPolicy_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging().AddHttpClient();
 
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000",
@@ -66,7 +66,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging().AddHttpClient();
 
             serviceCollection.AddNClient<ITestClient>(
                 host: "http://localhost:5000");

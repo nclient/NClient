@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Net.Http;
 using NClient.ControllerBasedClients;
 using NClient.InterfaceBasedClients;
-using NClient.Providers.HttpClient.RestSharp;
-using RestSharp.Authenticators;
+using NClient.Providers.HttpClient.System;
 
 namespace NClient
 {
@@ -10,12 +10,12 @@ namespace NClient
     {
         public static IInterfaceBasedClientBuilder<T> Use<T>(string host) where T : class
         {
-            return new NClientBuilder().Use<T>(host, new RestSharpHttpClientProvider());
+            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider());
         }
 
-        public static IInterfaceBasedClientBuilder<T> Use<T>(string host, IAuthenticator authenticator) where T : class
+        public static IInterfaceBasedClientBuilder<T> Use<T>(string host, HttpMessageHandler httpMessageHandler) where T : class
         {
-            return new NClientBuilder().Use<T>(host, new RestSharpHttpClientProvider(authenticator));
+            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider(httpMessageHandler));
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -24,16 +24,16 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
-            return new NClientBuilder().Use<TInterface, TController>(host, new RestSharpHttpClientProvider());
+            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider());
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
         public static IControllerBasedClientBuilder<TInterface, TController> Use<TInterface, TController>(
-            string host, IAuthenticator authenticator)
+            string host, HttpMessageHandler httpMessageHandler)
             where TInterface : class
             where TController : TInterface
         {
-            return new NClientBuilder().Use<TInterface, TController>(host, new RestSharpHttpClientProvider(authenticator));
+            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler));
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.ControllerBasedClients;
-using RestSharp.Authenticators;
 using Polly;
 
 namespace NClient.Extensions.DependencyInjection
@@ -13,37 +13,6 @@ namespace NClient.Extensions.DependencyInjection
     public static class ControllerBasedClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host, IAuthenticator authenticator, IAsyncPolicy<HttpResponse> asyncPolicy)
-            where TInterface : class
-            where TController : TInterface
-        {
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientBuilder()
-                    .Use<TInterface, TController>(host, authenticator)
-                    .WithResiliencePolicy(asyncPolicy)
-                    .WithLogging(logger)
-                    .Build();
-            });
-        }
-
-        public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host, IAuthenticator authenticator)
-            where TInterface : class
-            where TController : TInterface
-        {
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-                return new NClientBuilder()
-                    .Use<TInterface, TController>(host, authenticator)
-                    .WithLogging(logger)
-                    .Build();
-            });
-        }
-
-        public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
             where TController : TInterface
@@ -51,8 +20,10 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host)
+                    .Use<TInterface, TController>(host, httpClientFactory)
                     .WithResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
                     .Build();
@@ -67,8 +38,10 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host)
+                    .Use<TInterface, TController>(host, httpClientFactory)
                     .WithLogging(logger)
                     .Build();
             });
