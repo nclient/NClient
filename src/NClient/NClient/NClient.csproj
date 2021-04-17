@@ -25,7 +25,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
 		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
 		<ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
 	</ItemGroup>
@@ -33,6 +33,10 @@
 	<ItemGroup>
 		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
 	</ItemGroup>
 
 </Project>

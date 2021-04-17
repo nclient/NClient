@@ -65,8 +65,6 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
                 Content = string.IsNullOrEmpty(restResponse.Content) ? null : restResponse.Content,
                 StatusCode = restResponse.StatusCode,
-                StatusDescription = string.IsNullOrEmpty(restResponse.StatusDescription) ? null : restResponse.StatusDescription,
-                RawBytes = restResponse.RawBytes,
                 ResponseUri = restResponse.ResponseUri,
                 Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
                 Headers = restResponse.Headers

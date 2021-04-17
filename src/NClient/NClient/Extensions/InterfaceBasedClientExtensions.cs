@@ -1,9 +1,9 @@
-﻿using NClient.Abstractions.HttpClients;
+﻿using System.Net.Http;
+using NClient.Abstractions.HttpClients;
 using NClient.InterfaceBasedClients;
-using NClient.Providers.HttpClient.RestSharp;
+using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using Polly;
-using RestSharp.Authenticators;
 
 namespace NClient.Extensions
 {
@@ -11,13 +11,19 @@ namespace NClient.Extensions
     {
         public static IInterfaceBasedClientBuilder<T> Use<T>(this INClientBuilder clientBuilder, string host) where T : class
         {
-            return clientBuilder.Use<T>(host, new RestSharpHttpClientProvider());
+            return clientBuilder.Use<T>(host, new SystemHttpClientProvider());
         }
 
         public static IInterfaceBasedClientBuilder<T> Use<T>(
-            this INClientBuilder clientBuilder, string host, IAuthenticator authenticator) where T : class
+            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory) where T : class
         {
-            return clientBuilder.Use<T>(host, new RestSharpHttpClientProvider(authenticator));
+            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpClientFactory));
+        }
+
+        public static IInterfaceBasedClientBuilder<T> Use<T>(
+            this INClientBuilder clientBuilder, string host, HttpMessageHandler httpMessageHandler) where T : class
+        {
+            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpMessageHandler));
         }
 
         public static IInterfaceBasedClientBuilder<T> WithResiliencePolicy<T>(
