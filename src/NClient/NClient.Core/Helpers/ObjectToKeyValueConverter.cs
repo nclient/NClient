@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Castle.Core.Internal;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
@@ -78,7 +79,7 @@ namespace NClient.Core.Helpers
             if (IsPrimitive(value))
                 return false;
 
-            foreach (var prop in GetProperties(value, memberNameSelector))
+            foreach (var prop in GetMembers(value, memberNameSelector))
             {
                 ToKeyValue(stringValues, key: key + "." + prop.Key, prop.Value, memberNameSelector);
             }
@@ -97,13 +98,17 @@ namespace NClient.Core.Helpers
             return obj.GetType().IsSerializable;
         }
 
-        private static IEnumerable<PropertyKeyValue> GetProperties(object? obj, IMemberNameSelector memberNameSelector)
+        private static IEnumerable<PropertyKeyValue> GetMembers(object? obj, IMemberNameSelector memberNameSelector)
         {
-            return obj?.GetType()
-                .GetProperties()
-                .Where(property => property.CanRead)
-                .Select(property => new PropertyKeyValue(memberNameSelector.GetName(property), property.GetValue(obj)))
-                .ToArray() ?? Array.Empty<PropertyKeyValue>();
+            if (obj is null)
+                return Array.Empty<PropertyKeyValue>();
+
+            return ObjectMemberManager
+                .GetPublicMembers(obj)
+                .Select(member => new PropertyKeyValue(
+                    memberNameSelector.GetName(member), 
+                    ObjectMemberManager.GetMemberValue(member, obj)))
+                .ToArray();
         }
     }
 

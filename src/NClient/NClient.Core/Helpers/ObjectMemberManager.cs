@@ -90,33 +90,37 @@ namespace NClient.Core.Helpers
             }
         }
 
-        private static void AvoidInfiniteLoop(int iterationCount, string processingObjectName)
+        public static MemberInfo[] GetPublicMembers(object obj)
         {
-            const int iterationLimit = 10;
-            if (iterationCount > iterationLimit)
-                throw OuterExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
-        }
-
-        private static MemberInfo GetMemberByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
-        {
-            var property = obj
+            var properties = obj
                 .GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo)prop))
-                .SingleOrDefault(x => x.Name == memberName);
+                .Cast<MemberInfo>();
 
-            var field = obj
+            var fields = obj
                 .GetType()
                 .GetFields(BindingFlags.Public | BindingFlags.Instance)
-                .Select(prop => (Name: memberNameSelector.GetName(prop), Member: (MemberInfo)prop))
-                .SingleOrDefault(x => x.Name == memberName);
+                .Cast<MemberInfo>();
 
-            if (property.Member is null && field.Member is null)
-                throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
-            return property.Member ?? field.Member!;
+            return properties.Concat(fields).ToArray();
         }
 
-        private static void SetMemberValue(object obj, MemberInfo member, string? value)
+        public static MemberInfo GetMemberByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
+        {
+            var memberNamePairs = GetPublicMembers(obj)
+                .Select(member => (Name: memberNameSelector.GetName(member), Member: member))
+                .Where(member => member.Name == memberName)
+                .ToArray();
+            if (memberNamePairs.Length > 1)
+                throw OuterExceptionFactory.MemberNameConflict(memberName, obj.GetType().Name);
+
+            var memberNamePair = memberNamePairs.SingleOrDefault();
+            if (memberNamePair.Member is null)
+                throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
+            return memberNamePair.Member;
+        }
+
+        public static void SetMemberValue(object obj, MemberInfo member, string? value)
         {
             var memberType = GetMemberType(member);
             var converter = TypeDescriptor.GetConverter(memberType);
@@ -125,20 +129,27 @@ namespace NClient.Core.Helpers
             SetMemberValue(member, obj, converter.ConvertFrom(value));
         }
 
-        private static Type GetMemberType(MemberInfo member)
+        public static Type GetMemberType(MemberInfo member)
         {
             return (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType!;
         }
 
-        private static object? GetMemberValue(MemberInfo member, object obj)
+        public static object? GetMemberValue(MemberInfo member, object obj)
         {
             return (member as PropertyInfo)?.GetValue(obj) ?? (member as FieldInfo)?.GetValue(obj);
         }
 
-        private static void SetMemberValue(MemberInfo member, object obj, object? value)
+        public static void SetMemberValue(MemberInfo member, object obj, object? value)
         {
             (member as PropertyInfo)?.SetValue(obj, value);
             (member as FieldInfo)?.SetValue(obj, value);
+        }
+        
+        private static void AvoidInfiniteLoop(int iterationCount, string processingObjectName)
+        {
+            const int iterationLimit = 10;
+            if (iterationCount > iterationLimit)
+                throw OuterExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
         }
     }
 }
