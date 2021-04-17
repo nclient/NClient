@@ -103,7 +103,7 @@ namespace NClient.Core.Interceptors
 
             var response = await resiliencePolicyProvider
                 .Create()
-                .ExecuteAsync(() => ExecuteRequestWithLoggingAsync(request, requestId, responseBodyType), requestId.ToString())
+                .ExecuteAsync(() => ExecuteRequestWithLoggingAsync(request, requestId, responseBodyType))
                 .ConfigureAwait(false);
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
