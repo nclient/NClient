@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             KeepDataInterceptor = new KeepDataInterceptor();
         }
 
-        public interface IGetMethod { [GetMethod] int Method(); }
+        public interface IGetMethod {[GetMethod] int Method(); }
 
         [Test]
         public void Build_GetMethod_GetHttpMethodRequest()
@@ -34,7 +34,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        public interface IPostMethod { [PostMethod] int Method(); }
+        public interface IPostMethod {[PostMethod] int Method(); }
 
         [Test]
         public void Build_PostMethod_PostHttpMethodRequest()
@@ -50,7 +50,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Post);
         }
 
-        public interface IPutMethod { [PutMethod] int Method(); }
+        public interface IPutMethod {[PutMethod] int Method(); }
 
         [Test]
         public void Build_PutMethod_PutHttpMethodRequest()
@@ -66,7 +66,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Put);
         }
 
-        public interface IDeleteMethod { [DeleteMethod] int Method(); }
+        public interface IDeleteMethod {[DeleteMethod] int Method(); }
 
         [Test]
         public void Build_DeleteMethod_DeleteHttpMethodRequest()

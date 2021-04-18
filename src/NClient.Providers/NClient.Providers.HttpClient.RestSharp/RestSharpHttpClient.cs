@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
-using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
+using RestSharp.Serializers.SystemTextJson;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
@@ -24,8 +25,9 @@ namespace NClient.Providers.HttpClient.RestSharp
         {
             var restClient = new RestClient
             {
-                Authenticator = _authenticator
-            };
+                Authenticator = _authenticator,
+            }.UseSystemTextJson();
+
             var restRequest = BuildRestRequest(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
             return BuildResponse(restResponse, bodyType);
@@ -63,8 +65,6 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
                 Content = string.IsNullOrEmpty(restResponse.Content) ? null : restResponse.Content,
                 StatusCode = restResponse.StatusCode,
-                StatusDescription = string.IsNullOrEmpty(restResponse.StatusDescription) ? null : restResponse.StatusDescription,
-                RawBytes = restResponse.RawBytes,
                 ResponseUri = restResponse.ResponseUri,
                 Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
                 Headers = restResponse.Headers
@@ -78,9 +78,26 @@ namespace NClient.Providers.HttpClient.RestSharp
             if (bodyType is null)
                 return response;
 
-            var responseValue = JsonConvert.DeserializeObject(restResponse.Content, bodyType);
+            var responseValue = TryParseJson(restResponse.Content, bodyType, out var deserializationException);
+            if (deserializationException is not null && response.IsSuccessful)
+                throw deserializationException!;
+
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
             return (HttpResponse)Activator.CreateInstance(genericResponse, response, responseValue);
+        }
+
+        private static object? TryParseJson(string body, Type bodyType, out Exception? exception)
+        {
+            try
+            {
+                exception = null;
+                return JsonSerializer.Deserialize(body, bodyType);
+            }
+            catch (Exception e)
+            {
+                exception = e;
+                return null;
+            }
         }
     }
 }

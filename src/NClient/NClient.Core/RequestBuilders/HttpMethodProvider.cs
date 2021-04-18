@@ -36,11 +36,11 @@ namespace NClient.Core.RequestBuilders
                 .ToArray();
             if (httpMethodAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
-            var httpMethodAttribute = httpMethodAttributes.SingleOrDefault() 
+            var httpMethodAttribute = httpMethodAttributes.SingleOrDefault()
                 ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(MethodAttribute), method);
 
             return httpMethodAttribute switch
-            { 
+            {
                 GetMethodAttribute => HttpMethod.Get,
                 PostMethodAttribute => HttpMethod.Post,
                 PutMethodAttribute => HttpMethod.Put,

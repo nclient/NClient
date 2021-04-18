@@ -5,6 +5,7 @@ using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.MemberNameSelectors;
 using NClient.Core.RequestBuilders.Models;
 
 namespace NClient.Core.RequestBuilders
@@ -16,6 +17,8 @@ namespace NClient.Core.RequestBuilders
 
     internal class RouteProvider : IRouteProvider
     {
+        private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
+
         public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
         {
             var routeParams = parameters
@@ -26,7 +29,7 @@ namespace NClient.Core.RequestBuilders
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
             if (routeParamNamesWithoutToken.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, routeParamNamesWithoutToken);
+                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, routeParamNamesWithoutToken!);
 
             var routeParts = new List<string>(routeTemplate.Segments.Count);
             foreach (var segment in routeTemplate.Segments)
@@ -34,7 +37,7 @@ namespace NClient.Core.RequestBuilders
                 var templatePart = segment.Parts.Single();
                 var routePart = templatePart switch
                 {
-                    { } when templatePart.Name is not null => GetValueFromNamedSegment(templatePart, clientName, methodName, routeParams),
+                    { } when templatePart.Name is not null => GetValueFromNamedSegment(templatePart, clientName, methodName, routeParams, parameters),
                     { } when templatePart.Text is not null => GetValueFromTextSegment(templatePart, clientName, methodName),
                     _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText(clientName, methodName)
                 };
@@ -44,15 +47,37 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueFromNamedSegment(TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> parameters)
+        private static string GetValueFromNamedSegment(
+            TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> routeParameters, IEnumerable<Parameter> allParameter)
         {
-            var parameter = parameters.SingleOrDefault(x => x.Name == templatePart.Name);
-            if (parameter is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name);
-            if (!parameter.Type.IsSimple())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name);
+            var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
 
-            return parameter.Value?.ToString() ?? "";
+            if (memberPath is null)
+            {
+                var parameter = routeParameters.SingleOrDefault(x => x.Name == objectName);
+                if (parameter is null)
+                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
+                if (!parameter.Type.IsSimple())
+                    throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
+
+                return parameter.Value?.ToString() ?? "";
+            }
+            else
+            {
+                var parameter = allParameter.SingleOrDefault(x => x.Name == objectName);
+                if (parameter is null)
+                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
+                if (parameter.Value is null)
+                    throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
+
+                return (parameter.Attribute switch
+                {
+                    BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new BodyMemberNameSelector()),
+                    QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new QueryMemberNameSelector()),
+                    { } => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new DefaultMemberNameSelector()),
+                    _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
+                })?.ToString() ?? "";
+            }
         }
 
         private static string GetValueFromTextSegment(TemplatePart templatePart, string clientName, string methodName)
@@ -61,27 +86,35 @@ namespace NClient.Core.RequestBuilders
             {
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
-                { Length: > 2 } token when token.First() == '[' && token.Last() == ']' => 
+                { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
                     throw OuterExceptionFactory.TokenFromTemplateNotExists(clientName, methodName, token),
-                _ => templatePart.Text
+                _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
 
         private static string GetControllerName(string clientName)
         {
-            var name = clientName;
+            clientName = GetNameWithoutPrefix(clientName);
+            clientName = GetNameWithoutSuffix(clientName);
+            return clientName;
+        }
 
+        private static string GetNameWithoutPrefix(string name)
+        {
             //TODO: Check interface or not
             if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
-                name = new string(name.Skip(1).ToArray());
+                return new string(name.Skip(1).ToArray());
 
-            const string controllerSuffix = "Controller";
-            if (name.Length > controllerSuffix.Length && name.EndsWith(controllerSuffix))
-                name = name.Remove(name.Length - controllerSuffix.Length, controllerSuffix.Length);
+            return name;
+        }
 
-            const string clientSuffix = "Client";
-            if (name.Length > clientSuffix.Length && name.EndsWith(clientSuffix))
-                name = name.Remove(name.Length - clientSuffix.Length, clientSuffix.Length);
+        private static string GetNameWithoutSuffix(string name)
+        {
+            foreach (var suffix in Suffixes)
+            {
+                if (name.Length > suffix.Length && name.EndsWith(suffix))
+                    return name.Remove(name.Length - suffix.Length, suffix.Length);
+            }
 
             return name;
         }

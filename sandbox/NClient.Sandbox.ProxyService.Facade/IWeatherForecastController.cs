@@ -1,14 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Parameters;
 using NClient.Sandbox.ProxyService.Facade.Dto;
 
 namespace NClient.Sandbox.ProxyService.Facade
 {
-    [Path("[controller]")]
+    [Api]
+    [Path("api/nclient/[controller]")]
     public interface IWeatherForecastController
     {
-        [GetMethod]
-        IEnumerable<WeatherForecastDto> Get();
+        [GetMethod("{filter.id}")]
+        Task<WeatherForecastDto> GetAsync([QueryParam(Name = "filter")] WeatherForecastFilter weatherForecastFilter);
+
+        [PostMethod]
+        Task PostAsync(WeatherForecastDto weatherForecastDto);
+
+        [PutMethod("{weatherForecastDto.id}")]
+        Task PutAsync(WeatherForecastDto weatherForecastDto);
     }
 }

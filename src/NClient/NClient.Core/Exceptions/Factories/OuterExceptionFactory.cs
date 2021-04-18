@@ -6,6 +6,24 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
+        public static NClientException MemberNameConflict(string memberName, string objectName) =>
+            new($"Object member '{memberName}' not found in '{objectName}' object type.");
+
+        public static NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
+            new($"Object member '{memberName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
+
+        public static NClientException MemberNotFound(string memberName, string objectName) =>
+            new($"Object member '{memberName}' not found in '{objectName}' object type.");
+
+        public static NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
+            new($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
+
+        public static NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
+            new($"Value of '{memberName}' member in {objectName} object is null. The value from the path cannot be set.");
+
+        public static NClientException ParameterInRouteTemplateIsNull(string parameterName) =>
+            new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
+
         public static InvalidAttributeNClientException UsedInvalidAttributeInControllerInterface(string memberName) =>
             new InvalidAttributeNClientException($"An invalid attribute is used for '{memberName}' in controller interface.");
         public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string clientName, string methodName, string[] paramNames) =>
@@ -51,15 +69,15 @@ namespace NClient.Core.Exceptions.Factories
             new($"Multiple attributes for a method are not supported. {GetClientInfo(method)}");
 
         //TODO: Should contains client and method info
-        public static NotSupportedNClientException DictionaryWithComplexTypeOfKeyNotSupported() => 
+        public static NotSupportedNClientException DictionaryWithComplexTypeOfKeyNotSupported() =>
             new("Dictionary with complex key types cannot be passed through uri query.");
 
         public static NotSupportedNClientException DictionaryWithComplexTypeOfValueNotSupported() =>
             new("Dictionary with complex value types cannot be passed through uri query.");
 
         public static NotSupportedNClientException ArrayWithComplexTypeNotSupported() =>
-            new("Array with complex types cannot be passed through uri query.");        
-        
+            new("Array with complex types cannot be passed through uri query.");
+
         public static HttpRequestNClientException HttpRequestFailed(HttpStatusCode statusCode, string? errorMessage) =>
             new(statusCode, errorMessage);
 

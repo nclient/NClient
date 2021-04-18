@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.MemberNameSelectors;
 using NUnit.Framework;
 using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
@@ -167,7 +168,7 @@ namespace NClient.Core.Tests
         [TestCaseSource(nameof(ConvertibleObjectSource))]
         public void Convert_ConvertibleObject_ArrayOfKeyValue(object obj, PropertyKeyValue[] expectedResult)
         {
-            var actualResult = new ObjectToKeyValueConverter().Convert(obj, "obj");
+            var actualResult = new ObjectToKeyValueConverter().Convert(obj, "obj", new DefaultMemberNameSelector());
 
             actualResult
                 .Should()
@@ -178,7 +179,7 @@ namespace NClient.Core.Tests
         public void Convert_NotSupportedObject_ThrowNotSupportedNClientException(object obj, string _)
         {
             new ObjectToKeyValueConverter()
-                .Invoking(x => x.Convert(obj, "obj"))
+                .Invoking(x => x.Convert(obj, "obj", new DefaultMemberNameSelector()))
                 .Should()
                 .Throw<NotSupportedNClientException>();
         }

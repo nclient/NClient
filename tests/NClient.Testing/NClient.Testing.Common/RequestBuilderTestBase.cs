@@ -45,8 +45,8 @@ namespace NClient.Testing.Common
 
         protected static void AssertHttpRequest(
             HttpRequest actualRequest,
-            Uri uri, 
-            HttpMethod httpMethod, 
+            Uri uri,
+            HttpMethod httpMethod,
             IEnumerable<HttpParameter>? parameters = null,
             IEnumerable<HttpHeader>? headers = null,
             object? body = null)

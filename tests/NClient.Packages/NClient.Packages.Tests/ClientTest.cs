@@ -8,7 +8,6 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Extensions.DependencyInjection;
 using NClient.Packages.Tests.Helpers;
-using NClient.Standalone;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -44,6 +43,7 @@ namespace NClient.Packages.Tests
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddLogging()
+                .AddHttpClient()
                 .AddNClient<ITestController, TestController>(host, policy)
                 .BuildServiceProvider()
                 .GetRequiredService<ITestController>();
@@ -72,6 +72,7 @@ namespace NClient.Packages.Tests
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddLogging()
+                .AddHttpClient()
                 .AddNClient<ITest>(host, policy)
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();

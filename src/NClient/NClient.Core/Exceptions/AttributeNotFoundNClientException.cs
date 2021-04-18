@@ -5,7 +5,7 @@ namespace NClient.Core.Exceptions
 {
     public class AttributeNotFoundNClientException : NClientException
     {
-        public AttributeNotFoundNClientException(Type attributeType, Type client) 
+        public AttributeNotFoundNClientException(Type attributeType, Type client)
             : base(message: $"Attribute '{attributeType.Name}' not found for target type '{client.Name}'.")
         {
         }

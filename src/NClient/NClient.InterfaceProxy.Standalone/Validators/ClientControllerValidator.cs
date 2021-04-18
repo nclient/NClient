@@ -12,7 +12,7 @@ namespace NClient.AspNetProxy.Validators
 {
     internal class ClientControllerValidator
     {
-        public void Ensure<TInterface, TController>(IProxyGenerator proxyGenerator) 
+        public void Ensure<TInterface, TController>(IProxyGenerator proxyGenerator)
             where TInterface : class
             where TController : TInterface
         {
@@ -27,12 +27,12 @@ namespace NClient.AspNetProxy.Validators
                 new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<TInterface>(
-                proxyGenerator, 
-                new StubHttpClientProvider(), 
-                requestBuilder, 
+                proxyGenerator,
+                new StubHttpClientProvider(),
+                requestBuilder,
                 new StubResiliencePolicyProvider(),
                 controllerType: typeof(TController));
-            
+
             proxyGenerator
                 .CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor())
                 .EnsureValidity();

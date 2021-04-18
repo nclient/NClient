@@ -89,15 +89,15 @@ namespace NClient.AspNetProxy
                 new ObjectToKeyValueConverter());
 
             var interceptor = new ClientInterceptor<TInterface>(
-                _proxyGenerator, 
-                _httpClientProvider, 
-                requestBuilder, 
+                _proxyGenerator,
+                _httpClientProvider,
+                requestBuilder,
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
                 controllerType: typeof(TController),
                 _logger);
-            
-            return (TInterface) _proxyGenerator.CreateInterfaceProxyWithoutTarget(
-                interfaceToProxy: typeof(TInterface), 
+
+            return (TInterface)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
+                interfaceToProxy: typeof(TInterface),
                 additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TInterface>), typeof(IHttpNClient<TInterface>) },
                 interceptors: interceptor.ToInterceptor());
         }
