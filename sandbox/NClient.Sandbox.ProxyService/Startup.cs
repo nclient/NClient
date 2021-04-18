@@ -25,7 +25,7 @@ namespace NClient.Sandbox.ProxyService
             services.AddSwaggerDocument();
             services.AddNClientControllers();
             services.AddNClient<IThirdPartyWeatherForecastClient>(
-                host: "http://localhost:5001", 
+                host: "http://localhost:5001",
                 httpClientName: nameof(IThirdPartyWeatherForecastClient));
         }
 
