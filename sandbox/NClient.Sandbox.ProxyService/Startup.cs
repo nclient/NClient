@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,10 +21,12 @@ namespace NClient.Sandbox.ProxyService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging().AddHttpClient();
+            services.AddLogging().AddHttpClient(nameof(IThirdPartyWeatherForecastClient));
             services.AddSwaggerDocument();
             services.AddNClientControllers();
-            services.AddNClient<IThirdPartyWeatherForecastClient>(host: "http://localhost:5001");
+            services.AddNClient<IThirdPartyWeatherForecastClient>(
+                host: "http://localhost:5001",
+                httpClientName: nameof(IThirdPartyWeatherForecastClient));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

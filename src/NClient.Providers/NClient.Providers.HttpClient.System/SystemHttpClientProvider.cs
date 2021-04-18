@@ -22,9 +22,9 @@ namespace NClient.Providers.HttpClient.System
             _systemHttpClient = new SystemHttpClient(new StubHttpClientFactory(httpClient));
         }
 
-        public SystemHttpClientProvider(IHttpClientFactory httpClientFactory)
+        public SystemHttpClientProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
-            _systemHttpClient = new SystemHttpClient(httpClientFactory);
+            _systemHttpClient = new SystemHttpClient(httpClientFactory, httpClientName);
         }
 
         public IHttpClient Create()
