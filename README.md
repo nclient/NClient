@@ -91,7 +91,7 @@ public interface IWeatherForecastController
 public class WeatherForecastController : ControllerBase, IWeatherForecastController { ... }
 ```
 This should be done if you want your client type to not contain "Сontroller" in the name. If you add `INClient` interface, you will get additional NClient features: receive a full http response and change a resilience policy for requests.
-#### Step 6: Add controller to ServiceCollection in Startup.cs
+#### Step 5: Add controller to ServiceCollection in Startup.cs
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -100,18 +100,18 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 `AddNClientControllers` method can be used in combination with `AddControllers`.
-#### Step 7: Install `NClient` on client-side
+#### Step 6: Install `NClient` on client-side
 ```
 dotnet add package NClient
 ```
-#### Step 8: Create client
+#### Step 7: Create client
 ```C#
 IWeatherForecastController client = NClientProvider
     .Use<IWeatherForecastController>(host: "http://localhost:8080")
     .Build();
 ```
 If you decide to follow the 4 step, use `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
-#### Step 9: Send an http request
+#### Step 8: Send an http request
 ```C#
 // Equivalent to the following request: 
 // curl -X GET -H "Content-type: application/json" http://localhost:8080/WeatherForecast?date=2021-03-13T00:15Z
