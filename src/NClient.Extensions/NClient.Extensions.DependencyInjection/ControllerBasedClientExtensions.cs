@@ -13,7 +13,7 @@ namespace NClient.Extensions.DependencyInjection
     public static class ControllerBasedClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host, IAsyncPolicy<HttpResponse> asyncPolicy)
+            string host, IAsyncPolicy<HttpResponse> asyncPolicy, string? httpClientName = null)
             where TInterface : class
             where TController : TInterface
         {
@@ -23,7 +23,7 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory)
+                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
                     .WithResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
                     .Build();
@@ -31,7 +31,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
-            string host)
+            string host, string? httpClientName = null)
             where TInterface : class
             where TController : TInterface
         {
@@ -41,7 +41,7 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory)
+                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
                     .WithLogging(logger)
                     .Build();
             });

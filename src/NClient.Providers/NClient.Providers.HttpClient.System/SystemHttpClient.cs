@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using NClient.Abstractions.HttpClients;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
@@ -15,10 +16,12 @@ namespace NClient.Providers.HttpClient.System
     public class SystemHttpClient : IHttpClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _httpClientName;
 
-        public SystemHttpClient(IHttpClientFactory httpClientFactory)
+        public SystemHttpClient(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
             _httpClientFactory = httpClientFactory;
+            _httpClientName = httpClientName ?? Options.DefaultName;
         }
 
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
@@ -30,7 +33,7 @@ namespace NClient.Providers.HttpClient.System
 
         private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = _httpClientFactory.CreateClient(_httpClientName);
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false); ;
 
             try

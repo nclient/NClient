@@ -2,7 +2,7 @@
 
 namespace NClient.Providers.HttpClient.System
 {
-    public class StubHttpClientFactory : IHttpClientFactory
+    internal class StubHttpClientFactory : IHttpClientFactory
     {
         private readonly global::System.Net.Http.HttpClient _httpClient;
 

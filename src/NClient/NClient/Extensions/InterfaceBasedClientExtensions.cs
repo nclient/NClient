@@ -15,9 +15,9 @@ namespace NClient.Extensions
         }
 
         public static IInterfaceBasedClientBuilder<T> Use<T>(
-            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory) where T : class
+            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory, string? httpClientName = null) where T : class
         {
-            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpClientFactory));
+            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
         public static IInterfaceBasedClientBuilder<T> Use<T>(

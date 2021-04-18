@@ -21,11 +21,11 @@ namespace NClient.Extensions
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
         public static IControllerBasedClientBuilder<TInterface, TController> Use<TInterface, TController>(
-            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory)
+            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory, string? httpClientName = null)
             where TInterface : class
             where TController : TInterface
         {
-            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpClientFactory));
+            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
