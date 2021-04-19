@@ -290,8 +290,9 @@ HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.G
 ## Resilience
 To do this, you can create a policy using Polly library:
 ```C#
-IAsyncPolicy policy = Policy
-    .Handle<Exception>()
+var policy = Policy
+    .HandleResult<HttpResponse>(x => !x.IsSuccessful)
+    .Or<Exception>()
     .WaitAndRetryAsync(maxRetryAttempts: 3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
 IMyClient myClient = NClientProvider
