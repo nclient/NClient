@@ -7,7 +7,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an HTTP client that allows you to call web service API methods usnig annotated interfaces or controllers. The client supports asynchronous calls, retry policies and logging. All this is  simple and flexible to configure.
+NClient is an HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, retry policies and logging. All this is simple and flexible to configure. The main important difference between NClient and its analogues is the ability to annotate ASP.NET controllers via interfaces. Annotated interfaces allow you to reuse the api description in clients without boilerplate code.
 
 ## Table of Contents
 - [Why use NClient?](#why)  
@@ -36,9 +36,7 @@ Creating clients for web services can be quite a challenge because, in addition 
 <a name="install" />  
 
 ## How to install?
-The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget. How to choose which package you need, see below in "NuGet packages" section. If you do not know how to install NuGet package you will need links:  
-- [Install and use a package in Visual Studio](https://docs.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-in-visual-studio)  
-- [Install and manage packages with the Package Manager Console in Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell)
+The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget. To choose which package you need, see below in [NuGet Packages](#nuget) section.
 
 <a name="usage" />  
 
@@ -48,7 +46,7 @@ To generate a client, you just need to create an interface describing available 
 <a name="usage-aspnet" />
 
 ### Usage with ASP.NET Core
-If you want to generate a client for a ASP.NET web service, then you need to extract an interface for your controller and annotate it with attributes from `NClient.Annotations`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
+If you want to generate a client for a ASP.NET web service, you need to extract an interface for your controller and annotate it with attributes from `NClient.Annotations`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
 #### Step 1: Install `NClient.AspNetCore` on server-side
 ```
 dotnet add package NClient.AspNetCore
@@ -90,7 +88,7 @@ public interface IWeatherForecastController
 
 public class WeatherForecastController : ControllerBase, IWeatherForecastController { ... }
 ```
-This should be done if you want your client type to not contain "Сontroller" in the name. If you add `INClient` interface, you will get additional NClient features: receive a full http response and change a resilience policy for requests.
+This should be done if you want your client type not to contain "Сontroller" in the name. If you add `INClient` interface, you will get additional NClient features: receive a full http response and change a resilience policy for requests.
 #### Step 5: Add controller to ServiceCollection in Startup.cs
 ```C#
 public void ConfigureServices(IServiceCollection services)
@@ -110,7 +108,7 @@ IWeatherForecastController client = NClientProvider
     .Use<IWeatherForecastController>(host: "http://localhost:8080")
     .Build();
 ```
-If you decide to follow the 4 step, use `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
+If you decide to follow the 4th step, use `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
 #### Step 8: Send an http request
 ```C#
 // Equivalent to the following request: 
@@ -152,12 +150,12 @@ await client.PostAsync(new Product(id: 1));
 <a name="features"/>  
 
 # Features
-A list of the main features of NClient library:
+The list of the main features of NClient library:
 
 <a name="features-creating"/>  
 
 ## Creating
-There are several ways to create a client, you can choose the most fitting one.
+There are several ways to create a client, you can choose the most suitable one.
 
 #### NClientProvider
 Static option for creating a client instance:
@@ -190,7 +188,7 @@ IMyClient myClient = clientFactory.Create<IMyClient>(host: "http://localhost:808
 The client and controller interfaces are annotated with attributes. The following attributes can be used:
 
 #### Base attributes
-A client interface can be annotated with `Facade` attribute if no other NClient attributes are used in the client interface. This is needed in the internal logic of the library to find the client interfaces.
+A client interface can be annotated with `Facade` attribute if no other NClient attributes are used in the client interface. It is needed in the internal logic of the library to find the client interfaces.
 ```C#
 [Facade] public interface IMyClient { ... }
 ```
@@ -198,7 +196,7 @@ A client interface can be annotated with `Facade` attribute if no other NClient 
 ```C#
 [Api] public interface IMyController { ... }
 ```
-The base URL route can be set by `Path` attribute.
+The base URL route for API can be set by `Path` attribute.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
@@ -212,16 +210,16 @@ Optionally, you can specify a relative path.
 public interface IMyClient { [GetMethod("entities")] Entity[] Get(); }
 ```
 #### Parameter attributes
-By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass the parameter using attributes: `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`.
+By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`.
 ```C#
 public interface IMyClient { [PostMethod] void Post([QueryParam] Entity entity); }
 ```
-You can change the attribute name:
+It is also possible to change a parameter name:
 ```C#
 public interface IMyClient { [PostMethod] void Post([QueryParam(Name = "myEntity")] Entity entity); }
 ```
 #### Property attributes
-`QueryParam` attribute allows you to change the property name of the custom object that is passed in URL query.
+`QueryParam` attribute allows you to change a property name of a custom object that is passed in URL query.
 ```C#
 public class Entity { [QueryParam(Name = "id")] public int Id }
 ```
@@ -238,17 +236,17 @@ public class Entity { [JsonPropertyName("id")] public int Id }
 Routes are set using route templates that are passed to attributes. Route templates can contain the following tokens:
 
 #### Class and interface names
-Relative routes can be set in the following attributes: `Path`, `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`. You can use the names of classes and interfaces in the paths:
+Relative routes can be set in the following attributes: `Path`, `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`. You can use names of classes and interfaces in the paths:
 ```C#
 [Path("api/[controller]")] public interface IEntitiesClient { ... } // the route will be: api/entities
 ```
 The name of the class/interface will be substituted without prefixes (`I`) and postfixes (`Controller`, `Client`, `Facade`).
 #### Method parameters
-In routes, you can substitute the values of the method parameters:
+In routes you can use values of a method parameters:
 ```C#
 public interface IMyClient { [GetMethod("entities/{id}")] Entity[] Get(int id); }
 ```
-You can also use the parameter values of custom objects in the paths.
+You can also use property values of custom objects in route templates:
 ```C#
 public interface IMyClient { [PutMethod("entities/{entity.Id}")] void Put(Entity entity); }
 ```
@@ -256,7 +254,7 @@ public interface IMyClient { [PutMethod("entities/{entity.Id}")] void Put(Entity
 <a name="features-async"/> 
 
 ## Asynchronously calls
-To execute a request to the service asynchronously, you should specify the returned type as Task or Task<>:
+To execute a request to the web-service asynchronously, you should define the returned type as Task or Task<>:
 ```C#
 public interface IMyClient : INClient
 {
@@ -288,7 +286,7 @@ HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.G
 <a name="features-resilience"/> 
 
 ## Resilience
-To do this, you can create a policy using Polly library:
+To achieve better resilience, you can create a resilience policy using Polly library:
 ```C#
 var policy = Policy
     .HandleResult<HttpResponse>(x => !x.IsSuccessful)
@@ -300,8 +298,8 @@ IMyClient myClient = NClientProvider
     .WithResiliencePolicy(policy)
     .Build();
 ```
-But you can create your own implementation of IResiliencePolicyProvider and pass it to WithResiliencePolicy method.  
-To set resilience policy for a specific method, the client interface must inherit `INClient` interface.
+You can also create your own implementation of `IResiliencePolicyProvider` and pass it to `WithResiliencePolicy` method.  
+To set specific resilience policy for a method, the client interface must inherit `INClient` interface:
 ```C#
 public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
 ...
@@ -311,7 +309,7 @@ await myClient.AsResilience().InvokeResiliently(x => x.PostAsync(id), new MyResi
 <a name="features-logging"/> 
 
 ## Logging
-You can optionally specify a logger for a client.
+You can optionally set a logger for a client:
 ```C#
 ILogger<IMyClient> logger = ...;
 
@@ -335,7 +333,7 @@ var serviceProvider = new ServiceCollection()
 <a name="features-httpclient"/> 
 
 ## HttpClient
-An `HttpClient` is created for each NClient instance of a client. Keep this in mind, because `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
+An `HttpClient` is created for each instance of a client. Keep this in mind, because `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
 ```C#
 var httpClientFactory = ...;
 
@@ -344,7 +342,7 @@ IMyClient myClient = NClientProvider
     .WithLogging(logger)
     .Build();
 ```
-Or just use DI extensions form `NClient.Extensions.DependencyInjection`:
+or just use DI extensions form `NClient.Extensions.DependencyInjection`:
 ```C#
 var serviceProvider = new ServiceCollection()
     .AddHttpClient()
@@ -362,7 +360,7 @@ IMyClient myClient = NClientProvider
 <a name="documentation" />  
 
 ## Documentation
-You can find NClient documentation [on the website](https://nclient.github.io/).
+You can find NClient documentation and samples [on the website](https://nclient.github.io/).
 
 <a name="nuget" />  
 
