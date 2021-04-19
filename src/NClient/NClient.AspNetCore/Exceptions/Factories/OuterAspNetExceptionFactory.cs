@@ -4,6 +4,9 @@ namespace NClient.AspNetCore.Exceptions.Factories
 {
     internal static class OuterAspNetExceptionFactory
     {
+        public static NClientException RouteParameterNotMatchModel(string parameterName, string modelName) =>
+            new($"Parameter '{parameterName}' in route template does not match '{modelName}' model.");
+
         public static NClientException ControllerCanHaveOnlyOneInterface(string controllerName) =>
             new($"Controller '{controllerName}' can have only one NClient interface.");
 

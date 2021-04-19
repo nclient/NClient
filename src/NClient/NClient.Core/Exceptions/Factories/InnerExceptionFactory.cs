@@ -13,7 +13,7 @@ namespace NClient.Core.Exceptions.Factories
         public static NullReferenceException NullReference(string message) =>
             new(message);
 
-        public static ArgumentException TypeMustBeAttribute(string paramName) => 
+        public static ArgumentException TypeMustBeAttribute(string paramName) =>
             new("Type must be an attribute.", paramName);
     }
 }

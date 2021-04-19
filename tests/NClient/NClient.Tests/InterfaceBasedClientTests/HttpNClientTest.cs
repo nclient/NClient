@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using FluentAssertions.Execution;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Extensions;
 using NClient.Extensions;
@@ -40,7 +41,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
-                ContentLength = -1,
+                ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
@@ -60,7 +61,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
-                ContentLength = -1,
+                ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
@@ -79,7 +80,8 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                ContentType = null,
+                Content = "",
+                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
                 StatusDescription = "OK",
@@ -97,7 +99,8 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                ContentType = null,
+                Content = "",
+                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
                 StatusDescription = "OK",
@@ -108,9 +111,15 @@ namespace NClient.Tests.InterfaceBasedClientTests
         public void GetHttpResponse_ServiceNotExists_InternalServerError()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockInternalServerError();
 
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
-            httpResponse.StatusCode.Should().Be((HttpStatusCode)0);
+
+            using var assertionScope = new AssertionScope();
+            httpResponse.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            httpResponse.IsSuccessful.Should().BeFalse();
+            httpResponse.ErrorMessage.Should().Be("Response status code does not indicate success: 500 (Internal Server Error).");
+            httpResponse.ErrorException.Should().NotBeNull();
         }
 
         private EquivalencyAssertionOptions<HttpResponse<BasicEntity>> ExcludeInessentialFields(
@@ -118,7 +127,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
         {
             return opts
                 .Excluding(x => x.Headers)
-                .Excluding(x => x.RawBytes)
                 .Excluding(x => x.ResponseUri);
         }
 
@@ -127,7 +135,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
         {
             return opts
                 .Excluding(x => x.Headers)
-                .Excluding(x => x.RawBytes)
                 .Excluding(x => x.ResponseUri);
         }
     }

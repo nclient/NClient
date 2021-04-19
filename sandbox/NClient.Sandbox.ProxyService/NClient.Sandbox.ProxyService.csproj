@@ -7,8 +7,13 @@
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<IsPackable>false</IsPackable>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
+		<Configurations>Debug;Release</Configurations>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NSwag.AspNetCore" Version="13.10.8" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\NClient.Extensions\NClient.Extensions.DependencyInjection\NClient.Extensions.DependencyInjection.csproj" />

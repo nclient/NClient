@@ -39,7 +39,7 @@ namespace NClient.Core.AspNetRouting
         }
 
         /// <inheritdoc />
-        public int GetHashCode(object obj)
+        public int GetHashCode(object? obj)
         {
             var stringObj = obj as string ?? Convert.ToString(obj, CultureInfo.InvariantCulture);
             if (string.IsNullOrEmpty(stringObj))

@@ -21,7 +21,7 @@ namespace NClient.AspNetProxy
         private readonly ILoggerFactory _loggerFactory;
 
         public NClientControllerFactory(
-            IHttpClientProvider httpClientProvider, 
+            IHttpClientProvider httpClientProvider,
             IResiliencePolicyProvider resiliencePolicyProvider,
             ILoggerFactory loggerFactory)
         {

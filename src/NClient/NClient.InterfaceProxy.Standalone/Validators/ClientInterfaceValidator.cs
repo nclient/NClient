@@ -24,7 +24,7 @@ namespace NClient.InterfaceProxy.Validators
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
             var interceptor = new ClientInterceptor<T>(proxyGenerator, new StubHttpClientProvider(), requestBuilder, new StubResiliencePolicyProvider());
-            
+
             proxyGenerator
                 .CreateInterfaceProxyWithoutTarget<T>(interceptor.ToInterceptor())
                 .EnsureValidity();
