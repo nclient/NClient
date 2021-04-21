@@ -65,8 +65,6 @@ namespace NClient.Core.Interceptors
 
         private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
-            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
-
             var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
                 ? typeof(TResult).GetGenericArguments().First()
                 : typeof(HttpResponse) == typeof(TResult)
@@ -77,7 +75,7 @@ namespace NClient.Core.Interceptors
                 .Create(resiliencePolicyProvider)
                 .ExecuteAsync(request, responseBodyType)
                 .ConfigureAwait(false);
-            
+
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult) (object) response;
             if (!response.IsSuccessful)
