@@ -23,7 +23,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
         internal override HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.InvocationTarget.GetType(), invocation.MethodInvocationTarget, invocation.Arguments);
+            return RequestBuilder.Build(RequestId, invocation.InvocationTarget.GetType(), invocation.MethodInvocationTarget, invocation.Arguments);
         }
 
         public interface INoAttributes { int Method(); }

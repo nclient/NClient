@@ -11,7 +11,7 @@ namespace NClient.Core.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        HttpRequest Build(Type clientType, MethodInfo method, object[] arguments);
+        HttpRequest Build(Guid requestId, Type clientType, MethodInfo method, object[] arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
@@ -39,7 +39,7 @@ namespace NClient.Core.RequestBuilders
             _objectToKeyValueConverter = objectToKeyValueConverter;
         }
 
-        public HttpRequest Build(Type clientType, MethodInfo method, object[] arguments)
+        public HttpRequest Build(Guid requestId, Type clientType, MethodInfo method, object[] arguments)
         {
             var httpMethod = _httpMethodProvider.Get(method);
             var routeTemplate = _routeTemplateProvider.Get(clientType, method);
@@ -47,7 +47,7 @@ namespace NClient.Core.RequestBuilders
             var route = _routeProvider.Build(routeTemplate, clientType.Name, method.Name, methodParams);
             var uri = new Uri(_host, route);
 
-            var request = new HttpRequest(uri, httpMethod);
+            var request = new HttpRequest(requestId, uri, httpMethod);
 
             var urlParams = methodParams
                 .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);

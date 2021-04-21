@@ -28,7 +28,7 @@ namespace NClient.Providers.HttpClient.System
         {
             var httpRequestMessage = BuildRequestMessage(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
-            return await BuildResponseAsync(httpResponseMessage, bodyType, exception).ConfigureAwait(false);
+            return await BuildResponseAsync(request, httpResponseMessage, bodyType, exception).ConfigureAwait(false);
         }
 
         private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)
@@ -69,7 +69,8 @@ namespace NClient.Providers.HttpClient.System
             return httpRequestMessage;
         }
 
-        private static async Task<HttpResponse> BuildResponseAsync(HttpResponseMessage httpResponseMessage, Type? bodyType = null, Exception? exception = null)
+        private static async Task<HttpResponse> BuildResponseAsync(
+            HttpRequest request, HttpResponseMessage httpResponseMessage, Type? bodyType = null, Exception? exception = null)
         {
             var headers = httpResponseMessage.Headers
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
@@ -79,7 +80,7 @@ namespace NClient.Providers.HttpClient.System
                 .ToArray();
             var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var response = new HttpResponse
+            var response = new HttpResponse(request)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
                 ContentLength = httpResponseMessage.Content.Headers.ContentLength,
@@ -103,7 +104,7 @@ namespace NClient.Providers.HttpClient.System
                 throw deserializationException!;
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponse, response, responseValue);
+            return (HttpResponse)Activator.CreateInstance(genericResponse, request, response, responseValue);
         }
 
         private static object? TryParseJson(string body, Type bodyType, out Exception? exception)

@@ -5,7 +5,9 @@ using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Helpers;
+using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Mappers;
@@ -53,6 +55,7 @@ namespace NClient.ControllerBasedClients
         public TInterface Build()
         {
             var attributeMapper = new AspNetAttributeMapper();
+            var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
 
             var requestBuilder = new RequestBuilder(
                 _host,
@@ -62,11 +65,15 @@ namespace NClient.ControllerBasedClients
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
 
-            var interceptor = new ClientInterceptor<TInterface>(
-                _proxyGenerator,
+            var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 _httpClientProvider,
-                requestBuilder,
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
+                _logger);
+
+            var interceptor = new ClientInterceptor<TInterface>(
+                resilienceHttpClientProvider,
+                clientInvocationProvider,
+                requestBuilder,
                 controllerType: typeof(TController),
                 _logger);
 
