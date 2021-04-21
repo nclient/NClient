@@ -1,13 +1,13 @@
 ﻿using System;
 using Castle.DynamicProxy;
-using NClient.Core.Helpers;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.Mappers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
-using NClient.Core.Validators;
+using NClient.Core.Validation;
 
 namespace NClient.InterfaceBasedClients
 {

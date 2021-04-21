@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NUnit.Framework;
 using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 

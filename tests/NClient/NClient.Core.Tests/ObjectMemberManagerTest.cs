@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NUnit.Framework;
 
 namespace NClient.Core.Tests

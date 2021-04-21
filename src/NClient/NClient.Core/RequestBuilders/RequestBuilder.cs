@@ -5,7 +5,8 @@ using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 
 namespace NClient.Core.RequestBuilders
 {
@@ -63,7 +64,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => x.Attribute is HeaderParamAttribute && x.Value != null);
             foreach (var headerParam in headerParams)
             {
-                if (!headerParam.Type.IsSimple())
+                if (!headerParam.Type.IsPrimitive())
                     throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(method, headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }

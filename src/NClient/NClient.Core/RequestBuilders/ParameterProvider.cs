@@ -63,7 +63,7 @@ namespace NClient.Core.RequestBuilders
             if (routeTemplate.Parameters.Any(x => x.Name == paramInfo.Name))
                 return new RouteParamAttribute();
 
-            return paramInfo.ParameterType.IsSimple()
+            return paramInfo.ParameterType.IsPrimitive()
                 ? new QueryParamAttribute()
                 : new BodyParamAttribute();
         }

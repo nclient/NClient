@@ -5,7 +5,8 @@ using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.RequestBuilders.Models;
 
 namespace NClient.Core.RequestBuilders
@@ -57,7 +58,7 @@ namespace NClient.Core.RequestBuilders
                 var parameter = routeParameters.SingleOrDefault(x => x.Name == objectName);
                 if (parameter is null)
                     throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
-                if (!parameter.Type.IsSimple())
+                if (!parameter.Type.IsPrimitive())
                     throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
 
                 return parameter.Value?.ToString() ?? "";
