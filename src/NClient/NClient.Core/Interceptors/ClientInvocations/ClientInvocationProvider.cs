@@ -25,7 +25,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
 
         public ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation)
         {
-            if (!IsDefaultNClientMethod(invocation.Method))
+            if (!IsNClientMethod(invocation.Method))
                 return BuildInvocation(interfaceType, controllerType, invocation, resiliencePolicyProvider: null);
 
             var clientMethodInvocation = invocation.Arguments[0];
@@ -48,7 +48,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
             var clientType = controllerType ?? interfaceType;
             var clientMethod = controllerType is null
                 ? invocation.Method
-                : TryGetMethodImpl(controllerType, interfaceType, invocation.Method);
+                : GetMethodImpl(interfaceType, controllerType, invocation.Method);
             var clientMethodArguments = invocation.Arguments;
 
             return new ClientInvocation(clientType, clientMethod, clientMethodArguments)
@@ -57,26 +57,35 @@ namespace NClient.Core.Interceptors.ClientInvocations
             };
         }
 
-        private static MethodInfo? TryGetMethodImpl(Type implType, Type interfaceType, MethodInfo interfaceMethod)
+        private static MethodInfo GetMethodImpl(Type interfaceType, Type implType, MethodInfo interfaceMethod)
         {
-            if (implType.GetInterfaces().All(x => x != interfaceType))
-                return null;
-
             var interfaceMapping = implType.GetInterfaceMap(interfaceType);
             var methodPairs = interfaceMapping.InterfaceMethods
                 .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
             return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
         }
-
-        //TODO: Solution is not good enough
-        private static bool IsDefaultNClientMethod(MethodInfo method)
+        
+        private static bool IsNClientMethod(MethodInfo method)
         {
-            if (typeof(IResilienceNClient<>).GetMethods().Any(x => x.Name == method.Name))
+            if (typeof(IResilienceNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
-            if (typeof(IHttpNClient<>).GetMethods().Any(x => x.Name == method.Name))
+            if (typeof(IHttpNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
 
             return false;
+        }
+
+        private static bool NClientMethodEquals(MethodInfo nclientMethodInfo, MethodInfo methodInfo)
+        {
+            if (methodInfo.DeclaringType is null || !methodInfo.DeclaringType.IsGenericType)
+                return false;
+            
+            var nclientDeclaringTypeWithParam = nclientMethodInfo.DeclaringType!.MakeGenericType(methodInfo.DeclaringType.GetGenericArguments());
+            var methodDeclaringTypeWithParam = methodInfo.DeclaringType;
+            if (nclientDeclaringTypeWithParam != methodDeclaringTypeWithParam)
+                return false;
+
+            return nclientMethodInfo.Name == methodInfo.Name;
         }
     }
 }
