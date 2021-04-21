@@ -9,12 +9,12 @@ namespace NClient.Core.HttpClients
     {
         public Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
         {
-            var response = new HttpResponse { StatusCode = HttpStatusCode.OK };
+            var response = new HttpResponse(request) { StatusCode = HttpStatusCode.OK };
             if (bodyType is null)
                 return Task.FromResult(response);
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponse, response, null));
+            return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponse, request, response, null));
         }
     }
 }

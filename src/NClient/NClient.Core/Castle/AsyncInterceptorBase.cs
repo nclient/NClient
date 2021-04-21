@@ -6,7 +6,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 
-namespace NClient.Core.Interceptors
+namespace NClient.Core.Castle
 {
     // TODO: It's fixed copy (see InterceptSynchronousResult). Fix it in https://github.com/JSkimming/Castle.Core.AsyncInterceptor
 

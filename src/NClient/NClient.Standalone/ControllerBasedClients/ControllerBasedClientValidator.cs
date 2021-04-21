@@ -3,6 +3,7 @@ using Castle.DynamicProxy;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Core.Validators;
@@ -17,6 +18,7 @@ namespace NClient.ControllerBasedClients
             where TController : TInterface
         {
             var attributeMapper = new AspNetAttributeMapper();
+            var clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
 
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
@@ -25,12 +27,15 @@ namespace NClient.ControllerBasedClients
                 new HttpMethodProvider(attributeMapper),
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
+            
+            var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
+                new StubHttpClientProvider(),
+                new StubResiliencePolicyProvider());
 
             var interceptor = new ClientInterceptor<TInterface>(
-                proxyGenerator,
-                new StubHttpClientProvider(),
+                resilienceHttpClientProvider,
+                clientInvocationProvider,
                 requestBuilder,
-                new StubResiliencePolicyProvider(),
                 controllerType: typeof(TController));
 
             proxyGenerator

@@ -7,12 +7,12 @@ namespace NClient.Abstractions.HttpClients
     {
         public T Value { get; }
 
-        public HttpResponse(T value)
+        public HttpResponse(HttpRequest httpRequest, T value) : base(httpRequest)
         {
             Value = value;
         }
 
-        public HttpResponse(HttpResponse httpResponse, T value)
+        public HttpResponse(HttpRequest httpRequest, HttpResponse httpResponse, T value) : base(httpRequest)
         {
             Value = value;
             ContentType = httpResponse.ContentType;
@@ -32,6 +32,7 @@ namespace NClient.Abstractions.HttpClients
 
     public class HttpResponse
     {
+        public HttpRequest Request { get; }
         public string? ContentType { get; set; }
         public long? ContentLength { get; set; }
         public string? ContentEncoding { get; set; }
@@ -46,5 +47,10 @@ namespace NClient.Abstractions.HttpClients
         public Version? ProtocolVersion { get; set; }
 
         public bool IsSuccessful => (int)StatusCode >= 200 && (int)StatusCode <= 299;
+
+        public HttpResponse(HttpRequest request)
+        {
+            Request = request;
+        }
     }
 }

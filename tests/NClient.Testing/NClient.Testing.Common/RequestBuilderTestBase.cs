@@ -15,6 +15,8 @@ namespace NClient.Testing.Common
 {
     public abstract class RequestBuilderTestBase
     {
+        protected static readonly Guid RequestId = Guid.Parse("5bb86773-9999-483e-aa9a-3cce10e47fb1");
+        
         internal RequestBuilder RequestBuilder = null!;
         internal KeepDataInterceptor KeepDataInterceptor = null!;
 
@@ -40,7 +42,7 @@ namespace NClient.Testing.Common
 
         internal virtual HttpRequest BuildRequest(IInvocation invocation)
         {
-            return RequestBuilder.Build(invocation.Proxy.GetType().GetInterfaces().First(), invocation.Method, invocation.Arguments);
+            return RequestBuilder.Build(RequestId, invocation.Proxy.GetType().GetInterfaces().First(), invocation.Method, invocation.Arguments);
         }
 
         protected static void AssertHttpRequest(
