@@ -22,12 +22,12 @@ namespace NClient.Core.Interceptors.ClientInvocations
         {
             _proxyGenerator = proxyGenerator;
         }
-        
+
         public ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation)
         {
             if (!IsDefaultNClientMethod(invocation.Method))
                 return BuildInvocation(interfaceType, controllerType, invocation, resiliencePolicyProvider: null);
-            
+
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
                 throw InnerExceptionFactory.NullArgument(invocation.Method.GetParameters()[0].Name);
@@ -35,13 +35,13 @@ namespace NClient.Core.Interceptors.ClientInvocations
             var keepDataInterceptor = new KeepDataInterceptor();
             var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(interfaceType, keepDataInterceptor);
             ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
-                
+
             var innerInvocation = keepDataInterceptor.Invocation!;
             var resiliencePolicyProvider = (IResiliencePolicyProvider?)invocation.Arguments[1];
 
             return BuildInvocation(interfaceType, controllerType, innerInvocation, resiliencePolicyProvider);
         }
-        
+
         private static ClientInvocation BuildInvocation(
             Type interfaceType, Type? controllerType, IInvocation invocation, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
@@ -56,7 +56,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
                 ResiliencePolicyProvider = resiliencePolicyProvider
             };
         }
-        
+
         private static MethodInfo? TryGetMethodImpl(Type implType, Type interfaceType, MethodInfo interfaceMethod)
         {
             if (implType.GetInterfaces().All(x => x != interfaceType))

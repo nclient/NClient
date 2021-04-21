@@ -21,7 +21,7 @@ namespace NClient.Core.HttpClients
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _logger = logger;
         }
-        
+
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
@@ -32,10 +32,10 @@ namespace NClient.Core.HttpClients
                 .ConfigureAwait(false);
 
             _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
-            
+
             return response;
         }
-        
+
         private async Task<HttpResponse> ExecuteAttemptAsync(HttpRequest request, Type? bodyType = null)
         {
             var client = _httpClientProvider.Create();

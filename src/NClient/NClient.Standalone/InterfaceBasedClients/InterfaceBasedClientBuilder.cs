@@ -60,7 +60,7 @@ namespace NClient.InterfaceBasedClients
                 new HttpMethodProvider(attributeMapper),
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
-            
+
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 _httpClientProvider,
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
@@ -72,7 +72,7 @@ namespace NClient.InterfaceBasedClients
                 requestBuilder,
                 controllerType: null,
                 _logger);
-            
+
             return (T)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
                 interfaceToProxy: typeof(T),
                 additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<T>), typeof(IHttpNClient<T>) },

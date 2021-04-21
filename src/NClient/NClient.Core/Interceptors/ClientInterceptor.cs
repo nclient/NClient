@@ -77,7 +77,7 @@ namespace NClient.Core.Interceptors
                 .ConfigureAwait(false);
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
-                return (TResult) (object) response;
+                return (TResult)(object)response;
             if (!response.IsSuccessful)
                 throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);

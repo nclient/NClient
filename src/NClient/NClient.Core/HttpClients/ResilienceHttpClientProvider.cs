@@ -24,12 +24,12 @@ namespace NClient.Core.HttpClients
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _logger = logger;
         }
-        
+
         public IHttpClient Create()
         {
             return new ResilienceHttpClient(_httpClientProvider, _resiliencePolicyProvider, _logger);
         }
-        
+
         public IHttpClient Create(IResiliencePolicyProvider? resiliencePolicyProvider)
         {
             return new ResilienceHttpClient(_httpClientProvider, resiliencePolicyProvider ?? _resiliencePolicyProvider, _logger);

@@ -10,7 +10,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
         public MethodInfo MethodInfo { get; }
         public object[] MethodArguments { get; }
         public IResiliencePolicyProvider? ResiliencePolicyProvider { get; set; }
-        
+
         public ClientInvocation(Type clientType, MethodInfo methodInfo, object[] methodArguments)
         {
             ClientType = clientType;

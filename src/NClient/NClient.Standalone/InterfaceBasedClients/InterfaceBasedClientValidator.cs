@@ -25,11 +25,11 @@ namespace NClient.InterfaceBasedClients
                 new HttpMethodProvider(attributeMapper),
                 new ParameterProvider(attributeMapper),
                 new ObjectToKeyValueConverter());
-            
+
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 new StubHttpClientProvider(),
                 new StubResiliencePolicyProvider());
-            
+
             var interceptor = new ClientInterceptor<T>(
                 resilienceHttpClientProvider,
                 clientInvocationProvider,
