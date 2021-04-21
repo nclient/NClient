@@ -64,7 +64,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
                 .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
             return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
         }
-        
+
         private static bool IsNClientMethod(MethodInfo method)
         {
             if (typeof(IResilienceNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
@@ -79,7 +79,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
         {
             if (methodInfo.DeclaringType is null || !methodInfo.DeclaringType.IsGenericType)
                 return false;
-            
+
             var nclientDeclaringTypeWithParam = nclientMethodInfo.DeclaringType!.MakeGenericType(methodInfo.DeclaringType.GetGenericArguments());
             var methodDeclaringTypeWithParam = methodInfo.DeclaringType;
             if (nclientDeclaringTypeWithParam != methodDeclaringTypeWithParam)
