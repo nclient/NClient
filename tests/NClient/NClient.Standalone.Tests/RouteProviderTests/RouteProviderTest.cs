@@ -28,7 +28,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
@@ -42,7 +42,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
@@ -168,11 +168,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("api/Client");
+            route.Should().Be("api/My");
         }
 
         [Test]
@@ -182,7 +182,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
@@ -196,7 +196,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
@@ -210,11 +210,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: Array.Empty<Parameter>());
 
-            route.Should().Be("api/Client/Method");
+            route.Should().Be("api/My/Method");
         }
 
         [Test]
@@ -224,7 +224,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -241,7 +241,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -258,7 +258,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -275,7 +275,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -293,7 +293,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -311,7 +311,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -329,7 +329,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
@@ -347,7 +347,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
@@ -365,7 +365,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -383,7 +383,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -401,7 +401,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
@@ -419,7 +419,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
@@ -437,12 +437,27 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
                         new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new QueryParamAttribute())
                     }))
+                .Should()
+                .Throw<NClientException>();
+        }
+        
+        [Test]
+        public void Build_ControllerNameConsistsOnlyOfSuffixesAndPrefixes_ThrowNClientException()
+        {
+            var routeTemplate = TemplateParser.Parse("[controller]");
+
+            RouteProvider
+                .Invoking(x => x.Build(
+                    routeTemplate,
+                    clientName: "IClient",
+                    methodName: "Method",
+                    parameters: Array.Empty<Parameter>()))
                 .Should()
                 .Throw<NClientException>();
         }
@@ -454,14 +469,14 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             var route = RouteProvider.Build(
                 routeTemplate,
-                clientName: "IClient",
+                clientName: "IMyClient",
                 methodName: "Method",
                 parameters: new[]
                 {
                     new Parameter("id", typeof(int), 1, new RouteParamAttribute())
                 });
 
-            route.Should().Be("api/Client/Method/1");
+            route.Should().Be("api/My/Method/1");
         }
 
         [Test]
@@ -472,7 +487,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: Array.Empty<Parameter>()))
                 .Should()
@@ -487,7 +502,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: Array.Empty<Parameter>()))
                 .Should()
@@ -502,7 +517,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
@@ -520,7 +535,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {
@@ -538,7 +553,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
             RouteProvider
                 .Invoking(x => x.Build(
                     routeTemplate,
-                    clientName: "IClient",
+                    clientName: "IMyClient",
                     methodName: "Method",
                     parameters: new[]
                     {

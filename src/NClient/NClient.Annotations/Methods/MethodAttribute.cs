@@ -1,9 +1,10 @@
 ﻿using System;
+using NClient.Annotations.Abstractions;
 
 namespace NClient.Annotations.Methods
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public abstract class MethodAttribute : Attribute
+    public abstract class MethodAttribute : Attribute, INameProviderAttribute, ITemplateProviderAttribute
     {
         public string? Name { get; set; }
         public int Order { get; set; }

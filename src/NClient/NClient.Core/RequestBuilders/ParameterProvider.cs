@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using NClient.Annotations.Abstractions;
 using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
@@ -30,7 +31,8 @@ namespace NClient.Core.RequestBuilders
                 .GetParameters()
                 .Select((paramInfo, index) =>
                 {
-                    var paramAttributes = paramInfo.GetCustomAttributes()
+                    var paramAttributes = paramInfo
+                        .GetCustomAttributes()
                         .Select(attribute => _attributeMapper.TryMap(attribute))
                         .Where(x => x is ParamAttribute)
                         .Cast<ParamAttribute>()
@@ -50,12 +52,7 @@ namespace NClient.Core.RequestBuilders
 
         private static string GetParamName(ParameterInfo paramInfo, ParamAttribute? paramAttribute)
         {
-            var nameFromAttribute = paramAttribute?
-                .GetType()
-                .GetProperty("Name", typeof(string))?
-                .GetValue(paramAttribute) as string;
-
-            return nameFromAttribute ?? paramInfo.Name;
+            return (paramAttribute as INameProviderAttribute)?.Name ?? paramInfo.Name;
         }
 
         private static Attribute GetAttributeForImplicitParameter(ParameterInfo paramInfo, RouteTemplate routeTemplate)

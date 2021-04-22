@@ -6,6 +6,9 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
+        public static NClientException ClientNameConsistsOnlyOfSuffixesAndPrefixes(string clientName) =>
+            new NClientException($"Client name '{clientName}' consists only of suffixes and prefixes.");
+        
         public static NClientException MemberNameConflict(string memberName, string objectName) =>
             new($"Object member '{memberName}' not found in '{objectName}' object type.");
 

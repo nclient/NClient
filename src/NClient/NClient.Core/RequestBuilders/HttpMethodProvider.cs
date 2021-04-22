@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using NClient.Annotations;
@@ -24,6 +25,7 @@ namespace NClient.Core.RequestBuilders
 
         public HttpMethod Get(MethodInfo method)
         {
+            // TODO: To validation
             var methodAttributes = method
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
@@ -31,7 +33,9 @@ namespace NClient.Core.RequestBuilders
             if (methodAttributes.Any(x => x is PathAttribute))
                 throw OuterExceptionFactory.MethodAttributeNotSupported(method, nameof(PathAttribute));
 
-            var httpMethodAttributes = methodAttributes
+            var httpMethodAttributes = method
+                .GetCustomAttributes()
+                .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is MethodAttribute)
                 .ToArray();
             if (httpMethodAttributes.Length > 1)
