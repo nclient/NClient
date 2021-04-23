@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace NClient.Core.Helpers.MemberNameSelectors
+namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
     public class DefaultMemberNameSelector : IMemberNameSelector
     {

@@ -2,13 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Castle.Core.Internal;
-using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
-namespace NClient.Core.Helpers
+namespace NClient.Core.Helpers.ObjectToKeyValueConverters
 {
     internal interface IObjectToKeyValueConverter
     {
@@ -109,18 +107,6 @@ namespace NClient.Core.Helpers
                     memberNameSelector.GetName(member),
                     ObjectMemberManager.GetMemberValue(member, obj)))
                 .ToArray();
-        }
-    }
-
-    public class PropertyKeyValue
-    {
-        public string Key { get; }
-        public object? Value { get; }
-
-        public PropertyKeyValue(string key, object? value)
-        {
-            Key = key;
-            Value = value;
         }
     }
 }

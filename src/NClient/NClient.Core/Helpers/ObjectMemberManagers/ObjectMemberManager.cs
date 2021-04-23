@@ -2,12 +2,10 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Castle.Core.Internal;
-using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
-namespace NClient.Core.Helpers
+namespace NClient.Core.Helpers.ObjectMemberManagers
 {
     internal static class ObjectMemberManager
     {

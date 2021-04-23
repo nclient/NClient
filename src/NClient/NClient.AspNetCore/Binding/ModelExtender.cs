@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.Binding
 {
