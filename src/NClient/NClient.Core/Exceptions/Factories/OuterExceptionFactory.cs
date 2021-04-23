@@ -38,11 +38,11 @@ namespace NClient.Core.Exceptions.Factories
         public static InvalidRouteNClientException TemplateParsingError(ArgumentException e) =>
             new(e.Message, e);
 
-        public static InvalidRouteNClientException TemplatePartContainsComplexType(string clientName, string methodName, string parameterName) =>
-            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TemplatePartContainsComplexType(string parameterName) =>
+            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
 
-        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string clientName, string methodName, string tokenName) =>
-            new($"Token '{tokenName}' in route template does not match any method parameters. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string tokenName) =>
+            new($"Token '{tokenName}' in route template does not match any method parameters.");
 
         public static InvalidRouteNClientException TemplatePartWithoutTokenOrText(string clientName, string methodName) =>
             new($"Template part does not contain a token or text. {GetClientInfo(clientName, methodName)}");
@@ -50,14 +50,14 @@ namespace NClient.Core.Exceptions.Factories
         public static NotSupportedNClientException MultipleAttributeForClientNotSupported(string clientName, string attributeName) =>
             new($"Multiple attributes '{attributeName}' for client are not supported. Client name: {clientName}.");
 
-        public static NotSupportedNClientException MultipleBodyParametersNotSupported(MethodInfo method) =>
-            new($"Client method can contain only one body parameter. {GetClientInfo(method)}");
+        public static NotSupportedNClientException MultipleBodyParametersNotSupported() =>
+            new($"Client method can contain only one body parameter.");
 
-        public static NotSupportedNClientException ComplexTypeInHeaderNotSupported(MethodInfo method, string parameterName) =>
-            new($"Headers cannot contain complex types. {GetClientInfo(method, parameterName)}");
+        public static NotSupportedNClientException ComplexTypeInHeaderNotSupported(string parameterName) =>
+            new($"Headers cannot contain complex types. Parameter name: {parameterName}.");
 
-        public static NotSupportedNClientException MultipleParameterAttributeNotSupported(MethodInfo method, string parameterName) =>
-            new($"Multiple attributes for a method parameter are not supported. {GetClientInfo(method, parameterName)}");
+        public static NotSupportedNClientException MultipleParameterAttributeNotSupported(string parameterName) =>
+            new($"Multiple attributes for a method parameter are not supported. Parameter name: {parameterName}.");
 
         public static NotSupportedNClientException UsedNotSupportedAttributeForParameter(MethodInfo method, string attributeName, string parameterName) =>
             new($"Attribute '{attributeName}' not supported for parameters. {GetClientInfo(method, parameterName)}");
@@ -65,8 +65,8 @@ namespace NClient.Core.Exceptions.Factories
         public static AttributeNotFoundNClientException MethodAttributeNotFound(Type attributeType, MethodInfo method) =>
             new(attributeType, method);
 
-        public static NotSupportedNClientException MethodAttributeNotSupported(MethodInfo method, string attributeName) =>
-            new($"Method attribute '{attributeName}' not supported. {GetClientInfo(method)}");
+        public static NotSupportedNClientException MethodAttributeNotSupported(string attributeName) =>
+            new($"Method attribute '{attributeName}' not supported.");
 
         public static NotSupportedNClientException MultipleMethodAttributeNotSupported(MethodInfo method) =>
             new($"Multiple attributes for a method are not supported. {GetClientInfo(method)}");

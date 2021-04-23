@@ -9,6 +9,7 @@ using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
+using NClient.Core.MethodBuilders;
 using NClient.Core.RequestBuilders;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
@@ -18,6 +19,7 @@ namespace NClient.Core.Interceptors
     {
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
         private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
@@ -25,12 +27,14 @@ namespace NClient.Core.Interceptors
         public ClientInterceptor(
             IResilienceHttpClientProvider resilienceHttpClientProvider,
             IClientInvocationProvider clientInvocationProvider,
+            IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _clientInvocationProvider = clientInvocationProvider;
+            _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
             _controllerType = controllerType;
             _logger = logger;
@@ -55,7 +59,8 @@ namespace NClient.Core.Interceptors
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            var request = _requestBuilder.Build(requestId, clientInvocation.ClientType, clientInvocation.MethodInfo, clientInvocation.MethodArguments);
+            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
+            var request = _requestBuilder.Build(requestId, clientMethod, clientInvocation.MethodArguments);
             var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
                 .ConfigureAwait(false);
 

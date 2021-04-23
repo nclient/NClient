@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.ClientInvocations;
+using NClient.Core.MethodBuilders;
+using NClient.Core.MethodBuilders.Providers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Mappers;
@@ -55,15 +56,21 @@ namespace NClient.ControllerBasedClients
 
         public TInterface Build()
         {
-            var attributeMapper = new AspNetAttributeMapper();
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
+            
+            var attributeMapper = new AspNetAttributeMapper();
+            var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
+            var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
+            var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
+            
+            var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
+            var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
 
             var requestBuilder = new RequestBuilder(
                 _host,
-                new RouteTemplateProvider(attributeMapper),
+                new RouteTemplateProvider(),
                 new RouteProvider(),
-                new HttpMethodProvider(attributeMapper),
-                new ParameterProvider(attributeMapper),
+                new HttpMethodProvider(),
                 new ObjectToKeyValueConverter());
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
@@ -74,6 +81,7 @@ namespace NClient.ControllerBasedClients
             var interceptor = new ClientInterceptor<TInterface>(
                 resilienceHttpClientProvider,
                 clientInvocationProvider,
+                clientMethodBuilder,
                 requestBuilder,
                 controllerType: typeof(TController),
                 _logger);

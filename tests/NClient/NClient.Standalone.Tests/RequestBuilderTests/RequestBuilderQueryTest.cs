@@ -17,23 +17,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
     [Parallelizable]
     public class RequestBuilderQueryTest : RequestBuilderTestBase
     {
-        [OneTimeSetUp]
-        public override void OneTimeSetUp()
-        {
-            AttributeMapper = new AttributeMapper();
-            KeepDataInterceptor = new KeepDataInterceptor();
-        }
-
-        public interface IPrimitiveParameter {[GetMethod] int Get([QueryParam] int id); }
+        private interface IPrimitiveParameter {[GetMethod] int Get([QueryParam] int id); }
 
         [Test]
         public void Build_PrimitiveParameter_PrimitiveParameterInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IPrimitiveParameter>(KeepDataInterceptor)
-                .Get(1);
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IPrimitiveParameter>(), 1);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -41,16 +30,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("id", 1) });
         }
 
-        public interface IMultiplyPrimitiveParameters {[GetMethod] int Get([QueryParam] int id, [QueryParam] string value); }
+        private interface IMultiplyPrimitiveParameters {[GetMethod] int Get([QueryParam] int id, [QueryParam] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveParameters_PrimitiveParametersInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveParameters>(KeepDataInterceptor)
-                .Get(1, "val");
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveParameters>(), 1, "val");
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -59,16 +44,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         }
 
 
-        public interface IPrimitiveParameterWithoutAttribute {[GetMethod] int Get(int id); }
+        private interface IPrimitiveParameterWithoutAttribute {[GetMethod] int Get(int id); }
 
         [Test]
         public void Build_PrimitiveParameterWithoutAttribute_PrimitiveParameterInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IPrimitiveParameterWithoutAttribute>(KeepDataInterceptor)
-                .Get(1);
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IPrimitiveParameterWithoutAttribute>(), 1);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -76,16 +57,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("id", 1) });
         }
 
-        public interface IMultiplyPrimitiveParametersWithoutAttribute {[GetMethod] int Get(int id, string value); }
+        private interface IMultiplyPrimitiveParametersWithoutAttribute {[GetMethod] int Get(int id, string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveParametersWithoutAttribute_PrimitiveParametersInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveParametersWithoutAttribute>(KeepDataInterceptor)
-                .Get(1, "val");
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveParametersWithoutAttribute>(), 1, "val");
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -93,16 +70,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("id", 1), new HttpParameter("value", "val") });
         }
 
-        public interface ICustomTypeParameter {[GetMethod] int Get([QueryParam] BasicEntity entity); }
+        private interface ICustomTypeParameter {[GetMethod] int Get([QueryParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeParameter_PropertiesInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeParameter>(KeepDataInterceptor)
-                .Get(new BasicEntity { Id = 1, Value = 2 });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<ICustomTypeParameter>(), new BasicEntity { Id = 1, Value = 2 });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -110,16 +83,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("entity.Id", 1), new HttpParameter("entity.Value", 2) });
         }
 
-        public interface IMultiplyCustomTypeParameters {[GetMethod] int Get([QueryParam] BasicEntity entity1, [QueryParam] BasicEntity entity2); }
+        private interface IMultiplyCustomTypeParameters {[GetMethod] int Get([QueryParam] BasicEntity entity1, [QueryParam] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeParameters_PropertiesInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IMultiplyCustomTypeParameters>(KeepDataInterceptor)
-                .Get(new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<IMultiplyCustomTypeParameters>(), new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -133,16 +103,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        public interface IArrayOfPrimitivesParameter {[GetMethod] int Get([QueryParam] int[] ids); }
+        private interface IArrayOfPrimitivesParameter {[GetMethod] int Get([QueryParam] int[] ids); }
 
         [Test]
         public void Build_ArrayOfPrimitivesParameter_ParameterWithSameNameInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IArrayOfPrimitivesParameter>(KeepDataInterceptor)
-                .Get(new[] { 1, 2 });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<IArrayOfPrimitivesParameter>(), 
+                arguments: new [] { new[] { 1, 2 } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -150,16 +118,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("ids", 1), new HttpParameter("ids", 2) });
         }
 
-        public interface IArrayOfCustomTypeParameter {[GetMethod] int Get([QueryParam] BasicEntity[] entities); }
+        private interface IArrayOfCustomTypeParameter {[GetMethod] int Get([QueryParam] BasicEntity[] entities); }
 
         [Test]
         public void Build_ArrayOfCustomTypeParameter_ThrowNotSupportedNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IArrayOfCustomTypeParameter>(KeepDataInterceptor)
-                .Get(new[] { new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 } });
-
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<IArrayOfCustomTypeParameter>(), 
+                arguments: new[] { new[] { new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 } } });
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -167,16 +133,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public interface IDictionaryOfPrimitivesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, string> dict); }
+        private interface IDictionaryOfPrimitivesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, string> dict); }
 
         [Test]
         public void Build_DictionaryOfPrimitivesParameter_KeyValueParametersInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IDictionaryOfPrimitivesParameter>(KeepDataInterceptor)
-                .Get(new Dictionary<int, string> { [1] = "val1", [2] = "val2" });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<IDictionaryOfPrimitivesParameter>(), 
+                arguments: new[] { new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -184,16 +148,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 parameters: new[] { new HttpParameter("dict[1]", "val1"), new HttpParameter("dict[2]", "val2") });
         }
 
-        public interface IDictionaryOfPCustomTypesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, BasicEntity> dict); }
+        private interface IDictionaryOfCustomTypesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, BasicEntity> dict); }
 
         [Test]
         public void Build_DictionaryOfPCustomTypesParameter_ThrowNotSupportedNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IDictionaryOfPCustomTypesParameter>(KeepDataInterceptor)
-                .Get(new Dictionary<int, BasicEntity> { [1] = new() { Id = 1, Value = 2 }, [2] = new() { Id = 2, Value = 3 } });
-
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<IDictionaryOfCustomTypesParameter>(),
+                arguments: new[] { new Dictionary<int, BasicEntity> { [1] = new() { Id = 1, Value = 2 }, [2] = new() { Id = 2, Value = 3 } } });
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -201,16 +163,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public interface INestedCustomTypesParameter {[GetMethod] int Get([QueryParam] NestedEntity entity); }
+        private interface INestedCustomTypesParameter {[GetMethod] int Get([QueryParam] NestedEntity entity); }
 
         [Test]
         public void Build_NestedCustomTypesParameter_PropertiesInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<INestedCustomTypesParameter>(KeepDataInterceptor)
-                .Get(new NestedEntity { Id = 1, Value = "val", InnerEntity = new BasicEntity { Id = 2, Value = 3 } });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<INestedCustomTypesParameter>(),
+                new NestedEntity { Id = 1, Value = "val", InnerEntity = new BasicEntity { Id = 2, Value = 3 } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -224,16 +184,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        public interface ICustomTypeWithArrayParameter {[GetMethod] int Get([QueryParam] EntityWithArray entity); }
+        private interface ICustomTypeWithArrayParameter {[GetMethod] int Get([QueryParam] EntityWithArray entity); }
 
         [Test]
         public void Build_CustomTypeWithArrayParameter_PropertiesInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeWithArrayParameter>(KeepDataInterceptor)
-                .Get(new EntityWithArray { Id = 1, Value = "val", Array = new[] { 1, 2 } });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<ICustomTypeWithArrayParameter>(),
+                new EntityWithArray { Id = 1, Value = "val", Array = new[] { 1, 2 } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -247,16 +205,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        public interface ICustomTypeWithArrayOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeArray entity); }
+        private interface ICustomTypeWithArrayOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeArray entity); }
 
         [Test]
         public void Build_ComplexCustomTypeWithCustomTypeArrayQueryParam_ThrowNotSupportedNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeWithArrayOfCustomTypesParameter>(KeepDataInterceptor)
-                .Get(new EntityWithCustomTypeArray { Id = 1, Value = "val", Array = new[] { new BasicEntity(), new BasicEntity() } });
-
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<ICustomTypeWithArrayOfCustomTypesParameter>(),
+                new EntityWithCustomTypeArray { Id = 1, Value = "val", Array = new[] { new BasicEntity(), new BasicEntity() } });
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -264,16 +220,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NotSupportedNClientException>();
         }
 
-        public interface ICustomTypeWithDictionaryParameter {[GetMethod] int Get([QueryParam] EntityWithDict entity); }
+        private interface ICustomTypeWithDictionaryParameter {[GetMethod] int Get([QueryParam] EntityWithDict entity); }
 
         [Test]
         public void Build_CustomTypeWithDictionaryParameter_PropertiesInQuery()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeWithDictionaryParameter>(KeepDataInterceptor)
-                .Get(new EntityWithDict { Id = 1, Value = "val", Dict = new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(
+                BuildMethod<ICustomTypeWithDictionaryParameter>(),
+                new EntityWithDict { Id = 1, Value = "val", Dict = new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -287,16 +241,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 });
         }
 
-        public interface ICustomTypeWithDictionaryOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeDict entity); }
+        private interface ICustomTypeWithDictionaryOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeDict entity); }
 
         [Test]
         public void Build_CustomTypeWithDictionaryOfCustomTypesParameter_ThrowNotSupportedNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeWithDictionaryOfCustomTypesParameter>(KeepDataInterceptor)
-                .Get(new EntityWithCustomTypeDict { Id = 1, Value = "val", Dict = new Dictionary<int, BasicEntity> { [1] = new(), [2] = new() } });
-
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<ICustomTypeWithDictionaryOfCustomTypesParameter>(),
+                new EntityWithCustomTypeDict { Id = 1, Value = "val", Dict = new Dictionary<int, BasicEntity> { [1] = new(), [2] = new() } });
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())

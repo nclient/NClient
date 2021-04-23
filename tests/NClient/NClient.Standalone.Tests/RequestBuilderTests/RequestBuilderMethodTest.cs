@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using NClient.Annotations.Methods;
-using NClient.Core.Interceptors;
-using NClient.Core.Mappers;
 using NClient.Testing.Common;
 using NUnit.Framework;
 
@@ -11,71 +9,48 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
     [Parallelizable]
     public class RequestBuilderMethodTest : RequestBuilderTestBase
     {
-        [OneTimeSetUp]
-        public override void OneTimeSetUp()
-        {
-            AttributeMapper = new AttributeMapper();
-            KeepDataInterceptor = new KeepDataInterceptor();
-        }
-
-        public interface IGetMethod {[GetMethod] int Method(); }
+        private interface IGetMethod {[GetMethod] int Method(); }
 
         [Test]
         public void Build_GetMethod_GetHttpMethodRequest()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IGetMethod>(KeepDataInterceptor)
-                .Method();
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IGetMethod>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 HttpMethod.Get);
         }
 
-        public interface IPostMethod {[PostMethod] int Method(); }
+        private interface IPostMethod {[PostMethod] int Method(); }
 
         [Test]
         public void Build_PostMethod_PostHttpMethodRequest()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IPostMethod>(KeepDataInterceptor)
-                .Method();
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IPostMethod>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 HttpMethod.Post);
         }
 
-        public interface IPutMethod {[PutMethod] int Method(); }
+        private interface IPutMethod {[PutMethod] int Method(); }
 
         [Test]
         public void Build_PutMethod_PutHttpMethodRequest()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IPutMethod>(KeepDataInterceptor)
-                .Method();
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IPutMethod>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 HttpMethod.Put);
         }
 
-        public interface IDeleteMethod {[DeleteMethod] int Method(); }
+        private interface IDeleteMethod {[DeleteMethod] int Method(); }
 
         [Test]
         public void Build_DeleteMethod_DeleteHttpMethodRequest()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IDeleteMethod>(KeepDataInterceptor)
-                .Method();
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IDeleteMethod>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),

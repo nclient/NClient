@@ -13,14 +13,22 @@ namespace NClient.Core.RequestBuilders
 {
     internal interface IRouteProvider
     {
-        string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters);
+        string Build(
+            RouteTemplate routeTemplate, 
+            string clientName, 
+            string methodName, 
+            Parameter[] parameters);
     }
 
     internal class RouteProvider : IRouteProvider
     {
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
 
-        public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
+        public string Build(
+            RouteTemplate routeTemplate, 
+            string clientName, 
+            string methodName, 
+            Parameter[] parameters)
         {
             var unusedRouteParamNames = parameters
                 .Where(x => x.Attribute is RouteParamAttribute)
@@ -29,11 +37,11 @@ namespace NClient.Core.RequestBuilders
                 .ToArray();
             if (unusedRouteParamNames.Any())
                 throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, unusedRouteParamNames!);
-            
+
             var routeParts = routeTemplate.Segments
                 .Select(x => x.Parts.Single() switch
                 {
-                    { Name: { } } templatePart => GetValueFromPartName(templatePart, clientName, methodName, parameters),
+                    { Name: { } } templatePart => GetValueFromPartName(templatePart, parameters),
                     { Text: { } } templatePart => GetValueFromPartText(templatePart, clientName, methodName),
                     _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText(clientName, methodName)
                 });
@@ -41,46 +49,44 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
         
-        private static string GetValueFromPartName(
-            TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> parameter)
+        private static string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
         {
             var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
             return memberPath is null 
-                ? GetParameterValue(clientName, methodName, objectName, parameter.Where(x => x.Attribute is RouteParamAttribute)) 
-                : GetCustomParameterValue(clientName, methodName, objectName, memberPath, parameter);
+                ? GetParameterValue(objectName, parameters) 
+                : GetCustomParameterValue(objectName, memberPath, parameters);
         }
         
-        private static string GetParameterValue(string clientName, string methodName, string name, IEnumerable<Parameter> parameters)
+        private static string GetParameterValue(string name, Parameter[] parameters)
         {
-            var parameter = GetParameter(clientName, methodName, name, parameters);
-            if (!parameter.Type.IsPrimitive())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, name);
+            var parameter = GetRouteParameter(name, parameters);
+            if (!parameter.Value!.GetType().IsPrimitive())
+                throw OuterExceptionFactory.TemplatePartContainsComplexType(name);
             
-            return parameter.Value?.ToString() ?? "";
+            return parameter.Value.ToString() ?? "";
         }
         
-        private static string GetCustomParameterValue(string clientName, string methodName, string objectName, string memberPath, IEnumerable<Parameter> parameters)
+        private static string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
         {
-            var parameter = GetParameter(clientName, methodName, objectName, parameters);
-            if (parameter.Value is null)
-                throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
-            
+            var parameter = GetRouteParameter(objectName, parameters);
+
             return (parameter.Attribute switch
             {
-                BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new BodyMemberNameSelector()),
-                QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new QueryMemberNameSelector()),
-                { } => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new DefaultMemberNameSelector()),
+                BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
+                QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
+                { } => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
                 _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
             })?.ToString() ?? "";
         }
         
-        private static Parameter GetParameter(string clientName, string methodName, string name, IEnumerable<Parameter> parameters)
+        private static Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
         {
-            var parameter = parameters.SingleOrDefault(x => x.Name == name);
-            if (parameter is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, name);
-
-            return parameter;
+            var parameterValue = parameters.SingleOrDefault(x => x.Name == name);
+            if (parameterValue is null)
+                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(name);
+            if (parameterValue.Value is null)
+                throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(name);
+            return parameterValue!;
         }
 
         private static string GetValueFromPartText(TemplatePart templatePart, string clientName, string methodName)

@@ -5,6 +5,8 @@ using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.Mappers;
+using NClient.Core.MethodBuilders;
+using NClient.Core.MethodBuilders.Providers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Core.Validation;
@@ -15,15 +17,22 @@ namespace NClient.InterfaceBasedClients
     {
         public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class
         {
-            var attributeMapper = new AttributeMapper();
             var clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
+            
+            var attributeMapper = new AttributeMapper();
+            var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
+            var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
+            var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
+            
+            var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
+            var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
+
 
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(attributeMapper),
+                new RouteTemplateProvider(),
                 new RouteProvider(),
-                new HttpMethodProvider(attributeMapper),
-                new ParameterProvider(attributeMapper),
+                new HttpMethodProvider(),
                 new ObjectToKeyValueConverter());
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
@@ -33,6 +42,7 @@ namespace NClient.InterfaceBasedClients
             var interceptor = new ClientInterceptor<T>(
                 resilienceHttpClientProvider,
                 clientInvocationProvider,
+                clientMethodBuilder,
                 requestBuilder);
 
             proxyGenerator
