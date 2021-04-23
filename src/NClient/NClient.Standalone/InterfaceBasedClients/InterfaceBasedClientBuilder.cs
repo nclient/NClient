@@ -53,12 +53,12 @@ namespace NClient.InterfaceBasedClients
         public T Build()
         {
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
-            
+
             var attributeMapper = new AttributeMapper();
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
-            
+
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
             var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
 

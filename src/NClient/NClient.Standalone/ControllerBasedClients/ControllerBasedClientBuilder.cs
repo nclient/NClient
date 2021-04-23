@@ -57,12 +57,12 @@ namespace NClient.ControllerBasedClients
         public TInterface Build()
         {
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
-            
+
             var attributeMapper = new AspNetAttributeMapper();
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
-            
+
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
             var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
 

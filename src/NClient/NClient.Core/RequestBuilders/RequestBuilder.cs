@@ -46,13 +46,13 @@ namespace NClient.Core.RequestBuilders
             var routeTemplate = _routeTemplateProvider.Get(method);
             var paramValuePairs = method.Params
                 .Select((methodParam, index) => new Parameter(
-                    methodParam.Name, 
-                    methodParam.Type, 
+                    methodParam.Name,
+                    methodParam.Type,
                     arguments.ElementAtOrDefault(index),
                     methodParam.Attribute))
                 .ToArray();
             var route = _routeProvider.Build(routeTemplate, method.ClientName, method.Name, paramValuePairs);
-            
+
             var uri = new Uri(_host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
 

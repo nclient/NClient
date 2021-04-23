@@ -17,15 +17,15 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
     {
         private interface IClientWithout { }
         [Path("template")] private interface IClientWithPath { }
-        
+
         [Api] private interface IClientWithApi { }
         [Api, Path("template")] private interface IClientWithPathAndApi { }
         [Other] private interface IClientWithOther { }
         [Other, Path("template")] private interface IClientWithPathAndOther { }
-        
+
         public interface IClientInheritance : IControllerInheritance { }
         [Path("template")] public interface IControllerInheritance { }
-        
+
         public interface IClientDeepInheritance : IClientDeepInheritanceBase { }
         public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
         [Path("template")] public interface IControllerDeepInheritance { }
@@ -37,7 +37,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("Without path"),
             new TestCaseData(typeof(IClientWithPath), new PathAttribute("template"))
                 .SetName("With path"),
-            
+
             new TestCaseData(typeof(IClientWithApi), null)
                 .SetName("With api"),
             new TestCaseData(typeof(IClientWithPathAndApi), new PathAttribute("template"))
@@ -46,16 +46,16 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With other attribute"),
             new TestCaseData(typeof(IClientWithPathAndOther), new PathAttribute("template"))
                 .SetName("With path and other attribute"),
-            
+
             new TestCaseData(typeof(IClientInheritance), new PathAttribute("template"))
-                .SetName("With inheritance"),            
+                .SetName("With inheritance"),
             new TestCaseData(typeof(IClientDeepInheritance), new PathAttribute("template"))
                 .SetName("With deep inheritance"),
         };
-        
+
         [Path("template")] public interface IClientOverride : IControllerOverride { }
         [Path("templateBase")] public interface IControllerOverride { }
-        
+
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(typeof(IClientOverride))
@@ -69,24 +69,24 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             var attributeProvider = new PathAttributeProvider(attributeMapper);
 
             var actualAttribute = attributeProvider.Find(clientType);
-            
+
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
-        
+
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Find_InvalidTestCase_ThrowNClientException(Type clientType)
         {
             var attributeMapper = new AttributeMapper();
             var attributeProvider = new PathAttributeProvider(attributeMapper);
 
-           attributeProvider
-               .Invoking(x => x.Find(clientType))
-               .Should()
-               .Throw<NClientException>();
+            attributeProvider
+                .Invoking(x => x.Find(clientType))
+                .Should()
+                .Throw<NClientException>();
         }
 
         private class OtherAttribute : Attribute { }
-        
+
         private class NotSupportedAttribute : PathAttribute
         {
             public NotSupportedAttribute(string template) : base(template)

@@ -24,7 +24,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
             new TestCaseData(null),
             new TestCaseData(new NotSupportedAttribute())
         };
-        
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_MethodAttribute_HttpMethod(MethodAttribute methodAttribute, HttpMethod expectedHttpMethod)
         {
@@ -32,7 +32,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
 
             httpMethod.Should().Be(expectedHttpMethod);
         }
-        
+
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_MethodAttribute_ThrowException(MethodAttribute methodAttribute)
         {
@@ -41,7 +41,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
                 .Should()
                 .Throw<Exception>();
         }
-        
+
         private class NotSupportedAttribute : MethodAttribute
         {
             public NotSupportedAttribute() : base(null)

@@ -16,7 +16,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
     public class MethodBuilderTest
     {
         private interface IBasicClient { int Get(int id); }
-        
+
         [Test]
         public void Build_BasicClient_Method()
         {
@@ -38,9 +38,9 @@ namespace NClient.Standalone.Tests.MethodBuilders
                 methodAttributeProviderMock.Object,
                 pathAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);
-            
+
             var actualResult = methodBuilder.Build(clientType, methodInfo);
-            
+
             actualResult.Should().BeEquivalentTo(new Method(
                 methodInfo.Name,
                 clientType.Name,

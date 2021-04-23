@@ -446,7 +446,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 .Should()
                 .Throw<NClientException>();
         }
-        
+
         [Test]
         public void Build_ControllerNameConsistsOnlyOfSuffixesAndPrefixes_ThrowNClientException()
         {

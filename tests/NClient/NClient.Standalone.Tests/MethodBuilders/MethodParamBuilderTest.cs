@@ -14,7 +14,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
     public class MethodParamBuilderTest
     {
         private interface IBasicClient { int Get(int id); }
-        
+
         [Test]
         public void Build_BasicClient_Method()
         {
@@ -25,11 +25,11 @@ namespace NClient.Standalone.Tests.MethodBuilders
             paramAttributeProvider.Setup(x => x.Get(It.IsAny<ParameterInfo>()))
                 .Returns(paramAttribute);
             var methodBuilder = new MethodParamBuilder(paramAttributeProvider.Object);
-            
+
             var actualResult = methodBuilder.Build(methodInfo);
-            
+
             actualResult.Should().BeEquivalentTo(new MethodParam(
-                paramInfo.Name!, 
+                paramInfo.Name!,
                 paramInfo.ParameterType,
                 paramAttribute));
         }

@@ -18,12 +18,12 @@ namespace NClient.InterfaceBasedClients
         public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class
         {
             var clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
-            
+
             var attributeMapper = new AttributeMapper();
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
-            
+
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
             var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
 

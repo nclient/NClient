@@ -20,7 +20,7 @@ namespace NClient.Core.MethodBuilders.Providers
         {
             _attributeMapper = attributeMapper;
         }
-        
+
         public MethodAttribute Get(MethodInfo method)
         {
             var attributes = method

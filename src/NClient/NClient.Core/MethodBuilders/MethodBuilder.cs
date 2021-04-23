@@ -25,7 +25,7 @@ namespace NClient.Core.MethodBuilders
             _pathAttributeProvider = pathAttributeProvider;
             _methodParamBuilder = methodParamBuilder;
         }
-        
+
         public Method Build(Type clientType, MethodInfo methodInfo)
         {
             var methodAttribute = _methodAttributeProvider.Get(methodInfo);

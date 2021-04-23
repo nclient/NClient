@@ -21,27 +21,27 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         private interface IQueryString { void Method([QueryParam] string id); }
         private interface IQueryCustomObject { void Method([QueryParam] BasicEntity entity); }
         private interface IQueryWithName { void Method([QueryParam(Name = "name")] int id); }
-        
+
         private interface IImplicitBody { void Method(BasicEntity entity); }
-        private interface IBody{ void Method([BodyParam] int id); }
+        private interface IBody { void Method([BodyParam] int id); }
         private interface IBodyBool { void Method([BodyParam] bool id); }
         private interface IBodyString { void Method([BodyParam] string id); }
         private interface IBodyCustomObject { void Method([BodyParam] BasicEntity entity); }
-        
+
         private interface IRoute { void Method([RouteParam] int id); }
         private interface IRouteBool { void Method([RouteParam] bool id); }
         private interface IRouteString { void Method([RouteParam] string id); }
         private interface IRouteCustomObject { void Method([RouteParam] BasicEntity entity); }
         private interface IRouteWithName { void Method([RouteParam(Name = "name")] int id); }
-        
+
         private interface IHeader { void Method([HeaderParam] int id); }
         private interface IHeaderBool { void Method([HeaderParam] bool id); }
         private interface IHeaderString { void Method([HeaderParam] string id); }
         private interface IHeaderCustomObject { void Method([HeaderParam] BasicEntity entity); }
         private interface IHeaderWithName { void Method([HeaderParam(Name = "name")] int id); }
-        
+
         private interface IOther { void Method([Other] int id); }
-        private interface IOtherAndParam { void Method([Other, BodyParam] int id); }        
+        private interface IOtherAndParam { void Method([Other, BodyParam] int id); }
         private interface INotSupported { void Method([NotSupported] int id); }
 
         public static IEnumerable ValidTestCases = new[]
@@ -58,7 +58,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With custom object"),
             new TestCaseData(GetParamInfo<IQueryWithName>(), new QueryParamAttribute { Name = "name" })
                 .SetName("With named query"),
-            
+
             new TestCaseData(GetParamInfo<IImplicitBody>(), new BodyParamAttribute())
                 .SetName("With implicit body"),
             new TestCaseData(GetParamInfo<IBody>(), new BodyParamAttribute())
@@ -69,7 +69,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With string body"),
             new TestCaseData(GetParamInfo<IBodyCustomObject>(), new BodyParamAttribute())
                 .SetName("With custom body"),
-            
+
             new TestCaseData(GetParamInfo<IRoute>(), new RouteParamAttribute())
                 .SetName("With route"),
             new TestCaseData(GetParamInfo<IRouteBool>(), new RouteParamAttribute())
@@ -80,7 +80,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With custom route"),
             new TestCaseData(GetParamInfo<IRouteWithName>(), new RouteParamAttribute { Name = "name" })
                 .SetName("With named route"),
-            
+
             new TestCaseData(GetParamInfo<IHeader>(), new HeaderParamAttribute())
                 .SetName("With header"),
             new TestCaseData(GetParamInfo<IHeaderBool>(), new HeaderParamAttribute())
@@ -91,7 +91,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With custom header"),
             new TestCaseData(GetParamInfo<IHeaderWithName>(), new HeaderParamAttribute { Name = "name" })
                 .SetName("With named header"),
-            
+
             new TestCaseData(GetParamInfo<IOther>(), new QueryParamAttribute())
                 .SetName("With other"),
             new TestCaseData(GetParamInfo<IOtherAndParam>(), new BodyParamAttribute())
@@ -99,15 +99,15 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(GetParamInfo<INotSupported>(), new NotSupportedAttribute())
                 .SetName("With not supported")
         };
-        
+
         private interface INotSupportedAndParam { void Method([NotSupported, QueryParam] int id); }
-        
+
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(GetParamInfo<INotSupportedAndParam>())
                 .SetName("With not supported and param")
         };
-        
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_ParamAttribute(ParameterInfo parameterInfo, ParamAttribute expectedAttribute)
         {
@@ -115,10 +115,10 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             var attributeProvider = new ParamAttributeProvider(attributeMapper);
 
             var actualAttribute = attributeProvider.Get(parameterInfo);
-            
+
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
-        
+
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_InvalidTestCase_ThrowNClientException(ParameterInfo parameterInfo)
         {
@@ -135,7 +135,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         {
             return typeof(T).GetMethods().Single().GetParameters().Single();
         }
-        
+
         private class OtherAttribute : Attribute { }
         private class NotSupportedAttribute : ParamAttribute { }
     }

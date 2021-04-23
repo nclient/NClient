@@ -10,7 +10,7 @@ namespace NClient.Core.MethodBuilders.Models
         public MethodAttribute Attribute { get; }
         public PathAttribute? PathAttribute { get; set; }
         public MethodParam[] Params { get; }
-        
+
         public Method(string name, string clientName, MethodAttribute attribute, MethodParam[] @params)
         {
             Name = name;

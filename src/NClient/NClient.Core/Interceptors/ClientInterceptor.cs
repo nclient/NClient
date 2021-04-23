@@ -94,7 +94,7 @@ namespace NClient.Core.Interceptors
         {
             var clientName = clientInvocation.ClientType.Name;
             var methodName = clientInvocation.MethodInfo.Name;
-            
+
             try
             {
                 return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);

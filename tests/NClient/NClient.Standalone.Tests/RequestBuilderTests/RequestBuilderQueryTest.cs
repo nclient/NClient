@@ -109,8 +109,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         public void Build_ArrayOfPrimitivesParameter_ParameterWithSameNameInQuery()
         {
             var httpRequest = BuildRequest(
-                BuildMethod<IArrayOfPrimitivesParameter>(), 
-                arguments: new [] { new[] { 1, 2 } });
+                BuildMethod<IArrayOfPrimitivesParameter>(),
+                arguments: new[] { new[] { 1, 2 } });
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -124,7 +124,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         public void Build_ArrayOfCustomTypeParameter_ThrowNotSupportedNClientException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
-                BuildMethod<IArrayOfCustomTypeParameter>(), 
+                BuildMethod<IArrayOfCustomTypeParameter>(),
                 arguments: new[] { new[] { new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 } } });
 
             buildRequestFunc
@@ -139,7 +139,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         public void Build_DictionaryOfPrimitivesParameter_KeyValueParametersInQuery()
         {
             var httpRequest = BuildRequest(
-                BuildMethod<IDictionaryOfPrimitivesParameter>(), 
+                BuildMethod<IDictionaryOfPrimitivesParameter>(),
                 arguments: new[] { new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
             AssertHttpRequest(httpRequest,

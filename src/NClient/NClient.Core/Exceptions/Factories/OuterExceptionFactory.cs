@@ -6,8 +6,8 @@ namespace NClient.Core.Exceptions.Factories
     internal static class OuterExceptionFactory
     {
         public static RequestNClientException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
-            new ($"Client name consists only of suffixes and prefixes.");
-        
+            new($"Client name consists only of suffixes and prefixes.");
+
         public static NClientException MemberNameConflict(string memberName, string objectName) =>
             new($"Object member '{memberName}' not found in '{objectName}' object type.");
 
@@ -27,7 +27,7 @@ namespace NClient.Core.Exceptions.Factories
             new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
 
         public static InvalidAttributeNClientException UsedInvalidAttributeInControllerInterface(string memberName) =>
-            new ($"An invalid attribute is used for '{memberName}' in controller interface.");
+            new($"An invalid attribute is used for '{memberName}' in controller interface.");
         public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 

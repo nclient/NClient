@@ -42,12 +42,12 @@ namespace NClient.Testing.Common
                 new MethodParamBuilder(
                     new ParamAttributeProvider(attributeMapper)));
         }
-        
+
         protected static MethodInfo GetMethodInfo<T>()
         {
             return typeof(T).GetMethods().First();
         }
-        
+
         internal Method BuildMethod<T>()
         {
             return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());

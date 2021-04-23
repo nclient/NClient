@@ -14,9 +14,9 @@ namespace NClient.Core.RequestBuilders
     internal interface IRouteProvider
     {
         string Build(
-            RouteTemplate routeTemplate, 
-            string clientName, 
-            string methodName, 
+            RouteTemplate routeTemplate,
+            string clientName,
+            string methodName,
             Parameter[] parameters);
     }
 
@@ -25,9 +25,9 @@ namespace NClient.Core.RequestBuilders
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
 
         public string Build(
-            RouteTemplate routeTemplate, 
-            string clientName, 
-            string methodName, 
+            RouteTemplate routeTemplate,
+            string clientName,
+            string methodName,
             Parameter[] parameters)
         {
             var unusedRouteParamNames = parameters
@@ -48,24 +48,24 @@ namespace NClient.Core.RequestBuilders
 
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
-        
+
         private static string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
         {
             var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
-            return memberPath is null 
-                ? GetParameterValue(objectName, parameters) 
+            return memberPath is null
+                ? GetParameterValue(objectName, parameters)
                 : GetCustomParameterValue(objectName, memberPath, parameters);
         }
-        
+
         private static string GetParameterValue(string name, Parameter[] parameters)
         {
             var parameter = GetRouteParameter(name, parameters);
             if (!parameter.Value!.GetType().IsPrimitive())
                 throw OuterExceptionFactory.TemplatePartContainsComplexType(name);
-            
+
             return parameter.Value.ToString() ?? "";
         }
-        
+
         private static string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
         {
             var parameter = GetRouteParameter(objectName, parameters);
@@ -78,7 +78,7 @@ namespace NClient.Core.RequestBuilders
                 _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
             })?.ToString() ?? "";
         }
-        
+
         private static Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
         {
             var parameterValue = parameters.SingleOrDefault(x => x.Name == name);

@@ -35,7 +35,7 @@ namespace NClient.Core.MethodBuilders.Providers
 
             return paramAttribute;
         }
-        
+
         private static ParamAttribute GetAttributeForImplicitParameter(ParameterInfo paramInfo)
         {
             return paramInfo.ParameterType.IsPrimitive()

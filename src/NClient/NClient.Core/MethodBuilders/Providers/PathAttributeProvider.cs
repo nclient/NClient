@@ -20,7 +20,7 @@ namespace NClient.Core.MethodBuilders.Providers
         {
             _attributeMapper = attributeMapper;
         }
-        
+
         public PathAttribute? Find(Type clientType)
         {
             var pathAttributes = (clientType.IsInterface

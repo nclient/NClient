@@ -15,7 +15,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
     [Parallelizable]
     public class RequestBuilderBodyTest : RequestBuilderTestBase
     {
-        private interface ICustomTypeBody { [GetMethod] int Get([BodyParam] BasicEntity entity); }
+        private interface ICustomTypeBody {[GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeBody_JsonObjectInBody()
