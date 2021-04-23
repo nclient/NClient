@@ -44,21 +44,22 @@ namespace NClient.Core.Interceptors
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
             var requestId = Guid.NewGuid();
-            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, invocation, requestId).ConfigureAwait(false);
+            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
+            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, clientInvocation, requestId).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
             var requestId = Guid.NewGuid();
-            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, invocation, requestId).ConfigureAwait(false);
+            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
+            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, clientInvocation, requestId).ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation, Guid requestId)
+        private async Task<TResult> ProcessInvocationAsync<TResult>(ClientInvocation clientInvocation, Guid requestId)
         {
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
-            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
             var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
             var request = _requestBuilder.Build(requestId, clientMethod, clientInvocation.MethodArguments);
             var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
@@ -89,21 +90,29 @@ namespace NClient.Core.Interceptors
         }
 
         private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
-            Func<IInvocation, Guid, Task<TResult>> processInvocation, IInvocation invocation, Guid requestId)
+            Func<ClientInvocation, Guid, Task<TResult>> processInvocation, ClientInvocation clientInvocation, Guid requestId)
         {
+            var clientName = clientInvocation.ClientType.Name;
+            var methodName = clientInvocation.MethodInfo.Name;
+            
             try
             {
-                return await processInvocation(invocation, requestId).ConfigureAwait(false);
+                return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);
+            }
+            catch (RequestNClientException e)
+            {
+                _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
+                throw e.WithRequestInfo(clientName, methodName);
             }
             catch (NClientException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw;
+                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw;
+                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
             }
         }
     }

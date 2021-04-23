@@ -36,14 +36,14 @@ namespace NClient.Core.RequestBuilders
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
             if (unusedRouteParamNames.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, unusedRouteParamNames!);
+                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
 
             var routeParts = routeTemplate.Segments
                 .Select(x => x.Parts.Single() switch
                 {
                     { Name: { } } templatePart => GetValueFromPartName(templatePart, parameters),
                     { Text: { } } templatePart => GetValueFromPartText(templatePart, clientName, methodName),
-                    _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText(clientName, methodName)
+                    _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
                 });
 
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
@@ -96,17 +96,17 @@ namespace NClient.Core.RequestBuilders
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
-                    throw OuterExceptionFactory.TokenFromTemplateNotExists(clientName, methodName, token),
+                    throw OuterExceptionFactory.TokenFromTemplateNotExists(token),
                 _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
 
         private static string GetControllerName(string name)
         {
-            var controllerName = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
-            if (string.IsNullOrEmpty(controllerName))
-                throw OuterExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes(name);
-            return controllerName;
+            var nameWithoutSuffixAndPrefix = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
+            if (string.IsNullOrEmpty(nameWithoutSuffixAndPrefix))
+                throw OuterExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
+            return nameWithoutSuffixAndPrefix;
         }
 
         //TODO: Check interface or not

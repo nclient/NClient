@@ -37,9 +37,9 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<MethodAttribute>()
                 .ToArray();
             if (methodAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported(method);
+                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported();
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(typeof(MethodAttribute), method);
+                ?? throw OuterExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
 
             return methodAttribute;
         }
