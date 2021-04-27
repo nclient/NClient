@@ -9,6 +9,7 @@ using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
+using NClient.Core.Helpers;
 using NUnit.Framework;
 
 namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
@@ -21,7 +22,8 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         public void SetUp()
         {
             var attributeMapper = new NClientAttributeMapper();
-            _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper);
+            var guidProvider = new GuidProvider();
+            _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper, guidProvider);
         }
 
         public interface IInterfaceWithoutAttributes { }

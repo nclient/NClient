@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
@@ -58,10 +59,10 @@ namespace NClient.ControllerBasedClients
         public TInterface Build()
         {
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
-
             var objectMemberManager = new ObjectMemberManager();
-
             var attributeMapper = new AspNetAttributeMapper();
+            var guidProvider = new GuidProvider();
+
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
@@ -86,6 +87,7 @@ namespace NClient.ControllerBasedClients
                 clientInvocationProvider,
                 clientMethodBuilder,
                 requestBuilder,
+                guidProvider,
                 controllerType: typeof(TController),
                 _logger);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Castle.DynamicProxy;
+using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
@@ -21,10 +22,10 @@ namespace NClient.ControllerBasedClients
             where TController : TInterface
         {
             var clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
-            
             var objectMemberManager = new ObjectMemberManager();
-
             var attributeMapper = new AspNetAttributeMapper();
+            var guidProvider = new GuidProvider();
+
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
@@ -49,6 +50,7 @@ namespace NClient.ControllerBasedClients
                 clientInvocationProvider,
                 clientMethodBuilder,
                 requestBuilder,
+                guidProvider,
                 controllerType: typeof(TController));
 
             proxyGenerator

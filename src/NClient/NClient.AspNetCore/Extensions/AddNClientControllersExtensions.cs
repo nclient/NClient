@@ -12,6 +12,7 @@ using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Mappers;
+using NClient.Core.Helpers;
 
 namespace NClient.AspNetCore.Extensions
 {
@@ -25,7 +26,7 @@ namespace NClient.AspNetCore.Extensions
         {
             ProxyGenerator = new ProxyGenerator();
             NClientControllerFinder = new NClientControllerFinder();
-            VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper());
+            VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
         }
         
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)

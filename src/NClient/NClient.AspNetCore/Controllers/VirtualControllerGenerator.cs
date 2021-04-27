@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Controllers
@@ -19,16 +20,17 @@ namespace NClient.AspNetCore.Controllers
     internal class VirtualControllerGenerator : IVirtualControllerGenerator
     {
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IGuidProvider _guidProvider;
 
-        public VirtualControllerGenerator(IAttributeMapper attributeMapper)
+        public VirtualControllerGenerator(IAttributeMapper attributeMapper, IGuidProvider guidProvider)
         {
             _attributeMapper = attributeMapper;
+            _guidProvider = guidProvider;
         }
 
         public IEnumerable<VirtualControllerInfo> Create(IEnumerable<NClientControllerInfo> nclientControllers)
         {
-            // TODO: Use GuidProvider instead static Guid.NewGuid()
-            var dynamicAssemblyName = new AssemblyName($"{NClientAssemblyNames.NClientDynamicControllerProxies}.{Guid.NewGuid()}");
+            var dynamicAssemblyName = new AssemblyName($"{NClientAssemblyNames.NClientDynamicControllerProxies}.{_guidProvider.Create()}");
             var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(dynamicAssemblyName, AssemblyBuilderAccess.Run);
             var dynamicModule = dynamicAssembly.DefineDynamicModule(dynamicAssemblyName.Name!);
 
