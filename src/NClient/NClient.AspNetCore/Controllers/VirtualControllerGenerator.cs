@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using NClient.AspNetCore.Controllers.Models;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
@@ -12,8 +13,7 @@ namespace NClient.AspNetCore.Controllers
 {
     internal interface IVirtualControllerGenerator
     {
-        IEnumerable<(Type VirtualControllerType, Type ControllerType)> Create(
-            IEnumerable<(Type InterfaceType, Type ControllerType)> interfaceControllerPairs);
+        IEnumerable<VirtualControllerInfo> Create(IEnumerable<NClientControllerInfo> nclientControllers);
     }
 
     internal class VirtualControllerGenerator : IVirtualControllerGenerator
@@ -25,37 +25,35 @@ namespace NClient.AspNetCore.Controllers
             _attributeMapper = attributeMapper;
         }
 
-        public IEnumerable<(Type VirtualControllerType, Type ControllerType)> Create(
-            IEnumerable<(Type InterfaceType, Type ControllerType)> interfaceControllerPairs)
+        public IEnumerable<VirtualControllerInfo> Create(IEnumerable<NClientControllerInfo> nclientControllers)
         {
             // TODO: Use GuidProvider instead static Guid.NewGuid()
             var dynamicAssemblyName = new AssemblyName($"{NClientAssemblyNames.NClientDynamicControllerProxies}.{Guid.NewGuid()}");
             var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(dynamicAssemblyName, AssemblyBuilderAccess.Run);
             var dynamicModule = dynamicAssembly.DefineDynamicModule(dynamicAssemblyName.Name!);
 
-            foreach (var (interfaceType, controllerType) in interfaceControllerPairs)
+            foreach (var nclientController in nclientControllers)
             {
-                yield return Create(dynamicModule, interfaceType, controllerType);
+                yield return Create(dynamicModule, nclientController);
             }
         }
 
-        private (Type VirtualControllerType, Type ControllerType) Create(
-            ModuleBuilder moduleBuilder, Type interfaceType, Type controllerType)
+        private VirtualControllerInfo Create(ModuleBuilder moduleBuilder, NClientControllerInfo nclientController)
         {
             var typeBuilder = moduleBuilder.DefineType(
-                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{controllerType.Name}",
+                name: $"{NClientAssemblyNames.NClientDynamicControllerProxies}.{nclientController.ControllerType.Name}",
                 attr: TypeAttributes.Public,
                 parent: typeof(ControllerBase));
 
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
-            var interfaceAttributes = GetAttributes(interfaceType);
+            var interfaceAttributes = GetAttributes(nclientController.InterfaceType);
             foreach (var interfaceAttribute in interfaceAttributes)
             {
                 typeBuilder.SetCustomAttribute(CreateAttribute(interfaceAttribute));
             }
 
-            var interfaceMethods = interfaceType.GetMethods();
+            var interfaceMethods = nclientController.InterfaceType.GetMethods();
             foreach (var interfaceMethod in interfaceMethods)
             {
                 var methodBuilder = DefineMethod(typeBuilder, interfaceMethod);
@@ -67,7 +65,7 @@ namespace NClient.AspNetCore.Controllers
                 }
             }
 
-            return (typeBuilder.CreateTypeInfo(), controllerType);
+            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo(), nclientController.ControllerType);
         }
 
         private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
@@ -93,14 +91,9 @@ namespace NClient.AspNetCore.Controllers
 
         private static CustomAttributeBuilder CreateRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
         {
-            // TODO: Remove duplication (see CreateCustomAttribute())
-            var attributeProps = attribute.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .ToArray();
+            var attributeProps = GetProperties(attribute);
             var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-
-            var attributeFields = attribute.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
+            var attributeFields = GetFields(attribute);
             var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
 
             if (attribute.Template is null)
@@ -125,15 +118,11 @@ namespace NClient.AspNetCore.Controllers
                 .Select(x => x.GetValue(attribute))
                 .ToArray();
 
-            var attributeProps = attribute.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .ToArray();
+            var attributeProps = GetProperties(attribute);
             var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-
-            var attributeFields = attribute.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
+            var attributeFields = GetFields(attribute);
             var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
+            
             return new CustomAttributeBuilder(
                 attributeCtor,
                 attributeCtorParamValue,
@@ -166,6 +155,19 @@ namespace NClient.AspNetCore.Controllers
             ilGenerator.Emit(OpCodes.Ret);
 
             return methodBuilder;
+        }
+
+        private static PropertyInfo[] GetProperties(object obj)
+        {
+            return obj.GetType()
+                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.CanWrite)
+                .ToArray();
+        }
+        
+        private static FieldInfo[] GetFields(object obj)
+        {
+            return obj.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }

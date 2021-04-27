@@ -6,6 +6,7 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.AspNetCore.Controllers;
+using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
 using NUnit.Framework;
@@ -29,17 +30,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_InterfaceWithoutAttributes_NoAttributes()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IInterfaceWithoutAttributes), typeof(InterfaceWithoutAttributes))
+                new NClientControllerInfo(typeof(IInterfaceWithoutAttributes), typeof(InterfaceWithoutAttributes))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
         }
@@ -50,17 +51,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_InterfaceWithoutApiAttribute_ApiControllerAttribute()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IInterfaceWithoutApiAttribute), typeof(InterfaceWithoutApiAttribute))
+                new NClientControllerInfo(typeof(IInterfaceWithoutApiAttribute), typeof(InterfaceWithoutApiAttribute))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new ApiControllerAttribute());
@@ -72,17 +73,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_InterfaceWithPathAttributeWithTemplate_AddApiControllerAndRouteWithTemplateAttributes()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IInterfaceWithPathAttributeWithTemplate), typeof(InterfaceWithPathAttributeWithTemplate))
+                new NClientControllerInfo(typeof(IInterfaceWithPathAttributeWithTemplate), typeof(InterfaceWithPathAttributeWithTemplate))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new RouteAttribute("api/[controller]") { Order = 0 });
@@ -94,17 +95,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_InterfaceWithApiAndPathAttributes_AddApiControllerAndRouteWithTemplateAttributes()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IInterfaceWithApiAndPathAttributes), typeof(InterfaceWithApiAndPathAttributes))
+                new NClientControllerInfo(typeof(IInterfaceWithApiAndPathAttributes), typeof(InterfaceWithApiAndPathAttributes))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(2);
             controllerAttributes[0].Should().BeEquivalentTo(new ApiControllerAttribute());
@@ -117,17 +118,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_MethodAttributeController_AddMethodAttribute()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IMethodAttributeController), typeof(MethodAttributeController))
+                new NClientControllerInfo(typeof(IMethodAttributeController), typeof(MethodAttributeController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeController.Get))!;
@@ -142,17 +143,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_MethodAttributeWithTemplateController_AddMethodAttributeWithTemplate()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IMethodAttributeWithTemplateController), typeof(MethodAttributeWithTemplateController))
+                new NClientControllerInfo(typeof(IMethodAttributeWithTemplateController), typeof(MethodAttributeWithTemplateController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeWithTemplateController.Get))!;
@@ -167,17 +168,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_MultipleMethodController_AddMethodAttributeForEachMethod()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IMultipleMethodController), typeof(MultipleMethodController))
+                new NClientControllerInfo(typeof(IMultipleMethodController), typeof(MultipleMethodController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var getMethodInfo = virtualControllerType.GetMethod(nameof(MultipleMethodController.Get))!;
@@ -196,13 +197,13 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_AspNetMethodAttributeController_ThrowInvalidAttributeNClientException()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IAspNetMethodAttributeController), typeof(AspNetMethodAttributeController))
+                new NClientControllerInfo(typeof(IAspNetMethodAttributeController), typeof(AspNetMethodAttributeController))
             };
 
             _virtualControllerGenerator
-                .Invoking(x => x.Create(interfaceControllerPairs).ToArray())
+                .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
                 .ThrowExactly<InvalidAttributeNClientException>();
         }
@@ -214,17 +215,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_NotNClientMethodAttributeController_IgnoreCustomAttribute()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(INotNClientMethodAttributeController), typeof(NotNClientMethodAttributeController))
+                new NClientControllerInfo(typeof(INotNClientMethodAttributeController), typeof(NotNClientMethodAttributeController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(NotNClientMethodAttributeController.Get))!;
@@ -238,17 +239,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_ParameterAttributeController_AddParameterAttribute()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IParameterAttributeController), typeof(ParameterAttributeController))
+                new NClientControllerInfo(typeof(IParameterAttributeController), typeof(ParameterAttributeController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeController.Get))!;
@@ -267,17 +268,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_ParameterAttributeWithNameController_AddParameterAttributeWithName()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IParameterAttributeWithNameController), typeof(ParameterAttributeWithNameController))
+                new NClientControllerInfo(typeof(IParameterAttributeWithNameController), typeof(ParameterAttributeWithNameController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeWithNameController.Get))!;
@@ -296,17 +297,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [Test]
         public void Create_MultipleParameterAttributeController_AddParameterAttributeForEachParameter()
         {
-            var interfaceControllerPairs = new[]
+            var nclientControllers = new[]
             {
-                (typeof(IMultipleParameterAttributeController), typeof(MultipleParameterAttributeController))
+                new NClientControllerInfo(typeof(IMultipleParameterAttributeController), typeof(MultipleParameterAttributeController))
             };
 
             var actualResult = _virtualControllerGenerator
-                .Create(interfaceControllerPairs)
+                .Create(nclientControllers)
                 .ToArray();
 
             actualResult.Should().ContainSingle();
-            var virtualControllerType = actualResult.Single().VirtualControllerType;
+            var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeController.Get))!;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.AspNetCore.Mvc;
@@ -9,14 +10,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
+using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Mappers;
 
 namespace NClient.AspNetCore.Extensions
 {
     public static class AddNClientControllersExtensions
     {
-        private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
+        private static readonly IProxyGenerator ProxyGenerator;
+        private static readonly INClientControllerFinder NClientControllerFinder;
+        private static readonly IVirtualControllerGenerator VirtualControllerGenerator;
 
+        static AddNClientControllersExtensions()
+        {
+            ProxyGenerator = new ProxyGenerator();
+            NClientControllerFinder = new NClientControllerFinder();
+            VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper());
+        }
+        
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)
         {
             if (serviceCollection == null)
@@ -28,23 +39,21 @@ namespace NClient.AspNetCore.Extensions
                 .Cast<AssemblyPart>()
                 .Select(x => x.Assembly);
             var appTypes = appAssemblies.SelectMany(x => x.GetTypes());
-            var interfaceControllerPairs = new VirtualControllerFinder()
-                .FindInterfaceControllerPairs(appTypes);
-            var virtualControllerPairs = new VirtualControllerGenerator(new NClientAttributeMapper())
-                .Create(interfaceControllerPairs)
-                .ToArray();
+            var virtualControllers = GetVirtualControllers(appTypes);
 
-            foreach (var (virtualControllerType, controllerType) in virtualControllerPairs)
+            foreach (var virtualController in virtualControllers)
             {
-                serviceCollection.AddTransient(controllerType);
-                serviceCollection.AddTransient(virtualControllerType, serviceProvider =>
+                serviceCollection.AddTransient(virtualController.ControllerType);
+                serviceCollection.AddTransient(virtualController.Type, serviceProvider =>
                 {
-                    var controller = serviceProvider.GetRequiredService(controllerType);
-                    return ProxyGenerator.CreateClassProxy(virtualControllerType, new VirtualControllerInterceptor(controller));
+                    var controller = serviceProvider.GetRequiredService(virtualController.ControllerType);
+                    return ProxyGenerator.CreateClassProxy(
+                        virtualController.ControllerType, 
+                        new VirtualControllerInterceptor(controller));
                 });
             }
 
-            var assemblyWithVirtualControllers = virtualControllerPairs.First().VirtualControllerType.Assembly;
+            var assemblyWithVirtualControllers = virtualControllers.First().Type.Assembly;
             var builder = mvcCoreBuilder
                 .AddMvcOptions(options =>
                 {
@@ -89,6 +98,14 @@ namespace NClient.AspNetCore.Extensions
                 builder.AddMvcOptions(configure);
 
             return builder;
+        }
+
+        private static VirtualControllerInfo[] GetVirtualControllers(IEnumerable<Type> appTypes)
+        {
+            var nclientControllers = NClientControllerFinder.Find(appTypes);
+            return VirtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
         }
     }
 }
