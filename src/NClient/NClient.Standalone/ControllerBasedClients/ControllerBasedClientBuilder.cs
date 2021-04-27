@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
@@ -58,6 +59,8 @@ namespace NClient.ControllerBasedClients
         {
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
 
+            var objectMemberManager = new ObjectMemberManager();
+
             var attributeMapper = new AspNetAttributeMapper();
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
@@ -69,9 +72,9 @@ namespace NClient.ControllerBasedClients
             var requestBuilder = new RequestBuilder(
                 _host,
                 new RouteTemplateProvider(),
-                new RouteProvider(),
+                new RouteProvider(objectMemberManager),
                 new HttpMethodProvider(),
-                new ObjectToKeyValueConverter());
+                new ObjectToKeyValueConverter(objectMemberManager));
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 _httpClientProvider,

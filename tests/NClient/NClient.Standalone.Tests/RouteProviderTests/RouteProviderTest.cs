@@ -3,6 +3,7 @@ using FluentAssertions;
 using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
 using NClient.Testing.Common.Entities;
@@ -18,7 +19,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [SetUp]
         public void SetUp()
         {
-            RouteProvider = new RouteProvider();
+            var objectMemberManager = new ObjectMemberManager();
+            RouteProvider = new RouteProvider(objectMemberManager);
         }
 
         [Test]

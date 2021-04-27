@@ -14,6 +14,14 @@ namespace NClient.Core.Tests
 {
     public class ObjectMemberManagerTest
     {
+        private ObjectMemberManager _objectMemberManager = null!;
+        
+        [SetUp]
+        public void SetUp()
+        {
+            _objectMemberManager = new ObjectMemberManager();
+        }
+        
         public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
@@ -167,7 +175,7 @@ namespace NClient.Core.Tests
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
 
-            var actualResult = ObjectMemberManager.GetMemberValue(obj, memberPath, memberNameSelector);
+            var actualResult = _objectMemberManager.GetValue(obj, memberPath, memberNameSelector);
 
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
@@ -177,7 +185,7 @@ namespace NClient.Core.Tests
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
 
-            Func<object?> func = () => ObjectMemberManager.GetMemberValue(obj, memberPath, memberNameSelector);
+            Func<object?> func = () => _objectMemberManager.GetValue(obj, memberPath, memberNameSelector);
 
             func.Should().Throw<Exception>().Where(x => x.GetType() == exceptionType);
         }
@@ -187,7 +195,7 @@ namespace NClient.Core.Tests
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
 
-            ObjectMemberManager.SetMemberValue(obj, value, memberPath, memberNameSelector);
+            _objectMemberManager.SetValue(obj, value, memberPath, memberNameSelector);
 
             obj.Should().BeEquivalentTo(expectedResult);
         }
@@ -197,7 +205,7 @@ namespace NClient.Core.Tests
         {
             memberNameSelector ??= new DefaultMemberNameSelector();
 
-            Action func = () => ObjectMemberManager.SetMemberValue(obj, value, memberPath, memberNameSelector);
+            Action func = () => _objectMemberManager.SetValue(obj, value, memberPath, memberNameSelector);
 
             func.Should().Throw<Exception>().Where(x => x.GetType() == exceptionType);
         }
