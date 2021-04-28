@@ -28,7 +28,7 @@ namespace NClient.AspNetCore.Extensions
             NClientControllerFinder = new NClientControllerFinder();
             VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
         }
-        
+
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)
         {
             if (serviceCollection == null)
@@ -49,7 +49,7 @@ namespace NClient.AspNetCore.Extensions
                 {
                     var controller = serviceProvider.GetRequiredService(virtualController.ControllerType);
                     return ProxyGenerator.CreateClassProxy(
-                        virtualController.ControllerType, 
+                        virtualController.ControllerType,
                         new VirtualControllerInterceptor(controller));
                 });
             }

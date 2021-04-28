@@ -15,13 +15,13 @@ namespace NClient.Core.Tests
     public class ObjectMemberManagerTest
     {
         private ObjectMemberManager _objectMemberManager = null!;
-        
+
         [SetUp]
         public void SetUp()
         {
             _objectMemberManager = new ObjectMemberManager();
         }
-        
+
         public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }

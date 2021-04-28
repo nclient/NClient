@@ -6,7 +6,7 @@ namespace NClient.AspNetCore.Controllers.Models
     {
         public Type InterfaceType { get; }
         public Type ControllerType { get; }
-        
+
         public NClientControllerInfo(Type interfaceType, Type controllerType)
         {
             InterfaceType = interfaceType;

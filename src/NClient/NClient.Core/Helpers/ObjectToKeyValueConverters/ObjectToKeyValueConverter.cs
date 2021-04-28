@@ -21,7 +21,7 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
         {
             _objectMemberManager = objectMemberManager;
         }
-        
+
         public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector)
         {
             var stringValues = new List<PropertyKeyValue>();
@@ -104,7 +104,7 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
                     _objectMemberManager.GetValue(member, obj)))
                 .ToArray();
         }
-        
+
         private static bool IsPrimitive(object? obj)
         {
             if (obj is null || obj is string)

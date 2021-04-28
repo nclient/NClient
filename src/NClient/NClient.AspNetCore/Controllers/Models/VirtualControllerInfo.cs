@@ -6,7 +6,7 @@ namespace NClient.AspNetCore.Controllers.Models
     {
         public Type Type { get; }
         public Type ControllerType { get; }
-        
+
         public VirtualControllerInfo(Type type, Type controllerType)
         {
             Type = type;

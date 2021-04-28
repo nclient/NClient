@@ -37,7 +37,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
 
             return properties.Concat(fields).ToArray();
         }
-        
+
 
         public MemberInfo GetByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
         {
@@ -53,7 +53,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
             return memberNamePair.Member;
         }
-        
+
         public object? GetValue(object obj, string memberPath, IMemberNameSelector memberNameSelector)
         {
             if (obj is null)
@@ -85,7 +85,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 iterationCount++;
             }
         }
-        
+
         public object? GetValue(MemberInfo member, object obj)
         {
             return (member as PropertyInfo)?.GetValue(obj) ?? (member as FieldInfo)?.GetValue(obj);
@@ -138,7 +138,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             (member as PropertyInfo)?.SetValue(obj, value);
             (member as FieldInfo)?.SetValue(obj, value);
         }
-        
+
         public bool IsMemberPath(string str)
         {
             return str.Contains(".");
@@ -152,7 +152,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             var nextMemberPath = memberPathParts.Length == partsCount ? memberPathParts[1] : null;
             return (objectName, nextMemberPath);
         }
-        
+
         public Type GetType(MemberInfo member)
         {
             return (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType!;

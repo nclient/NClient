@@ -30,7 +30,7 @@ namespace NClient.Testing.Common
         public void OneTimeSetUp()
         {
             var objectMemberManager = new ObjectMemberManager();
-            
+
             RequestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),
                 new RouteTemplateProvider(),

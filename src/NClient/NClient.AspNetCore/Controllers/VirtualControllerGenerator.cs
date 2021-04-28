@@ -124,7 +124,7 @@ namespace NClient.AspNetCore.Controllers
             var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
             var attributeFields = GetFields(attribute);
             var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-            
+
             return new CustomAttributeBuilder(
                 attributeCtor,
                 attributeCtorParamValue,
@@ -166,7 +166,7 @@ namespace NClient.AspNetCore.Controllers
                 .Where(x => x.CanWrite)
                 .ToArray();
         }
-        
+
         private static FieldInfo[] GetFields(object obj)
         {
             return obj.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);

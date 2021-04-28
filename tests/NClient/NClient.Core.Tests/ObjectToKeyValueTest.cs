@@ -15,14 +15,14 @@ namespace NClient.Core.Tests
     public class ObjectToKeyValueTest
     {
         private ObjectToKeyValueConverter _objectToKeyValue = null!;
-        
+
         [SetUp]
         public void SetUp()
         {
             var objectMemberManager = new ObjectMemberManager();
             _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager);
         }
-        
+
         public static IEnumerable ConvertibleObjectSource = new[]
         {
             new TestCaseData(null, new PropertyKeyValue[]

@@ -58,7 +58,7 @@ namespace NClient.InterfaceBasedClients
             var objectMemberManager = new ObjectMemberManager();
             var attributeMapper = new AttributeMapper();
             var guidProvider = new GuidProvider();
-            
+
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
