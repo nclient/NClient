@@ -5,6 +5,9 @@ namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
+        public static RequestNClientException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
+            new($"Header parameter duplicates static header. Header names: {string.Join(",", headerNames)}");
+        
         public static RequestNClientException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
             new($"Client name consists only of suffixes and prefixes.");
 
