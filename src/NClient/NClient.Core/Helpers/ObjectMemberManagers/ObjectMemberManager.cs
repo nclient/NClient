@@ -7,88 +7,23 @@ using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers
 {
-    internal static class ObjectMemberManager
+    internal interface IObjectMemberManager
     {
-        public static bool IsMemberPath(string str)
-        {
-            return str.Contains(".");
-        }
+        MemberInfo[] GetPublic(object obj);
+        MemberInfo GetByName(object obj, string memberName, IMemberNameSelector memberNameSelector);
+        object? GetValue(object obj, string memberPath, IMemberNameSelector memberNameSelector);
+        object? GetValue(MemberInfo member, object obj);
+        void SetValue(object obj, string? value, string memberPath, IMemberNameSelector memberNameSelector);
+        void SetValue(object obj, MemberInfo member, string? value);
+        void SetValue(MemberInfo member, object obj, object? value);
+        bool IsMemberPath(string str);
+        (string ObjectName, string? MemberPath) ParseNextPath(string memberPath);
+        Type GetType(MemberInfo member);
+    }
 
-        public static (string ObjectName, string? MemberPath) ParseNextPath(string memberPath)
-        {
-            const int partsCount = 2;
-            var memberPathParts = memberPath.Split(new[] { '.' }, partsCount);
-            var objectName = memberPathParts[0];
-            var nextMemberPath = memberPathParts.Length == partsCount ? memberPathParts[1] : null;
-            return (objectName, nextMemberPath);
-        }
-
-        public static object? GetMemberValue(object obj, string memberPath, IMemberNameSelector memberNameSelector)
-        {
-            if (obj is null)
-                throw new ArgumentNullException(nameof(obj));
-            if (memberPath is null)
-                throw new ArgumentNullException(nameof(memberPath));
-            if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
-
-            var iterationCount = 0;
-            while (true)
-            {
-                AvoidInfiniteLoop(iterationCount, obj.GetType().Name);
-
-                var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
-                if (nextMemberPath is not null)
-                {
-                    var member = GetMemberByName(obj, nextObjName, memberNameSelector);
-                    obj = GetMemberValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
-                    memberPath = nextMemberPath;
-                }
-                else
-                {
-                    var member = GetMemberByName(obj, memberPath, memberNameSelector);
-                    return GetMemberValue(member, obj);
-                }
-
-                iterationCount++;
-            }
-        }
-
-        public static void SetMemberValue(object obj, string? value, string memberPath, IMemberNameSelector memberNameSelector)
-        {
-            if (obj is null)
-                throw new ArgumentNullException(nameof(obj));
-            if (memberPath is null)
-                throw new ArgumentNullException(nameof(memberPath));
-            if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
-
-            var iterationCount = 0;
-            while (true)
-            {
-                AvoidInfiniteLoop(iterationCount, obj.GetType().Name);
-
-                var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
-                if (nextMemberPath is not null)
-                {
-                    var member = GetMemberByName(obj, nextObjName, memberNameSelector);
-                    obj = GetMemberValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
-                    memberPath = nextMemberPath;
-                }
-                else
-                {
-                    var member = GetMemberByName(obj, memberPath, memberNameSelector);
-                    SetMemberValue(obj, member, value);
-                    return;
-                }
-
-                iterationCount++;
-            }
-        }
-
-        public static MemberInfo[] GetPublicMembers(object obj)
+    internal class ObjectMemberManager : IObjectMemberManager
+    {
+        public MemberInfo[] GetPublic(object obj)
         {
             var properties = obj
                 .GetType()
@@ -103,9 +38,10 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             return properties.Concat(fields).ToArray();
         }
 
-        public static MemberInfo GetMemberByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
+
+        public MemberInfo GetByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
         {
-            var memberNamePairs = GetPublicMembers(obj)
+            var memberNamePairs = GetPublic(obj)
                 .Select(member => (Name: memberNameSelector.GetName(member), Member: member))
                 .Where(member => member.Name == memberName)
                 .ToArray();
@@ -118,29 +54,108 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             return memberNamePair.Member;
         }
 
-        public static void SetMemberValue(object obj, MemberInfo member, string? value)
+        public object? GetValue(object obj, string memberPath, IMemberNameSelector memberNameSelector)
         {
-            var memberType = GetMemberType(member);
-            var converter = TypeDescriptor.GetConverter(memberType);
-            if (!converter.IsValid(value))
-                throw OuterExceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
-            SetMemberValue(member, obj, converter.ConvertFrom(value));
+            if (obj is null)
+                throw new ArgumentNullException(nameof(obj));
+            if (memberPath is null)
+                throw new ArgumentNullException(nameof(memberPath));
+            if (memberPath == "")
+                throw new ArgumentException("Empty string", nameof(memberPath));
+
+            var iterationCount = 0;
+            while (true)
+            {
+                AvoidInfiniteLoop(iterationCount, obj.GetType().Name);
+
+                var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
+                if (nextMemberPath is not null)
+                {
+                    var member = GetByName(obj, nextObjName, memberNameSelector);
+                    obj = GetValue(member, obj)
+                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                    memberPath = nextMemberPath;
+                }
+                else
+                {
+                    var member = GetByName(obj, memberPath, memberNameSelector);
+                    return GetValue(member, obj);
+                }
+
+                iterationCount++;
+            }
         }
 
-        public static Type GetMemberType(MemberInfo member)
-        {
-            return (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType!;
-        }
-
-        public static object? GetMemberValue(MemberInfo member, object obj)
+        public object? GetValue(MemberInfo member, object obj)
         {
             return (member as PropertyInfo)?.GetValue(obj) ?? (member as FieldInfo)?.GetValue(obj);
         }
 
-        public static void SetMemberValue(MemberInfo member, object obj, object? value)
+        public void SetValue(object obj, string? value, string memberPath, IMemberNameSelector memberNameSelector)
+        {
+            if (obj is null)
+                throw new ArgumentNullException(nameof(obj));
+            if (memberPath is null)
+                throw new ArgumentNullException(nameof(memberPath));
+            if (memberPath == "")
+                throw new ArgumentException("Empty string", nameof(memberPath));
+
+            var iterationCount = 0;
+            while (true)
+            {
+                AvoidInfiniteLoop(iterationCount, obj.GetType().Name);
+
+                var (nextObjName, nextMemberPath) = ParseNextPath(memberPath);
+                if (nextMemberPath is not null)
+                {
+                    var member = GetByName(obj, nextObjName, memberNameSelector);
+                    obj = GetValue(member, obj)
+                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                    memberPath = nextMemberPath;
+                }
+                else
+                {
+                    var member = GetByName(obj, memberPath, memberNameSelector);
+                    SetValue(obj, member, value);
+                    return;
+                }
+
+                iterationCount++;
+            }
+        }
+
+        public void SetValue(object obj, MemberInfo member, string? value)
+        {
+            var memberType = GetType(member);
+            var converter = TypeDescriptor.GetConverter(memberType);
+            if (!converter.IsValid(value))
+                throw OuterExceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
+            SetValue(member, obj, converter.ConvertFrom(value));
+        }
+
+        public void SetValue(MemberInfo member, object obj, object? value)
         {
             (member as PropertyInfo)?.SetValue(obj, value);
             (member as FieldInfo)?.SetValue(obj, value);
+        }
+
+        public bool IsMemberPath(string str)
+        {
+            return str.Contains(".");
+        }
+
+        public (string ObjectName, string? MemberPath) ParseNextPath(string memberPath)
+        {
+            const int partsCount = 2;
+            var memberPathParts = memberPath.Split(new[] { '.' }, partsCount);
+            var objectName = memberPathParts[0];
+            var nextMemberPath = memberPathParts.Length == partsCount ? memberPathParts[1] : null;
+            return (objectName, nextMemberPath);
+        }
+
+        public Type GetType(MemberInfo member)
+        {
+            return (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType!;
         }
 
         private static void AvoidInfiniteLoop(int iterationCount, string processingObjectName)

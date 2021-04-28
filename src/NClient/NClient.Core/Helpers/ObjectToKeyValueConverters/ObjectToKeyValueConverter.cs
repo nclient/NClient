@@ -15,13 +15,20 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
 
     internal class ObjectToKeyValueConverter : IObjectToKeyValueConverter
     {
+        private readonly IObjectMemberManager _objectMemberManager;
+
+        public ObjectToKeyValueConverter(IObjectMemberManager objectMemberManager)
+        {
+            _objectMemberManager = objectMemberManager;
+        }
+
         public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector)
         {
             var stringValues = new List<PropertyKeyValue>();
             return ToKeyValue(stringValues, rootName, obj, memberNameSelector).ToArray();
         }
 
-        private static List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
+        private List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
         {
             if (TryAddAsPrimitive(stringValues, key, value))
                 return stringValues;
@@ -72,7 +79,7 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
             return true;
         }
 
-        private static bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
+        private bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
         {
             if (IsPrimitive(value))
                 return false;
@@ -85,6 +92,19 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
             return true;
         }
 
+        private IEnumerable<PropertyKeyValue> GetMembers(object? obj, IMemberNameSelector memberNameSelector)
+        {
+            if (obj is null)
+                return Array.Empty<PropertyKeyValue>();
+
+            return _objectMemberManager
+                .GetPublic(obj)
+                .Select(member => new PropertyKeyValue(
+                    memberNameSelector.GetName(member),
+                    _objectMemberManager.GetValue(member, obj)))
+                .ToArray();
+        }
+
         private static bool IsPrimitive(object? obj)
         {
             if (obj is null || obj is string)
@@ -94,19 +114,6 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
                 return false;
 
             return obj.GetType().IsSerializable;
-        }
-
-        private static IEnumerable<PropertyKeyValue> GetMembers(object? obj, IMemberNameSelector memberNameSelector)
-        {
-            if (obj is null)
-                return Array.Empty<PropertyKeyValue>();
-
-            return ObjectMemberManager
-                .GetPublicMembers(obj)
-                .Select(member => new PropertyKeyValue(
-                    memberNameSelector.GetName(member),
-                    ObjectMemberManager.GetMemberValue(member, obj)))
-                .ToArray();
         }
     }
 }

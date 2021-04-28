@@ -23,6 +23,12 @@ namespace NClient.Core.RequestBuilders
     internal class RouteProvider : IRouteProvider
     {
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
+        private readonly IObjectMemberManager _objectMemberManager;
+
+        public RouteProvider(IObjectMemberManager objectMemberManager)
+        {
+            _objectMemberManager = objectMemberManager;
+        }
 
         public string Build(
             RouteTemplate routeTemplate,
@@ -49,9 +55,9 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
+        private string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
         {
-            var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
+            var (objectName, memberPath) = _objectMemberManager.ParseNextPath(templatePart.Name!);
             return memberPath is null
                 ? GetParameterValue(objectName, parameters)
                 : GetCustomParameterValue(objectName, memberPath, parameters);
@@ -66,15 +72,15 @@ namespace NClient.Core.RequestBuilders
             return parameter.Value.ToString() ?? "";
         }
 
-        private static string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
+        private string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
         {
             var parameter = GetRouteParameter(objectName, parameters);
 
             return (parameter.Attribute switch
             {
-                BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
-                QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
-                { } => ObjectMemberManager.GetMemberValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
+                BodyParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
+                QueryParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
+                { } => _objectMemberManager.GetValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
                 _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
             })?.ToString() ?? "";
         }

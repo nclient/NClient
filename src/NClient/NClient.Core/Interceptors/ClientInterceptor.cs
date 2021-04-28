@@ -7,6 +7,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.MethodBuilders;
@@ -21,6 +22,7 @@ namespace NClient.Core.Interceptors
         private readonly IClientInvocationProvider _clientInvocationProvider;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
+        private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
 
@@ -29,6 +31,7 @@ namespace NClient.Core.Interceptors
             IClientInvocationProvider clientInvocationProvider,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
+            IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
@@ -36,6 +39,7 @@ namespace NClient.Core.Interceptors
             _clientInvocationProvider = clientInvocationProvider;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
+            _guidProvider = guidProvider;
             _controllerType = controllerType;
             _logger = logger;
         }
@@ -43,7 +47,7 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            var requestId = Guid.NewGuid();
+            var requestId = _guidProvider.Create();
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
             await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, clientInvocation, requestId).ConfigureAwait(false);
         }
@@ -51,7 +55,7 @@ namespace NClient.Core.Interceptors
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            var requestId = Guid.NewGuid();
+            var requestId = _guidProvider.Create();
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
             return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, clientInvocation, requestId).ConfigureAwait(false);
         }
