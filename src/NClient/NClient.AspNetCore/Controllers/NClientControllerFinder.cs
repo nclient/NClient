@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions.Factories;
 
 namespace NClient.AspNetCore.Controllers
 {
-    internal interface IVirtualControllerFinder
+    internal interface INClientControllerFinder
     {
-        IEnumerable<(Type InterfaceType, Type ControllerType)> FindInterfaceControllerPairs(IEnumerable<Type> types);
+        IEnumerable<NClientControllerInfo> Find(IEnumerable<Type> types);
     }
 
-    internal class VirtualControllerFinder : IVirtualControllerFinder
+    internal class NClientControllerFinder : INClientControllerFinder
     {
-        public IEnumerable<(Type InterfaceType, Type ControllerType)> FindInterfaceControllerPairs(IEnumerable<Type> types)
+        public IEnumerable<NClientControllerInfo> Find(IEnumerable<Type> types)
         {
             var nclientControllers = types.Where(ControllerQualifier.IsNClientController).ToArray();
             if (nclientControllers.Length == 0)
@@ -33,7 +34,7 @@ namespace NClient.AspNetCore.Controllers
                 interfaces.Add(nclientInterfaces.Single());
             }
 
-            return interfaces.Zip(nclientControllers, (@interface, controller) => (@interface, controller));
+            return interfaces.Zip(nclientControllers, (@interface, controller) => new NClientControllerInfo(@interface, controller));
         }
     }
 }

@@ -5,118 +5,129 @@ using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.RequestBuilders.Models;
 
 namespace NClient.Core.RequestBuilders
 {
     internal interface IRouteProvider
     {
-        string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters);
+        string Build(
+            RouteTemplate routeTemplate,
+            string clientName,
+            string methodName,
+            Parameter[] parameters);
     }
 
     internal class RouteProvider : IRouteProvider
     {
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
+        private readonly IObjectMemberManager _objectMemberManager;
 
-        public string Build(RouteTemplate routeTemplate, string clientName, string methodName, Parameter[] parameters)
+        public RouteProvider(IObjectMemberManager objectMemberManager)
         {
-            var routeParams = parameters
+            _objectMemberManager = objectMemberManager;
+        }
+
+        public string Build(
+            RouteTemplate routeTemplate,
+            string clientName,
+            string methodName,
+            Parameter[] parameters)
+        {
+            var unusedRouteParamNames = parameters
                 .Where(x => x.Attribute is RouteParamAttribute)
-                .ToArray();
-            var routeParamNamesWithoutToken = routeParams
                 .Select(x => x.Name)
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
-            if (routeParamNamesWithoutToken.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(clientName, methodName, routeParamNamesWithoutToken!);
+            if (unusedRouteParamNames.Any())
+                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
 
-            var routeParts = new List<string>(routeTemplate.Segments.Count);
-            foreach (var segment in routeTemplate.Segments)
-            {
-                var templatePart = segment.Parts.Single();
-                var routePart = templatePart switch
+            var routeParts = routeTemplate.Segments
+                .Select(x => x.Parts.Single() switch
                 {
-                    { } when templatePart.Name is not null => GetValueFromNamedSegment(templatePart, clientName, methodName, routeParams, parameters),
-                    { } when templatePart.Text is not null => GetValueFromTextSegment(templatePart, clientName, methodName),
-                    _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText(clientName, methodName)
-                };
-                routeParts.Add(routePart);
-            }
+                    { Name: { } } templatePart => GetValueFromPartName(templatePart, parameters),
+                    { Text: { } } templatePart => GetValueFromPartText(templatePart, clientName, methodName),
+                    _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
+                });
 
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueFromNamedSegment(
-            TemplatePart templatePart, string clientName, string methodName, IEnumerable<Parameter> routeParameters, IEnumerable<Parameter> allParameter)
+        private string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
         {
-            var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(templatePart.Name!);
-
-            if (memberPath is null)
-            {
-                var parameter = routeParameters.SingleOrDefault(x => x.Name == objectName);
-                if (parameter is null)
-                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
-                if (!parameter.Type.IsSimple())
-                    throw OuterExceptionFactory.TemplatePartContainsComplexType(clientName, methodName, templatePart.Name!);
-
-                return parameter.Value?.ToString() ?? "";
-            }
-            else
-            {
-                var parameter = allParameter.SingleOrDefault(x => x.Name == objectName);
-                if (parameter is null)
-                    throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(clientName, methodName, templatePart.Name!);
-                if (parameter.Value is null)
-                    throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(parameter.Name);
-
-                return (parameter.Attribute switch
-                {
-                    BodyParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new BodyMemberNameSelector()),
-                    QueryParamAttribute => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new QueryMemberNameSelector()),
-                    { } => ObjectMemberManager.GetMemberValue(parameter.Value, memberPath, new DefaultMemberNameSelector()),
-                    _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
-                })?.ToString() ?? "";
-            }
+            var (objectName, memberPath) = _objectMemberManager.ParseNextPath(templatePart.Name!);
+            return memberPath is null
+                ? GetParameterValue(objectName, parameters)
+                : GetCustomParameterValue(objectName, memberPath, parameters);
         }
 
-        private static string GetValueFromTextSegment(TemplatePart templatePart, string clientName, string methodName)
+        private static string GetParameterValue(string name, Parameter[] parameters)
+        {
+            var parameter = GetRouteParameter(name, parameters);
+            if (!parameter.Value!.GetType().IsPrimitive())
+                throw OuterExceptionFactory.TemplatePartContainsComplexType(name);
+
+            return parameter.Value.ToString() ?? "";
+        }
+
+        private string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
+        {
+            var parameter = GetRouteParameter(objectName, parameters);
+
+            return (parameter.Attribute switch
+            {
+                BodyParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
+                QueryParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
+                { } => _objectMemberManager.GetValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
+                _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
+            })?.ToString() ?? "";
+        }
+
+        private static Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
+        {
+            var parameterValue = parameters.SingleOrDefault(x => x.Name == name);
+            if (parameterValue is null)
+                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(name);
+            if (parameterValue.Value is null)
+                throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(name);
+            return parameterValue!;
+        }
+
+        private static string GetValueFromPartText(TemplatePart templatePart, string clientName, string methodName)
         {
             return templatePart.Text switch
             {
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
-                    throw OuterExceptionFactory.TokenFromTemplateNotExists(clientName, methodName, token),
+                    throw OuterExceptionFactory.TokenFromTemplateNotExists(token),
                 _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
 
-        private static string GetControllerName(string clientName)
+        private static string GetControllerName(string name)
         {
-            clientName = GetNameWithoutPrefix(clientName);
-            clientName = GetNameWithoutSuffix(clientName);
-            return clientName;
+            var nameWithoutSuffixAndPrefix = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
+            if (string.IsNullOrEmpty(nameWithoutSuffixAndPrefix))
+                throw OuterExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
+            return nameWithoutSuffixAndPrefix;
         }
 
+        //TODO: Check interface or not
         private static string GetNameWithoutPrefix(string name)
         {
-            //TODO: Check interface or not
-            if (name.Length >= 3 && name[0] == 'I' && char.IsUpper(name[1]) && char.IsLower(name[2]))
-                return new string(name.Skip(1).ToArray());
-
+            const string prefix = "I";
+            if (name.StartsWith(prefix) && name.Length >= 3 && char.IsUpper(name[1]) && char.IsLower(name[2]))
+                return name.Substring(prefix.Length, name.Length - prefix.Length);
             return name;
         }
 
         private static string GetNameWithoutSuffix(string name)
         {
-            foreach (var suffix in Suffixes)
-            {
-                if (name.Length > suffix.Length && name.EndsWith(suffix))
-                    return name.Remove(name.Length - suffix.Length, suffix.Length);
-            }
-
-            return name;
+            var suffix = Suffixes.FirstOrDefault(name.EndsWith);
+            return suffix is null ? name : name.Remove(name.Length - suffix.Length, suffix.Length);
         }
     }
 }

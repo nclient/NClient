@@ -30,7 +30,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             var restRequest = BuildRestRequest(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
-            return BuildResponse(restResponse, bodyType);
+            return BuildResponse(request, restResponse, bodyType);
         }
 
         private static IRestRequest BuildRestRequest(HttpRequest request)
@@ -56,9 +56,9 @@ namespace NClient.Providers.HttpClient.RestSharp
             return restRequest;
         }
 
-        private static HttpResponse BuildResponse(IRestResponse restResponse, Type? bodyType = null)
+        private static HttpResponse BuildResponse(HttpRequest request, IRestResponse restResponse, Type? bodyType = null)
         {
-            var response = new HttpResponse
+            var response = new HttpResponse(request)
             {
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
                 ContentLength = restResponse.ContentLength,
@@ -83,7 +83,7 @@ namespace NClient.Providers.HttpClient.RestSharp
                 throw deserializationException!;
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponse, response, responseValue);
+            return (HttpResponse)Activator.CreateInstance(genericResponse, request, response, responseValue);
         }
 
         private static object? TryParseJson(string body, Type bodyType, out Exception? exception)

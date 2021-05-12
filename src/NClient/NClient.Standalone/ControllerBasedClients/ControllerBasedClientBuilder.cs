@@ -5,7 +5,13 @@ using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
+using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.ClientInvocations;
+using NClient.Core.MethodBuilders;
+using NClient.Core.MethodBuilders.Providers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 using NClient.Mappers;
@@ -52,21 +58,36 @@ namespace NClient.ControllerBasedClients
 
         public TInterface Build()
         {
+            var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
+            var objectMemberManager = new ObjectMemberManager();
             var attributeMapper = new AspNetAttributeMapper();
+            var guidProvider = new GuidProvider();
+
+            var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
+            var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
+            var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
+
+            var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
+            var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
 
             var requestBuilder = new RequestBuilder(
                 _host,
-                new RouteTemplateProvider(attributeMapper),
-                new RouteProvider(),
-                new HttpMethodProvider(attributeMapper),
-                new ParameterProvider(attributeMapper),
-                new ObjectToKeyValueConverter());
+                new RouteTemplateProvider(),
+                new RouteProvider(objectMemberManager),
+                new HttpMethodProvider(),
+                new ObjectToKeyValueConverter(objectMemberManager));
+
+            var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
+                _httpClientProvider,
+                _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
+                _logger);
 
             var interceptor = new ClientInterceptor<TInterface>(
-                _proxyGenerator,
-                _httpClientProvider,
+                resilienceHttpClientProvider,
+                clientInvocationProvider,
+                clientMethodBuilder,
                 requestBuilder,
-                _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
+                guidProvider,
                 controllerType: typeof(TController),
                 _logger);
 

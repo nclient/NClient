@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NUnit.Framework;
 using NotSupportedNClientException = NClient.Core.Exceptions.NotSupportedNClientException;
 
@@ -12,6 +14,15 @@ namespace NClient.Core.Tests
     [Parallelizable]
     public class ObjectToKeyValueTest
     {
+        private ObjectToKeyValueConverter _objectToKeyValue = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var objectMemberManager = new ObjectMemberManager();
+            _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager);
+        }
+
         public static IEnumerable ConvertibleObjectSource = new[]
         {
             new TestCaseData(null, new PropertyKeyValue[]
@@ -168,7 +179,7 @@ namespace NClient.Core.Tests
         [TestCaseSource(nameof(ConvertibleObjectSource))]
         public void Convert_ConvertibleObject_ArrayOfKeyValue(object obj, PropertyKeyValue[] expectedResult)
         {
-            var actualResult = new ObjectToKeyValueConverter().Convert(obj, "obj", new DefaultMemberNameSelector());
+            var actualResult = _objectToKeyValue.Convert(obj, "obj", new DefaultMemberNameSelector());
 
             actualResult
                 .Should()
@@ -178,7 +189,7 @@ namespace NClient.Core.Tests
         [TestCaseSource(nameof(NotSupportedObjectSource))]
         public void Convert_NotSupportedObject_ThrowNotSupportedNClientException(object obj, string _)
         {
-            new ObjectToKeyValueConverter()
+            _objectToKeyValue
                 .Invoking(x => x.Convert(obj, "obj", new DefaultMemberNameSelector()))
                 .Should()
                 .Throw<NotSupportedNClientException>();

@@ -9,14 +9,16 @@ namespace NClient.Abstractions.HttpClients
         private readonly List<HttpParameter> _parameters = new();
         private readonly List<HttpHeader> _headers = new();
 
+        public Guid Id { get; }
         public Uri Uri { get; }
         public HttpMethod Method { get; }
         public object? Body { get; set; }
         public IReadOnlyCollection<HttpParameter> Parameters => _parameters;
         public IReadOnlyCollection<HttpHeader> Headers => _headers;
 
-        public HttpRequest(Uri uri, HttpMethod method)
+        public HttpRequest(Guid id, Uri uri, HttpMethod method)
         {
+            Id = id;
             Uri = uri;
             Method = method;
         }

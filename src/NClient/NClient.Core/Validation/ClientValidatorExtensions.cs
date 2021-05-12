@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace NClient.Core.Validators
+namespace NClient.Core.Validation
 {
     internal static class ClientValidationExtensions
     {
@@ -15,7 +15,7 @@ namespace NClient.Core.Validators
             }
         }
 
-        public static object? GetDefaultParameter(ParameterInfo parameter)
+        private static object? GetDefaultParameter(ParameterInfo parameter)
         {
             return parameter.ParameterType.IsValueType
                 ? Activator.CreateInstance(parameter.ParameterType)

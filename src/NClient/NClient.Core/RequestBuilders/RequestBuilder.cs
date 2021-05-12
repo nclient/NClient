@@ -1,17 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Helpers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
+using NClient.Core.MethodBuilders.Models;
+using NClient.Core.RequestBuilders.Models;
 
 namespace NClient.Core.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        HttpRequest Build(Type clientType, MethodInfo method, object[] arguments);
+        HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
@@ -20,7 +24,6 @@ namespace NClient.Core.RequestBuilders
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
         private readonly IHttpMethodProvider _httpMethodProvider;
-        private readonly IParameterProvider _parameterProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
 
         public RequestBuilder(
@@ -28,51 +31,57 @@ namespace NClient.Core.RequestBuilders
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider,
-            IParameterProvider parameterProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter)
         {
             _host = host;
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _httpMethodProvider = httpMethodProvider;
-            _parameterProvider = parameterProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
         }
 
-        public HttpRequest Build(Type clientType, MethodInfo method, object[] arguments)
+        public HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments)
         {
-            var httpMethod = _httpMethodProvider.Get(method);
-            var routeTemplate = _routeTemplateProvider.Get(clientType, method);
-            var methodParams = _parameterProvider.Get(routeTemplate, method, arguments);
-            var route = _routeProvider.Build(routeTemplate, clientType.Name, method.Name, methodParams);
+            var httpMethod = _httpMethodProvider.Get(method.Attribute);
+            var routeTemplate = _routeTemplateProvider.Get(method);
+            var paramValuePairs = method.Params
+                .Select((methodParam, index) => new Parameter(
+                    methodParam.Name,
+                    methodParam.Type,
+                    arguments.ElementAtOrDefault(index),
+                    methodParam.Attribute))
+                .ToArray();
+            var route = _routeProvider.Build(routeTemplate, method.ClientName, method.Name, paramValuePairs);
+
             var uri = new Uri(_host, route);
+            var request = new HttpRequest(requestId, uri, httpMethod);
 
-            var request = new HttpRequest(uri, httpMethod);
-
-            var urlParams = methodParams
+            var urlParams = paramValuePairs
                 .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);
             foreach (var uriParam in urlParams)
             {
-                foreach (var propertyKeyValue in _objectToKeyValueConverter.Convert(uriParam.Value, uriParam.Name, new QueryMemberNameSelector()))
+                var keyValuePairs = _objectToKeyValueConverter
+                    .Convert(uriParam.Value, uriParam.Name, new QueryMemberNameSelector());
+                foreach (var propertyKeyValue in keyValuePairs)
                 {
                     request.AddParameter(propertyKeyValue.Key, propertyKeyValue.Value ?? "");
                 }
             }
 
-            var headerParams = methodParams
+            var headerParams = paramValuePairs
                 .Where(x => x.Attribute is HeaderParamAttribute && x.Value != null);
             foreach (var headerParam in headerParams)
             {
-                if (!headerParam.Type.IsSimple())
-                    throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(method, headerParam.Name);
+                if (!headerParam.Type.IsPrimitive())
+                    throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
-            var bodyParams = methodParams
+            var bodyParams = paramValuePairs
                 .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
-                throw OuterExceptionFactory.MultipleBodyParametersNotSupported(method);
+                throw OuterExceptionFactory.MultipleBodyParametersNotSupported();
             request.Body = bodyParams.SingleOrDefault()?.Value;
 
             return request;

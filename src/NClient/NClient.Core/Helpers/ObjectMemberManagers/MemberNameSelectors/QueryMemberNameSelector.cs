@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Parameters;
 
-namespace NClient.Core.Helpers.MemberNameSelectors
+namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
     public class QueryMemberNameSelector : IMemberNameSelector
     {
