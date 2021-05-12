@@ -7,7 +7,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an automatic type-safe .Net HTTP client library that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, http contexts, retry policies, and logging. Separately, it is worth noting the main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
+NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, http contexts, retry policies, and logging. Separately, it is worth noting the main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
 
 ## Table of Contents
 - [Why use NClient?](#why)  
