@@ -62,7 +62,7 @@ public class WeatherForecastController : ControllerBase
 Note that you don't need to annotate it with ASP.NET attributes.
 #### Step 3: Extract interface for your controller
 ```C#
-[Api, Path("[controller]")]                                            // equivalent to [ApiController, Route("[controller]")]
+[Api, Path("[controller]")]                                       // equivalent to [ApiController, Route("[controller]")]
 public interface IWeatherForecastController
 {
     [GetMethod]                                                   // equivalent to [HttpGet]
