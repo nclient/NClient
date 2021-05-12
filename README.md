@@ -1,4 +1,4 @@
-# <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient - automatic type-safe .Net HTTP client
+# <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient: automatic type-safe .Net HTTP client
 
 ![Nuget](https://img.shields.io/nuget/v/NClient)
 ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/NClient?label=nuget-pre)
