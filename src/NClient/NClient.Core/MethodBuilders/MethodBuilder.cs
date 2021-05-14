@@ -14,15 +14,18 @@ namespace NClient.Core.MethodBuilders
     {
         private readonly IMethodAttributeProvider _methodAttributeProvider;
         private readonly IPathAttributeProvider _pathAttributeProvider;
+        private readonly IHeaderAttributeProvider _headerAttributeProvider;
         private readonly IMethodParamBuilder _methodParamBuilder;
 
         public MethodBuilder(
             IMethodAttributeProvider methodAttributeProvider,
             IPathAttributeProvider pathAttributeProvider,
+            IHeaderAttributeProvider headerAttributeProvider,
             IMethodParamBuilder methodParamBuilder)
         {
             _methodAttributeProvider = methodAttributeProvider;
             _pathAttributeProvider = pathAttributeProvider;
+            _headerAttributeProvider = headerAttributeProvider;
             _methodParamBuilder = methodParamBuilder;
         }
 
@@ -33,7 +36,8 @@ namespace NClient.Core.MethodBuilders
 
             return new Method(methodInfo.Name, clientType.Name, methodAttribute, methodParams)
             {
-                PathAttribute = _pathAttributeProvider.Find(clientType)
+                PathAttribute = _pathAttributeProvider.Find(clientType),
+                HeaderAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams)
             };
         }
     }

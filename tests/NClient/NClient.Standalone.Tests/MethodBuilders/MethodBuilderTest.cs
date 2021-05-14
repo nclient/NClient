@@ -24,6 +24,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var methodInfo = clientType.GetMethods().Single();
             var methodAttribute = new GetMethodAttribute();
             var pathAttribute = (PathAttribute)null!;
+            var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<MethodParam>();
             var methodAttributeProviderMock = new Mock<IMethodAttributeProvider>();
             methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>()))
@@ -31,12 +32,16 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var pathAttributeProviderMock = new Mock<IPathAttributeProvider>();
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
+            var headerAttributeProviderMock = new Mock<IHeaderAttributeProvider>();
+            headerAttributeProviderMock.Setup(x => x.Get(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<MethodParam[]>()))
+                .Returns(headerAttributes);
             var methodParamBuilderMock = new Mock<IMethodParamBuilder>();
             methodParamBuilderMock.Setup(x => x.Build(It.IsAny<MethodInfo>()))
                 .Returns(methodParams);
             var methodBuilder = new MethodBuilder(
                 methodAttributeProviderMock.Object,
                 pathAttributeProviderMock.Object,
+                headerAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);
 
             var actualResult = methodBuilder.Build(clientType, methodInfo);

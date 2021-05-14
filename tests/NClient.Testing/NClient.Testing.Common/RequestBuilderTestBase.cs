@@ -42,8 +42,8 @@ namespace NClient.Testing.Common
             MethodBuilder = new MethodBuilder(
                 new MethodAttributeProvider(attributeMapper),
                 new PathAttributeProvider(attributeMapper),
-                new MethodParamBuilder(
-                    new ParamAttributeProvider(attributeMapper)));
+                new HeaderAttributeProvider(),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
         }
 
         protected static MethodInfo GetMethodInfo<T>()

@@ -8,6 +8,7 @@ namespace NClient.Sandbox.ProxyService.Facade
 {
     [Api]
     [Path("api/nclient/[controller]")]
+    [Header("client", "NClient")]
     public interface IWeatherForecastController
     {
         [GetMethod("{filter.id}")]
