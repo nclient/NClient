@@ -7,7 +7,7 @@ namespace NClient.Core.Exceptions.Factories
     {
         public static RequestNClientException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
             new($"Header parameter duplicates static header. Header names: {string.Join(",", headerNames)}");
-        
+
         public static RequestNClientException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
             new($"Client name consists only of suffixes and prefixes.");
 

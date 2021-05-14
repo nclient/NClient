@@ -55,7 +55,7 @@ namespace NClient.Core.RequestBuilders
 
             var uri = new Uri(_host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
-            
+
             var headerAttributes = method.HeaderAttributes;
             foreach (var headerAttribute in headerAttributes)
             {

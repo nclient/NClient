@@ -14,7 +14,7 @@ namespace NClient.Tests.Clients
 
         [DeleteMethod]
         new Task DeleteAsync([HeaderParam] int id);
-        
+
         [DeleteMethod, Header("id", "1")]
         new Task DeleteAsync();
     }

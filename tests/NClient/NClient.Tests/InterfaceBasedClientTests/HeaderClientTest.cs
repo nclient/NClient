@@ -45,7 +45,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .NotThrowAsync();
         }
-        
+
         [Test]
         // TODO: Mock ignores header. Why?
         public async Task HeaderClient_DeleteAsyncWithStaticHeader_NotThrow()

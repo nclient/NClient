@@ -22,7 +22,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
             _thirdPartyWeatherForecastClient = thirdPartyWeatherForecastClient;
             _logger = logger;
         }
-        
+
         public Task<WeatherForecastDto> GetAsync(WeatherForecastFilter weatherForecastFilter)
         {
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");

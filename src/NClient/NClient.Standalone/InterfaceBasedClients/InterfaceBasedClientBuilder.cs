@@ -66,9 +66,9 @@ namespace NClient.InterfaceBasedClients
 
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
             var clientMethodBuilder = new MethodBuilder(
-                methodAttributeProvider, 
-                pathAttributeProvider, 
-                headerAttributeProvider, 
+                methodAttributeProvider,
+                pathAttributeProvider,
+                headerAttributeProvider,
                 clientMethodParamBuilder);
 
             var requestBuilder = new RequestBuilder(
