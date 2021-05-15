@@ -49,7 +49,7 @@ namespace NClient.AspNetCore.Extensions
                 {
                     var controller = serviceProvider.GetRequiredService(virtualController.ControllerType);
                     return ProxyGenerator.CreateClassProxy(
-                        virtualController.ControllerType,
+                        virtualController.Type,
                         new VirtualControllerInterceptor(controller));
                 });
             }
