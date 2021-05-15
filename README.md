@@ -7,7 +7,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, http contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
+NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, HTTP contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
 
 ## Table of Contents
 - [Why use NClient?](#why)  
@@ -20,7 +20,8 @@ NClient is an automatic type-safe .Net HTTP client that allows you to call web s
   - [Annotation](#features-annotation)
   - [Routing](#features-routing)
   - [Asynchronously calls](#features-async)
-  - [Http response](#features-response)
+  - [HTTP response](#features-response)
+  - [HTTP response status code](#features-status-code)
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
@@ -192,16 +193,16 @@ A client interface can be annotated with `Facade` attribute if no other NClient 
 ```C#
 [Facade] public interface IMyClient { ... }
 ```
-`Api` attribute is an equivalent of `ApiController` attribute from ASP.NET Core.
+`Api` attribute is an equivalent of `ApiControllerAttribute` from ASP.NET Core.
 ```C#
 [Api] public interface IMyController { ... }
 ```
-The base URL route for API can be set by `Path` attribute.
+The base URL route for API can be set by `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
 #### Method attributes
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethod`, `PostMethod`, `PutMethod`, `DeleteMethod`.
+Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `DeleteMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
@@ -210,7 +211,7 @@ Optionally, you can specify a relative path.
 public interface IMyClient { [GetMethod("entities")] Entity[] Get(); }
 ```
 #### Parameter attributes
-By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`.
+By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`.
 ```C#
 public interface IMyClient { [PostMethod] void Post([QueryParam] Entity entity); }
 ```
@@ -219,16 +220,32 @@ It is also possible to change a parameter name:
 public interface IMyClient { [PostMethod] void Post([QueryParam(Name = "myEntity")] Entity entity); }
 ```
 #### Property attributes
-`QueryParam` attribute allows you to change a property name of a custom object that is passed in URL query.
+`QueryParamAttribute` allows you to change a property name of a custom object that is passed in URL query.
 ```C#
 public class Entity { [QueryParam(Name = "id")] public int Id }
 ```
-The same effect will occur if you use the `FromQuery` attribute from ASP.NET Core.
+The same effect will occur if you use the `FromQueryAttribute` from ASP.NET Core.
 
-The names of the properties of custom objects that are passed in the request body can be changed using `JsonPropertyName` attribute.
+The names of the properties of custom objects that are passed in the request body can be changed using `JsonPropertyNameAttribute`.
 ```C#
 public class Entity { [JsonPropertyName("id")] public int Id }
 ```
+#### Static headers
+Use `HeaderAttribute` attribute to add a static header. Static headers can be added for all methods:
+```C#
+[Header(Name: "Common-Header", Value: "value")] public interface IMyClient { ... }
+```
+or for a specific method:
+```C#
+public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value: "value")] Entity[] Get(); }
+```
+#### Response type
+`ResponseAttribute` specifies the type of the value and status code returned by the method. This is the equivalent of [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
+```C#
+public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
+```
+This attribute is optional.
+
 
 <a name="features-routing"/> 
 
@@ -236,7 +253,7 @@ public class Entity { [JsonPropertyName("id")] public int Id }
 Routes are set using route templates that are passed to attributes. Route templates can contain the following tokens:
 
 #### Class and interface names
-Relative routes can be set in the following attributes: `Path`, `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`. You can use names of classes and interfaces in the paths:
+Relative routes can be set in the following attributes: `PathAttribute`, `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`. You can use names of classes and interfaces in the paths:
 ```C#
 [Path("api/[controller]")] public interface IEntitiesClient { ... } // the route will be: api/entities
 ```
@@ -254,7 +271,7 @@ public interface IMyClient { [PutMethod("entities/{entity.Id}")] void Put(Entity
 <a name="features-async"/> 
 
 ## Asynchronously calls
-To execute a request to the web-service asynchronously, you should define the returned type as Task or Task<>:
+To execute a request to the web-service asynchronously, you should define the returned type as `Task` or `Task<>`:
 ```C#
 public interface IMyClient : INClient
 {
@@ -271,8 +288,8 @@ public interface IMyClient : INClient
 
 <a name="features-response"/> 
 
-## Http response
-You can get the full http response, not just the body. To do this, the client interface must inherit `INClient` interface.
+## HTTP response
+You can get the full HTTP response, not just the body. To do this, the client interface must inherit `INClient` interface.
 ```C#
 public interface IMyClient : INClient
 {
@@ -282,6 +299,38 @@ public interface IMyClient : INClient
 ...
 HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.GetAsync(id: 1));
 ```
+If your interface is used only as a client and you want to always get an HTTP response, just make the return type `HttpResponse`:
+```C#
+public interface IMyClient
+{
+    [GetMethod]
+    Task<HttpResponse<Entity>> GetAsync(int id);
+    [PostMethod]
+    Task<HttpResponse> PostAsync(Entity entity);
+}
+```
+
+<a name="features-status-code"/> 
+
+## HTTP response status code
+It is not always convenient to use with `IActionResult` in NClient controllers, so you can use `HttpResponseException` to return an error object and HTTP status code.
+To use these exceptions you need to add NClient controllers in ASP.NET startup as follows:
+```C#
+public void ConfigureServices(IServiceCollection services)
+{
+    // ...
+    services.AddNClientControllers().WithResponseExceptions();
+}
+```
+After that, you can use exceptions in methods of your NClient controllers:
+```C#
+public Entity[] Get()
+{
+    // ...
+    throw new HttpResponseException(HttpStatusCode.BadRequest, new { Error = "Error message." });
+}
+```
+For information on how to get HTTP status code, see section [Http response](#features-response).
 
 <a name="features-resilience"/> 
 
