@@ -77,9 +77,15 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             if (bodyType is null)
                 return response;
+            
+            if (!response.IsSuccessful)
+            {
+                var failureResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+                return (HttpResponse)Activator.CreateInstance(failureResponseType, request, response, null);
+            }
 
             var responseValue = TryParseJson(restResponse.Content, bodyType, out var deserializationException);
-            if (deserializationException is not null && response.IsSuccessful)
+            if (deserializationException is not null)
                 throw deserializationException!;
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
