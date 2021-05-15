@@ -101,7 +101,7 @@ namespace NClient.AspNetCore.Extensions
 
             return builder;
         }
-        
+
         public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
         {
             if (builder == null)

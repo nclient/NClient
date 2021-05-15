@@ -13,7 +13,7 @@ namespace NClient.Testing.Common.Clients
         /// Headers: empty
         /// </summary>
         Task<int> GetAsync(int id);
-        
+
         /// <summary>
         /// Url: api/basic?id={id}
         /// Body: empty
@@ -27,7 +27,7 @@ namespace NClient.Testing.Common.Clients
         /// Headers: empty
         /// </summary>
         Task PostAsync(BasicEntity entity);
-        
+
         /// <summary>
         /// Url: api/basic
         /// Body: {entity}

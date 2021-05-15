@@ -29,7 +29,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         {
             if (weatherForecastFilter.Id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-            
+
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
         }

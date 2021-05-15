@@ -7,12 +7,12 @@ namespace NClient.AspNetCore.Exceptions
     {
         public HttpStatusCode Status { get; }
         public object? Value { get; }
-        
+
         public HttpResponseException(HttpStatusCode status)
         {
             Status = status;
         }
-        
+
         public HttpResponseException(HttpStatusCode status, object value) : this(status)
         {
             Value = value;
