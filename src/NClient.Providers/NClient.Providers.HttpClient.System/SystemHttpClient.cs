@@ -59,7 +59,7 @@ namespace NClient.Providers.HttpClient.System
                 Method = request.Method,
                 RequestUri = uri
             };
-            
+
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             if (request.Body != null)

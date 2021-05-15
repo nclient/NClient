@@ -33,7 +33,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _httpApiMockFactory.MockGetMethod(id);
 
             var result = await _httpClient.GetAsync(id);
-            
+
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(id);
