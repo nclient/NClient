@@ -8,11 +8,11 @@ namespace NClient.Annotations
     {
         public Type Type { get; set; }
         public HttpStatusCode StatusCode { get; set; }
-        
+
         public ResponseAttribute(HttpStatusCode statusCode) : this(typeof(void), statusCode)
         {
         }
-        
+
         public ResponseAttribute(Type type, HttpStatusCode statusCode)
         {
             if (type == null)

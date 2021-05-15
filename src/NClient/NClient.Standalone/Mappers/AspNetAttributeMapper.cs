@@ -24,9 +24,9 @@ namespace NClient.Mappers
                 { Name: "HttpDeleteAttribute" } x => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "ProducesResponseTypeAttribute" } x => new ResponseAttribute(
-                    type: GetProperty<Type>(attribute, "Type"), 
+                    type: GetProperty<Type>(attribute, "Type"),
                     statusCode: GetProperty<HttpStatusCode>(attribute, "StatusCode")),
-                
+
                 { Name: "FromRouteAttribute" } => new RouteParamAttribute(),
                 { Name: "FromQueryAttribute" } => new QueryParamAttribute(),
                 { Name: "FromHeaderAttribute" } => new HeaderParamAttribute(),
@@ -46,12 +46,12 @@ namespace NClient.Mappers
         {
             return GetProperty<int>(attribute, "Order");
         }
-        
+
         private static T GetProperty<T>(Attribute attribute, string name)
         {
             var property = attribute.GetType().GetProperty(name)
                 ?? throw InnerExceptionFactory.ArgumentException($"Property '{name}' not found", nameof(name));
             return (T)property.GetValue(attribute);
-        } 
+        }
     }
 }

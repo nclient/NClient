@@ -115,7 +115,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        public interface IMethodAttributeController { [GetMethod] int Get(); }
+        public interface IMethodAttributeController {[GetMethod] int Get(); }
         public class MethodAttributeController : IMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -140,7 +140,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
         }
 
-        public interface IMethodAttributeWithTemplateController { [GetMethod("[action]")] int Get(); }
+        public interface IMethodAttributeWithTemplateController {[GetMethod("[action]")] int Get(); }
         public class MethodAttributeWithTemplateController : IMethodAttributeWithTemplateController { public int Get() => 1; }
 
         [Test]
@@ -165,7 +165,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("[action]") { Order = 0 });
         }
 
-        public interface IMultipleMethodController { [GetMethod] int Get(); [PostMethod] int Post(); }
+        public interface IMultipleMethodController {[GetMethod] int Get();[PostMethod] int Post(); }
         public class MultipleMethodController : IMultipleMethodController { public int Get() => 1; public int Post() => 1; }
 
         [Test]
@@ -194,7 +194,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             postMethodAttributes.Should().BeEquivalentTo(new HttpPostAttribute { Order = 0 });
         }
 
-        public interface IAspNetMethodAttributeController { [HttpGet] int Get(); }
+        public interface IAspNetMethodAttributeController {[HttpGet] int Get(); }
         public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -212,7 +212,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         }
 
         public class CustomAttribute : Attribute { }
-        public interface INotNClientMethodAttributeController { [Custom] int Get(); }
+        public interface INotNClientMethodAttributeController {[Custom] int Get(); }
         public class NotNClientMethodAttributeController : INotNClientMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -235,8 +235,8 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
             methodAttributes.Length.Should().Be(0);
         }
-        
-        public interface IResponseAttributeController { [GetMethod, Response(typeof(int), HttpStatusCode.OK)] int Get(); }
+
+        public interface IResponseAttributeController {[GetMethod, Response(typeof(int), HttpStatusCode.OK)] int Get(); }
         public class ResponseAttributeController : IResponseAttributeController { public int Get() => 1; }
 
         [Test]
