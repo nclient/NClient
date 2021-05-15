@@ -7,11 +7,11 @@ using WireMock.Server;
 
 namespace NClient.Testing.Common.Apis
 {
-    public class RestApiMockFactory
+    public class HttpApiMockFactory
     {
         public Uri ApiUri { get; }
 
-        public RestApiMockFactory(int port)
+        public HttpApiMockFactory(int port)
         {
             ApiUri = new UriBuilder("http", "localhost", port).Uri;
         }
@@ -20,12 +20,13 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath($"/api/rest/{id}")
+                    .WithPath("/api/http")
                     .WithHeader("Accept", "application/json")
+                    .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Type", "Content-Type: application/json")
                     .WithBodyAsJson(1));
 
             return api;
@@ -35,12 +36,14 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath("/api/rest")
+                    .WithPath("/api/http")
                     .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
+                    .WithBodyAsJson(entity)
+                    .WithHeader("Content-Type", "Content-Type: application/json")
                     .WithStatusCode(200));
 
             return api;
@@ -50,7 +53,7 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath("/api/rest")
+                    .WithPath("/api/http")
                     .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
@@ -65,8 +68,9 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath($"/api/rest/{id}")
+                    .WithPath("/api/http")
                     .WithHeader("Accept", "application/json")
+                    .WithParam("id", id.ToString())
                     .UsingDelete())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200));

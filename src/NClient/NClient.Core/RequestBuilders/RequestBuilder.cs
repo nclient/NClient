@@ -56,6 +56,12 @@ namespace NClient.Core.RequestBuilders
             var uri = new Uri(_host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
 
+            var headerAttributes = method.HeaderAttributes;
+            foreach (var headerAttribute in headerAttributes)
+            {
+                request.AddHeader(headerAttribute.Name, headerAttribute.Value);
+            }
+
             var urlParams = paramValuePairs
                 .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);
             foreach (var uriParam in urlParams)

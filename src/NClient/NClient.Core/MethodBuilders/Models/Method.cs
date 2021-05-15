@@ -1,4 +1,5 @@
-﻿using NClient.Annotations;
+﻿using System;
+using NClient.Annotations;
 using NClient.Annotations.Methods;
 
 namespace NClient.Core.MethodBuilders.Models
@@ -9,6 +10,7 @@ namespace NClient.Core.MethodBuilders.Models
         public string ClientName { get; }
         public MethodAttribute Attribute { get; }
         public PathAttribute? PathAttribute { get; set; }
+        public HeaderAttribute[] HeaderAttributes { get; set; }
         public MethodParam[] Params { get; }
 
         public Method(string name, string clientName, MethodAttribute attribute, MethodParam[] @params)
@@ -17,6 +19,7 @@ namespace NClient.Core.MethodBuilders.Models
             ClientName = clientName;
             Attribute = attribute;
             Params = @params;
+            HeaderAttributes = Array.Empty<HeaderAttribute>();
         }
     }
 }

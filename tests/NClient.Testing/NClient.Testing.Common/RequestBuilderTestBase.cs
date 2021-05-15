@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using Castle.DynamicProxy;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
-using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
-using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.MethodBuilders;
 using NClient.Core.MethodBuilders.Models;
@@ -42,8 +39,8 @@ namespace NClient.Testing.Common
             MethodBuilder = new MethodBuilder(
                 new MethodAttributeProvider(attributeMapper),
                 new PathAttributeProvider(attributeMapper),
-                new MethodParamBuilder(
-                    new ParamAttributeProvider(attributeMapper)));
+                new HeaderAttributeProvider(),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
         }
 
         protected static MethodInfo GetMethodInfo<T>()

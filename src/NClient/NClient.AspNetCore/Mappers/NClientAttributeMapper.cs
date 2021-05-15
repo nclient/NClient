@@ -31,6 +31,8 @@ namespace NClient.AspNetCore.Mappers
                     ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
                     : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
+                ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
+
                 RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
                 QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
                 BodyParamAttribute => new FromBodyAttribute(),

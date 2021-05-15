@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
@@ -233,6 +234,31 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var methodInfo = virtualControllerType.GetMethod(nameof(NotNClientMethodAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
             methodAttributes.Length.Should().Be(0);
+        }
+
+        public interface IResponseAttributeController {[GetMethod, Response(typeof(int), HttpStatusCode.OK)] int Get(); }
+        public class ResponseAttributeController : IResponseAttributeController { public int Get() => 1; }
+
+        [Test]
+        public void Create_ResponseAttributeController_AddResponseAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IResponseAttributeController), typeof(ResponseAttributeController))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(0);
+            var methodInfo = virtualControllerType.GetMethod(nameof(ResponseAttributeController.Get))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
+            methodAttributes.Length.Should().Be(2);
+            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 }, new ProducesResponseTypeAttribute(typeof(int), 200));
         }
 
         public interface IParameterAttributeController { int Get([QueryParam] int id); }

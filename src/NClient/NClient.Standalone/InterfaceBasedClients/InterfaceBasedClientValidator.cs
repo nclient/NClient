@@ -24,13 +24,17 @@ namespace NClient.InterfaceBasedClients
             var attributeMapper = new AttributeMapper();
             var guidProvider = new GuidProvider();
 
-            var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
+            var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
+            var headerAttributeProvider = new HeaderAttributeProvider();
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
 
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
-            var clientMethodBuilder = new MethodBuilder(methodAttributeProvider, pathAttributeProvider, clientMethodParamBuilder);
-
+            var clientMethodBuilder = new MethodBuilder(
+                methodAttributeProvider,
+                pathAttributeProvider,
+                headerAttributeProvider,
+                clientMethodParamBuilder);
 
             var requestBuilder = new RequestBuilder(
                 host: new Uri("http://localhost:5000"),

@@ -23,6 +23,8 @@ namespace NClient.Sandbox.ProxyService.Controllers
         }
 
         [HttpGet("{filter.id}")]
+        [ProducesResponseType(typeof(WeatherForecastDto), 200)]
+        [ProducesResponseType(typeof(void), 400)]
         public Task<WeatherForecastDto> GetAsync([FromQuery(Name = "filter")] WeatherForecastFilter weatherForecastFilter)
         {
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
