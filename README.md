@@ -229,6 +229,15 @@ The names of the properties of custom objects that are passed in the request bod
 ```C#
 public class Entity { [JsonPropertyName("id")] public int Id }
 ```
+#### Static headers
+Use `HeaderAttribute` attribute to add a static header. Static headers can be added for all methods:
+```C#
+[Header(Name: "Common-Header", Value: "value")] public interface IMyClient { ... }
+```
+or for a specific method:
+```C#
+public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value: "value")] Entity[] Get(); }
+```
 
 <a name="features-routing"/> 
 
