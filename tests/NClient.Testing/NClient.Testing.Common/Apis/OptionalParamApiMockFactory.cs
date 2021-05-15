@@ -46,7 +46,7 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
-        
+
         public IWireMockServer MockPostMethod()
         {
             var api = WireMockServer.Start(ApiUri.ToString());

@@ -31,10 +31,10 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _optionalParamApiMockFactory.MockGetMethod(id);
 
             var result = await _optionalParamClient.GetAsync(id);
-            
+
             result.Should().Be(id);
         }
-        
+
         [Test]
         public async Task OptionalParamClient_GetAsyncWithDefaultValue_IntInBody()
         {
@@ -42,7 +42,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _optionalParamApiMockFactory.MockGetMethod(id);
 
             var result = await _optionalParamClient.GetAsync();
-            
+
             result.Should().Be(id);
         }
 
@@ -57,7 +57,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .NotThrowAsync();
         }
-        
+
         [Test]
         public async Task OptionalParamClient_PostAsyncWithDefaultValue_NotThrow()
         {

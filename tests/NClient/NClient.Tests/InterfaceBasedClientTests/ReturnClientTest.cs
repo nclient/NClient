@@ -31,7 +31,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = await _returnClient.GetAsync(id);
-            
+
             result.Should().BeEquivalentTo(entity);
         }
 
@@ -43,7 +43,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.Get(id);
-            
+
             result.Should().BeEquivalentTo(entity);
         }
 

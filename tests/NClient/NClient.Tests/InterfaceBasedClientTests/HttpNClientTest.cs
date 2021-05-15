@@ -37,7 +37,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = await _returnClient.AsHttp().GetHttpResponse(client => client.GetAsync(id));
-            
+
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>((HttpRequest)null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
@@ -58,7 +58,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
-            
+
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>((HttpRequest)null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
@@ -78,7 +78,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
 
             var httpResponse = await _returnClient.AsHttp().GetHttpResponse(client => client.PostAsync(entity));
-            
+
             httpResponse.Should().BeEquivalentTo(new HttpResponse(request: null!)
             {
                 StatusCode = HttpStatusCode.OK,
@@ -98,7 +98,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _returnApiMockFactory.MockPostMethod(entity);
 
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
-            
+
             httpResponse.Should().BeEquivalentTo(new HttpResponse(request: null!)
             {
                 StatusCode = HttpStatusCode.OK,
