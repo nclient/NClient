@@ -49,7 +49,13 @@ namespace NClient.Core.Interceptors
         {
             var requestId = _guidProvider.Create();
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, clientInvocation, requestId).ConfigureAwait(false);
+            await InvokeWithLoggingExceptionsAsync(async (inv, id) =>
+            {
+                var response = await ProcessInvocationAsync<HttpResponse>(inv, id);
+                if (!response.IsSuccessful)
+                    throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
+                return response;
+            }, clientInvocation, requestId).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(

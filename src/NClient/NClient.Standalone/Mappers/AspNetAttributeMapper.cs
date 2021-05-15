@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
@@ -22,6 +23,10 @@ namespace NClient.Mappers
                 { Name: "HttpPutAttribute" } x => new PutMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpDeleteAttribute" } x => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
+                { Name: "ProducesResponseTypeAttribute" } x => new ResponseAttribute(
+                    type: GetProperty<Type>(attribute, "Type"),
+                    statusCode: GetProperty<HttpStatusCode>(attribute, "StatusCode")),
+
                 { Name: "FromRouteAttribute" } => new RouteParamAttribute(),
                 { Name: "FromQueryAttribute" } => new QueryParamAttribute(),
                 { Name: "FromHeaderAttribute" } => new HeaderParamAttribute(),
@@ -34,12 +39,19 @@ namespace NClient.Mappers
 
         private static string GetTemplate(Attribute attribute)
         {
-            return (string)attribute.GetType().GetProperty("Template")!.GetValue(attribute);
+            return GetProperty<string>(attribute, "Template");
         }
 
         private static int GetOrder(Attribute attribute)
         {
-            return (int)attribute.GetType().GetProperty("Order")!.GetValue(attribute);
+            return GetProperty<int>(attribute, "Order");
+        }
+
+        private static T GetProperty<T>(Attribute attribute, string name)
+        {
+            var property = attribute.GetType().GetProperty(name)
+                ?? throw InnerExceptionFactory.ArgumentException($"Property '{name}' not found", nameof(name));
+            return (T)property.GetValue(attribute);
         }
     }
 }
