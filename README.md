@@ -192,16 +192,16 @@ A client interface can be annotated with `Facade` attribute if no other NClient 
 ```C#
 [Facade] public interface IMyClient { ... }
 ```
-`Api` attribute is an equivalent of `ApiController` attribute from ASP.NET Core.
+`Api` attribute is an equivalent of `ApiControllerAttribute` from ASP.NET Core.
 ```C#
 [Api] public interface IMyController { ... }
 ```
-The base URL route for API can be set by `Path` attribute.
+The base URL route for API can be set by `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
 #### Method attributes
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethod`, `PostMethod`, `PutMethod`, `DeleteMethod`.
+Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `DeleteMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
@@ -210,7 +210,7 @@ Optionally, you can specify a relative path.
 public interface IMyClient { [GetMethod("entities")] Entity[] Get(); }
 ```
 #### Parameter attributes
-By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`.
+By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`.
 ```C#
 public interface IMyClient { [PostMethod] void Post([QueryParam] Entity entity); }
 ```
@@ -219,13 +219,13 @@ It is also possible to change a parameter name:
 public interface IMyClient { [PostMethod] void Post([QueryParam(Name = "myEntity")] Entity entity); }
 ```
 #### Property attributes
-`QueryParam` attribute allows you to change a property name of a custom object that is passed in URL query.
+`QueryParamAttribute` allows you to change a property name of a custom object that is passed in URL query.
 ```C#
 public class Entity { [QueryParam(Name = "id")] public int Id }
 ```
-The same effect will occur if you use the `FromQuery` attribute from ASP.NET Core.
+The same effect will occur if you use the `FromQueryAttribute` from ASP.NET Core.
 
-The names of the properties of custom objects that are passed in the request body can be changed using `JsonPropertyName` attribute.
+The names of the properties of custom objects that are passed in the request body can be changed using `JsonPropertyNameAttribute`.
 ```C#
 public class Entity { [JsonPropertyName("id")] public int Id }
 ```
@@ -252,7 +252,7 @@ This attribute is optional.
 Routes are set using route templates that are passed to attributes. Route templates can contain the following tokens:
 
 #### Class and interface names
-Relative routes can be set in the following attributes: `Path`, `QueryParam`, `BodyParam`, `HeaderParam`, `RouteParam`. You can use names of classes and interfaces in the paths:
+Relative routes can be set in the following attributes: `PathAttribute`, `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`. You can use names of classes and interfaces in the paths:
 ```C#
 [Path("api/[controller]")] public interface IEntitiesClient { ... } // the route will be: api/entities
 ```
@@ -270,7 +270,7 @@ public interface IMyClient { [PutMethod("entities/{entity.Id}")] void Put(Entity
 <a name="features-async"/> 
 
 ## Asynchronously calls
-To execute a request to the web-service asynchronously, you should define the returned type as Task or Task<>:
+To execute a request to the web-service asynchronously, you should define the returned type as `Task` or `Task<>`:
 ```C#
 public interface IMyClient : INClient
 {
