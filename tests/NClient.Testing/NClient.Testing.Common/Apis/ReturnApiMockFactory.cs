@@ -21,6 +21,7 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
                     .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
@@ -36,6 +37,7 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
                     .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
@@ -51,6 +53,7 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
@@ -66,6 +69,7 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
