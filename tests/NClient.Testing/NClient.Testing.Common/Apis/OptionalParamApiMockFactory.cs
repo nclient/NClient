@@ -7,11 +7,11 @@ using WireMock.Server;
 
 namespace NClient.Testing.Common.Apis
 {
-    public class BasicApiMockFactory
+    public class OptionalParamApiMockFactory
     {
         public Uri ApiUri { get; }
 
-        public BasicApiMockFactory(int port)
+        public OptionalParamApiMockFactory(int port)
         {
             ApiUri = new UriBuilder("http", "localhost", port).Uri;
         }
@@ -20,7 +20,7 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath("/api/basic")
+                    .WithPath("/api/optionalParam")
                     .WithHeader("Accept", "application/json")
                     .WithParam("id", id.ToString())
                     .UsingGet())
@@ -36,7 +36,7 @@ namespace NClient.Testing.Common.Apis
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath("/api/basic")
+                    .WithPath("/api/optionalParam")
                     .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
@@ -47,29 +47,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPutMethod(BasicEntity entity)
+        public IWireMockServer MockPostMethod()
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
-                    .WithPath("/api/basic")
+                    .WithPath("/api/optionalParam")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
-                    .WithBody(new JsonMatcher(entity))
-                    .UsingPut())
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200));
-
-            return api;
-        }
-
-        public IWireMockServer MockDeleteMethod(int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
-            api.Given(Request.Create()
-                    .WithPath("/api/basic")
-                    .WithHeader("Accept", "application/json")
-                    .WithParam("id", id.ToString())
-                    .UsingDelete())
+                    .UsingPost())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200));
 
