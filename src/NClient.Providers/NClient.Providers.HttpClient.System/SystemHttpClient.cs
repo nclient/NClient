@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -52,14 +53,20 @@ namespace NClient.Providers.HttpClient.System
             var parameters = request.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
             var uri = new Uri(QueryHelpers.AddQueryString(request.Uri.ToString(), parameters));
-            var body = JsonSerializer.Serialize(request.Body);
 
             var httpRequestMessage = new HttpRequestMessage
             {
                 Method = request.Method,
-                RequestUri = uri,
-                Content = new StringContent(body, Encoding.UTF8, mediaType: "application/json")
+                RequestUri = uri
             };
+
+            httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+            if (request.Body != null)
+            {
+                var body = JsonSerializer.Serialize(request.Body);
+                httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, mediaType: "application/json");
+            }
 
             foreach (var header in request.Headers)
             {
@@ -99,12 +106,18 @@ namespace NClient.Providers.HttpClient.System
             if (bodyType is null)
                 return response;
 
+            if (!response.IsSuccessful)
+            {
+                var failureResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+                return (HttpResponse)Activator.CreateInstance(failureResponseType, request, response, null);
+            }
+
             var responseValue = TryParseJson(response.Content, bodyType, out var deserializationException);
-            if (deserializationException is not null && response.IsSuccessful)
+            if (deserializationException is not null)
                 throw deserializationException!;
 
-            var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponse, request, response, responseValue);
+            var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+            return (HttpResponse)Activator.CreateInstance(genericResponseType, request, response, responseValue);
         }
 
         private static object? TryParseJson(string body, Type bodyType, out Exception? exception)
