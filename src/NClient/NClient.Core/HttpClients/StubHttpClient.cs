@@ -14,7 +14,7 @@ namespace NClient.Core.HttpClients
                 return Task.FromResult(response);
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponse, request, response, null));
+            return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponse, response, request, null));
         }
     }
 }

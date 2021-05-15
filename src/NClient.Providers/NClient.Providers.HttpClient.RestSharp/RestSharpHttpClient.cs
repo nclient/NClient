@@ -81,7 +81,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             if (!response.IsSuccessful)
             {
                 var failureResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
-                return (HttpResponse)Activator.CreateInstance(failureResponseType, request, response, null);
+                return (HttpResponse)Activator.CreateInstance(failureResponseType, response, request, null);
             }
 
             var responseValue = TryParseJson(restResponse.Content, bodyType, out var deserializationException);
@@ -89,7 +89,7 @@ namespace NClient.Providers.HttpClient.RestSharp
                 throw deserializationException!;
 
             var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponse, request, response, responseValue);
+            return (HttpResponse)Activator.CreateInstance(genericResponse, response, request, responseValue);
         }
 
         private static object? TryParseJson(string body, Type bodyType, out Exception? exception)

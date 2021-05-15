@@ -38,7 +38,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             var result = await _returnClient.AsHttp().GetHttpResponse(client => client.GetAsync(id));
 
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>((HttpRequest)null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -59,7 +59,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
 
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>((HttpRequest)null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -79,7 +79,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             var httpResponse = await _returnClient.AsHttp().GetHttpResponse(client => client.PostAsync(entity));
 
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(request: null!)
+            httpResponse.Should().BeEquivalentTo(new HttpResponse(httpRequest: null!)
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
@@ -99,7 +99,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
 
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(request: null!)
+            httpResponse.Should().BeEquivalentTo(new HttpResponse(httpRequest: null!)
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
