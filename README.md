@@ -291,6 +291,16 @@ public interface IMyClient : INClient
 ...
 HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.GetAsync(id: 1));
 ```
+If your interface is used only as a client and you want to always get an HTTP response, just make the return type `HttpResponse`:
+```C#
+public interface IMyClient
+{
+    [GetMethod]
+    Task<HttpResponse<Entity>> GetAsync(int id);
+    [PostMethod]
+    Task<HttpResponse> PostAsync(Entity entity);
+}
+```
 
 <a name="features-resilience"/> 
 
