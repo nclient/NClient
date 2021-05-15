@@ -29,7 +29,8 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _syncApiMockFactory.MockGetMethod(id);
 
             var result = _syncClient.Get(id);
-            result.Should().Be(1);
+            
+            result.Should().Be(id);
         }
 
         [Test]

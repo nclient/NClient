@@ -30,7 +30,8 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _restApiMockFactory.MockGetMethod(id);
 
             var result = await _restClient.GetAsync(id);
-            result.Should().Be(1);
+            
+            result.Should().Be(id);
         }
 
         [Test]
