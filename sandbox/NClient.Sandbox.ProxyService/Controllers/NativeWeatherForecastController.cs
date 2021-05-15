@@ -44,5 +44,12 @@ namespace NClient.Sandbox.ProxyService.Controllers
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
             return Task.FromResult(0);
         }
+        
+        [HttpDelete]
+        public Task Delete(int? id = null)
+        {
+            _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
+            return Task.FromResult(0);
+        }
     }
 }
