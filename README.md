@@ -7,7 +7,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, http contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
+NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, HTTP contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
 
 ## Table of Contents
 - [Why use NClient?](#why)  
@@ -20,7 +20,8 @@ NClient is an automatic type-safe .Net HTTP client that allows you to call web s
   - [Annotation](#features-annotation)
   - [Routing](#features-routing)
   - [Asynchronously calls](#features-async)
-  - [Http response](#features-response)
+  - [HTTP response](#features-response)
+  - [HTTP response status code](#features-status-code)
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
@@ -287,8 +288,8 @@ public interface IMyClient : INClient
 
 <a name="features-response"/> 
 
-## Http response
-You can get the full http response, not just the body. To do this, the client interface must inherit `INClient` interface.
+## HTTP response
+You can get the full HTTP response, not just the body. To do this, the client interface must inherit `INClient` interface.
 ```C#
 public interface IMyClient : INClient
 {
@@ -308,6 +309,28 @@ public interface IMyClient
     Task<HttpResponse> PostAsync(Entity entity);
 }
 ```
+
+<a name="features-status-code"/> 
+
+## HTTP response status code
+It is not always convenient to use with `IActionResult` in NClient controllers, so you can use `HttpResponseException` to return an error object and HTTP status code.
+To use these exceptions you need to add NClient controllers in ASP.NET startup as follows:
+```C#
+public void ConfigureServices(IServiceCollection services)
+{
+    // ...
+    services.AddNClientControllers().WithResponseExceptions();
+}
+```
+After that, you can use exceptions in methods of your NClient controllers:
+```C#
+public Entity[] Get()
+{
+    // ...
+    throw new HttpResponseException(HttpStatusCode.BadRequest, new { Error = "Error message." });
+}
+```
+For information on how to get HTTP status code, see section [Http response](#features-response).
 
 <a name="features-resilience"/> 
 
