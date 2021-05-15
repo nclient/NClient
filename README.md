@@ -238,6 +238,13 @@ or for a specific method:
 ```C#
 public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value: "value")] Entity[] Get(); }
 ```
+#### Response type
+`ResponseAttribute` specifies the type of the value and status code returned by the method. This is the equivalent of [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
+```C#
+public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
+```
+This attribute is optional.
+
 
 <a name="features-routing"/> 
 
