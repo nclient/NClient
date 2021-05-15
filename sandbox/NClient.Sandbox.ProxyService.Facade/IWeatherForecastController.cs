@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
@@ -12,6 +13,8 @@ namespace NClient.Sandbox.ProxyService.Facade
     public interface IWeatherForecastController
     {
         [GetMethod("{filter.id}")]
+        [ResponseAttribute(typeof(WeatherForecastDto), HttpStatusCode.OK)]
+        [ResponseAttribute(typeof(void), HttpStatusCode.BadRequest)]
         Task<WeatherForecastDto> GetAsync([QueryParam(Name = "filter")] WeatherForecastFilter weatherForecastFilter);
 
         [PostMethod]
