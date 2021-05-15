@@ -8,7 +8,10 @@ namespace NClient.Packages.Tests.Helpers
     {
         public static string GetNew()
         {
-            return $"{Environment.GetEnvironmentVariable("VersionPrefix")}-{Environment.GetEnvironmentVariable("VersionSuffix")}";
+            var versionPrefix = Environment.GetEnvironmentVariable("VersionPrefix")
+                ?? throw new InvalidOperationException("Env variable 'VersionPrefix' not found.");
+            var versionSuffix = Environment.GetEnvironmentVariable("VersionSuffix");
+            return string.IsNullOrEmpty(versionSuffix) ? versionPrefix : $"{versionPrefix}-{versionSuffix}";
         }
 
         public static string GetCurrent<T>()

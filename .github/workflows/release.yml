@@ -25,7 +25,9 @@ jobs:
       run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
-      run: echo "VersionSuffix=" >> $GITHUB_ENV
+      run: |
+        echo "VersionSuffix=" >> $GITHUB_ENV
+        echo "VersionSuffixPatch=" >> $GITHUB_ENV
     - name: Exit because the branch is not released
       if: env.VersionSuffix == 'unbound'
       run: exit 1
@@ -66,7 +68,9 @@ jobs:
       run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
     - name: Try set release version suffix
       if: github.ref == 'refs/heads/release'
-      run: echo "VersionSuffix=" >> $GITHUB_ENV
+      run: |
+        echo "VersionSuffix=" >> $GITHUB_ENV
+        echo "VersionSuffixPatch=" >> $GITHUB_ENV
     - name: Exit because the branch is not released
       if: env.VersionSuffix == 'unbound'
       run: exit 1

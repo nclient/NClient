@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Filters;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Helpers;
 
@@ -49,7 +50,7 @@ namespace NClient.AspNetCore.Extensions
                 {
                     var controller = serviceProvider.GetRequiredService(virtualController.ControllerType);
                     return ProxyGenerator.CreateClassProxy(
-                        virtualController.ControllerType,
+                        virtualController.Type,
                         new VirtualControllerInterceptor(controller));
                 });
             }
@@ -98,6 +99,15 @@ namespace NClient.AspNetCore.Extensions
             if (configure != null)
                 builder.AddMvcOptions(configure);
 
+            return builder;
+        }
+
+        public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+
+            builder.Services.Configure<MvcOptions>(x => x.Filters.Add(new HttpResponseExceptionFilter()));
             return builder;
         }
 
