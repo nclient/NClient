@@ -5,14 +5,14 @@ namespace NClient.Abstractions.HttpClients
 {
     public class HttpResponse<T> : HttpResponse
     {
-        public T Value { get; }
+        public T? Value { get; }
 
-        public HttpResponse(HttpRequest httpRequest, T value) : base(httpRequest)
+        internal HttpResponse(HttpRequest httpRequest, T value) : base(httpRequest)
         {
             Value = value;
         }
 
-        public HttpResponse(HttpRequest httpRequest, HttpResponse httpResponse, T value) : base(httpRequest)
+        public HttpResponse(HttpRequest httpRequest, HttpResponse httpResponse, T? value) : base(httpRequest)
         {
             Value = value;
             ContentType = httpResponse.ContentType;
