@@ -47,6 +47,6 @@ namespace NClient.Testing.Common.Clients
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        //Task<HttpResponse<>> PostResponseAsync(BasicEntity entity);
+        Task<HttpResponse<Error>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }
