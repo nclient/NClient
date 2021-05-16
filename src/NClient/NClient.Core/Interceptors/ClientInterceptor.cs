@@ -81,15 +81,11 @@ namespace NClient.Core.Interceptors
 
         private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
-            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
-                ? typeof(TResult).GetGenericArguments().First()
-                : typeof(HttpResponse) == typeof(TResult)
-                    ? null
-                    : typeof(TResult);
+            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
 
             var response = await _resilienceHttpClientProvider
                 .Create(resiliencePolicyProvider)
-                .ExecuteAsync(request, responseBodyType)
+                .ExecuteAsync(request, bodyType, errorType)
                 .ConfigureAwait(false);
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
@@ -97,6 +93,30 @@ namespace NClient.Core.Interceptors
             if (!response.IsSuccessful)
                 throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
+        }
+
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
+        {
+            var resultType = typeof(TResult);
+            
+            if (resultType == typeof(HttpResponse))
+                return (null, null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
+                return (null, resultType.GetGenericArguments().Single());
+            
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpValueResponse<>)))
+                return (resultType.GetGenericArguments().Single(), null);
+            
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpValueResponse<,>)))
+                return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
+
+            return (resultType, null);
+        }
+
+        private static bool IsAssignableFromGeneric<TSource>(Type destType)
+        {
+            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
         private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(

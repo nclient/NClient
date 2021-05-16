@@ -11,7 +11,6 @@ using NClient.Abstractions.HttpClients;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
-
 namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpClient : IHttpClient
@@ -25,27 +24,11 @@ namespace NClient.Providers.HttpClient.System
             _httpClientName = httpClientName ?? Options.DefaultName;
         }
 
-        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
+        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
             var httpRequestMessage = BuildRequestMessage(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
-            return await BuildResponseAsync(request, httpResponseMessage, bodyType, exception).ConfigureAwait(false);
-        }
-
-        private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)
-        {
-            var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false); ;
-
-            try
-            {
-                httpResponseMessage.EnsureSuccessStatusCode();
-                return (httpResponseMessage, null);
-            }
-            catch (HttpRequestException e)
-            {
-                return (httpResponseMessage, e);
-            }
+            return await BuildResponseAsync(request, httpResponseMessage, bodyType, errorType, exception).ConfigureAwait(false);
         }
 
         private static HttpRequestMessage BuildRequestMessage(HttpRequest request)
@@ -75,9 +58,26 @@ namespace NClient.Providers.HttpClient.System
 
             return httpRequestMessage;
         }
+        
+        private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)
+        {
+            var httpClient = _httpClientFactory.CreateClient(_httpClientName);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false); ;
+
+            try
+            {
+                httpResponseMessage.EnsureSuccessStatusCode();
+                return (httpResponseMessage, null);
+            }
+            catch (HttpRequestException e)
+            {
+                return (httpResponseMessage, e);
+            }
+        }
 
         private static async Task<HttpResponse> BuildResponseAsync(
-            HttpRequest request, HttpResponseMessage httpResponseMessage, Type? bodyType = null, Exception? exception = null)
+            HttpRequest request, HttpResponseMessage httpResponseMessage, 
+            Type? bodyType = null, Type? errorType = null, Exception? exception = null)
         {
             var headers = httpResponseMessage.Headers
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
@@ -103,35 +103,33 @@ namespace NClient.Providers.HttpClient.System
                 ProtocolVersion = httpResponseMessage.Version
             };
 
-            if (bodyType is null)
-                return response;
-
-            if (!response.IsSuccessful)
+            if (bodyType is null && errorType is not null)
             {
-                var failureResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
-                return (HttpResponse)Activator.CreateInstance(failureResponseType, response, request, null);
+                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(errorType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, errorObject);
             }
-
-            var responseValue = TryParseJson(response.Content, bodyType, out var deserializationException);
-            if (deserializationException is not null)
-                throw deserializationException!;
-
-            var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, responseValue);
-        }
-
-        private static object? TryParseJson(string body, Type bodyType, out Exception? exception)
-        {
-            try
+            
+            if (bodyType is not null && errorType is null)
             {
-                exception = null;
-                return JsonSerializer.Deserialize(body, bodyType);
+                var bodyObject = response.IsSuccessful 
+                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
+                    : null;
+                var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject);
             }
-            catch (Exception e)
+            
+            if (bodyType is not null && errorType is not null)
             {
-                exception = e;
-                return null;
+                var bodyObject = response.IsSuccessful 
+                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
+                    : null;
+                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var genericResponseType = typeof(HttpValueResponse<,>).MakeGenericType(bodyType, errorType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject, errorObject);
             }
+            
+            return response;
         }
     }
 }

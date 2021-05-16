@@ -21,7 +21,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             _authenticator = authenticator;
         }
 
-        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null)
+        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
             var restClient = new RestClient
             {
@@ -30,7 +30,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             var restRequest = BuildRestRequest(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
-            return BuildResponse(request, restResponse, bodyType);
+            return BuildResponse(request, restResponse, bodyType, errorType);
         }
 
         private static IRestRequest BuildRestRequest(HttpRequest request)
@@ -56,7 +56,8 @@ namespace NClient.Providers.HttpClient.RestSharp
             return restRequest;
         }
 
-        private static HttpResponse BuildResponse(HttpRequest request, IRestResponse restResponse, Type? bodyType = null)
+        private static HttpResponse BuildResponse(
+            HttpRequest request, IRestResponse restResponse, Type? bodyType = null, Type? errorType = null)
         {
             var response = new HttpResponse(request)
             {
@@ -75,35 +76,33 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ProtocolVersion = restResponse.ProtocolVersion
             };
 
-            if (bodyType is null)
-                return response;
+            if (bodyType is null && errorType is not null)
+            {
+                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(errorType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, errorObject);
+            }
             
-            if (!response.IsSuccessful)
+            if (bodyType is not null && errorType is null)
             {
-                var failureResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
-                return (HttpResponse)Activator.CreateInstance(failureResponseType, response, request, null);
+                var bodyObject = response.IsSuccessful 
+                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
+                    : null;
+                var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject);
             }
-
-            var responseValue = TryParseJson(restResponse.Content, bodyType, out var deserializationException);
-            if (deserializationException is not null)
-                throw deserializationException!;
-
-            var genericResponse = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
-            return (HttpResponse)Activator.CreateInstance(genericResponse, response, request, responseValue);
-        }
-
-        private static object? TryParseJson(string body, Type bodyType, out Exception? exception)
-        {
-            try
+            
+            if (bodyType is not null && errorType is not null)
             {
-                exception = null;
-                return JsonSerializer.Deserialize(body, bodyType);
+                var bodyObject = response.IsSuccessful 
+                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
+                    : null;
+                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var genericResponseType = typeof(HttpValueResponse<,>).MakeGenericType(bodyType, errorType);
+                return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject, errorObject);
             }
-            catch (Exception e)
-            {
-                exception = e;
-                return null;
-            }
+            
+            return response;
         }
     }
 }
