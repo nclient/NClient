@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using NClient.Abstractions.HttpClients;
+using NClient.Providers.HttpClient.System.Internals;
 
 namespace NClient.Providers.HttpClient.System
 {
