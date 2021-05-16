@@ -16,6 +16,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
     public class ResponseClientTest
     {
         private static readonly Error BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
+        private static readonly Error InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };
         
         private IResponseClientWithMetadata _responseClient = null!;
         private ResponseApiMockFactory _responseApiMockFactory = null!;
@@ -147,17 +148,15 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequest_ResponseWithBadRequestStatus()
+        public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowResponseNClientException()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            var result = await _responseClient.GetResponseWithErrorAsync(id);
-            
-            result.Should().NotBeNull();
-            using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Error.Should().BeNull();
+            await _responseClient
+                .Invoking(async x => await x.GetResponseWithErrorAsync(id))
+                .Should()
+                .ThrowAsync<RequestNClientException>();
         }
         
         [Test]
@@ -175,7 +174,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task GetResponseWithErrorAsync_NotWorkingService_ResponseWithInternalServerStatus()
+        public async Task GetResponseWithErrorAsync_NotWorkingService_ResponseWithInternalServerStatusAndError()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockInternalServerError();
@@ -185,7 +184,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            result.Error.Should().BeNull();
+            result.Error.Should().BeEquivalentTo(InternalServerError);
         }
 
         [Test]
@@ -304,17 +303,15 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequest_ResponseWithBadRequestStatus()
+        public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowRequestNClientException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            var result = await _responseClient.PostResponseWithErrorAsync(entity);
-
-            result.Should().NotBeNull();
-            using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Error.Should().BeNull();
+            await _responseClient
+                .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
+                .Should()
+                .ThrowAsync<RequestNClientException>();
         }
         
         [Test]
@@ -332,7 +329,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task PostResponseWithErrorAsync_NotWorkingService_ResponseWithInternalServerStatus()
+        public async Task PostResponseWithErrorAsync_NotWorkingService_ResponseWithInternalServerStatusAndError()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockInternalServerError();
@@ -342,7 +339,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            result.Error.Should().BeNull();
+            result.Error.Should().BeEquivalentTo(InternalServerError);
         }
     }
 }

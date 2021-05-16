@@ -117,7 +117,9 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create()
-                    .WithStatusCode(500));
+                    .WithStatusCode(500)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(new Error { Code = HttpStatusCode.InternalServerError, Message = "Error" }));
 
             return api;
         }

@@ -64,14 +64,14 @@ namespace NClient.Providers.HttpClient.System.Internals
 
         private static object? TryGetBodyObject(Type bodyType, HttpResponse response)
         {
-            return response.IsSuccessful && !string.IsNullOrEmpty(response.Content)
+            return response.IsSuccessful
                 ? JsonSerializer.Deserialize(response.Content!, bodyType)
                 : null;
         }
         
         private static object? TryGetErrorObject(Type errorType, HttpResponse response)
         {
-            return !response.IsSuccessful && !string.IsNullOrEmpty(response.Content)
+            return !response.IsSuccessful
                 ? JsonSerializer.Deserialize(response.Content!, errorType)
                 : null;
         }
