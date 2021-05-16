@@ -4,7 +4,7 @@
     {
         public TError? Error { get; }
 
-        public HttpValueResponse(HttpRequest httpRequest, HttpResponse httpResponse, TValue? value, TError? error) 
+        public HttpValueResponse(HttpResponse httpResponse, HttpRequest httpRequest,  TValue? value, TError? error) 
             : base(httpResponse, httpRequest, value)
         {
             Error = error;

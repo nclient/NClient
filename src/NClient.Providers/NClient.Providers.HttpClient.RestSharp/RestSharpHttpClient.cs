@@ -64,7 +64,7 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
                 ContentLength = restResponse.ContentLength,
                 ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
-                Content = string.IsNullOrEmpty(restResponse.Content) ? null : restResponse.Content,
+                Content = restResponse.Content,
                 StatusCode = restResponse.StatusCode,
                 ResponseUri = restResponse.ResponseUri,
                 Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
@@ -78,31 +78,41 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             if (bodyType is null && errorType is not null)
             {
-                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var errorObject = TryGetErrorObject(errorType, response);
                 var genericResponseType = typeof(HttpResponse<>).MakeGenericType(errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, errorObject);
             }
             
             if (bodyType is not null && errorType is null)
             {
-                var bodyObject = response.IsSuccessful 
-                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
-                    : null;
+                var bodyObject = TryGetBodyObject(bodyType, response);
                 var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject);
             }
             
             if (bodyType is not null && errorType is not null)
             {
-                var bodyObject = response.IsSuccessful 
-                    ? JsonSerializer.Deserialize(response.Content ?? "", bodyType)
-                    : null;
-                var errorObject = JsonSerializer.Deserialize(response.Content ?? "", errorType);
+                var bodyObject = TryGetBodyObject(bodyType, response);
+                var errorObject = TryGetErrorObject(errorType, response);
                 var genericResponseType = typeof(HttpValueResponse<,>).MakeGenericType(bodyType, errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject, errorObject);
             }
             
             return response;
+        }
+
+        private static object? TryGetBodyObject(Type bodyType, HttpResponse response)
+        {
+            return response.IsSuccessful && !string.IsNullOrEmpty(response.Content)
+                ? JsonSerializer.Deserialize(response.Content!, bodyType)
+                : null;
+        }
+        
+        private static object? TryGetErrorObject(Type errorType, HttpResponse response)
+        {
+            return !response.IsSuccessful && !string.IsNullOrEmpty(response.Content)
+                ? JsonSerializer.Deserialize(response.Content!, errorType)
+                : null;
         }
     }
 }
