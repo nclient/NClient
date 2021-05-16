@@ -80,7 +80,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             
             if (!response.IsSuccessful)
             {
-                var failureResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+                var failureResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
                 return (HttpResponse)Activator.CreateInstance(failureResponseType, response, request, null);
             }
 
@@ -88,7 +88,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             if (deserializationException is not null)
                 throw deserializationException!;
 
-            var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
+            var genericResponse = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
             return (HttpResponse)Activator.CreateInstance(genericResponse, response, request, responseValue);
         }
 

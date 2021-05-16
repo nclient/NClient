@@ -108,7 +108,7 @@ namespace NClient.Providers.HttpClient.System
 
             if (!response.IsSuccessful)
             {
-                var failureResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+                var failureResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
                 return (HttpResponse)Activator.CreateInstance(failureResponseType, response, request, null);
             }
 
@@ -116,7 +116,7 @@ namespace NClient.Providers.HttpClient.System
             if (deserializationException is not null)
                 throw deserializationException!;
 
-            var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
+            var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
             return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, responseValue);
         }
 

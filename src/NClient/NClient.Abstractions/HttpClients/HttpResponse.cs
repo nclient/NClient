@@ -3,14 +3,14 @@ using System.Net;
 
 namespace NClient.Abstractions.HttpClients
 {
-    public class HttpResponse<TValue> : HttpResponse
+    public class HttpResponse<TError> : HttpResponse
     {
-        public TValue? Value { get; }
+        public TError? Error { get; }
 
-        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value) 
+        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TError? error) 
             : base(httpResponse, httpRequest)
         {
-            Value = value;
+            Error = error;
         }
     }
 

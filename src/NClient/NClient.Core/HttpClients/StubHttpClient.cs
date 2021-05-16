@@ -13,7 +13,7 @@ namespace NClient.Core.HttpClients
             if (bodyType is null)
                 return Task.FromResult(response);
 
-            var genericResponse = typeof(HttpResponse<>).MakeGenericType(bodyType);
+            var genericResponse = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
             return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponse, response, request, null));
         }
     }
