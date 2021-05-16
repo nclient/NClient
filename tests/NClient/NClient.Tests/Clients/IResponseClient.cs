@@ -21,13 +21,13 @@ namespace NClient.Tests.Clients
         [Response(typeof(int), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<HttpValueResponse<int>> GetResponseAsync(int id);
+        new Task<HttpResponse<int>> GetResponseAsync(int id);
         
         [GetMethod]
         [Response(typeof(int), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<HttpValueResponse<int, Error>> GetResponseWithErrorAsync(int id);
+        new Task<HttpResponseWithError<int, Error>> GetResponseWithErrorAsync(int id);
 
         [PostMethod]
         [Response(typeof(void), HttpStatusCode.OK)]
@@ -45,6 +45,6 @@ namespace NClient.Tests.Clients
         [Response(typeof(void), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<HttpResponse<Error>> PostResponseWithErrorAsync(BasicEntity entity);
+        new Task<HttpResponseWithError<Error>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }

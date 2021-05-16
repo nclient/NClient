@@ -19,14 +19,14 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpValueResponse<int>> GetResponseAsync(int id);
+        Task<HttpResponse<int>> GetResponseAsync(int id);
         
         /// <summary>
         /// Url: api/basic?id={id}
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpValueResponse<int, Error>> GetResponseWithErrorAsync(int id);
+        Task<HttpResponseWithError<int, Error>> GetResponseWithErrorAsync(int id);
 
         /// <summary>
         /// Url: api/basic
@@ -47,6 +47,6 @@ namespace NClient.Testing.Common.Clients
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse<Error>> PostResponseWithErrorAsync(BasicEntity entity);
+        Task<HttpResponseWithError<Error>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }

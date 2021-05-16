@@ -40,7 +40,7 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = await _returnClient.AsHttp().GetHttpResponse(client => client.GetAsync(id));
-            result.Should().BeEquivalentTo(new HttpValueResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -60,7 +60,7 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
-            result.Should().BeEquivalentTo(new HttpValueResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -125,8 +125,8 @@ namespace NClient.Tests.ControllerBasedClientTests
             httpResponse.ErrorException.Should().NotBeNull();
         }
 
-        private EquivalencyAssertionOptions<HttpValueResponse<BasicEntity>> ExcludeInessentialFields(
-            EquivalencyAssertionOptions<HttpValueResponse<BasicEntity>> opts)
+        private EquivalencyAssertionOptions<HttpResponse<BasicEntity>> ExcludeInessentialFields(
+            EquivalencyAssertionOptions<HttpResponse<BasicEntity>> opts)
         {
             return opts
                 .Excluding(x => x.Request)

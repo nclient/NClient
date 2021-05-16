@@ -40,14 +40,14 @@ namespace NClient.Providers.HttpClient.System.Internals
             if (bodyType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, response);
-                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(errorType);
+                var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, errorObject);
             }
             
             if (bodyType is not null && errorType is null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, response);
-                var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
+                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject);
             }
             
@@ -55,7 +55,7 @@ namespace NClient.Providers.HttpClient.System.Internals
             {
                 var bodyObject = TryGetBodyObject(bodyType, response);
                 var errorObject = TryGetErrorObject(errorType, response);
-                var genericResponseType = typeof(HttpValueResponse<,>).MakeGenericType(bodyType, errorType);
+                var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject, errorObject);
             }
             

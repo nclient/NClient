@@ -13,19 +13,19 @@ namespace NClient.Core.HttpClients
             
             if (bodyType is null && errorType is not null)
             {
-                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(errorType);
+                var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
                 return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponseType, response, request, null));
             }
             
             if (bodyType is not null && errorType is null)
             {
-                var genericResponseType = typeof(HttpValueResponse<>).MakeGenericType(bodyType);
+                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
                 return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponseType, response, request, null));
             }
             
             if (bodyType is not null && errorType is not null)
             {
-                var genericResponseType = typeof(HttpValueResponse<,>).MakeGenericType(bodyType, errorType);
+                var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
                 return Task.FromResult((HttpResponse)Activator.CreateInstance(genericResponseType, response, request, null, null));
             }
             

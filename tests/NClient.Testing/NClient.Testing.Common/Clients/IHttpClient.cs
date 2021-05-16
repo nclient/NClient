@@ -11,14 +11,14 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpValueResponse<int>> GetAsync(int id);
+        Task<HttpResponse<int>> GetAsync(int id);
 
         /// <summary>
         /// Url: api/basic
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpValueResponse<BasicEntity>> PostAsync(BasicEntity entity);
+        Task<HttpResponse<BasicEntity>> PostAsync(BasicEntity entity);
 
         /// <summary>
         /// Url: api/basic
