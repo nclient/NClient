@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
@@ -30,7 +31,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task GetHttpResponse_GetAsync_HttpResponseWithValue()
+        public async Task GetAsync_ServiceReturnsEntity_HttpResponseWithValue()
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
@@ -49,9 +50,31 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
+        
+        [Test]
+        public async Task GetAsync_ServiceReturnsEntity_HttpResponseWithValueWithoutError()
+        {
+            const int id = 1;
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
+
+            var result = await _returnClient.AsHttp()
+                .GetHttpResponse<BasicEntity, Error>(client => client.GetAsync(id));
+
+            result.Should().BeEquivalentTo(new HttpResponseWithError<BasicEntity, Error>(new HttpResponse(null!), httpRequest: null!, entity, error: null)
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = "{\"Id\":1,\"Value\":2}",
+                ContentLength = 18,
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK"
+            }, ExcludeInessentialFields);
+        }
 
         [Test]
-        public void GetHttpResponse_Get_HttpResponseWithValue()
+        public void Get_ServiceReturnsEntity_HttpResponseWithValue()
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
@@ -70,9 +93,30 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
+        
+        [Test]
+        public void Get_ServiceReturnsEntity_HttpResponseWithValueWithoutError()
+        {
+            const int id = 1;
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockGetMethod(id, entity);
+
+            var result = _returnClient.AsHttp().GetHttpResponse<BasicEntity, Error>(client => client.Get(id));
+
+            result.Should().BeEquivalentTo(new HttpResponseWithError<BasicEntity, Error>(new HttpResponse(null!), httpRequest: null!, entity, error: null)
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = "{\"Id\":1,\"Value\":2}",
+                ContentLength = 18,
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
+        }
 
         [Test]
-        public async Task GetHttpResponse_PostAsync_HttpResponseWithoutValue()
+        public async Task PostAsync_ServiceReturnsOk_HttpResponseWithoutValue()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
@@ -90,9 +134,29 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
+        
+        [Test]
+        public async Task PostAsync_ServiceReturnsOk_HttpResponseWithoutValueWithoutError()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
+
+            var httpResponse = await _returnClient.AsHttp().GetHttpResponse<Error>(client => client.PostAsync(entity));
+
+            httpResponse.Should().BeEquivalentTo(new HttpResponseWithError<Error>(httpResponse, httpRequest: null!, error: null)
+            {
+                StatusCode = HttpStatusCode.OK,
+                ContentLength = 0,
+                Content = "",
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
+        }
 
         [Test]
-        public void GetHttpResponse_Post_HttpResponseWithoutValue()
+        public void Post_ServiceReturnsOk_HttpResponseWithoutValue()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostMethod(entity);
@@ -110,9 +174,29 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
+        
+        [Test]
+        public void Post_ServiceReturnsOk_HttpResponseWithoutValueWithoutError()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockPostMethod(entity);
+
+            var httpResponse = _returnClient.AsHttp().GetHttpResponse<Error>(client => client.Post(entity));
+
+            httpResponse.Should().BeEquivalentTo(new HttpResponseWithError<Error>(httpResponse, httpRequest: null!, error: null)
+            {
+                StatusCode = HttpStatusCode.OK,
+                ContentLength = 0,
+                Content = "",
+                ContentType = "application/json",
+                ProtocolVersion = new Version("1.1"),
+                Server = "Kestrel",
+                StatusDescription = "OK",
+            }, ExcludeInessentialFields);
+        }
 
         [Test]
-        public void GetHttpResponse_ServiceNotExists_InternalServerError()
+        public void Post_ServiceReturnsInternalServerError_HttpResponseWithInternalServerError()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockInternalServerError();
@@ -124,6 +208,24 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.IsSuccessful.Should().BeFalse();
             httpResponse.ErrorMessage.Should().Be("Response status code does not indicate success: 500 (Internal Server Error).");
             httpResponse.ErrorException.Should().NotBeNull();
+        }
+        
+        private EquivalencyAssertionOptions<HttpResponseWithError<BasicEntity, Error>> ExcludeInessentialFields(
+            EquivalencyAssertionOptions<HttpResponseWithError<BasicEntity, Error>> opts)
+        {
+            return opts
+                .Excluding(x => x.Request)
+                .Excluding(x => x.Headers)
+                .Excluding(x => x.ResponseUri);
+        }
+        
+        private EquivalencyAssertionOptions<HttpResponseWithError<Error>> ExcludeInessentialFields(
+            EquivalencyAssertionOptions<HttpResponseWithError<Error>> opts)
+        {
+            return opts
+                .Excluding(x => x.Request)
+                .Excluding(x => x.Headers)
+                .Excluding(x => x.ResponseUri);
         }
 
         private EquivalencyAssertionOptions<HttpResponse<BasicEntity>> ExcludeInessentialFields(
