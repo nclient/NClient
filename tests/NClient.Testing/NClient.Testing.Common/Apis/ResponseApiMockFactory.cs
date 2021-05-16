@@ -47,7 +47,7 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
-        
+
         public IWireMockServer MockGetMethodWithBadRequestAndError(int id)
         {
             var api = WireMockServer.Start(ApiUri.ToString());
@@ -94,7 +94,7 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
-        
+
         public IWireMockServer MockPostMethodWithBadRequestAndError(BasicEntity entity)
         {
             var api = WireMockServer.Start(ApiUri.ToString());

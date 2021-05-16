@@ -4,18 +4,18 @@
     {
         public TError? Error { get; }
 
-        public HttpResponseWithError(HttpResponse httpResponse, HttpRequest httpRequest,  TValue? value, TError? error) 
+        public HttpResponseWithError(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value, TError? error)
             : base(httpResponse, httpRequest, value)
         {
             Error = error;
         }
     }
-    
+
     public class HttpResponseWithError<TError> : HttpResponse
     {
         public TError? Error { get; }
 
-        public HttpResponseWithError(HttpResponse httpResponse, HttpRequest httpRequest, TError? error) 
+        public HttpResponseWithError(HttpResponse httpResponse, HttpRequest httpRequest, TError? error)
             : base(httpResponse, httpRequest)
         {
             Error = error;

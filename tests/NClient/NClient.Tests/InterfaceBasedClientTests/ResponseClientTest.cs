@@ -17,7 +17,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
     {
         private static readonly Error BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
         private static readonly Error InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };
-        
+
         private IResponseClientWithMetadata _responseClient = null!;
         private ResponseApiMockFactory _responseApiMockFactory = null!;
 
@@ -53,7 +53,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .ThrowAsync<HttpRequestNClientException>();
         }
-        
+
         [Test]
         public async Task GetAsync_ServiceReturnsBadRequestWithError_ThrowHttpRequestNClientException()
         {
@@ -104,7 +104,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public async Task GetResponseAsync_ServiceReturnsBadRequestWithError_ResponseWithBadRequestStatusAndContent()
         {
@@ -131,7 +131,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         }
-        
+
         [Test]
         public async Task GetResponseWithErrorAsync_ServiceReturnsInt_IntInBody()
         {
@@ -158,7 +158,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .ThrowAsync<RequestNClientException>();
         }
-        
+
         [Test]
         public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequestWithError_ResponseWithBadRequestStatusAndError()
         {
@@ -166,7 +166,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
             var result = await _responseClient.GetResponseWithErrorAsync(id);
-            
+
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -210,7 +210,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .ThrowAsync<HttpRequestNClientException>();
         }
-        
+
         [Test]
         public async Task PostAsync_ServiceReturnsBadRequestWithError_ThrowHttpRequestNClientException()
         {
@@ -260,7 +260,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public async Task PostResponseAsync_ServiceReturnsBadRequestWithError_ResponseWithBadRequestStatusAndContent()
         {
@@ -287,7 +287,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         }
-        
+
         [Test]
         public async Task PostResponseWithErrorAsync_ServiceReturnsOk_IntInBody()
         {
@@ -313,7 +313,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .ThrowAsync<RequestNClientException>();
         }
-        
+
         [Test]
         public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequestWithError_ResponseWithBadRequestStatusAndError()
         {

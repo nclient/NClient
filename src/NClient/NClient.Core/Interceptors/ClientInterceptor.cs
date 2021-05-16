@@ -98,16 +98,16 @@ namespace NClient.Core.Interceptors
         private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
         {
             var resultType = typeof(TResult);
-            
+
             if (resultType == typeof(HttpResponse))
                 return (null, null);
 
             if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
                 return (null, resultType.GetGenericArguments().Single());
-            
+
             if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
                 return (resultType.GetGenericArguments().Single(), null);
-            
+
             if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
                 return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 

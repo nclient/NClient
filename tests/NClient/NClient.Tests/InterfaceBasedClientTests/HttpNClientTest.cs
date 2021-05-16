@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
@@ -50,7 +49,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
-        
+
         [Test]
         public async Task GetAsync_ServiceReturnsEntity_HttpResponseWithValueWithoutError()
         {
@@ -93,7 +92,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
-        
+
         [Test]
         public void Get_ServiceReturnsEntity_HttpResponseWithValueWithoutError()
         {
@@ -134,7 +133,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
-        
+
         [Test]
         public async Task PostAsync_ServiceReturnsOk_HttpResponseWithoutValueWithoutError()
         {
@@ -174,7 +173,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 StatusDescription = "OK",
             }, ExcludeInessentialFields);
         }
-        
+
         [Test]
         public void Post_ServiceReturnsOk_HttpResponseWithoutValueWithoutError()
         {
@@ -209,7 +208,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.ErrorMessage.Should().Be("Response status code does not indicate success: 500 (Internal Server Error).");
             httpResponse.ErrorException.Should().NotBeNull();
         }
-        
+
         private EquivalencyAssertionOptions<HttpResponseWithError<BasicEntity, Error>> ExcludeInessentialFields(
             EquivalencyAssertionOptions<HttpResponseWithError<BasicEntity, Error>> opts)
         {
@@ -218,7 +217,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Excluding(x => x.Headers)
                 .Excluding(x => x.ResponseUri);
         }
-        
+
         private EquivalencyAssertionOptions<HttpResponseWithError<Error>> ExcludeInessentialFields(
             EquivalencyAssertionOptions<HttpResponseWithError<Error>> opts)
         {

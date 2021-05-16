@@ -7,7 +7,7 @@ namespace NClient.Abstractions.HttpClients
     {
         public TValue? Value { get; }
 
-        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value) 
+        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value)
             : base(httpResponse, httpRequest)
         {
             Value = value;
@@ -36,7 +36,7 @@ namespace NClient.Abstractions.HttpClients
         {
             Request = httpRequest;
         }
-        
+
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
         {
             ContentType = httpResponse.ContentType;

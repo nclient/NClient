@@ -35,14 +35,14 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
                 var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, errorObject);
             }
-            
+
             if (bodyType is not null && errorType is null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, response);
                 var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject);
             }
-            
+
             if (bodyType is not null && errorType is not null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, response);
@@ -50,7 +50,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
                 var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
                 return (HttpResponse)Activator.CreateInstance(genericResponseType, response, request, bodyObject, errorObject);
             }
-            
+
             return response;
         }
 
@@ -60,7 +60,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
                 ? JsonSerializer.Deserialize(response.Content!, bodyType)
                 : null;
         }
-        
+
         private static object? TryGetErrorObject(Type errorType, HttpResponse response)
         {
             return !response.IsSuccessful
