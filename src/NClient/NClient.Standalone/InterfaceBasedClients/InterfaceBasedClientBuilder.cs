@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -20,6 +21,7 @@ namespace NClient.InterfaceBasedClients
 {
     public interface IInterfaceBasedClientBuilder<T> where T : class
     {
+        IInterfaceBasedClientBuilder<T> SetCustomSerializer(ISerializerProvider serializerProvider);
         IInterfaceBasedClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
         IInterfaceBasedClientBuilder<T> WithLogging(ILogger<T> logger);
         T Build();
@@ -30,14 +32,24 @@ namespace NClient.InterfaceBasedClients
         private readonly Uri _host;
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly IProxyGenerator _proxyGenerator;
+        private ISerializerProvider _serializerProvider;
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILogger<T>? _logger;
 
-        public InterfaceBasedClientBuilder(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
+        public InterfaceBasedClientBuilder(
+            Uri host, IHttpClientProvider httpClientProvider,
+            ISerializerProvider serializerProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;
             _httpClientProvider = httpClientProvider;
+            _serializerProvider = serializerProvider;
             _proxyGenerator = proxyGenerator;
+        }
+
+        public IInterfaceBasedClientBuilder<T> SetCustomSerializer(ISerializerProvider serializerProvider)
+        {
+            _serializerProvider = serializerProvider;
+            return this;
         }
 
         public IInterfaceBasedClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
@@ -80,6 +92,7 @@ namespace NClient.InterfaceBasedClients
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 _httpClientProvider,
+                _serializerProvider,
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
                 _logger);
 

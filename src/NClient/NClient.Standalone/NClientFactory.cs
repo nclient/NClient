@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Serialization;
 
 namespace NClient
 {
@@ -17,15 +18,18 @@ namespace NClient
 
     public class NClientFactory : INClientFactory
     {
+        private readonly ISerializerProvider _serializerProvider;
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly IResiliencePolicyProvider _resiliencePolicyProvider;
         private readonly ILoggerFactory _loggerFactory;
 
         public NClientFactory(
+            ISerializerProvider serializerProvider,
             IHttpClientProvider httpClientProvider,
             IResiliencePolicyProvider resiliencePolicyProvider,
             ILoggerFactory loggerFactory)
         {
+            _serializerProvider = serializerProvider;
             _httpClientProvider = httpClientProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _loggerFactory = loggerFactory;
@@ -34,7 +38,7 @@ namespace NClient
         public T Create<T>(string host) where T : class
         {
             return new NClientBuilder()
-                .Use<T>(host, _httpClientProvider)
+                .Use<T>(host, _httpClientProvider, _serializerProvider)
                 .WithResiliencePolicy(_resiliencePolicyProvider)
                 .WithLogging(_loggerFactory.CreateLogger<T>())
                 .Build();
@@ -46,7 +50,7 @@ namespace NClient
             where TController : TInterface
         {
             return new NClientBuilder()
-                .Use<TInterface, TController>(host, _httpClientProvider)
+                .Use<TInterface, TController>(host, _httpClientProvider, _serializerProvider)
                 .WithResiliencePolicy(_resiliencePolicyProvider)
                 .WithLogging(_loggerFactory.CreateLogger<TInterface>())
                 .Build();

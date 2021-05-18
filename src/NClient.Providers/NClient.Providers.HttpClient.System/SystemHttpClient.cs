@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.System.Internals;
 
 namespace NClient.Providers.HttpClient.System
@@ -14,10 +15,10 @@ namespace NClient.Providers.HttpClient.System
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _httpClientName;
 
-        public SystemHttpClient(IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemHttpClient(ISerializer serializer, IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
-            _httpRequestMessageBuilder = new HttpRequestMessageBuilder();
-            _httpResponseBuilder = new HttpResponseBuilder();
+            _httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
+            _httpResponseBuilder = new HttpResponseBuilder(serializer);
             _httpClientFactory = httpClientFactory;
             _httpClientName = httpClientName ?? Options.DefaultName;
         }

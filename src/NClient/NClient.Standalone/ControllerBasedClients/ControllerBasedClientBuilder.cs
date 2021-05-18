@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -22,6 +23,7 @@ namespace NClient.ControllerBasedClients
         where TInterface : class
         where TController : TInterface
     {
+        IControllerBasedClientBuilder<TInterface, TController> SetCustomSerializer(ISerializerProvider serializerProvider);
         IControllerBasedClientBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
         IControllerBasedClientBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger);
         TInterface Build();
@@ -34,14 +36,24 @@ namespace NClient.ControllerBasedClients
         private readonly Uri _host;
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly IProxyGenerator _proxyGenerator;
+        private ISerializerProvider _serializerProvider;
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILogger<TInterface>? _logger;
 
-        public ControllerBasedClientBuilder(Uri host, IHttpClientProvider httpClientProvider, IProxyGenerator proxyGenerator)
+        public ControllerBasedClientBuilder(
+            Uri host, IHttpClientProvider httpClientProvider,
+            ISerializerProvider serializerProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;
             _httpClientProvider = httpClientProvider;
+            _serializerProvider = serializerProvider;
             _proxyGenerator = proxyGenerator;
+        }
+
+        public IControllerBasedClientBuilder<TInterface, TController> SetCustomSerializer(ISerializerProvider serializerProvider)
+        {
+            _serializerProvider = serializerProvider;
+            return this;
         }
 
         public IControllerBasedClientBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
@@ -84,6 +96,7 @@ namespace NClient.ControllerBasedClients
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 _httpClientProvider,
+                _serializerProvider,
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
                 _logger);
 

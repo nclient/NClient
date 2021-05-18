@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 
 namespace NClient.Providers.HttpClient.System.Internals
 {
     public class HttpResponseBuilder
     {
+        private readonly ISerializer _serializer;
+
+        public HttpResponseBuilder(ISerializer serializer)
+        {
+            _serializer = serializer;
+        }
+
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage,
             Type? bodyType = null, Type? errorType = null, Exception? exception = null)
@@ -62,17 +69,17 @@ namespace NClient.Providers.HttpClient.System.Internals
             return response;
         }
 
-        private static object? TryGetBodyObject(Type bodyType, HttpResponse response)
+        private object? TryGetBodyObject(Type bodyType, HttpResponse response)
         {
             return response.IsSuccessful
-                ? JsonSerializer.Deserialize(response.Content!, bodyType)
+                ? _serializer.Deserialize(response.Content!, bodyType)
                 : null;
         }
 
-        private static object? TryGetErrorObject(Type errorType, HttpResponse response)
+        private object? TryGetErrorObject(Type errorType, HttpResponse response)
         {
             return !response.IsSuccessful
-                ? JsonSerializer.Deserialize(response.Content!, errorType)
+                ? _serializer.Deserialize(response.Content!, errorType)
                 : null;
         }
     }
