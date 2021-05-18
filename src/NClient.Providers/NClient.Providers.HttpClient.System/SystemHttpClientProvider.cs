@@ -1,36 +1,40 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.System.Internals;
 
 namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpClientProvider : IHttpClientProvider
     {
-        private readonly SystemHttpClient _systemHttpClient;
+        private readonly Func<IHttpClientFactory> _httpClientFactory;
+        private readonly string? _httpClientName;
 
         public SystemHttpClientProvider()
         {
-            _systemHttpClient = new SystemHttpClient(new StubHttpClientFactory(new HttpClientHandler()));
+            _httpClientFactory = () => new StubHttpClientFactory(new HttpClientHandler());
         }
 
         public SystemHttpClientProvider(HttpMessageHandler httpMessageHandler)
         {
-            _systemHttpClient = new SystemHttpClient(new StubHttpClientFactory(httpMessageHandler));
+            _httpClientFactory = () => new StubHttpClientFactory(httpMessageHandler);
         }
 
         public SystemHttpClientProvider(global::System.Net.Http.HttpClient httpClient)
         {
-            _systemHttpClient = new SystemHttpClient(new StubHttpClientFactory(httpClient));
+            _httpClientFactory = () => new StubHttpClientFactory(httpClient);
         }
 
         public SystemHttpClientProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
-            _systemHttpClient = new SystemHttpClient(httpClientFactory, httpClientName);
+            _httpClientFactory = () => httpClientFactory;
+            _httpClientName = httpClientName;
         }
 
-        public IHttpClient Create()
+        public IHttpClient Create(ISerializer serializer)
         {
-            return _systemHttpClient;
+            return new SystemHttpClient(serializer, _httpClientFactory.Invoke(), _httpClientName);
         }
     }
 }

@@ -3,21 +3,25 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Serialization;
 
 namespace NClient.Core.HttpClients
 {
     public class ResilienceHttpClient : IHttpClient
     {
         private readonly IHttpClientProvider _httpClientProvider;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly IResiliencePolicyProvider _resiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClient(
             IHttpClientProvider httpClientProvider,
+            ISerializerProvider serializerProvider,
             IResiliencePolicyProvider resiliencePolicyProvider,
             ILogger? logger)
         {
             _httpClientProvider = httpClientProvider;
+            _serializerProvider = serializerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _logger = logger;
         }
@@ -38,7 +42,8 @@ namespace NClient.Core.HttpClients
 
         private async Task<HttpResponse> ExecuteAttemptAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
-            var client = _httpClientProvider.Create();
+            var serializer = _serializerProvider.Create();
+            var client = _httpClientProvider.Create(serializer);
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.Json;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 using NClient.ControllerBasedClients;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
+using NClient.Providers.Serialization.System;
 using Polly;
 
 namespace NClient.Extensions
@@ -16,7 +19,7 @@ namespace NClient.Extensions
             where TInterface : class
             where TController : TInterface
         {
-            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider());
+            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(), new SystemSerializerProvider());
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -25,7 +28,7 @@ namespace NClient.Extensions
             where TInterface : class
             where TController : TInterface
         {
-            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpClientFactory, httpClientName));
+            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpClientFactory, httpClientName), new SystemSerializerProvider());
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -34,7 +37,16 @@ namespace NClient.Extensions
             where TInterface : class
             where TController : TInterface
         {
-            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler));
+            return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler), new SystemSerializerProvider());
+        }
+        
+        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use WithResiliencePolicy<T> method.")]
+        public static IControllerBasedClientBuilder<TInterface, TController> SetJsonSerializerOptions<TInterface, TController>(
+            this IControllerBasedClientBuilder<TInterface, TController> clientBuilder, JsonSerializerOptions jsonSerializerOptions)
+            where TInterface : class
+            where TController : TInterface
+        {
+            return clientBuilder.SetCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use WithResiliencePolicy<T> method.")]

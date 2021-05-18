@@ -3,14 +3,21 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 
 namespace NClient.Providers.HttpClient.System.Internals
 {
     public class HttpRequestMessageBuilder
     {
+        private readonly ISerializer _serializer;
+
+        public HttpRequestMessageBuilder(ISerializer serializer)
+        {
+            _serializer = serializer;
+        }
+        
         public HttpRequestMessage Build(HttpRequest request)
         {
             var parameters = request.Parameters
@@ -27,7 +34,7 @@ namespace NClient.Providers.HttpClient.System.Internals
 
             if (request.Body != null)
             {
-                var body = JsonSerializer.Serialize(request.Body);
+                var body = _serializer.Serialize(request.Body);
                 httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, mediaType: "application/json");
             }
 
