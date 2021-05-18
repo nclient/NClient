@@ -17,7 +17,7 @@ namespace NClient.Providers.HttpClient.System.Internals
         {
             _serializer = serializer;
         }
-        
+
         public HttpRequestMessage Build(HttpRequest request)
         {
             var parameters = request.Parameters

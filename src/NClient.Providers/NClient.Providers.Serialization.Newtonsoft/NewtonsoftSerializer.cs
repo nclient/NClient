@@ -12,7 +12,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
         {
             _jsonSerializerSettings = jsonSerializerSettings;
         }
-        
+
         public object? Deserialize(string json, Type returnType)
         {
             return JsonConvert.DeserializeObject(json, returnType, _jsonSerializerSettings);

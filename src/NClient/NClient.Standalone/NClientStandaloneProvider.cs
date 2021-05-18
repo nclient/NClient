@@ -8,7 +8,7 @@ namespace NClient
 {
     public static class NClientStandaloneProvider
     {
-        public static IInterfaceBasedClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider) 
+        public static IInterfaceBasedClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
             where T : class
         {
             return new NClientBuilder().Use<T>(host, httpClientProvider, serializerProvider);

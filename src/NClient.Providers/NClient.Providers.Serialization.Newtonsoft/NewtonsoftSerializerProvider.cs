@@ -11,12 +11,12 @@ namespace NClient.Providers.Serialization.Newtonsoft
         {
             _jsonSerializerSettings = new JsonSerializerSettings();
         }
-        
+
         public NewtonsoftSerializerProvider(JsonSerializerSettings jsonSerializerSettings)
         {
             _jsonSerializerSettings = jsonSerializerSettings;
         }
-        
+
         public ISerializer Create()
         {
             return new NewtonsoftSerializer(_jsonSerializerSettings);

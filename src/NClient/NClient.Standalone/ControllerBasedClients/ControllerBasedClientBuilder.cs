@@ -41,7 +41,7 @@ namespace NClient.ControllerBasedClients
         private ILogger<TInterface>? _logger;
 
         public ControllerBasedClientBuilder(
-            Uri host, IHttpClientProvider httpClientProvider, 
+            Uri host, IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;

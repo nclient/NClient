@@ -15,7 +15,7 @@ namespace NClient.Providers.HttpClient.System.Internals
         {
             _serializer = serializer;
         }
-        
+
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage,
             Type? bodyType = null, Type? errorType = null, Exception? exception = null)

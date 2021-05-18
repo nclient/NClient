@@ -31,7 +31,7 @@ namespace NClient.Extensions.DependencyInjection
                     .Build();
             });
         }
-        
+
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, JsonSerializerOptions jsonSerializerOptions, string? httpClientName = null)
             where TInterface : class
@@ -49,7 +49,7 @@ namespace NClient.Extensions.DependencyInjection
                     .Build();
             });
         }
-        
+
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, IAsyncPolicy<HttpResponse> asyncPolicy, string? httpClientName = null)
             where TInterface : class
@@ -92,7 +92,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(_ => configure(new NClientBuilder()).Build());
         }
-        
+
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             Func<IServiceProvider, INClientBuilder, IControllerBasedClientBuilder<TInterface, TController>> configure)
             where TInterface : class

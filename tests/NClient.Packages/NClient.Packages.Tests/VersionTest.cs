@@ -51,7 +51,7 @@ namespace NClient.Packages.Tests
         [Test]
         public void NClient_Providers_Serialization_Newtonsoft() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
-        
+
         [Test]
         public void NClient_Extensions_DependencyInjection() =>
             PackagesVersionProvider.GetCurrent("NClient.Extensions.DependencyInjection").Should().Be(PackagesVersionProvider.GetNew());

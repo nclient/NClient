@@ -39,7 +39,7 @@ namespace NClient.Extensions
         {
             return clientBuilder.Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler), new SystemSerializerProvider());
         }
-        
+
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use WithResiliencePolicy<T> method.")]
         public static IControllerBasedClientBuilder<TInterface, TController> SetJsonSerializerOptions<TInterface, TController>(
             this IControllerBasedClientBuilder<TInterface, TController> clientBuilder, JsonSerializerOptions jsonSerializerOptions)

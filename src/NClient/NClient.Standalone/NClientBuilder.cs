@@ -24,7 +24,7 @@ namespace NClient
         private static readonly InterfaceBasedClientValidator InterfaceBasedValidator = new();
         private static readonly ControllerBasedClientValidator ControllerBasedClientValidator = new();
 
-        public IInterfaceBasedClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider) 
+        public IInterfaceBasedClientBuilder<T> Use<T>(string host, IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
             where T : class
         {
             InterfaceBasedValidator.Ensure<T>(ProxyGenerator);

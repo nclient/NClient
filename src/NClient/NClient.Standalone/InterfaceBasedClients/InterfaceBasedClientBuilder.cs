@@ -37,7 +37,7 @@ namespace NClient.InterfaceBasedClients
         private ILogger<T>? _logger;
 
         public InterfaceBasedClientBuilder(
-            Uri host, IHttpClientProvider httpClientProvider, 
+            Uri host, IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider, IProxyGenerator proxyGenerator)
         {
             _host = host;

@@ -12,7 +12,7 @@ namespace NClient.Providers.Serialization.System
         {
             _jsonSerializerOptions = jsonSerializerOptions;
         }
-        
+
         public object? Deserialize(string json, Type returnType)
         {
             return JsonSerializer.Deserialize(json, returnType, _jsonSerializerOptions);

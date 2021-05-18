@@ -11,12 +11,12 @@ namespace NClient.Providers.Serialization.System
         {
             _jsonSerializerOptions = new JsonSerializerOptions();
         }
-        
+
         public SystemSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
         {
             _jsonSerializerOptions = jsonSerializerOptions;
         }
-        
+
         public ISerializer Create()
         {
             return new SystemSerializer(_jsonSerializerOptions);
