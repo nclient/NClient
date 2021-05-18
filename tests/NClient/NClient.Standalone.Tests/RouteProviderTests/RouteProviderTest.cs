@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;
@@ -218,10 +220,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be("api/My/Method");
         }
-
+        
         [Test]
-        public void Build_ParameterToken_MethodParameterValue()
+        public void Build_PrimitiveParameterToken_MethodParameterValue()
         {
+            var intValue = 1;
             var routeTemplate = TemplateParser.Parse("{id}");
 
             var route = RouteProvider.Build(
@@ -230,10 +233,83 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
+                    new Parameter("id", intValue.GetType(), intValue, new RouteParamAttribute())
                 });
 
-            route.Should().Be("1");
+            route.Should().Be(intValue.ToString());
+        }
+        
+        // TODO: Move type tests to a individual test class
+        [Test]
+        public void Build_StringParameterToken_MethodParameterValue()
+        {
+            var stringValue = "str";
+            var routeTemplate = TemplateParser.Parse("{id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("id", stringValue.GetType(), stringValue, new RouteParamAttribute())
+                });
+
+            route.Should().Be(stringValue);
+        }
+        
+        [Test]
+        public void Build_DecimalParameterToken_MethodParameterValue()
+        {
+            var decimalValue = 1.2d;
+            var routeTemplate = TemplateParser.Parse("{id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("id", decimalValue.GetType(), decimalValue, new RouteParamAttribute())
+                });
+
+            route.Should().Be(decimalValue.ToString());
+        }
+        
+        [Test]
+        public void Build_GuidParameterToken_MethodParameterValue()
+        {
+            var guidValue = Guid.Parse("1328ec48-3622-4fe0-bafc-84a5e12f6e23");
+            var routeTemplate = TemplateParser.Parse("{id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("id", guidValue.GetType(), guidValue, new RouteParamAttribute())
+                });
+
+            route.Should().Be(guidValue.ToString());
+        }
+        
+        [Test]
+        public void Build_EnumParameterToken_MethodParameterValue()
+        {
+            var enumValue = HttpStatusCode.OK;
+            var routeTemplate = TemplateParser.Parse("{id}");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: new[]
+                {
+                    new Parameter("id", enumValue.GetType(), enumValue, new RouteParamAttribute())
+                });
+
+            route.Should().Be(enumValue.ToString());
         }
 
         [Test]
