@@ -44,9 +44,9 @@ namespace NClient.Packages.Tests
                 .Or<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
-                .AddLogging()
                 .AddHttpClient()
                 .AddNClient<ITestController, TestController>(host, policy)
+                .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITestController>();
             using var server = RunMockServer(host, id);
@@ -74,9 +74,9 @@ namespace NClient.Packages.Tests
                 .Or<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
-                .AddLogging()
                 .AddHttpClient()
                 .AddNClient<ITest>(host, policy)
+                .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();
             using var server = RunMockServer(host, id);
