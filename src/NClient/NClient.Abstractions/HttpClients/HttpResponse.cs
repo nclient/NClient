@@ -52,5 +52,12 @@ namespace NClient.Abstractions.HttpClients
             ErrorException = httpResponse.ErrorException;
             ProtocolVersion = httpResponse.ProtocolVersion;
         }
+
+        public HttpResponse EnsureSuccess()
+        {
+            if (!IsSuccessful)
+                throw ErrorException!;
+            return this;
+        }
     }
 }
