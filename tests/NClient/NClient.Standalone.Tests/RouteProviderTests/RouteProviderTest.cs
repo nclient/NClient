@@ -220,7 +220,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be("api/My/Method");
         }
-        
+
         [Test]
         public void Build_PrimitiveParameterToken_MethodParameterValue()
         {
@@ -238,7 +238,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(intValue.ToString());
         }
-        
+
         // TODO: Move type tests to a individual test class
         [Test]
         public void Build_StringParameterToken_MethodParameterValue()
@@ -257,7 +257,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(stringValue);
         }
-        
+
         [Test]
         public void Build_DecimalParameterToken_MethodParameterValue()
         {
@@ -275,7 +275,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(decimalValue.ToString());
         }
-        
+
         [Test]
         public void Build_GuidParameterToken_MethodParameterValue()
         {
@@ -293,7 +293,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(guidValue.ToString());
         }
-        
+
         [Test]
         public void Build_EnumParameterToken_MethodParameterValue()
         {
