@@ -17,7 +17,8 @@ namespace NClient.Core.Helpers
             return typeInfo.IsPrimitive
                    || typeInfo.IsEnum
                    || type == typeof(string)
-                   || type == typeof(decimal);
+                   || type == typeof(decimal)
+                   || type == typeof(Guid);
         }
 
         public static Attribute[] GetInterfaceCustomAttributes(this Type type, bool inherit = false)
