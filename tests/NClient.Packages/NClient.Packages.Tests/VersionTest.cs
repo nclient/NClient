@@ -45,6 +45,14 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
+        public void NClient_Providers_Serialization_System() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.System").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Providers_Serialization_Newtonsoft() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
+        
+        [Test]
         public void NClient_Extensions_DependencyInjection() =>
             PackagesVersionProvider.GetCurrent("NClient.Extensions.DependencyInjection").Should().Be(PackagesVersionProvider.GetNew());
     }

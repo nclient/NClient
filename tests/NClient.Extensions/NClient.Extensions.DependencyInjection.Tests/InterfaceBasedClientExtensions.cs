@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.HttpClients;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
+using NClient.Providers.Serialization.System;
 using NUnit.Framework;
 using Polly;
 
@@ -14,39 +16,39 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class InterfaceBasedClientExtensions
     {
         [Test]
-        public void AddNClient_ClientProvider_NotBeNull()
+        public void AddNClient_ClientBuilder_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient(builder => builder
-                    .Use<ITestClient, TestController>(host: "http://localhost:5000", new SystemHttpClientProvider()));
+                    .Use<ITestClient, TestController>(host: "http://localhost:5000", new SystemHttpClientProvider(), new SystemSerializerProvider()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClient_HttpClientAndResilienceProviders_NotBeNull()
+        public void AddNClient_JsonSerializerOptionsAndAsyncPolicy_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
                 host: "http://localhost:5000",
-                new SystemHttpClientProvider(),
-                new PollyResiliencePolicyProvider(Policy.NoOpAsync<HttpResponse>()));
+                new JsonSerializerOptions(),
+                Policy.NoOpAsync<HttpResponse>());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClient_HttpClientProvider_NotBeNull()
+        public void AddNClient_JsonSerializerOptions_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
                 host: "http://localhost:5000",
-                new SystemHttpClientProvider());
+                new JsonSerializerOptions());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
@@ -55,7 +57,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_AsyncPolicy_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging().AddHttpClient();
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
                 host: "http://localhost:5000",
@@ -68,7 +70,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddLogging().AddHttpClient();
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
                 host: "http://localhost:5000");
