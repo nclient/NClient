@@ -13,6 +13,7 @@
 		<Authors>smolchanovsky</Authors>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,12 +22,18 @@
 		<Nullable>enable</Nullable>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
+		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.Tests</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>

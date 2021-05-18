@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Castle.DynamicProxy;
+using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
-using NClient.Core.Helpers;
-using NClient.Core.Interceptors;
+using NClient.Core.Helpers.ObjectMemberManagers;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Mappers;
+using NClient.Core.MethodBuilders;
+using NClient.Core.MethodBuilders.Models;
+using NClient.Core.MethodBuilders.Providers;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
 
@@ -15,32 +18,44 @@ namespace NClient.Testing.Common
 {
     public abstract class RequestBuilderTestBase
     {
+        protected static readonly Guid RequestId = Guid.Parse("5bb86773-9999-483e-aa9a-3cce10e47fb1");
+
+        internal MethodBuilder MethodBuilder = null!;
         internal RequestBuilder RequestBuilder = null!;
-        internal KeepDataInterceptor KeepDataInterceptor = null!;
-
-        internal IAttributeMapper AttributeMapper = null!;
-        protected ProxyGenerator ProxyGenerator = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            RequestBuilder = new RequestBuilder(
-                host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(AttributeMapper),
-                new RouteProvider(),
-                new HttpMethodProvider(AttributeMapper),
-                new ParameterProvider(AttributeMapper),
-                new ObjectToKeyValueConverter());
-
-            ProxyGenerator = new ProxyGenerator();
-        }
 
         [OneTimeSetUp]
-        public abstract void OneTimeSetUp();
-
-        internal virtual HttpRequest BuildRequest(IInvocation invocation)
+        public void OneTimeSetUp()
         {
-            return RequestBuilder.Build(invocation.Proxy.GetType().GetInterfaces().First(), invocation.Method, invocation.Arguments);
+            var objectMemberManager = new ObjectMemberManager();
+
+            RequestBuilder = new RequestBuilder(
+                host: new Uri("http://localhost:5000"),
+                new RouteTemplateProvider(),
+                new RouteProvider(objectMemberManager),
+                new HttpMethodProvider(),
+                new ObjectToKeyValueConverter(objectMemberManager));
+
+            var attributeMapper = new AttributeMapper();
+            MethodBuilder = new MethodBuilder(
+                new MethodAttributeProvider(attributeMapper),
+                new PathAttributeProvider(attributeMapper),
+                new HeaderAttributeProvider(),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
+        }
+
+        protected static MethodInfo GetMethodInfo<T>()
+        {
+            return typeof(T).GetMethods().First();
+        }
+
+        internal Method BuildMethod<T>()
+        {
+            return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());
+        }
+
+        internal HttpRequest BuildRequest(Method method, params object[] arguments)
+        {
+            return RequestBuilder.Build(RequestId, method, arguments);
         }
 
         protected static void AssertHttpRequest(

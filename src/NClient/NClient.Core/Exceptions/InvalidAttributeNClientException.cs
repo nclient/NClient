@@ -1,18 +1,8 @@
-﻿using System;
-
-namespace NClient.Core.Exceptions
+﻿namespace NClient.Core.Exceptions
 {
-    public class InvalidAttributeNClientException : NClientException
+    public class InvalidAttributeNClientException : RequestNClientException
     {
-        public InvalidAttributeNClientException()
-        {
-        }
-
         public InvalidAttributeNClientException(string message) : base(message)
-        {
-        }
-
-        public InvalidAttributeNClientException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

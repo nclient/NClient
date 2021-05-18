@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Net;
-using System.Reflection;
 
 namespace NClient.Core.Exceptions.Factories
 {
     internal static class OuterExceptionFactory
     {
+        public static RequestNClientException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
+            new($"Header parameter duplicates static header. Header names: {string.Join(",", headerNames)}");
+
+        public static RequestNClientException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
+            new($"Client name consists only of suffixes and prefixes.");
+
         public static NClientException MemberNameConflict(string memberName, string objectName) =>
             new($"Object member '{memberName}' not found in '{objectName}' object type.");
 
@@ -21,52 +26,52 @@ namespace NClient.Core.Exceptions.Factories
         public static NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
             new($"Value of '{memberName}' member in {objectName} object is null. The value from the path cannot be set.");
 
-        public static NClientException ParameterInRouteTemplateIsNull(string parameterName) =>
+        public static RequestNClientException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
 
         public static InvalidAttributeNClientException UsedInvalidAttributeInControllerInterface(string memberName) =>
-            new InvalidAttributeNClientException($"An invalid attribute is used for '{memberName}' in controller interface.");
-        public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string clientName, string methodName, string[] paramNames) =>
-            new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template. {GetClientInfo(clientName, methodName)}");
+            new($"An invalid attribute is used for '{memberName}' in controller interface.");
+        public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string[] paramNames) =>
+            new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 
-        public static InvalidRouteNClientException TokenFromTemplateNotExists(string clientName, string methodName, string tokenName) =>
-            new($"Token '{tokenName}' from route template does not exist. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TokenFromTemplateNotExists(string tokenName) =>
+            new($"Token '{tokenName}' from route template does not exist.");
 
         public static InvalidRouteNClientException TemplateParsingError(ArgumentException e) =>
-            new(e.Message, e);
+            new(e.Message);
 
-        public static InvalidRouteNClientException TemplatePartContainsComplexType(string clientName, string methodName, string parameterName) =>
-            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TemplatePartContainsComplexType(string parameterName) =>
+            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
 
-        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string clientName, string methodName, string tokenName) =>
-            new($"Token '{tokenName}' in route template does not match any method parameters. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string tokenName) =>
+            new($"Token '{tokenName}' in route template does not match any method parameters.");
 
-        public static InvalidRouteNClientException TemplatePartWithoutTokenOrText(string clientName, string methodName) =>
-            new($"Template part does not contain a token or text. {GetClientInfo(clientName, methodName)}");
+        public static InvalidRouteNClientException TemplatePartWithoutTokenOrText() =>
+            new($"Template part does not contain a token or text.");
 
-        public static NotSupportedNClientException MultipleAttributeForClientNotSupported(string clientName, string attributeName) =>
-            new($"Multiple attributes '{attributeName}' for client are not supported. Client name: {clientName}.");
+        public static NotSupportedNClientException MultipleAttributeForClientNotSupported(string attributeName) =>
+            new($"Multiple attributes '{attributeName}' for client are not supported.");
 
-        public static NotSupportedNClientException MultipleBodyParametersNotSupported(MethodInfo method) =>
-            new($"Client method can contain only one body parameter. {GetClientInfo(method)}");
+        public static NotSupportedNClientException MultipleBodyParametersNotSupported() =>
+            new($"Client method can contain only one body parameter.");
 
-        public static NotSupportedNClientException ComplexTypeInHeaderNotSupported(MethodInfo method, string parameterName) =>
-            new($"Headers cannot contain complex types. {GetClientInfo(method, parameterName)}");
+        public static NotSupportedNClientException ComplexTypeInHeaderNotSupported(string parameterName) =>
+            new($"Headers cannot contain complex types. Parameter name: {parameterName}.");
 
-        public static NotSupportedNClientException MultipleParameterAttributeNotSupported(MethodInfo method, string parameterName) =>
-            new($"Multiple attributes for a method parameter are not supported. {GetClientInfo(method, parameterName)}");
+        public static NotSupportedNClientException MultipleParameterAttributeNotSupported(string parameterName) =>
+            new($"Multiple attributes for a method parameter are not supported. Parameter name: {parameterName}.");
 
-        public static NotSupportedNClientException UsedNotSupportedAttributeForParameter(MethodInfo method, string attributeName, string parameterName) =>
-            new($"Attribute '{attributeName}' not supported for parameters. {GetClientInfo(method, parameterName)}");
+        public static NotSupportedNClientException UsedNotSupportedAttributeForParameter(string attributeName, string parameterName) =>
+            new($"Attribute '{attributeName}' not supported for parameters ('{parameterName}').");
 
-        public static AttributeNotFoundNClientException MethodAttributeNotFound(Type attributeType, MethodInfo method) =>
-            new(attributeType, method);
+        public static AttributeNotFoundNClientException MethodAttributeNotFound(string attributeName) =>
+            new($"Attribute '{attributeName}' not found.");
 
-        public static NotSupportedNClientException MethodAttributeNotSupported(MethodInfo method, string attributeName) =>
-            new($"Method attribute '{attributeName}' not supported. {GetClientInfo(method)}");
+        public static NotSupportedNClientException MethodAttributeNotSupported(string attributeName) =>
+            new($"Method attribute '{attributeName}' not supported.");
 
-        public static NotSupportedNClientException MultipleMethodAttributeNotSupported(MethodInfo method) =>
-            new($"Multiple attributes for a method are not supported. {GetClientInfo(method)}");
+        public static NotSupportedNClientException MultipleMethodAttributeNotSupported() =>
+            new($"Multiple attributes for a method are not supported.");
 
         //TODO: Should contains client and method info
         public static NotSupportedNClientException DictionaryWithComplexTypeOfKeyNotSupported() =>
@@ -80,16 +85,5 @@ namespace NClient.Core.Exceptions.Factories
 
         public static HttpRequestNClientException HttpRequestFailed(HttpStatusCode statusCode, string? errorMessage) =>
             new(statusCode, errorMessage);
-
-        private static string GetClientInfo(MethodInfo method, string? parameterName = null)
-        {
-            return GetClientInfo(method.DeclaringType.Name, method.Name, parameterName);
-        }
-
-        private static string GetClientInfo(string clientName, string methodName, string? parameterName = null)
-        {
-            var result = $"Client name: {clientName}. Method name: {methodName}.";
-            return parameterName is null ? result : $"{result} Parameter name: {parameterName}.";
-        }
     }
 }

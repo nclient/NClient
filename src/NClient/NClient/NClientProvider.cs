@@ -3,6 +3,7 @@ using System.Net.Http;
 using NClient.ControllerBasedClients;
 using NClient.InterfaceBasedClients;
 using NClient.Providers.HttpClient.System;
+using NClient.Providers.Serialization.System;
 
 namespace NClient
 {
@@ -10,12 +11,12 @@ namespace NClient
     {
         public static IInterfaceBasedClientBuilder<T> Use<T>(string host) where T : class
         {
-            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider());
+            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider(), new SystemSerializerProvider());
         }
 
         public static IInterfaceBasedClientBuilder<T> Use<T>(string host, HttpMessageHandler httpMessageHandler) where T : class
         {
-            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider(httpMessageHandler));
+            return new NClientBuilder().Use<T>(host, new SystemHttpClientProvider(httpMessageHandler), new SystemSerializerProvider());
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -24,7 +25,7 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
-            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider());
+            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider(), new SystemSerializerProvider());
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -33,7 +34,7 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
-            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler));
+            return new NClientBuilder().Use<TInterface, TController>(host, new SystemHttpClientProvider(httpMessageHandler), new SystemSerializerProvider());
         }
     }
 }

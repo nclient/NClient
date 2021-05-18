@@ -21,12 +21,13 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api/sync")
+                    .WithHeader("Accept", "application/json")
                     .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(1));
+                    .WithBodyAsJson(id));
 
             return api;
         }
@@ -36,7 +37,8 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api/sync")
-                    .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Accept", "application/json")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -50,7 +52,8 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api/sync")
-                    .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Accept", "application/json")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPut())
                 .RespondWith(Response.Create()
@@ -64,6 +67,7 @@ namespace NClient.Testing.Common.Apis
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
                     .WithPath("/api/sync")
+                    .WithHeader("Accept", "application/json")
                     .WithParam("id", id.ToString())
                     .UsingDelete())
                 .RespondWith(Response.Create()

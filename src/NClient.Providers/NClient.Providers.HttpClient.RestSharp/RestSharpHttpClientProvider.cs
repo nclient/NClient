@@ -1,4 +1,5 @@
 ﻿using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 using RestSharp.Authenticators;
 
 namespace NClient.Providers.HttpClient.RestSharp
@@ -12,7 +13,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             _authenticator = authenticator;
         }
 
-        public IHttpClient Create()
+        public IHttpClient Create(ISerializer serializer)
         {
             return new RestSharpHttpClient(_authenticator);
         }

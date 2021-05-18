@@ -30,10 +30,12 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _headerApiMockFactory.MockGetMethod(id);
 
             var result = await _headerClient.GetAsync(id);
-            result.Should().Be(1);
+
+            result.Should().Be(id);
         }
 
         [Test]
+        // TODO: Mock ignores header. Why?
         public async Task HeaderClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
@@ -41,6 +43,19 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             await _headerClient
                 .Invoking(async x => await x.DeleteAsync(id))
+                .Should()
+                .NotThrowAsync();
+        }
+
+        [Test]
+        // TODO: Mock ignores header. Why?
+        public async Task HeaderClient_DeleteAsyncWithStaticHeader_NotThrow()
+        {
+            const int id = 1;
+            using var api = _headerApiMockFactory.MockDeleteMethod(id);
+
+            await _headerClient
+                .Invoking(async x => await x.DeleteAsync())
                 .Should()
                 .NotThrowAsync();
         }

@@ -2,11 +2,10 @@
 using System.Net.Http;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
+using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
-using NClient.Core.Interceptors;
-using NClient.Core.Mappers;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -16,23 +15,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
     [Parallelizable]
     public class RequestBuilderHeaderTest : RequestBuilderTestBase
     {
-        [OneTimeSetUp]
-        public override void OneTimeSetUp()
-        {
-            AttributeMapper = new AttributeMapper();
-            KeepDataInterceptor = new KeepDataInterceptor();
-        }
-
-        public interface IPrimitiveHeader {[GetMethod] int Get([HeaderParam] int id); }
+        private interface IPrimitiveHeader {[GetMethod] int Get([HeaderParam] int id); }
 
         [Test]
         public void Build_PrimitiveHeader_PrimitiveInHeader()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IPrimitiveHeader>(KeepDataInterceptor)
-                .Get(1);
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IPrimitiveHeader>(), 1);
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -40,16 +28,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1") });
         }
 
-        public interface IStringHeader {[GetMethod] int Get([HeaderParam] string str); }
+        private interface IStringHeader {[GetMethod] int Get([HeaderParam] string str); }
 
         [Test]
         public void Build_StringHeader_StringInHeader()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IStringHeader>(KeepDataInterceptor)
-                .Get("value");
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IStringHeader>(), "value");
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -57,16 +41,12 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("str", "value") });
         }
 
-        public interface IMultiplyPrimitiveHeaders {[GetMethod] int Get([HeaderParam] int id, [HeaderParam] string value); }
+        private interface IMultiplyPrimitiveHeaders {[GetMethod] int Get([HeaderParam] int id, [HeaderParam] string value); }
 
         [Test]
         public void Build_MultiplyPrimitiveHeaders_MultiplyHeadersWithPrimitives()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IMultiplyPrimitiveHeaders>(KeepDataInterceptor)
-                .Get(1, "val");
-
-            var httpRequest = BuildRequest(KeepDataInterceptor.Invocation!);
+            var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveHeaders>(), 1, "val");
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
@@ -74,16 +54,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 headers: new[] { new HttpHeader("id", "1"), new HttpHeader("value", "val"), });
         }
 
-        public interface ICustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity); }
+        private interface ICustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeHeader_ThrowNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<ICustomTypeHeader>(KeepDataInterceptor)
-                .Get(new BasicEntity { Id = 1 });
-
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<ICustomTypeHeader>(), new BasicEntity { Id = 1 });
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
@@ -91,16 +68,80 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Throw<NClientException>();
         }
 
-        public interface IMultiplyCustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity1, [HeaderParam] BasicEntity entity2); }
+        private interface IMultiplyCustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity1, [HeaderParam] BasicEntity entity2); }
 
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowNClientException()
         {
-            ProxyGenerator
-                .CreateInterfaceProxyWithoutTarget<IMultiplyCustomTypeHeader>(KeepDataInterceptor)
-                .Get(new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<IMultiplyCustomTypeHeader>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(KeepDataInterceptor.Invocation!);
+            buildRequestFunc
+                .Invoking(x => x.Invoke())
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        [Header("id", "1")] private interface IClientHeader {[GetMethod] int Get(); }
+
+        [Test]
+        public void Build_ClientHeader_PrimitiveInHeader()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IClientHeader>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Get,
+                headers: new[] { new HttpHeader("id", "1") });
+        }
+
+        [Header("id", "1")] private interface IDuplicateInClientAndMethodHeaders {[GetMethod, Header("id", "2")] int Get(); }
+
+        [Test]
+        public void Build_DuplicateInClientAndMethodHeaders_PrimitiveInHeader()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IDuplicateInClientAndMethodHeaders>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Get,
+                headers: new[] { new HttpHeader("id", "2") });
+        }
+
+        private interface IMethodHeader {[GetMethod, Header("id", "1")] int Get(); }
+
+        [Test]
+        public void Build_MethodHeader_PrimitiveInHeader()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IMethodHeader>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Get,
+                headers: new[] { new HttpHeader("id", "1") });
+        }
+
+        [Header("id", "1")] private interface IDuplicateInClientAndParamHeaders {[GetMethod] int Get([HeaderParam] int id); }
+
+        [Test]
+        public void Build_DuplicateInClientAndParamHeaders_ThrowNClientException()
+        {
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<IDuplicateInClientAndParamHeaders>(), 2);
+
+            buildRequestFunc
+                .Invoking(x => x.Invoke())
+                .Should()
+                .Throw<NClientException>();
+        }
+
+        private interface IDuplicateInMethodAndParamHeaders {[GetMethod, Header("id", "1")] int Get([HeaderParam] int id); }
+
+        [Test]
+        public void Build_DuplicateInMethodAndParamHeaders_ThrowNClientException()
+        {
+            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+                BuildMethod<IDuplicateInMethodAndParamHeaders>(), 2);
 
             buildRequestFunc
                 .Invoking(x => x.Invoke())
