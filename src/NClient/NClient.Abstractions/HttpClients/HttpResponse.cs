@@ -12,6 +12,12 @@ namespace NClient.Abstractions.HttpClients
         {
             Value = value;
         }
+
+        public new HttpResponse<TValue> EnsureSuccess()
+        {
+            base.EnsureSuccess();
+            return this;
+        }
     }
 
     public class HttpResponse
