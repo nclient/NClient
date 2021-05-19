@@ -9,6 +9,12 @@
         {
             Error = error;
         }
+
+        public new HttpResponseWithError<TValue, TError> EnsureSuccess()
+        {
+            base.EnsureSuccess();
+            return this;
+        }
     }
 
     public class HttpResponseWithError<TError> : HttpResponse
@@ -19,6 +25,12 @@
             : base(httpResponse, httpRequest)
         {
             Error = error;
+        }
+
+        public new HttpResponseWithError<TError> EnsureSuccess()
+        {
+            base.EnsureSuccess();
+            return this;
         }
     }
 }
