@@ -7,7 +7,7 @@ namespace NClient.Abstractions.Exceptions
     public class HttpRequestNClientException : NClientException, IClientInfoProviderException
     {
         private readonly string _formattedMessage;
-        
+
         public HttpStatusCode HttpStatusCode { get; }
         public override string Message => $"{_formattedMessage} Client name: {ClientName}. Method name: {MethodName}.";
 
@@ -20,7 +20,7 @@ namespace NClient.Abstractions.Exceptions
             HttpStatusCode = httpStatusCode;
             _formattedMessage = $"The request completed with status {httpStatusCode} (http code: {(int)httpStatusCode}). Error message: '{message ?? ""}'. Content: '{content}'.";
         }
-        
+
         public Exception WithRequestInfo(string clientName, string methodName)
         {
             ClientName = clientName;

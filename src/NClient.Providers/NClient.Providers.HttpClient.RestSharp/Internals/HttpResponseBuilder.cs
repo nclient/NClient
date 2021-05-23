@@ -16,7 +16,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
             var nclientException = restResponse.ErrorMessage is not null
                 ? OuterExceptionFactory.HttpRequestFailed(restResponse.StatusCode, restResponse.ErrorMessage, restResponse.Content, restResponse.ErrorException)
                 : null;
-            
+
             var response = new HttpResponse(request)
             {
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,

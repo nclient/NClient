@@ -31,7 +31,7 @@ namespace NClient.Providers.HttpClient.System.Internals
             var nclientException = exception is not null
                 ? OuterExceptionFactory.HttpRequestFailed(httpResponseMessage.StatusCode, exception.Message, content, exception)
                 : null;
-            
+
             var response = new HttpResponse(request)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,

@@ -18,7 +18,7 @@ namespace NClient.Core.Exceptions
             _originMessage = message;
         }
 
-        public RequestNClientException(string message, Exception innerException) 
+        public RequestNClientException(string message, Exception innerException)
             : base(message: "", innerException)
         {
             _originMessage = message;

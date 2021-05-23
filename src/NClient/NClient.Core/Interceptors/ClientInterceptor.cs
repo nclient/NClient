@@ -90,7 +90,7 @@ namespace NClient.Core.Interceptors
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult)(object)response;
-            
+
             response.EnsureSuccess();
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
