@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using FluentAssertions;
+using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;

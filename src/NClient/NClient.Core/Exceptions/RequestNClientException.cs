@@ -1,8 +1,10 @@
 ﻿using System;
+using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Exceptions.Providers;
 
 namespace NClient.Core.Exceptions
 {
-    public class RequestNClientException : NClientException
+    public class RequestNClientException : NClientException, IClientInfoProviderException
     {
         private readonly string _originMessage;
 
@@ -16,7 +18,8 @@ namespace NClient.Core.Exceptions
             _originMessage = message;
         }
 
-        public RequestNClientException(string message, Exception innerException) : base(message, innerException)
+        public RequestNClientException(string message, Exception innerException)
+            : base(message: "", innerException)
         {
             _originMessage = message;
         }

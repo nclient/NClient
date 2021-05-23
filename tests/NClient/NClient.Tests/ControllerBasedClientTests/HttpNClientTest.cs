@@ -121,7 +121,7 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var assertionScope = new AssertionScope();
             httpResponse.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
             httpResponse.IsSuccessful.Should().BeFalse();
-            httpResponse.ErrorMessage.Should().Be("Response status code does not indicate success: 500 (Internal Server Error).");
+            httpResponse.ErrorMessage.Should().NotBeNull();
             httpResponse.ErrorException.Should().NotBeNull();
         }
 

@@ -1,4 +1,5 @@
-﻿using NClient.Core.Exceptions;
+﻿using NClient.Abstractions.Exceptions;
+using NClient.Core.Exceptions;
 
 namespace NClient.AspNetCore.Exceptions.Factories
 {

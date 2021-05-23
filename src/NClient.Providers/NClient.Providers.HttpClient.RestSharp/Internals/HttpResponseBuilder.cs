@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
+using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using RestSharp;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
@@ -12,6 +13,10 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
     {
         public HttpResponse Build(HttpRequest request, IRestResponse restResponse, Type? bodyType = null, Type? errorType = null)
         {
+            var nclientException = restResponse.ErrorMessage is not null
+                ? OuterExceptionFactory.HttpRequestFailed(restResponse.StatusCode, restResponse.ErrorMessage, restResponse.Content, restResponse.ErrorException)
+                : null;
+
             var response = new HttpResponse(request)
             {
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
@@ -24,8 +29,8 @@ namespace NClient.Providers.HttpClient.RestSharp.Internals
                 Headers = restResponse.Headers
                     .Where(x => x.Name != null)
                     .Select(x => new HttpHeader(x.Name!, x.Value?.ToString() ?? "")).ToArray(),
-                ErrorMessage = restResponse.ErrorMessage,
-                ErrorException = restResponse.ErrorException,
+                ErrorMessage = nclientException?.Message,
+                ErrorException = nclientException,
                 ProtocolVersion = restResponse.ProtocolVersion
             };
 
