@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
@@ -27,7 +28,10 @@ namespace NClient.Providers.HttpClient.System.Internals
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
                 .ToArray();
             var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-
+            var nclientException = exception is not null
+                ? OuterExceptionFactory.HttpRequestFailed(httpResponseMessage.StatusCode, exception.Message, content, exception)
+                : null;
+            
             var response = new HttpResponse(request)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
@@ -39,8 +43,8 @@ namespace NClient.Providers.HttpClient.System.Internals
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
                 Server = httpResponseMessage.Headers.Server?.ToString(),
                 Headers = headers.Concat(contentHeaders).ToArray(),
-                ErrorMessage = exception?.Message,
-                ErrorException = exception,
+                ErrorMessage = nclientException?.Message,
+                ErrorException = nclientException,
                 ProtocolVersion = httpResponseMessage.Version
             };
 
