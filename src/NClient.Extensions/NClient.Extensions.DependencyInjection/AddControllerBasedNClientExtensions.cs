@@ -3,15 +3,14 @@ using System.Net.Http;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
-using NClient.ControllerBasedClients;
 using Polly;
 
 namespace NClient.Extensions.DependencyInjection
 {
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use AddNClient<T> method.")]
-    public static class ControllerBasedClientExtensions
+    public static class AddControllerBasedNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, JsonSerializerOptions jsonSerializerOptions, IAsyncPolicy<HttpResponse> asyncPolicy, string? httpClientName = null)
@@ -24,8 +23,9 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
-                    .SetJsonSerializerOptions(jsonSerializerOptions)
+                    .Use<TInterface, TController>(host)
+                    .WithCustomHttpClient(httpClientFactory, httpClientName)
+                    .WithCustomSerializer(jsonSerializerOptions)
                     .WithResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
                     .Build();
@@ -43,8 +43,9 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
-                    .SetJsonSerializerOptions(jsonSerializerOptions)
+                    .Use<TInterface, TController>(host)
+                    .WithCustomHttpClient(httpClientFactory, httpClientName)
+                    .WithCustomSerializer(jsonSerializerOptions)
                     .WithLogging(logger)
                     .Build();
             });
@@ -61,7 +62,8 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
+                    .Use<TInterface, TController>(host)
+                    .WithCustomHttpClient(httpClientFactory, httpClientName)
                     .WithResiliencePolicy(asyncPolicy)
                     .WithLogging(logger)
                     .Build();
@@ -79,7 +81,8 @@ namespace NClient.Extensions.DependencyInjection
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
                 return new NClientBuilder()
-                    .Use<TInterface, TController>(host, httpClientFactory, httpClientName)
+                    .Use<TInterface, TController>(host)
+                    .WithCustomHttpClient(httpClientFactory, httpClientName)
                     .WithLogging(logger)
                     .Build();
             });

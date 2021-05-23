@@ -2,6 +2,7 @@
 using System.Net;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;

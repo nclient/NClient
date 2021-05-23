@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using NClient.Abstractions.Exceptions;
 using NClient.Core.Exceptions;
 using NClient.Extensions;
 using NClient.Testing.Common.Apis;

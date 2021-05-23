@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Exceptions.Providers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
@@ -51,10 +53,8 @@ namespace NClient.Core.Interceptors
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
             await InvokeWithLoggingExceptionsAsync(async (inv, id) =>
             {
-                var response = await ProcessInvocationAsync<HttpResponse>(inv, id);
-                if (!response.IsSuccessful)
-                    throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
-                return response;
+                return (await ProcessInvocationAsync<HttpResponse>(inv, id).ConfigureAwait(false))
+                    .EnsureSuccess();
             }, clientInvocation, requestId).ConfigureAwait(false);
         }
 
@@ -90,8 +90,8 @@ namespace NClient.Core.Interceptors
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult)(object)response;
-            if (!response.IsSuccessful)
-                throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
+
+            response.EnsureSuccess();
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
 
@@ -129,10 +129,10 @@ namespace NClient.Core.Interceptors
             {
                 return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);
             }
-            catch (RequestNClientException e)
+            catch (NClientException e) when (e is IClientInfoProviderException clientInfoProviderException)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw e.WithRequestInfo(clientName, methodName);
+                throw clientInfoProviderException.WithRequestInfo(clientName, methodName);
             }
             catch (NClientException e)
             {

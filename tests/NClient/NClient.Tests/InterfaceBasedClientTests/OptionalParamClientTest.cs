@@ -17,7 +17,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         [SetUp]
         public void Setup()
         {
-            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(port: 5007);
+            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(port: 5018);
 
             _optionalParamClient = new NClientBuilder()
                 .Use<IOptionalParamWithMetadata>(_optionalParamApiMockFactory.ApiUri.ToString())
