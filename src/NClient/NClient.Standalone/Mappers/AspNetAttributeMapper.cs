@@ -29,7 +29,7 @@ namespace NClient.Mappers
                     statusCode: GetProperty<HttpStatusCode>(attribute, "StatusCode")),
 
                 { Name: "AllowAnonymousAttribute" } => new AnonymousAttribute(),
-                { Name: "AuthorizeAttribute" } => new AuthZAttribute(GetProperty<string>(attribute, name: "Policy"))
+                { Name: "AuthorizeAttribute" } => new AuthorizedAttribute(GetProperty<string>(attribute, name: "Policy"))
                 {
                     Roles = GetProperty<string>(attribute, name: "Roles"),
                     AuthenticationSchemes = GetProperty<string>(attribute, name: "AuthenticationSchemes")

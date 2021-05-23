@@ -72,15 +72,15 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[0].Should().BeEquivalentTo(new ApiControllerAttribute());
         }
 
-        [AuthZ] public interface IInterfaceWithAuthZAttribute { }
-        public class InterfaceWithAuthZAttribute : IInterfaceWithAuthZAttribute { }
+        [Authorized] public interface IInterfaceWithAuthorizedAttribute { }
+        public class InterfaceWithAuthorizedAttribute : IInterfaceWithAuthorizedAttribute { }
 
         [Test]
-        public void Create_InterfaceWithAuthZAttribute_AuthZAttribute()
+        public void Create_InterfaceWithAuthorizedAttribute_AuthorizedAttribute()
         {
             var nclientControllers = new[]
             {
-                new NClientControllerInfo(typeof(IInterfaceWithAuthZAttribute), typeof(InterfaceWithAuthZAttribute))
+                new NClientControllerInfo(typeof(IInterfaceWithAuthorizedAttribute), typeof(InterfaceWithAuthorizedAttribute))
             };
 
             var actualResult = _virtualControllerGenerator

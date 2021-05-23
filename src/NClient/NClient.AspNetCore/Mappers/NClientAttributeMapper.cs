@@ -36,7 +36,7 @@ namespace NClient.AspNetCore.Mappers
                 ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
 
                 AnonymousAttribute => new AllowAnonymousAttribute(),
-                AuthZAttribute x => new AuthorizeAttribute(x.Policy) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },
+                AuthorizedAttribute x => new AuthorizeAttribute(x.Policy) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },
 
                 RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
                 QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
