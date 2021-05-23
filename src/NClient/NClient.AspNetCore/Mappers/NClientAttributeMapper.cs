@@ -1,6 +1,8 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
+using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
@@ -32,6 +34,9 @@ namespace NClient.AspNetCore.Mappers
                     : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
                 ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
+
+                AnonymousAttribute => new AllowAnonymousAttribute(),
+                AuthZAttribute x => new AuthorizeAttribute(x.Policy) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },
 
                 RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
                 QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
