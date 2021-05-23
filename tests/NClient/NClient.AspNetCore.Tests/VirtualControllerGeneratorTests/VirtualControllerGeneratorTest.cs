@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Net;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
+using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.AspNetCore.Controllers;
@@ -48,15 +50,15 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Length.Should().Be(0);
         }
 
-        [Api] public interface IInterfaceWithoutApiAttribute { }
-        public class InterfaceWithoutApiAttribute : IInterfaceWithoutApiAttribute { }
+        [Api] public interface IInterfaceWithApiAttribute { }
+        public class InterfaceWithApiAttribute : IInterfaceWithApiAttribute { }
 
         [Test]
-        public void Create_InterfaceWithoutApiAttribute_ApiControllerAttribute()
+        public void Create_InterfaceWithApiAttribute_ApiControllerAttribute()
         {
             var nclientControllers = new[]
             {
-                new NClientControllerInfo(typeof(IInterfaceWithoutApiAttribute), typeof(InterfaceWithoutApiAttribute))
+                new NClientControllerInfo(typeof(IInterfaceWithApiAttribute), typeof(InterfaceWithApiAttribute))
             };
 
             var actualResult = _virtualControllerGenerator
@@ -68,6 +70,50 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new ApiControllerAttribute());
+        }
+
+        [AuthZ] public interface IInterfaceWithAuthZAttribute { }
+        public class InterfaceWithAuthZAttribute : IInterfaceWithAuthZAttribute { }
+
+        [Test]
+        public void Create_InterfaceWithAuthZAttribute_AuthZAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithAuthZAttribute), typeof(InterfaceWithAuthZAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes[0].Should().BeEquivalentTo(new AuthorizeAttribute());
+        }
+
+        [Anonymous] public interface IInterfaceWithAnonymousAttribute { }
+        public class InterfaceWithAnonymousAttribute : IInterfaceWithAnonymousAttribute { }
+
+        [Test]
+        public void Create_InterfaceWithAnonymousAttribute_AnonymousAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithAnonymousAttribute), typeof(InterfaceWithAnonymousAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes[0].Should().BeEquivalentTo(new AllowAnonymousAttribute());
         }
 
         [Path("api/[controller]")] public interface IInterfaceWithPathAttributeWithTemplate { }
