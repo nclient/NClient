@@ -18,7 +18,7 @@ namespace NClient.InterfaceBasedClients
 {
     internal class InterfaceBasedClientValidator
     {
-        public void Ensure<T>(IProxyGenerator proxyGenerator) where T : class
+        public void Ensure<TInterface>(IProxyGenerator proxyGenerator) where TInterface : class
         {
             var clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
             var objectMemberManager = new ObjectMemberManager();
@@ -49,7 +49,7 @@ namespace NClient.InterfaceBasedClients
                 new StubSerializerProvider(),
                 new StubResiliencePolicyProvider());
 
-            var interceptor = new ClientInterceptor<T>(
+            var interceptor = new ClientInterceptor<TInterface>(
                 resilienceHttpClientProvider,
                 clientInvocationProvider,
                 clientMethodBuilder,
@@ -57,7 +57,7 @@ namespace NClient.InterfaceBasedClients
                 guidProvider);
 
             proxyGenerator
-                .CreateInterfaceProxyWithoutTarget<T>(interceptor.ToInterceptor())
+                .CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor())
                 .EnsureValidity();
         }
     }

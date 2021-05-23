@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
+using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
-using NClient.InterfaceBasedClients;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
@@ -11,31 +11,26 @@ namespace NClient.Extensions
 {
     public static class InterfaceBasedClientExtensions
     {
-        public static IInterfaceBasedClientBuilder<T> Use<T>(this INClientBuilder clientBuilder, string host) where T : class
+        public static IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
+            this IInterfaceBasedClientBuilder<TInterface> clientBuilder, IHttpClientFactory httpClientFactory, string? httpClientName = null) where TInterface : class
         {
-            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(), new SystemSerializerProvider());
+            return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
-        public static IInterfaceBasedClientBuilder<T> Use<T>(
-            this INClientBuilder clientBuilder, string host, IHttpClientFactory httpClientFactory, string? httpClientName = null) where T : class
+        public static IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
+            this IInterfaceBasedClientBuilder<TInterface> clientBuilder, HttpMessageHandler httpMessageHandler) where TInterface : class
         {
-            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpClientFactory, httpClientName), new SystemSerializerProvider());
+            return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpMessageHandler));
         }
 
-        public static IInterfaceBasedClientBuilder<T> Use<T>(
-            this INClientBuilder clientBuilder, string host, HttpMessageHandler httpMessageHandler) where T : class
+        public static IInterfaceBasedClientBuilder<TInterface> WithCustomSerializer<TInterface>(
+            this IInterfaceBasedClientBuilder<TInterface> clientBuilder, JsonSerializerOptions jsonSerializerOptions) where TInterface : class
         {
-            return clientBuilder.Use<T>(host, new SystemHttpClientProvider(httpMessageHandler), new SystemSerializerProvider());
+            return clientBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
-        public static IInterfaceBasedClientBuilder<T> SetJsonSerializerOptions<T>(
-            this IInterfaceBasedClientBuilder<T> clientBuilder, JsonSerializerOptions jsonSerializerOptions) where T : class
-        {
-            return clientBuilder.SetCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
-        }
-
-        public static IInterfaceBasedClientBuilder<T> WithResiliencePolicy<T>(
-            this IInterfaceBasedClientBuilder<T> clientBuilder, IAsyncPolicy<HttpResponse> asyncPolicy) where T : class
+        public static IInterfaceBasedClientBuilder<TInterface> WithResiliencePolicy<TInterface>(
+            this IInterfaceBasedClientBuilder<TInterface> clientBuilder, IAsyncPolicy<HttpResponse> asyncPolicy) where TInterface : class
         {
             return clientBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }

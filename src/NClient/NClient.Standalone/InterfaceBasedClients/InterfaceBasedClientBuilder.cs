@@ -1,6 +1,7 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
@@ -19,22 +20,14 @@ using NClient.Core.Resilience;
 
 namespace NClient.InterfaceBasedClients
 {
-    public interface IInterfaceBasedClientBuilder<T> where T : class
-    {
-        IInterfaceBasedClientBuilder<T> SetCustomSerializer(ISerializerProvider serializerProvider);
-        IInterfaceBasedClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
-        IInterfaceBasedClientBuilder<T> WithLogging(ILogger<T> logger);
-        T Build();
-    }
-
-    internal class InterfaceBasedClientBuilder<T> : IInterfaceBasedClientBuilder<T> where T : class
+    internal class InterfaceBasedClientBuilder<TInterface> : IInterfaceBasedClientBuilder<TInterface> where TInterface : class
     {
         private readonly Uri _host;
-        private readonly IHttpClientProvider _httpClientProvider;
         private readonly IProxyGenerator _proxyGenerator;
+        private IHttpClientProvider _httpClientProvider;
         private ISerializerProvider _serializerProvider;
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
-        private ILogger<T>? _logger;
+        private ILogger<TInterface>? _logger;
 
         public InterfaceBasedClientBuilder(
             Uri host, IHttpClientProvider httpClientProvider,
@@ -46,25 +39,31 @@ namespace NClient.InterfaceBasedClients
             _proxyGenerator = proxyGenerator;
         }
 
-        public IInterfaceBasedClientBuilder<T> SetCustomSerializer(ISerializerProvider serializerProvider)
+        public IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        {
+            _httpClientProvider = httpClientProvider;
+            return this;
+        }
+
+        public IInterfaceBasedClientBuilder<TInterface> WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             _serializerProvider = serializerProvider;
             return this;
         }
 
-        public IInterfaceBasedClientBuilder<T> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public IInterfaceBasedClientBuilder<TInterface> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
-        public IInterfaceBasedClientBuilder<T> WithLogging(ILogger<T> logger)
+        public IInterfaceBasedClientBuilder<TInterface> WithLogging(ILogger<TInterface> logger)
         {
             _logger = logger;
             return this;
         }
 
-        public T Build()
+        public TInterface Build()
         {
             var clientInvocationProvider = new ClientInvocationProvider(_proxyGenerator);
             var objectMemberManager = new ObjectMemberManager();
@@ -96,7 +95,7 @@ namespace NClient.InterfaceBasedClients
                 _resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
                 _logger);
 
-            var interceptor = new ClientInterceptor<T>(
+            var interceptor = new ClientInterceptor<TInterface>(
                 resilienceHttpClientProvider,
                 clientInvocationProvider,
                 clientMethodBuilder,
@@ -105,9 +104,9 @@ namespace NClient.InterfaceBasedClients
                 controllerType: null,
                 _logger);
 
-            return (T)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
-                interfaceToProxy: typeof(T),
-                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<T>), typeof(IHttpNClient<T>) },
+            return (TInterface)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
+                interfaceToProxy: typeof(TInterface),
+                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TInterface>), typeof(IHttpNClient<TInterface>) },
                 interceptors: interceptor.ToInterceptor());
         }
     }

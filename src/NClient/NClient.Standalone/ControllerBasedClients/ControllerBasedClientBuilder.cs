@@ -1,6 +1,7 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
@@ -19,23 +20,13 @@ using NClient.Mappers;
 
 namespace NClient.ControllerBasedClients
 {
-    public interface IControllerBasedClientBuilder<TInterface, TController>
-        where TInterface : class
-        where TController : TInterface
-    {
-        IControllerBasedClientBuilder<TInterface, TController> SetCustomSerializer(ISerializerProvider serializerProvider);
-        IControllerBasedClientBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
-        IControllerBasedClientBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger);
-        TInterface Build();
-    }
-
     internal class ControllerBasedClientBuilder<TInterface, TController> : IControllerBasedClientBuilder<TInterface, TController>
         where TInterface : class
         where TController : TInterface
     {
         private readonly Uri _host;
-        private readonly IHttpClientProvider _httpClientProvider;
         private readonly IProxyGenerator _proxyGenerator;
+        private IHttpClientProvider _httpClientProvider;
         private ISerializerProvider _serializerProvider;
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILogger<TInterface>? _logger;
@@ -50,7 +41,13 @@ namespace NClient.ControllerBasedClients
             _proxyGenerator = proxyGenerator;
         }
 
-        public IControllerBasedClientBuilder<TInterface, TController> SetCustomSerializer(ISerializerProvider serializerProvider)
+        public IControllerBasedClientBuilder<TInterface, TController> WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        {
+            _httpClientProvider = httpClientProvider;
+            return this;
+        }
+
+        public IControllerBasedClientBuilder<TInterface, TController> WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             _serializerProvider = serializerProvider;
             return this;
