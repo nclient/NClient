@@ -14,6 +14,8 @@
 		<PackageReference Include="NClient" Version="*-*" />
 		<PackageReference Include="NClient.Standalone" Version="*-*" />
 		<PackageReference Include="NClient.AspNetCore" Version="*-*" />
+		<PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*" />
+		<PackageReference Include="NClient.Providers.Serialization.Newtonsoft" Version="*-*" />
 		<PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*" />
 	</ItemGroup>
 
