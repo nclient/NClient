@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Extensions.DependencyInjection.Tests
+namespace NClient.Extensions.DependencyInjection.Tests.Helpers
 {
     public interface ITestClient
     {
