@@ -17,7 +17,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                
+
                 return new NClientFactoryBuilder()
                     .WithCustomHttpClient(httpClientFactory, httpClientName)
                     .WithCustomSerializer(jsonSerializerOptions)

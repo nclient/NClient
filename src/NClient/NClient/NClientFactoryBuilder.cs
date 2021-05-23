@@ -43,7 +43,7 @@ namespace NClient
         {
             return new NClientFactory(
                 _httpClientProvider,
-                _serializerProvider, 
+                _serializerProvider,
                 _resiliencePolicyProvider,
                 _loggerFactory);
         }

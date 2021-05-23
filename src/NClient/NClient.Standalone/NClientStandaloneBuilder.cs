@@ -21,7 +21,7 @@ namespace NClient
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
         }
-        
+
         public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host) where TInterface : class
         {
             InterfaceBasedValidator.Ensure<TInterface>(ProxyGenerator);

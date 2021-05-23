@@ -30,12 +30,12 @@ namespace NClient
         {
             var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface>(host);
-            
+
             if (_resiliencePolicyProvider is not null)
                 nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
             if (_loggerFactory is not null)
                 nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
-            
+
             return nclientBuilder.Build();
         }
 
@@ -46,12 +46,12 @@ namespace NClient
         {
             var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface, TController>(host);
-            
+
             if (_resiliencePolicyProvider is not null)
                 nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
             if (_loggerFactory is not null)
                 nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
-            
+
             return nclientBuilder.Build();
         }
     }

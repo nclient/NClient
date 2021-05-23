@@ -24,7 +24,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
             client.Should().NotBeNull();
         }
-        
+
         [Test]
         public void AddNClientFactory_JsonSerializerOptionsAndAsyncPolicy_NotBeNull()
         {

@@ -25,26 +25,26 @@ namespace NClient
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _loggerFactory = loggerFactory;
         }
-        
+
         public NClientFactory(
             IHttpClientFactory httpClientFactory,
             string? httpClientName = null,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
-            ILoggerFactory? loggerFactory = null) 
-            : this(httpClientFactory, httpClientName, jsonSerializerOptions: null, 
+            ILoggerFactory? loggerFactory = null)
+            : this(httpClientFactory, httpClientName, jsonSerializerOptions: null,
                 resiliencePolicyProvider, loggerFactory)
         {
         }
-        
+
         public NClientFactory(
             JsonSerializerOptions jsonSerializerOptions,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
-            ILoggerFactory? loggerFactory = null) 
-            : this(httpClientFactory: null, httpClientName: null, jsonSerializerOptions, 
+            ILoggerFactory? loggerFactory = null)
+            : this(httpClientFactory: null, httpClientName: null, jsonSerializerOptions,
                 resiliencePolicyProvider, loggerFactory)
         {
         }
-        
+
         public NClientFactory(
             IHttpClientFactory? httpClientFactory = null,
             string? httpClientName = null,
@@ -52,7 +52,7 @@ namespace NClient
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
-            _httpClientProvider = httpClientFactory is not null 
+            _httpClientProvider = httpClientFactory is not null
                 ? new SystemHttpClientProvider(httpClientFactory, httpClientName)
                 : null;
             _serializerProvider = jsonSerializerOptions is not null
@@ -61,7 +61,7 @@ namespace NClient
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _loggerFactory = loggerFactory;
         }
-        
+
         internal NClientFactory(
             IHttpClientProvider? httpClientProvider = null,
             ISerializerProvider? serializerProvider = null,
@@ -98,7 +98,7 @@ namespace NClient
         {
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface, TController>(host);
-            
+
             if (_httpClientProvider is not null)
                 nclientBuilder = nclientBuilder.WithCustomHttpClient(_httpClientProvider);
             if (_serializerProvider is not null)
@@ -107,7 +107,7 @@ namespace NClient
                 nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
             if (_loggerFactory is not null)
                 nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
-            
+
             return nclientBuilder.Build();
         }
     }
