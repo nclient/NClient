@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.HttpClients;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
@@ -14,64 +13,50 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class AddControllerBasedNClientExtensionsTest
     {
         [Test]
-        public void AddNClient_ClientBuilder_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddNClient(builder => builder
-                .Use<ITestClient, TestController>(host: "http://localhost:5000"));
-
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClient_JsonSerializerOptionsAndAsyncPolicy_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000",
-                new JsonSerializerOptions(),
-                Policy.NoOpAsync<HttpResponse>());
-
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClient_JsonSerializerOptions_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000",
-                new JsonSerializerOptions());
-
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClient_AsyncPolicy_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000",
-                Policy.NoOpAsync<HttpResponse>());
-
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
+            serviceCollection.AddNClient<ITestClient, TestController>(host: "http://localhost:5000");
+
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClient_NamedClient_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddLogging();
+            serviceCollection.AddHttpClient("TestClient");
+
             serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000");
+                host: "http://localhost:5000",
+                httpClientName: "TestClient");
+
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClient_Builder_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+
+            serviceCollection.AddNClient<ITestClient, TestController>(
+                host: "http://localhost:5000", builder => builder);
+
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClient_BuilderWithCustomSettings_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+
+            serviceCollection.AddNClient<ITestClient, TestController>(
+                host: "http://localhost:5000", builder => builder
+                    .WithResiliencePolicy(Policy.NoOpAsync<HttpResponse>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
