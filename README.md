@@ -382,11 +382,20 @@ IMyClient client = NClientProvider
 <a name="features-di"/> 
 
 ## Dependency injection
-`NClient.Extensions.DependencyInjection` package contains `AddNClient` extension methods.
+`NClient.Extensions.DependencyInjection` package contains `AddNClient` extension methods:
 ```C#
 var serviceProvider = new ServiceCollection()
+    .AddHttpClient()
     .AddLogging()
     .AddNClient<IMyClient>(host: "http://localhost:8080")
+    .BuildServiceProvider();
+```
+and `AddNClientFactory`:
+```C#
+var serviceProvider = new ServiceCollection()
+    .AddHttpClient()
+    .AddLogging()
+    .AddNClientFactory()
     .BuildServiceProvider();
 ```
 
