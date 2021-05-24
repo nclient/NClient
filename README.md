@@ -22,10 +22,13 @@ NClient is an automatic type-safe .Net HTTP client that allows you to call web s
   - [Asynchronously calls](#features-async)
   - [HTTP response](#features-response)
   - [HTTP response status code](#features-status-code)
+  - [HttpClient](#features-httpclient)
+  - [Serialization](#features-serialization)
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
-  - [HttpClient](#features-httpclient)
+  - [System.Net.Http.HttpClient](#features-system-httpclient)
+  - [RestSharp](#features-restsharp)
   - [Newtonsoft.Json](#features-newtonsoft)
 - [Documentation](#documentation)  
 - [NuGet Packages](#nuget)  
@@ -176,18 +179,16 @@ IMyClient myClient = new NClientBuilder()
 #### NClientFactory
 The factory will be convenient for creating client instances with the same settings.
 ```C#
-IHttpClientProvider httpClientProvider = ...;
 IResiliencePolicyProvider resiliencePolicyProvider = ...;
 ILoggerFactory loggerFactory = ...;
 
-var clientFactory = new NClientFactory(httpClientProvider, resiliencePolicyProvider, loggerFactory);
+var clientFactory = new NClientFactory(resiliencePolicyProvider, loggerFactory);
 IMyClient myClient = clientFactory.Create<IMyClient>(host: "http://localhost:8080");
 ```
 
 For fluent creation of a factory, you can use the `NClientFactoryBuilder`:
 ```C#
 var clientFactory = new NClientFactoryBuilder()
-    .WithCustomHttpClient(httpClientProvider)
     .WithResiliencePolicy(resiliencePolicyProvider)
     .WithLogging(loggerFactory)
     .Build()
@@ -344,10 +345,34 @@ public Entity[] Get()
 ```
 For information on how to get HTTP status code, see section [Http response](#features-response).
 
+<a name="features-httpclient"/>  
+## HttpClient
+By default, `System.Net.Http.HttpClient` is used for HTTP requests. But you can also create your own implementation of `IHttpClientProvider` and pass it to `WithCustomHttpClient` method:
+```C#
+IHttpClientProvider httpClientProvider = ...;
+
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomHttpClient(httpClientProvider)
+    .Build();
+```
+
+<a name="features-serialization"/>  
+## Serialization
+By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of `ISerializerProvider` and pass it to `WithCustomSerializer` method:
+```C#
+ISerializerProvider serializerProvider = ...;
+
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomSerializer(serializerProvider)
+    .Build();
+```
+
 <a name="features-resilience"/> 
 
 ## Resilience
-To achieve better resilience, you can create a resilience policy using Polly library:
+To achieve better resilience, you can create a resilience policy using `Polly` library:
 ```C#
 var policy = Policy
     .HandleResult<HttpResponse>(x => !x.IsSuccessful)
@@ -400,15 +425,16 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 ```
 
-<a name="features-httpclient"/> 
+<a name="features-system-httpclient"/> 
 
-## HttpClient
+## System.Net.Http.HttpClient
 An `HttpClient` is created for each instance of a client. Keep this in mind, because `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
 ```C#
-var httpClientFactory = ...;
+IHttpClientFactory httpClientFactory = ...;
 
 IMyClient myClient = NClientProvider
-    .Use<IMyClient>(host, httpClientFactory)
+    .Use<IMyClient>(host)
+    .WithCustomHttpClient(httpClientFactory)
     .WithLogging(logger)
     .Build();
 ```
@@ -422,14 +448,25 @@ var serviceProvider = new ServiceCollection()
 For more fine-tuning, you can use a named `HttpClient`:
 ```C#
 IMyClient myClient = NClientProvider
-    .Use<IMyClient>(host, httpClientFactory, httpClientName: nameof(IMyClient))
+    .Use<IMyClient>(host)
+    .WithCustomHttpClient(httpClientFactory, httpClientName: nameof(IMyClient))
     .WithLogging(logger)
+    .Build();
+```
+
+<a name="features-restsharp" />  
+## RestSharp
+To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use `RestSharpHttpClientProvider`:
+```C#
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomHttpClient(new RestSharpHttpClientProvider())
     .Build();
 ```
 
 <a name="features-newtonsoft" />  
 ## Newtonsoft.Json
-By default, System.Text.Json is used for serialization. If you want to use `Newtonsoft.Json`, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
+If you want to use `Newtonsoft.Json` for serialization, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
 ```C#
 IMyClient myClient = NClientProvider
     .Use<IMyClient>(host)
