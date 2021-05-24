@@ -321,6 +321,22 @@ public interface IMyClient
     [PostMethod]
     Task<HttpResponse> PostAsync(Entity entity);
 }
+...
+HttpResponse<Entity> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
+Entity entity = response.EnsureSuccess().Value;
+```
+You can also specify the type of expected error that is returned with failed HTTP statuses:
+```C#
+public interface IMyClient
+{
+    [GetMethod]
+    Task<HttpResponseWithError<Entity, Error>> GetAsync(int id);
+    [PostMethod]
+    Task<HttpResponseWithError<Error>> PostAsync(Entity entity);
+}
+...
+HttpResponseWithError<Entity, Error> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
+Error? error = response.Error;
 ```
 
 <a name="features-status-code"/> 
