@@ -26,6 +26,7 @@ NClient is an automatic type-safe .Net HTTP client that allows you to call web s
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
   - [HttpClient](#features-httpclient)
+  - [Newtonsoft.Json](#features-newtonsoft)
 - [Documentation](#documentation)  
 - [NuGet Packages](#nuget)  
 
@@ -426,6 +427,16 @@ IMyClient myClient = NClientProvider
     .Build();
 ```
 
+<a name="features-newtonsoft" />  
+## Newtonsoft.Json
+By default, System.Text.Json is used for serialization. If you want to use `Newtonsoft.Json`, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
+```C#
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host)
+    .WithCustomSerializer(new NewtonsoftSerializerProvider())
+    .Build();
+```
+
 <a name="documentation" />  
 
 ## Documentation
@@ -436,12 +447,14 @@ You can find NClient documentation and samples [on the website](https://nclient.
 ## NuGet Packages
 | Package name                                             | Description                                            | Dependencies                                           |
 | :------------------------------------------------------- | :----------------------------------------------------- |:------------------------------------------------------ |
-| [NClient](https://www.nuget.org/packages/NClient) | Tools for creating clients from interfaces and controllers including third-party | Castle, System.Text.Json, System.Net.Http, Polly |
-| [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | The same as NClient package, but without third-party | Castle |
+| [NClient](https://www.nuget.org/packages/NClient) | Tools for creating clients from interfaces and controllers including third-party | Castle, System.Text.Json, Microsoft.Extensions.Logging.Abstractions, System.Net.Http, Polly |
+| [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | The same as NClient package, but without third-party | Castle, Microsoft.Extensions.Logging.Abstractions |
 | [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore) | Allows you to annotate controllers via interfaces | Castle, Microsoft.AspNetCore.Mvc.* (Core, ApiExplorer, Cors, DataAnnotations) |
-| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) | Extension methods for registration of clients in ServiceCollection | Castle, Microsoft.Extensions.DependencyInjection, System.Text.Json, System.Net.Http, Polly |
-| [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions) | Abstractions for clients and providers | - |
+| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) | Extension methods for registration of clients in ServiceCollection | Castle, Microsoft.Extensions.DependencyInjection, System.Text.Json, System.Net.Http, Microsoft.Extensions.Logging.Abstractions, Polly |
+| [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions) | Abstractions for clients and providers | Microsoft.Extensions.Logging.Abstractions |
 | [NClient.Annotations](https://www.nuget.org/packages/NClient.Annotations) | Attributes for annotation of client interfaces and controllers | - |
-| [NClient.Providers.Resilience](https://www.nuget.org/packages/NClient.Providers.Resilience) | Polly based resilience policy provider | Polly |
-| [NClient.Providers.HttpClient.System](https://www.nuget.org/packages/NClient.Providers.HttpClient.System) | System.Net.Http.HttpClient based HTTP client provider | System.Text.Json, System.Net.Http |
-| [NClient.Providers.HttpClient.RestSharp](https://www.nuget.org/packages/NClient.Providers.HttpClient.RestSharp) | RestSharp based HTTP client provider | System.Text.Json, RestSharp |
+| [NClient.Providers.HttpClient.System](https://www.nuget.org/packages/NClient.Providers.HttpClient.System) | System.Net.Http.HttpClient based HTTP client provider | System.Text.Json, System.Net.Http, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.HttpClient.RestSharp](https://www.nuget.org/packages/NClient.Providers.HttpClient.RestSharp) | RestSharp based HTTP client provider | System.Text.Json, Microsoft.Extensions.Logging.Abstractions, RestSharp |
+| [NClient.Providers.Serialization.System](https://www.nuget.org/packages/NClient.Providers.Serialization.System) | System.Text.Json based serialization provider for NClient | System.Text.Json, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.Serialization.Newtonsoft](https://www.nuget.org/packages/NClient.Providers.Serialization.Newtonsoft) | SNewtonsoft.Json based serialization provider for NClient | Newtonsoft.Json, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.Resilience](https://www.nuget.org/packages/NClient.Providers.Resilience) | Polly based resilience policy provider | Polly, Microsoft.Extensions.Logging.Abstractions |
