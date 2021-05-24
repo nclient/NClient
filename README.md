@@ -27,9 +27,10 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
-  - [System.Net.Http.HttpClient](#features-system-httpclient)
-  - [RestSharp](#features-restsharp)
-  - [Newtonsoft.Json](#features-newtonsoft)
+  - [System.Net.Http](#features-system-httpclient)
+- [Providers](#providers) 
+  - [RestSharp](#providers-restsharp)
+  - [Newtonsoft.Json](#providers-newtonsoft)
 - [Documentation](#documentation)  
 - [NuGet Packages](#nuget)  
 
@@ -470,7 +471,11 @@ IMyClient myClient = NClientProvider
     .Build();
 ```
 
-<a name="features-restsharp" />  
+<a name="providers" />  
+# Providers
+Providers give additional implementations for sending HTTP requests, serialization, and resilience. You can use the providers listed below or implement your own.
+
+<a name="providers-restsharp" />  
 ## RestSharp
 To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use `RestSharpHttpClientProvider`:
 ```C#
@@ -480,7 +485,7 @@ IMyClient myClient = NClientProvider
     .Build();
 ```
 
-<a name="features-newtonsoft" />  
+<a name="providers-newtonsoft" />  
 ## Newtonsoft.Json
 If you want to use `Newtonsoft.Json` for serialization, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
 ```C#
