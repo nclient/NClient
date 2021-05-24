@@ -11,6 +11,17 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class AddInterfaceBasedNClientExtensionsTest
     {
         [Test]
+        public void AddNClient_WithoutHttpClientAndLogging_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddNClient<ITestClient>(host: "http://localhost:5000");
+
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            client.Should().NotBeNull();
+        }
+        
+        [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();

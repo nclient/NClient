@@ -13,13 +13,8 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-                return new NClientFactoryBuilder()
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(loggerFactory)
-                    .Build();
+                var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
+                return nclientFactoryBuilder.Build();
             });
         }
 
@@ -28,14 +23,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var nclientFactoryBuilder = new NClientFactoryBuilder();
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-                nclientFactoryBuilder
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(loggerFactory);
-
+                var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
                 return configure(nclientFactoryBuilder).Build();
             });
         }
@@ -45,16 +33,25 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var nclientFactoryBuilder = new NClientFactoryBuilder();
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-                nclientFactoryBuilder
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(loggerFactory);
-
+                var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
                 return configure(serviceProvider, nclientFactoryBuilder).Build();
             });
+        }
+        
+        private static INClientFactoryBuilder PreBuild(
+            IServiceProvider serviceProvider, string? httpClientName)
+        {
+            var nclientFactoryBuilder = new NClientFactoryBuilder();
+                
+            var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
+            if (httpClientFactory is not null)
+                nclientFactoryBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
+
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            if (loggerFactory is not null)
+                nclientFactoryBuilder.WithLogging(loggerFactory);
+
+            return nclientFactoryBuilder;
         }
     }
 }

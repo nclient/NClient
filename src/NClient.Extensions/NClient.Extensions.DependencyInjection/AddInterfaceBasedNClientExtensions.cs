@@ -14,14 +14,8 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-
-                return new NClientBuilder()
-                    .Use<TInterface>(host)
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(logger)
-                    .Build();
+                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
+                return nclientBuilder.Build();
             });
         }
 
@@ -32,14 +26,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-
-                var nclientBuilder = new NClientBuilder()
-                    .Use<TInterface>(host)
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(logger);
-
+                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
                 return configure(nclientBuilder).Build();
             });
         }
@@ -51,16 +38,27 @@ namespace NClient.Extensions.DependencyInjection
         {
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var logger = serviceProvider.GetRequiredService<ILogger<TInterface>>();
-
-                var nclientBuilder = new NClientBuilder()
-                    .Use<TInterface>(host)
-                    .WithCustomHttpClient(httpClientFactory, httpClientName)
-                    .WithLogging(logger);
-
+                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
                 return configure(serviceProvider, nclientBuilder).Build();
             });
+        }
+        
+        private static IInterfaceBasedClientBuilder<TInterface> PreBuild<TInterface>(
+            IServiceProvider serviceProvider, string host, string? httpClientName)
+            where TInterface : class
+        {
+            var nclientBuilder = new NClientBuilder()
+                .Use<TInterface>(host);
+                
+            var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
+            if (httpClientFactory is not null)
+                nclientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
+
+            var logger = serviceProvider.GetService<ILogger<TInterface>>();
+            if (logger is not null)
+                nclientBuilder.WithLogging(logger);
+
+            return nclientBuilder;
         }
     }
 }
