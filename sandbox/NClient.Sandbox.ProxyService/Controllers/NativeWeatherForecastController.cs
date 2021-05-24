@@ -23,6 +23,8 @@ namespace NClient.Sandbox.ProxyService.Controllers
         }
 
         [HttpGet("{filter.id}")]
+        [ProducesResponseType(typeof(WeatherForecastDto), 200)]
+        [ProducesResponseType(typeof(void), 400)]
         public Task<WeatherForecastDto> GetAsync([FromQuery(Name = "filter")] WeatherForecastFilter weatherForecastFilter)
         {
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
@@ -40,6 +42,13 @@ namespace NClient.Sandbox.ProxyService.Controllers
         public Task PutAsync(WeatherForecastDto weatherForecastDto)
         {
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
+            return Task.FromResult(0);
+        }
+
+        [HttpDelete]
+        public Task Delete(int? id = null)
+        {
+            _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
             return Task.FromResult(0);
         }
     }

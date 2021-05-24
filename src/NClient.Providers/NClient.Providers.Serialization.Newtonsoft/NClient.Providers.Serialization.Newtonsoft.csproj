@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>$(AssemblyName)</PackageId>
+        <VersionPrefix>$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>NClient;HttpClient;Api;WebApi;Rest;Json;Newtonsoft</PackageTags>
+        <Description>Newtonsoft.Json based serialization provider for NClient.</Description>
+        <Authors>smolchanovsky</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <IsPackable>true</IsPackable>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Configurations>Debug;Release</Configurations>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+</Project>

@@ -1,40 +1,47 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Clients;
+using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Exceptions.Providers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
+using NClient.Core.HttpClients;
+using NClient.Core.Interceptors.ClientInvocations;
+using NClient.Core.MethodBuilders;
 using NClient.Core.RequestBuilders;
+using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
 namespace NClient.Core.Interceptors
 {
     internal class ClientInterceptor<T> : AsyncInterceptorBase
     {
-        private readonly IProxyGenerator _proxyGenerator;
-        private readonly IHttpClientProvider _httpClientProvider;
+        private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
+        private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
-        private readonly IResiliencePolicyProvider _defaultResiliencePolicyProvider;
+        private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
 
         public ClientInterceptor(
-            IProxyGenerator proxyGenerator,
-            IHttpClientProvider httpClientProvider,
+            IResilienceHttpClientProvider resilienceHttpClientProvider,
+            IClientInvocationProvider clientInvocationProvider,
+            IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
-            IResiliencePolicyProvider defaultResiliencePolicyProvider,
+            IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
-            _proxyGenerator = proxyGenerator;
-            _httpClientProvider = httpClientProvider;
+            _resilienceHttpClientProvider = resilienceHttpClientProvider;
+            _clientInvocationProvider = clientInvocationProvider;
+            _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
-            _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
+            _guidProvider = guidProvider;
             _controllerType = controllerType;
             _logger = logger;
         }
@@ -42,145 +49,101 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            var requestId = Guid.NewGuid();
-            await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<HttpResponse>, invocation, requestId).ConfigureAwait(false);
+            var requestId = _guidProvider.Create();
+            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
+            await InvokeWithLoggingExceptionsAsync(async (inv, id) =>
+            {
+                return (await ProcessInvocationAsync<HttpResponse>(inv, id).ConfigureAwait(false))
+                    .EnsureSuccess();
+            }, clientInvocation, requestId).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            var requestId = Guid.NewGuid();
-            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, invocation, requestId).ConfigureAwait(false);
+            var requestId = _guidProvider.Create();
+            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
+            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, clientInvocation, requestId).ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation, Guid requestId)
+        private async Task<TResult> ProcessInvocationAsync<TResult>(ClientInvocation clientInvocation, Guid requestId)
         {
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
-            var clientType = _controllerType ?? typeof(T);
-            var clientMethod = _controllerType is null
-                ? invocation.Method
-                : TryGetMethodImpl(_controllerType, interfaceType: typeof(T), invocation.Method);
-            var clientMethodArguments = invocation.Arguments;
-            var resiliencePolicyProvider = _defaultResiliencePolicyProvider;
-
-            if (IsDefaultNClientMethod(invocation.Method))
-            {
-                var clientMethodInvocation = invocation.Arguments[0];
-                if (invocation.Arguments[0] is null)
-                    throw InnerExceptionFactory.NullArgument(invocation.Method.GetParameters()[0].Name);
-                var customResiliencePolicyProvider = (IResiliencePolicyProvider?)invocation.Arguments[1];
-
-                var keepDataInterceptor = new KeepDataInterceptor();
-                var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(typeof(T), keepDataInterceptor);
-                ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
-                var innerInvocation = keepDataInterceptor.Invocation!;
-
-                clientType = _controllerType ?? typeof(T);
-                clientMethod = _controllerType is null
-                    ? innerInvocation.Method
-                    : TryGetMethodImpl(_controllerType, interfaceType: typeof(T), innerInvocation.Method);
-                clientMethodArguments = innerInvocation.Arguments;
-                resiliencePolicyProvider = customResiliencePolicyProvider ?? _defaultResiliencePolicyProvider;
-            }
-
-            var result = await ExecuteRequestAsync<TResult>(clientType!, clientMethod!, clientMethodArguments, resiliencePolicyProvider, requestId)
+            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
+            var request = _requestBuilder.Build(requestId, clientMethod, clientInvocation.MethodArguments);
+            var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
                 .ConfigureAwait(false);
 
             _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
             return result;
         }
 
-        private async Task<TResult> ExecuteRequestAsync<TResult>(
-            Type clientType, MethodInfo clientMethod, object[] clientMethodArguments, IResiliencePolicyProvider resiliencePolicyProvider, Guid requestId)
+        private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
-            var request = _requestBuilder.Build(clientType, clientMethod, clientMethodArguments);
-            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, requestId);
+            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
 
-            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
-                ? typeof(TResult).GetGenericArguments().First()
-                : typeof(HttpResponse) == typeof(TResult)
-                    ? null
-                    : typeof(TResult);
-
-            var response = await resiliencePolicyProvider
-                .Create()
-                .ExecuteAsync(() => ExecuteRequestWithLoggingAsync(request, requestId, responseBodyType))
+            var response = await _resilienceHttpClientProvider
+                .Create(resiliencePolicyProvider)
+                .ExecuteAsync(request, bodyType, errorType)
                 .ConfigureAwait(false);
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
-            {
-                _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
                 return (TResult)(object)response;
-            }
 
-            if (!response.IsSuccessful)
-                throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
-
-            _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
+            response.EnsureSuccess();
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
         }
 
-        private async Task<HttpResponse> ExecuteRequestWithLoggingAsync(HttpRequest request, Guid requestId, Type? bodyType = null)
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
         {
-            var client = _httpClientProvider.Create();
-            try
-            {
-                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", requestId);
-                var response = await client.ExecuteAsync(request, bodyType).ConfigureAwait(false);
-                if (response.IsSuccessful)
-                    _logger?.LogDebug("Request attempt finished with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, requestId);
-                else
-                    _logger?.LogWarning(response.ErrorException, "Request attempt failed with code {responseStatusCode} and error message: '{errorMessage}'. Request id: '{requestId}'.",
-                        response.StatusCode, response.ErrorMessage, requestId);
-                return response;
-            }
-            catch (Exception e)
-            {
-                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", requestId);
-                throw;
-            }
+            var resultType = typeof(TResult);
+
+            if (resultType == typeof(HttpResponse))
+                return (null, null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
+                return (null, resultType.GetGenericArguments().Single());
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
+                return (resultType.GetGenericArguments().Single(), null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
+                return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
+
+            return (resultType, null);
+        }
+
+        private static bool IsAssignableFromGeneric<TSource>(Type destType)
+        {
+            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
         private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
-            Func<IInvocation, Guid, Task<TResult>> processInvocation, IInvocation invocation, Guid requestId)
+            Func<ClientInvocation, Guid, Task<TResult>> processInvocation, ClientInvocation clientInvocation, Guid requestId)
         {
+            var clientName = clientInvocation.ClientType.Name;
+            var methodName = clientInvocation.MethodInfo.Name;
+
             try
             {
-                return await processInvocation(invocation, requestId).ConfigureAwait(false);
+                return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);
+            }
+            catch (NClientException e) when (e is IClientInfoProviderException clientInfoProviderException)
+            {
+                _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
+                throw clientInfoProviderException.WithRequestInfo(clientName, methodName);
             }
             catch (NClientException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw;
+                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw;
+                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
             }
-        }
-
-        private static MethodInfo? TryGetMethodImpl(Type implType, Type interfaceType, MethodInfo interfaceMethod)
-        {
-            if (implType.GetInterfaces().All(x => x != interfaceType))
-                return null;
-
-            var interfaceMapping = implType.GetInterfaceMap(interfaceType);
-            var methodPairs = interfaceMapping.InterfaceMethods
-                .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
-            return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
-        }
-
-        //TODO: Solution is not good enough
-        private static bool IsDefaultNClientMethod(MethodInfo method)
-        {
-            if (typeof(IResilienceNClient<>).GetMethods().Any(x => x.Name == method.Name))
-                return true;
-            if (typeof(IHttpNClient<>).GetMethods().Any(x => x.Name == method.Name))
-                return true;
-
-            return false;
         }
     }
 }

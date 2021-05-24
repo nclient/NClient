@@ -1,18 +1,8 @@
-﻿using System;
-
-namespace NClient.Core.Exceptions
+﻿namespace NClient.Core.Exceptions
 {
-    public class InvalidRouteNClientException : NClientException
+    public class InvalidRouteNClientException : RequestNClientException
     {
-        public InvalidRouteNClientException()
-        {
-        }
-
         public InvalidRouteNClientException(string message) : base(message)
-        {
-        }
-
-        public InvalidRouteNClientException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

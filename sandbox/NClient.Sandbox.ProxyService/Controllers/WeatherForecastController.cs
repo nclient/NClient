@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NClient.Annotations;
+using NClient.AspNetCore.Exceptions;
 using NClient.Sandbox.ProxyService.Clients;
 using NClient.Sandbox.ProxyService.Facade;
 using NClient.Sandbox.ProxyService.Facade.Dto;
@@ -24,6 +27,9 @@ namespace NClient.Sandbox.ProxyService.Controllers
 
         public Task<WeatherForecastDto> GetAsync(WeatherForecastFilter weatherForecastFilter)
         {
+            if (weatherForecastFilter.Id < 0)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
         }
@@ -37,6 +43,12 @@ namespace NClient.Sandbox.ProxyService.Controllers
         public Task PutAsync(WeatherForecastDto weatherForecastDto)
         {
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was updated (not really).");
+            return Task.FromResult(0);
+        }
+
+        public Task Delete(int? id = null)
+        {
+            _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
             return Task.FromResult(0);
         }
     }

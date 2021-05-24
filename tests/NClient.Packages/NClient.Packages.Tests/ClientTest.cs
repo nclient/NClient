@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Clients;
+using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Extensions.DependencyInjection;
@@ -39,12 +40,13 @@ namespace NClient.Packages.Tests
             const int id = 1;
             const string host = "http://localhost:5001";
             var policy = Policy
-                .Handle<Exception>()
+                .HandleResult<HttpResponse>(x => !x.IsSuccessful)
+                .Or<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
-                .AddLogging()
                 .AddHttpClient()
                 .AddNClient<ITestController, TestController>(host, policy)
+                .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITestController>();
             using var server = RunMockServer(host, id);
@@ -68,12 +70,13 @@ namespace NClient.Packages.Tests
             const int id = 1;
             const string host = "http://localhost:5002";
             var policy = Policy
-                .Handle<Exception>()
+                .HandleResult<HttpResponse>(x => !x.IsSuccessful)
+                .Or<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
-                .AddLogging()
                 .AddHttpClient()
                 .AddNClient<ITest>(host, policy)
+                .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();
             using var server = RunMockServer(host, id);
