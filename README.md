@@ -245,6 +245,8 @@ public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value:
 public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
 ```
 This attribute is optional.
+#### Authorization
+In ASP.NET there are `AuthorizeAttribute` and `AllowAnonymousAttribute` attributes. Their equivalents are `AuthorizedAttribute` and `AnonymousAttribute`.
 
 
 <a name="features-routing"/> 
