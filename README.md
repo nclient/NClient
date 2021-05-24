@@ -183,6 +183,15 @@ var clientFactory = new NClientFactory(httpClientProvider, resiliencePolicyProvi
 IMyClient myClient = clientFactory.Create<IMyClient>(host: "http://localhost:8080");
 ```
 
+For fluent creation of a factory, you can use the `NClientFactoryBuilder`:
+```C#
+var clientFactory = new NClientFactoryBuilder()
+    .WithCustomHttpClient(httpClientProvider)
+    .WithResiliencePolicy(resiliencePolicyProvider)
+    .WithLogging(loggerFactory)
+    .Build()
+```
+
 <a name="features-annotation"/>  
 
 ## Annotation
