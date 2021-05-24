@@ -363,6 +363,7 @@ public Entity[] Get()
 For information on how to get HTTP status code, see section [Http response](#features-response).
 
 <a name="features-httpclient"/>  
+
 ## HttpClient
 By default, `System.Net.Http.HttpClient` is used for HTTP requests. But you can also create your own implementation of `IHttpClientProvider` and pass it to `WithCustomHttpClient` method:
 ```C#
@@ -375,6 +376,7 @@ IMyClient myClient = NClientProvider
 ```
 
 <a name="features-serialization"/>  
+
 ## Serialization
 By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of `ISerializerProvider` and pass it to `WithCustomSerializer` method:
 ```C#
@@ -472,10 +474,12 @@ IMyClient myClient = NClientProvider
 ```
 
 <a name="providers" />  
+
 # Providers
-Providers give additional implementations for sending HTTP requests, serialization, and resilience. You can use the providers listed below or implement your own.
+Providers give additional implementations for sending HTTP requests, serialization, and resilience. You can use the providers listed below or implement your own.  
 
 <a name="providers-restsharp" />  
+
 ## RestSharp
 To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use `RestSharpHttpClientProvider`:
 ```C#
@@ -486,6 +490,7 @@ IMyClient myClient = NClientProvider
 ```
 
 <a name="providers-newtonsoft" />  
+
 ## Newtonsoft.Json
 If you want to use `Newtonsoft.Json` for serialization, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
 ```C#
