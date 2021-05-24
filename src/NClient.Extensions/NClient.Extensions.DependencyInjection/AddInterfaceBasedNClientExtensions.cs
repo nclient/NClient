@@ -42,14 +42,14 @@ namespace NClient.Extensions.DependencyInjection
                 return configure(serviceProvider, nclientBuilder).Build();
             });
         }
-        
+
         private static IInterfaceBasedClientBuilder<TInterface> PreBuild<TInterface>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TInterface : class
         {
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface>(host);
-                
+
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             if (httpClientFactory is not null)
                 nclientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);

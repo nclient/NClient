@@ -37,12 +37,12 @@ namespace NClient.Extensions.DependencyInjection
                 return configure(serviceProvider, nclientFactoryBuilder).Build();
             });
         }
-        
+
         private static INClientFactoryBuilder PreBuild(
             IServiceProvider serviceProvider, string? httpClientName)
         {
             var nclientFactoryBuilder = new NClientFactoryBuilder();
-                
+
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             if (httpClientFactory is not null)
                 nclientFactoryBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);

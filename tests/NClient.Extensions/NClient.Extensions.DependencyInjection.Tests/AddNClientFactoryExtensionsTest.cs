@@ -20,7 +20,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
-        
+
         [Test]
         public void AddNClientFactory_Default_NotBeNull()
         {

@@ -22,7 +22,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();
         }
-        
+
         [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {

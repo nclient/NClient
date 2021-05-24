@@ -55,7 +55,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface, TController>(host);
-                
+
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             if (httpClientFactory is not null)
                 nclientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
