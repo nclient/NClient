@@ -13,69 +13,48 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class AddNClientFactoryExtensionsTest
     {
         [Test]
-        public void AddNClientFactory_ClientFactoryBuilder_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddNClientFactory(builder => builder);
-
-            var nclientFactory = serviceCollection.BuildServiceProvider()
-                .GetRequiredService<INClientFactory>();
-            var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClientFactory_JsonSerializerOptionsAndAsyncPolicy_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClientFactory(
-                new JsonSerializerOptions(),
-                Policy.NoOpAsync<HttpResponse>());
-
-            var nclientFactory = serviceCollection.BuildServiceProvider()
-                .GetRequiredService<INClientFactory>();
-            var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClientFactory_JsonSerializerOptions_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClientFactory(new JsonSerializerOptions());
-
-            var nclientFactory = serviceCollection.BuildServiceProvider()
-                .GetRequiredService<INClientFactory>();
-            var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClientFactory_AsyncPolicy_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClientFactory(Policy.NoOpAsync<HttpResponse>());
-
-            var nclientFactory = serviceCollection.BuildServiceProvider()
-                .GetRequiredService<INClientFactory>();
-            var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClientFactory_OnlyHost_NotBeNull()
+        public void AddNClientFactory_Default_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClientFactory();
 
-            var nclientFactory = serviceCollection.BuildServiceProvider()
-                .GetRequiredService<INClientFactory>();
-            var client = nclientFactory.Create<ITestClient>(host: "http://localhost:5000");
+            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClientFactory_NamedClient_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddLogging();
+            serviceCollection.AddHttpClient("TestClient");
+
+            serviceCollection.AddNClientFactory(httpClientName: "TestClient");
+
+            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClientFactory_Builder_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+
+            serviceCollection.AddNClientFactory(builder => builder);
+
+            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            client.Should().NotBeNull();
+        }
+
+        [Test]
+        public void AddNClientFactory_BuilderWithCustomSettings_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+
+            serviceCollection.AddNClientFactory(builder => builder
+                .WithResiliencePolicy(Policy.NoOpAsync<HttpResponse>()));
+
+            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
     }
