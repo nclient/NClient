@@ -26,7 +26,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(1));
+                    .WithBodyAsJson(id));
 
             return api;
         }

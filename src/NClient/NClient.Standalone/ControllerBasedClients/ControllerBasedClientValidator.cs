@@ -10,6 +10,7 @@ using NClient.Core.MethodBuilders;
 using NClient.Core.MethodBuilders.Providers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
+using NClient.Core.Serialization;
 using NClient.Core.Validation;
 using NClient.Mappers;
 
@@ -47,6 +48,7 @@ namespace NClient.ControllerBasedClients
 
             var resilienceHttpClientProvider = new ResilienceHttpClientProvider(
                 new StubHttpClientProvider(),
+                new StubSerializerProvider(),
                 new StubResiliencePolicyProvider());
 
             var interceptor = new ClientInterceptor<TInterface>(

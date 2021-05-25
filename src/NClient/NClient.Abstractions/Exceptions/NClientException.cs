@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Exceptions
+namespace NClient.Abstractions.Exceptions
 {
     public class NClientException : Exception
     {

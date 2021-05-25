@@ -3,30 +3,20 @@ using System.Net;
 
 namespace NClient.Abstractions.HttpClients
 {
-    public class HttpResponse<T> : HttpResponse
+    public class HttpResponse<TValue> : HttpResponse
     {
-        public T? Value { get; }
+        public TValue? Value { get; }
 
-        internal HttpResponse(HttpRequest httpRequest, T value) : base(httpRequest)
+        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value)
+            : base(httpResponse, httpRequest)
         {
             Value = value;
         }
 
-        public HttpResponse(HttpRequest httpRequest, HttpResponse httpResponse, T? value) : base(httpRequest)
+        public new HttpResponse<TValue> EnsureSuccess()
         {
-            Value = value;
-            ContentType = httpResponse.ContentType;
-            ContentLength = httpResponse.ContentLength;
-            ContentEncoding = httpResponse.ContentEncoding;
-            Content = httpResponse.Content;
-            StatusCode = httpResponse.StatusCode;
-            StatusDescription = httpResponse.StatusDescription;
-            ResponseUri = httpResponse.ResponseUri;
-            Server = httpResponse.Server;
-            Headers = httpResponse.Headers;
-            ErrorMessage = httpResponse.ErrorMessage;
-            ErrorException = httpResponse.ErrorException;
-            ProtocolVersion = httpResponse.ProtocolVersion;
+            base.EnsureSuccess();
+            return this;
         }
     }
 
@@ -48,9 +38,32 @@ namespace NClient.Abstractions.HttpClients
 
         public bool IsSuccessful => (int)StatusCode >= 200 && (int)StatusCode <= 299;
 
-        public HttpResponse(HttpRequest request)
+        public HttpResponse(HttpRequest httpRequest)
         {
-            Request = request;
+            Request = httpRequest;
+        }
+
+        internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
+        {
+            ContentType = httpResponse.ContentType;
+            ContentLength = httpResponse.ContentLength;
+            ContentEncoding = httpResponse.ContentEncoding;
+            Content = httpResponse.Content;
+            StatusCode = httpResponse.StatusCode;
+            StatusDescription = httpResponse.StatusDescription;
+            ResponseUri = httpResponse.ResponseUri;
+            Server = httpResponse.Server;
+            Headers = httpResponse.Headers;
+            ErrorMessage = httpResponse.ErrorMessage;
+            ErrorException = httpResponse.ErrorException;
+            ProtocolVersion = httpResponse.ProtocolVersion;
+        }
+
+        public HttpResponse EnsureSuccess()
+        {
+            if (!IsSuccessful)
+                throw ErrorException!;
+            return this;
         }
     }
 }

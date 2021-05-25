@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text.Json.Serialization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
 using NClient.Core.Helpers;

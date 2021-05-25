@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
+using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Core.Exceptions;

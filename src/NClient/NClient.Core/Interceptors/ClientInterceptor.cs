@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Exceptions.Providers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
@@ -51,10 +53,8 @@ namespace NClient.Core.Interceptors
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
             await InvokeWithLoggingExceptionsAsync(async (inv, id) =>
             {
-                var response = await ProcessInvocationAsync<HttpResponse>(inv, id);
-                if (!response.IsSuccessful)
-                    throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
-                return response;
+                return (await ProcessInvocationAsync<HttpResponse>(inv, id).ConfigureAwait(false))
+                    .EnsureSuccess();
             }, clientInvocation, requestId).ConfigureAwait(false);
         }
 
@@ -81,22 +81,42 @@ namespace NClient.Core.Interceptors
 
         private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
-            var responseBodyType = typeof(HttpResponse).IsAssignableFrom(typeof(TResult)) && typeof(TResult).IsGenericType
-                ? typeof(TResult).GetGenericArguments().First()
-                : typeof(HttpResponse) == typeof(TResult)
-                    ? null
-                    : typeof(TResult);
+            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
 
             var response = await _resilienceHttpClientProvider
                 .Create(resiliencePolicyProvider)
-                .ExecuteAsync(request, responseBodyType)
+                .ExecuteAsync(request, bodyType, errorType)
                 .ConfigureAwait(false);
 
             if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 return (TResult)(object)response;
-            if (!response.IsSuccessful)
-                throw OuterExceptionFactory.HttpRequestFailed(response.StatusCode, response.ErrorMessage);
+
+            response.EnsureSuccess();
             return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
+        }
+
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
+        {
+            var resultType = typeof(TResult);
+
+            if (resultType == typeof(HttpResponse))
+                return (null, null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
+                return (null, resultType.GetGenericArguments().Single());
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
+                return (resultType.GetGenericArguments().Single(), null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
+                return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
+
+            return (resultType, null);
+        }
+
+        private static bool IsAssignableFromGeneric<TSource>(Type destType)
+        {
+            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
         private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
@@ -109,10 +129,10 @@ namespace NClient.Core.Interceptors
             {
                 return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);
             }
-            catch (RequestNClientException e)
+            catch (NClientException e) when (e is IClientInfoProviderException clientInfoProviderException)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw e.WithRequestInfo(clientName, methodName);
+                throw clientInfoProviderException.WithRequestInfo(clientName, methodName);
             }
             catch (NClientException e)
             {

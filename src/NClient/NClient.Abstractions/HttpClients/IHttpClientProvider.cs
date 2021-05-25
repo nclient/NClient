@@ -1,7 +1,9 @@
-﻿namespace NClient.Abstractions.HttpClients
+﻿using NClient.Abstractions.Serialization;
+
+namespace NClient.Abstractions.HttpClients
 {
     public interface IHttpClientProvider
     {
-        IHttpClient Create();
+        IHttpClient Create(ISerializer serializer);
     }
 }
