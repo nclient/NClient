@@ -16,6 +16,8 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Polly;
 
+#pragma warning disable 618
+
 namespace NClient.Packages.Tests
 {
     [Parallelizable]
