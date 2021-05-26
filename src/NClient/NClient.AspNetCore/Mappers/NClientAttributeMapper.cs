@@ -23,6 +23,9 @@ namespace NClient.AspNetCore.Mappers
                 GetMethodAttribute x => x.Template is null
                     ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
                     : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                HeadMethodAttribute x => x.Template is null
+                    ? new HttpHeadAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpHeadAttribute(x.Template) { Order = x.Order, Name = x.Name },
                 PostMethodAttribute x => x.Template is null
                     ? new HttpPostAttribute { Order = x.Order, Name = x.Name }
                     : new HttpPostAttribute(x.Template) { Order = x.Order, Name = x.Name },
@@ -32,6 +35,14 @@ namespace NClient.AspNetCore.Mappers
                 DeleteMethodAttribute x => x.Template is null
                     ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
                     : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                OptionsMethodAttribute x => x.Template is null
+                    ? new HttpOptionsAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpOptionsAttribute(x.Template) { Order = x.Order, Name = x.Name },
+#if !NETSTANDARD2_0
+                PatchMethodAttribute x => x.Template is null
+                    ? new HttpPatchAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPatchAttribute(x.Template) { Order = x.Order, Name = x.Name },
+#endif
 
                 ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
 
