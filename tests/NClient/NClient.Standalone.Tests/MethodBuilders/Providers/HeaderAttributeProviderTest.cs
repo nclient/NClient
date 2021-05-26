@@ -41,6 +41,13 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         private interface IInherited { void Method(); }
         [Inherited("client-header-1", "value"), Header("client-header-2", "value")]
         private interface IInheritedAndHeader { void Method(); }
+        
+        public interface IClientInheritance : IControllerInheritance { void Method(); }
+        [Header("client-header-1", "value")] public interface IControllerInheritance { }
+
+        public interface IClientDeepInheritance : IClientDeepInheritanceBase { void Method(); }
+        public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
+        [Header("client-header-1", "value")] public interface IControllerDeepInheritance { }
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -88,6 +95,13 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(typeof(IInheritedAndHeader), GetMethodInfo<IInheritedAndHeader>(), Array.Empty<MethodParam>(),
                     new[] { new InheritedAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value") })
                 .SetName("Inherited and header attribute"),
+            
+            new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(), Array.Empty<MethodParam>(),
+                    new[] {  new HeaderAttribute("client-header-1", "value") })
+                .SetName("With inheritance"),
+            new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(), Array.Empty<MethodParam>(),
+                    new[] {  new HeaderAttribute("client-header-1", "value") })
+                .SetName("With deep inheritance"),
         };
 
         public static IEnumerable InvalidTestCases = new[]

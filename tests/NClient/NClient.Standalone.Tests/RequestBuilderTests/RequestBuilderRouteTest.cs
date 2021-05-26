@@ -5,6 +5,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.Core.Exceptions;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
@@ -276,6 +277,18 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Invoking(x => x.Invoke())
                 .Should()
                 .Throw<InvalidRouteNClientException>();
+        }
+        
+        [Version("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken {[GetMethod] int Method(); }
+
+        [Test]
+        public void Build_PathWithApiVersionToken_RouteWithApiVersion()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IPathWithApiVersionToken>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/v1.0"),
+                HttpMethod.Get);
         }
     }
 }

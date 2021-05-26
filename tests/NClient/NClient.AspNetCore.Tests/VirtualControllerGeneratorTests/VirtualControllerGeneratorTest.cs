@@ -8,6 +8,7 @@ using NClient.Annotations;
 using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Mappers;
@@ -114,6 +115,53 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new AllowAnonymousAttribute());
+        }
+        
+        [XVersion("1.0")] public interface IInterfaceWithVersionAttribute { }
+        public class InterfaceWithVersionAttribute : IInterfaceWithVersionAttribute { }
+
+        [Test]
+        public void Create_InterfaceWithVersionAttribute_ApiVersionAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithVersionAttribute), typeof(InterfaceWithVersionAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes[0].Should().BeEquivalentTo(new ApiVersionAttribute("1.0"));
+        }
+        
+        public interface IInterfaceWithUseVersionAttribute { [XUseVersion("1.0")] void Method(); }
+        public class InterfaceWithUseVersionAttribute : IInterfaceWithUseVersionAttribute { public void Method() {} }
+
+        [Test]
+        public void Create_InterfaceWithUseVersionAttribute_MapToApiVersionAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithUseVersionAttribute), typeof(InterfaceWithUseVersionAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(0);
+            var methodInfo = virtualControllerType.GetMethod(nameof(InterfaceWithUseVersionAttribute.Method))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
+            methodAttributes.Length.Should().Be(1);
+            methodAttributes.Should().BeEquivalentTo(new MapToApiVersionAttribute("1.0"));
         }
 
         [Path("api/[controller]")] public interface IInterfaceWithPathAttributeWithTemplate { }
