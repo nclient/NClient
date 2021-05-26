@@ -1,4 +1,4 @@
-# <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient: automatic type-safe .Net HTTP client
+# <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient: automatic type-safe .NET HTTP client
 
 ![Nuget](https://img.shields.io/nuget/v/NClient)
 ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/NClient?label=nuget-pre)
@@ -7,7 +7,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an automatic type-safe .Net HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, HTTP contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
+NClient is an automatic type-safe .NET HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, HTTP contexts, retry policies, and logging. The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.
 
 ## Table of Contents
 - [Why use NClient?](#why)  
@@ -22,10 +22,15 @@ NClient is an automatic type-safe .Net HTTP client that allows you to call web s
   - [Asynchronously calls](#features-async)
   - [HTTP response](#features-response)
   - [HTTP response status code](#features-status-code)
+  - [HttpClient](#features-httpclient)
+  - [Serialization](#features-serialization)
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
-  - [HttpClient](#features-httpclient)
+  - [System.Net.Http](#features-system-httpclient)
+- [Providers](#providers) 
+  - [RestSharp](#providers-restsharp)
+  - [Newtonsoft.Json](#providers-newtonsoft)
 - [Documentation](#documentation)  
 - [NuGet Packages](#nuget)  
 
@@ -175,12 +180,19 @@ IMyClient myClient = new NClientBuilder()
 #### NClientFactory
 The factory will be convenient for creating client instances with the same settings.
 ```C#
-IHttpClientProvider httpClientProvider = ...;
 IResiliencePolicyProvider resiliencePolicyProvider = ...;
 ILoggerFactory loggerFactory = ...;
 
-var clientFactory = new NClientFactory(httpClientProvider, resiliencePolicyProvider, loggerFactory);
+var clientFactory = new NClientFactory(resiliencePolicyProvider, loggerFactory);
 IMyClient myClient = clientFactory.Create<IMyClient>(host: "http://localhost:8080");
+```
+
+For fluent creation of a factory, you can use the `NClientFactoryBuilder`:
+```C#
+var clientFactory = new NClientFactoryBuilder()
+    .WithResiliencePolicy(resiliencePolicyProvider)
+    .WithLogging(loggerFactory)
+    .Build()
 ```
 
 <a name="features-annotation"/>  
@@ -245,6 +257,8 @@ public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value:
 public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
 ```
 This attribute is optional.
+#### Authorization
+In ASP.NET there are `AuthorizeAttribute` and `AllowAnonymousAttribute` attributes. Their equivalents are `AuthorizedAttribute` and `AnonymousAttribute`.
 
 
 <a name="features-routing"/> 
@@ -308,6 +322,22 @@ public interface IMyClient
     [PostMethod]
     Task<HttpResponse> PostAsync(Entity entity);
 }
+...
+HttpResponse<Entity> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
+Entity entity = response.EnsureSuccess().Value;
+```
+You can also specify the type of expected error that is returned with failed HTTP statuses:
+```C#
+public interface IMyClient
+{
+    [GetMethod]
+    Task<HttpResponseWithError<Entity, Error>> GetAsync(int id);
+    [PostMethod]
+    Task<HttpResponseWithError<Error>> PostAsync(Entity entity);
+}
+...
+HttpResponseWithError<Entity, Error> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
+Error? error = response.Error;
 ```
 
 <a name="features-status-code"/> 
@@ -332,10 +362,36 @@ public Entity[] Get()
 ```
 For information on how to get HTTP status code, see section [Http response](#features-response).
 
+<a name="features-httpclient"/>  
+
+## HttpClient
+By default, `System.Net.Http.HttpClient` is used for HTTP requests. But you can also create your own implementation of `IHttpClientProvider` and pass it to `WithCustomHttpClient` method:
+```C#
+IHttpClientProvider httpClientProvider = ...;
+
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomHttpClient(httpClientProvider)
+    .Build();
+```
+
+<a name="features-serialization"/>  
+
+## Serialization
+By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of `ISerializerProvider` and pass it to `WithCustomSerializer` method:
+```C#
+ISerializerProvider serializerProvider = ...;
+
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomSerializer(serializerProvider)
+    .Build();
+```
+
 <a name="features-resilience"/> 
 
 ## Resilience
-To achieve better resilience, you can create a resilience policy using Polly library:
+To achieve better resilience, you can create a resilience policy using `Polly` library:
 ```C#
 var policy = Policy
     .HandleResult<HttpResponse>(x => !x.IsSuccessful)
@@ -371,23 +427,33 @@ IMyClient client = NClientProvider
 <a name="features-di"/> 
 
 ## Dependency injection
-`NClient.Extensions.DependencyInjection` package contains `AddNClient` extension methods.
+`NClient.Extensions.DependencyInjection` package contains `AddNClient` extension methods:
 ```C#
 var serviceProvider = new ServiceCollection()
+    .AddHttpClient()
     .AddLogging()
     .AddNClient<IMyClient>(host: "http://localhost:8080")
     .BuildServiceProvider();
 ```
+and `AddNClientFactory`:
+```C#
+var serviceProvider = new ServiceCollection()
+    .AddHttpClient()
+    .AddLogging()
+    .AddNClientFactory()
+    .BuildServiceProvider();
+```
 
-<a name="features-httpclient"/> 
+<a name="features-system-httpclient"/> 
 
-## HttpClient
+## System.Net.Http.HttpClient
 An `HttpClient` is created for each instance of a client. Keep this in mind, because `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
 ```C#
-var httpClientFactory = ...;
+IHttpClientFactory httpClientFactory = ...;
 
 IMyClient myClient = NClientProvider
-    .Use<IMyClient>(host, httpClientFactory)
+    .Use<IMyClient>(host)
+    .WithCustomHttpClient(httpClientFactory)
     .WithLogging(logger)
     .Build();
 ```
@@ -401,8 +467,36 @@ var serviceProvider = new ServiceCollection()
 For more fine-tuning, you can use a named `HttpClient`:
 ```C#
 IMyClient myClient = NClientProvider
-    .Use<IMyClient>(host, httpClientFactory, httpClientName: nameof(IMyClient))
+    .Use<IMyClient>(host)
+    .WithCustomHttpClient(httpClientFactory, httpClientName: nameof(IMyClient))
     .WithLogging(logger)
+    .Build();
+```
+
+<a name="providers" />  
+
+# Providers
+Providers give additional implementations for sending HTTP requests, serialization, and resilience. You can use the providers listed below or implement your own.  
+
+<a name="providers-restsharp" />  
+
+## RestSharp
+To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use `RestSharpHttpClientProvider`:
+```C#
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomHttpClient(new RestSharpHttpClientProvider())
+    .Build();
+```
+
+<a name="providers-newtonsoft" />  
+
+## Newtonsoft.Json
+If you want to use `Newtonsoft.Json` for serialization, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
+```C#
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host)
+    .WithCustomSerializer(new NewtonsoftSerializerProvider())
     .Build();
 ```
 
@@ -416,12 +510,14 @@ You can find NClient documentation and samples [on the website](https://nclient.
 ## NuGet Packages
 | Package name                                             | Description                                            | Dependencies                                           |
 | :------------------------------------------------------- | :----------------------------------------------------- |:------------------------------------------------------ |
-| [NClient](https://www.nuget.org/packages/NClient) | Tools for creating clients from interfaces and controllers including third-party | Castle, System.Text.Json, System.Net.Http, Polly |
-| [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | The same as NClient package, but without third-party | Castle |
+| [NClient](https://www.nuget.org/packages/NClient) | Tools for creating clients from interfaces and controllers including third-party | Castle, System.Text.Json, Microsoft.Extensions.Logging.Abstractions, System.Net.Http, Polly |
+| [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone) | The same as NClient package, but without third-party | Castle, Microsoft.Extensions.Logging.Abstractions |
 | [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore) | Allows you to annotate controllers via interfaces | Castle, Microsoft.AspNetCore.Mvc.* (Core, ApiExplorer, Cors, DataAnnotations) |
-| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) | Extension methods for registration of clients in ServiceCollection | Castle, Microsoft.Extensions.DependencyInjection, System.Text.Json, System.Net.Http, Polly |
-| [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions) | Abstractions for clients and providers | - |
+| [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) | Extension methods for registration of clients in ServiceCollection | Castle, Microsoft.Extensions.DependencyInjection, System.Text.Json, System.Net.Http, Microsoft.Extensions.Logging.Abstractions, Polly |
+| [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions) | Abstractions for clients and providers | Microsoft.Extensions.Logging.Abstractions |
 | [NClient.Annotations](https://www.nuget.org/packages/NClient.Annotations) | Attributes for annotation of client interfaces and controllers | - |
-| [NClient.Providers.Resilience](https://www.nuget.org/packages/NClient.Providers.Resilience) | Polly based resilience policy provider | Polly |
-| [NClient.Providers.HttpClient.System](https://www.nuget.org/packages/NClient.Providers.HttpClient.System) | System.Net.Http.HttpClient based HTTP client provider | System.Text.Json, System.Net.Http |
-| [NClient.Providers.HttpClient.RestSharp](https://www.nuget.org/packages/NClient.Providers.HttpClient.RestSharp) | RestSharp based HTTP client provider | System.Text.Json, RestSharp |
+| [NClient.Providers.HttpClient.System](https://www.nuget.org/packages/NClient.Providers.HttpClient.System) | System.Net.Http.HttpClient based HTTP client provider | System.Text.Json, System.Net.Http, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.HttpClient.RestSharp](https://www.nuget.org/packages/NClient.Providers.HttpClient.RestSharp) | RestSharp based HTTP client provider | System.Text.Json, Microsoft.Extensions.Logging.Abstractions, RestSharp |
+| [NClient.Providers.Serialization.System](https://www.nuget.org/packages/NClient.Providers.Serialization.System) | System.Text.Json based serialization provider for NClient | System.Text.Json, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.Serialization.Newtonsoft](https://www.nuget.org/packages/NClient.Providers.Serialization.Newtonsoft) | SNewtonsoft.Json based serialization provider for NClient | Newtonsoft.Json, Microsoft.Extensions.Logging.Abstractions |
+| [NClient.Providers.Resilience](https://www.nuget.org/packages/NClient.Providers.Resilience) | Polly based resilience policy provider | Polly, Microsoft.Extensions.Logging.Abstractions |
