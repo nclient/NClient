@@ -43,6 +43,9 @@ namespace NClient.Core.Exceptions.Factories
         public static InvalidRouteNClientException TemplatePartContainsComplexType(string parameterName) =>
             new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
 
+        public static InvalidRouteNClientException UsedVersionTokenButVersionAttributeNotFound() =>
+            new($"Token 'version' is used, but VersionAttribute not found.");
+
         public static InvalidRouteNClientException TokenNotMatchAnyMethodParameter(string tokenName) =>
             new($"Token '{tokenName}' in route template does not match any method parameters.");
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
@@ -17,7 +18,8 @@ namespace NClient.Core.RequestBuilders
             RouteTemplate routeTemplate,
             string clientName,
             string methodName,
-            Parameter[] parameters);
+            Parameter[] parameters,
+            VersionAttribute? versionAttribute);
     }
 
     internal class RouteProvider : IRouteProvider
@@ -34,7 +36,8 @@ namespace NClient.Core.RequestBuilders
             RouteTemplate routeTemplate,
             string clientName,
             string methodName,
-            Parameter[] parameters)
+            Parameter[] parameters,
+            VersionAttribute? versionAttribute)
         {
             var unusedRouteParamNames = parameters
                 .Where(x => x.Attribute is RouteParamAttribute)
@@ -45,17 +48,37 @@ namespace NClient.Core.RequestBuilders
                 throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
 
             var routeParts = routeTemplate.Segments
-                .Select(x => x.Parts.Single() switch
+                .Select(x =>
                 {
-                    { Name: { } } templatePart => GetValueFromPartName(templatePart, parameters),
-                    { Text: { } } templatePart => GetValueFromPartText(templatePart, clientName, methodName),
-                    _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
+                    var partValues = new List<string>();
+                    foreach (var part in x.Parts)
+                    {
+                        var partValue = part switch
+                        {
+                            {Name: "version"} templatePart when templatePart.InlineConstraints.Any(constraint => constraint.Constraint == "apiVersion") 
+                                => GetValueForVersionToken(versionAttribute),
+                            {Name: { }} templatePart 
+                                => GetValueForToken(templatePart, parameters),
+                            {Text: { }} templatePart 
+                                => GetValueForText(templatePart, clientName, methodName),
+                            _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
+                        };
+                        partValues.Add(partValue);
+                    }
+                    return string.Join("", partValues);
                 });
 
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private string GetValueFromPartName(TemplatePart templatePart, Parameter[] parameters)
+        private static string GetValueForVersionToken(VersionAttribute? versionAttribute)
+        {
+            if (versionAttribute is null)
+                throw OuterExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();
+            return versionAttribute.Version;
+        }
+
+        private string GetValueForToken(TemplatePart templatePart, Parameter[] parameters)
         {
             var (objectName, memberPath) = _objectMemberManager.ParseNextPath(templatePart.Name!);
             return memberPath is null
@@ -95,7 +118,7 @@ namespace NClient.Core.RequestBuilders
             return parameterValue!;
         }
 
-        private static string GetValueFromPartText(TemplatePart templatePart, string clientName, string methodName)
+        private static string GetValueForText(TemplatePart templatePart, string clientName, string methodName)
         {
             return templatePart.Text switch
             {

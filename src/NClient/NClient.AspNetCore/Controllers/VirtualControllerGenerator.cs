@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
@@ -86,9 +87,12 @@ namespace NClient.AspNetCore.Controllers
 
         private static CustomAttributeBuilder CreateAttribute(Attribute attribute)
         {
-            return attribute is IRouteTemplateProvider routeTemplateProvider
-                ? CreateRouteTemplateProviderAttribute(routeTemplateProvider)
-                : CreateCustomAttribute(attribute);
+            return attribute switch
+            {
+                IRouteTemplateProvider x => CreateRouteTemplateProviderAttribute(x),
+                ApiVersionsBaseAttribute x => CreateApiVersionsBaseAttribute(x),
+                _ => CreateCustomAttribute(attribute)
+            };
         }
 
         private static CustomAttributeBuilder CreateRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
@@ -108,6 +112,22 @@ namespace NClient.AspNetCore.Controllers
                     attributeFieldValues!);
 
             return CreateCustomAttribute((Attribute)attribute);
+        }
+        
+        private static CustomAttributeBuilder CreateApiVersionsBaseAttribute(ApiVersionsBaseAttribute attribute)
+        {
+            var attributeProps = GetProperties(attribute);
+            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
+            var attributeFields = GetFields(attribute);
+            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
+            
+            return new CustomAttributeBuilder(
+                attribute.GetType().GetConstructors().Last(),
+                new[] { attribute.Versions.Single().ToString() },
+                attributeProps,
+                attributePropValues!,
+                attributeFields,
+                attributeFieldValues!);
         }
 
         private static CustomAttributeBuilder CreateCustomAttribute(Attribute attribute)
