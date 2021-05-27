@@ -55,11 +55,11 @@ namespace NClient.Core.RequestBuilders
                     {
                         var partValue = part switch
                         {
-                            {Name: "version"} templatePart when templatePart.InlineConstraints.Any(constraint => constraint.Constraint == "apiVersion") 
+                            { Name: "version" } templatePart when templatePart.InlineConstraints.Any(constraint => constraint.Constraint == "apiVersion")
                                 => GetValueForVersionToken(useVersionAttribute),
-                            {Name: { }} templatePart 
+                            { Name: { } } templatePart
                                 => GetValueForToken(templatePart, parameters),
-                            {Text: { }} templatePart 
+                            { Text: { } } templatePart
                                 => GetValueForText(templatePart, clientName, methodName),
                             _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
                         };

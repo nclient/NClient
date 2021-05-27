@@ -18,7 +18,7 @@ namespace NClient.AspNetCore.Mappers
             return attribute switch
             {
                 ApiAttribute => new ApiControllerAttribute(),
-                
+
                 ToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
                 VersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
 

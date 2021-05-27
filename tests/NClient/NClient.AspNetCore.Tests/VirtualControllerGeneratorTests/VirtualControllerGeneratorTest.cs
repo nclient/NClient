@@ -116,7 +116,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new AllowAnonymousAttribute());
         }
-        
+
         [Version("1.0")] public interface IInterfaceWithVersionAttribute { }
         public class InterfaceWithVersionAttribute : IInterfaceWithVersionAttribute { }
 
@@ -138,9 +138,9 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new ApiVersionAttribute("1.0"));
         }
-        
-        public interface IInterfaceWithToVersionAttribute { [ToVersion("1.0")] void Method(); }
-        public class InterfaceWithToVersionAttribute : IInterfaceWithToVersionAttribute { public void Method() {} }
+
+        public interface IInterfaceWithToVersionAttribute {[ToVersion("1.0")] void Method(); }
+        public class InterfaceWithToVersionAttribute : IInterfaceWithToVersionAttribute { public void Method() { } }
 
         [Test]
         public void Create_InterfaceWithToVersionAttribute_MapToApiVersionAttribute()

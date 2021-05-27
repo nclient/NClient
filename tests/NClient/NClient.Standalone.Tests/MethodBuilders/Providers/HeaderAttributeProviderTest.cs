@@ -41,7 +41,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         private interface IInherited { void Method(); }
         [Inherited("client-header-1", "value"), Header("client-header-2", "value")]
         private interface IInheritedAndHeader { void Method(); }
-        
+
         public interface IClientInheritance : IControllerInheritance { void Method(); }
         [Header("client-header-1", "value")] public interface IControllerInheritance { }
 
@@ -95,7 +95,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(typeof(IInheritedAndHeader), GetMethodInfo<IInheritedAndHeader>(), Array.Empty<MethodParam>(),
                     new[] { new InheritedAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value") })
                 .SetName("Inherited and header attribute"),
-            
+
             new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(), Array.Empty<MethodParam>(),
                     new[] {  new HeaderAttribute("client-header-1", "value") })
                 .SetName("With inheritance"),

@@ -278,7 +278,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .Should()
                 .Throw<InvalidRouteNClientException>();
         }
-        
+
         [UseVersion("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken {[GetMethod] int Method(); }
 
         [Test]

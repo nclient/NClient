@@ -236,7 +236,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be("api/My/Method");
         }
-        
+
         [Test]
         public void Build_VersionToken_VersionAttributeValue()
         {
@@ -271,7 +271,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
 
             route.Should().Be(intValue.ToString());
         }
-        
+
         [Test]
         public void Build_ParameterTokenWithStaticPart_MethodParameterValueWithStaticPart()
         {
@@ -715,7 +715,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 .Should()
                 .Throw<InvalidRouteNClientException>();
         }
-        
+
         [Test]
         public void Build_VersionTokenWithoutVersionAttribute_ThrowInvalidRouteNClientException()
         {
@@ -731,7 +731,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 .Should()
                 .Throw<InvalidRouteNClientException>();
         }
-        
+
         [Test]
         public void Build_VersionTokenWithoutType_ThrowInvalidRouteNClientException()
         {

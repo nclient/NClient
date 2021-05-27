@@ -41,7 +41,7 @@ namespace NClient.Sandbox.Client
             var updatedWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -35 };
             await client.PutAsync(updatedWeatherForecast);
             Console.WriteLine("Forecast is put.");
-            
+
             await client.DeleteAsync(newWeatherForecast.Id);
             Console.WriteLine("Forecast is deleted.");
         }

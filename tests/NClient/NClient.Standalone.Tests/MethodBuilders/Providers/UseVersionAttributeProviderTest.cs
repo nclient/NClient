@@ -30,21 +30,21 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public interface IClientDeepInheritance : IClientDeepInheritanceBase { void Method(); }
         public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
         [UseVersion("1.0")] public interface IControllerDeepInheritance { }
-        
-        
-        private interface IClientWithMethodVersion { [UseVersion("1.0")] void Method(); }
 
-        private interface IClientWithMethod { [PostMethod] void Method(); }
-        private interface IClientWithMethodVersionAndMethod { [PostMethod, UseVersion("1.0")] void Method(); }
-        private interface IClientWithMethodOther { [Other] void Method(); }
-        
-        
-        private interface IClientWithMethodVersionAndOther { [Other, UseVersion("1.0")] void Method(); }
 
-        public interface IClientMethodOverride : IControllerMethodOverride { [UseVersion("2.0")] new void Method(); }
-        public interface IControllerMethodOverride { [UseVersion("1.0")] void Method(); }
-        
-        [UseVersion("1.0")] private interface IClientWithInterfaceAndMethodVersion { [UseVersion("2.0")] void Method(); }
+        private interface IClientWithMethodVersion {[UseVersion("1.0")] void Method(); }
+
+        private interface IClientWithMethod {[PostMethod] void Method(); }
+        private interface IClientWithMethodVersionAndMethod {[PostMethod, UseVersion("1.0")] void Method(); }
+        private interface IClientWithMethodOther {[Other] void Method(); }
+
+
+        private interface IClientWithMethodVersionAndOther {[Other, UseVersion("1.0")] void Method(); }
+
+        public interface IClientMethodOverride : IControllerMethodOverride {[UseVersion("2.0")] new void Method(); }
+        public interface IControllerMethodOverride {[UseVersion("1.0")] void Method(); }
+
+        [UseVersion("1.0")] private interface IClientWithInterfaceAndMethodVersion {[UseVersion("2.0")] void Method(); }
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -66,11 +66,11 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With inheritance"),
             new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(), new UseVersionAttribute("1.0"))
                 .SetName("With deep inheritance"),
-            
-            
+
+
             new TestCaseData(typeof(IClientWithMethodVersion), GetMethodInfo<IClientWithMethodVersion>(), new UseVersionAttribute("1.0"))
                 .SetName("Without method version"),
-            
+
             new TestCaseData(typeof(IClientWithMethod), GetMethodInfo<IClientWithMethod>(), null)
                 .SetName("With method attribute"),
             new TestCaseData(typeof(IClientWithMethodVersionAndMethod), GetMethodInfo<IClientWithMethodVersionAndMethod>(), new UseVersionAttribute("1.0"))
@@ -79,14 +79,14 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With other method attribute"),
             new TestCaseData(typeof(IClientWithMethodVersionAndOther), GetMethodInfo<IClientWithMethodVersionAndOther>(), new UseVersionAttribute("1.0"))
                 .SetName("With version and other method attributes"),
-            
-            
+
+
             new TestCaseData(typeof(IClientWithInterfaceAndMethodVersion), GetMethodInfo<IClientWithInterfaceAndMethodVersion>(), new UseVersionAttribute("2.0"))
                 .SetName("Without method version"),
             new TestCaseData(typeof(IClientMethodOverride), GetMethodInfo<IClientMethodOverride>(), new UseVersionAttribute("2.0"))
                 .SetName("Without method version"),
         };
-        
+
         [UseVersion("2.0")] public interface IClientOverride : IControllerOverride { void Method(); }
         [UseVersion("1.0")] public interface IControllerOverride { }
 
@@ -106,7 +106,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
-        
+
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Find_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo)
         {
@@ -120,7 +120,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         }
 
         private class OtherAttribute : Attribute { }
-        
+
         private static MethodInfo GetMethodInfo<T>()
         {
             return typeof(T).GetMethods().Single();

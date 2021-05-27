@@ -7,7 +7,7 @@ namespace NClient.Annotations.Versioning
     {
         public string Version { get; }
         public bool Deprecated { get; set; }
-        
+
         public VersionAttribute(string version)
         {
             Version = version;

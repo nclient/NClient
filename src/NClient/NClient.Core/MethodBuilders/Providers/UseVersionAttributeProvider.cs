@@ -34,7 +34,7 @@ namespace NClient.Core.MethodBuilders.Providers
             if (useVersionAttributes.Length > 1)
                 throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
             var useVersionAttribute = useVersionAttributes.SingleOrDefault();
-            
+
             var methodUseVersionAttribute = methodInfo.GetCustomAttribute<UseVersionAttribute>();
 
             return methodUseVersionAttribute ?? useVersionAttribute;

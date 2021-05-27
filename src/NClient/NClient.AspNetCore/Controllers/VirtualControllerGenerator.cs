@@ -113,14 +113,14 @@ namespace NClient.AspNetCore.Controllers
 
             return CreateCustomAttribute((Attribute)attribute);
         }
-        
+
         private static CustomAttributeBuilder CreateApiVersionsBaseAttribute(ApiVersionsBaseAttribute attribute)
         {
             var attributeProps = GetProperties(attribute);
             var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
             var attributeFields = GetFields(attribute);
             var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-            
+
             return new CustomAttributeBuilder(
                 attribute.GetType().GetConstructors().Last(),
                 new[] { attribute.Versions.Single().ToString() },

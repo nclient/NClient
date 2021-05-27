@@ -6,7 +6,7 @@ namespace NClient.Annotations.Versioning
     public class ToVersionAttribute : Attribute
     {
         public string Version { get; }
-        
+
         public ToVersionAttribute(string version)
         {
             Version = version;
