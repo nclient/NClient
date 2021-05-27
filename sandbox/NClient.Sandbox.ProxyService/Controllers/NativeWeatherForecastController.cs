@@ -8,7 +8,8 @@ using NClient.Sandbox.ProxyService.Facade.Dto;
 namespace NClient.Sandbox.ProxyService.Controllers
 {
     [ApiController]
-    [Route("api/native/weatherForecast")]
+    [ApiVersion("1.0"), ApiVersion("2.0"), ApiVersion("3.0")]
+    [Route("api/native/v{version:apiVersion}/weatherForecast")]
     public class NativeWeatherForecastController : ControllerBase
     {
         private readonly IThirdPartyWeatherForecastClient _thirdPartyWeatherForecastClient;
@@ -46,6 +47,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         }
 
         [HttpDelete]
+        [MapToApiVersion("2.0"), MapToApiVersion("3.0")]
         public Task Delete(int? id = null)
         {
             _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
