@@ -19,7 +19,7 @@ namespace NClient.Core.RequestBuilders
             string clientName,
             string methodName,
             Parameter[] parameters,
-            VersionAttribute? versionAttribute);
+            UseVersionAttribute? useVersionAttribute);
     }
 
     internal class RouteProvider : IRouteProvider
@@ -37,7 +37,7 @@ namespace NClient.Core.RequestBuilders
             string clientName,
             string methodName,
             Parameter[] parameters,
-            VersionAttribute? versionAttribute)
+            UseVersionAttribute? useVersionAttribute)
         {
             var unusedRouteParamNames = parameters
                 .Where(x => x.Attribute is RouteParamAttribute)
@@ -56,7 +56,7 @@ namespace NClient.Core.RequestBuilders
                         var partValue = part switch
                         {
                             {Name: "version"} templatePart when templatePart.InlineConstraints.Any(constraint => constraint.Constraint == "apiVersion") 
-                                => GetValueForVersionToken(versionAttribute),
+                                => GetValueForVersionToken(useVersionAttribute),
                             {Name: { }} templatePart 
                                 => GetValueForToken(templatePart, parameters),
                             {Text: { }} templatePart 
@@ -71,7 +71,7 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueForVersionToken(VersionAttribute? versionAttribute)
+        private static string GetValueForVersionToken(UseVersionAttribute? versionAttribute)
         {
             if (versionAttribute is null)
                 throw OuterExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();

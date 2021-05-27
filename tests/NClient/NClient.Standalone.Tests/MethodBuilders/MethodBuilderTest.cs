@@ -24,16 +24,16 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var clientType = typeof(IBasicClient);
             var methodInfo = clientType.GetMethods().Single();
             var methodAttribute = new GetMethodAttribute();
-            var versionAttribute = (VersionAttribute)null!;
+            var useVersionAttribute = (UseVersionAttribute)null!;
             var pathAttribute = (PathAttribute)null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<MethodParam>();
             var methodAttributeProviderMock = new Mock<IMethodAttributeProvider>();
             methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>()))
                 .Returns(methodAttribute);
-            var versionAttributeProviderMock = new Mock<IVersionAttributeProvider>();
-            versionAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>()))
-                .Returns(versionAttribute);
+            var useVersionAttributeProviderMock = new Mock<IUseVersionAttributeProvider>();
+            useVersionAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>()))
+                .Returns(useVersionAttribute);
             var pathAttributeProviderMock = new Mock<IPathAttributeProvider>();
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
@@ -45,7 +45,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
                 .Returns(methodParams);
             var methodBuilder = new MethodBuilder(
                 methodAttributeProviderMock.Object,
-                versionAttributeProviderMock.Object,
+                useVersionAttributeProviderMock.Object,
                 pathAttributeProviderMock.Object,
                 headerAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);

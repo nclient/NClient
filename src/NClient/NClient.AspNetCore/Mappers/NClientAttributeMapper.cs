@@ -19,8 +19,8 @@ namespace NClient.AspNetCore.Mappers
             {
                 ApiAttribute => new ApiControllerAttribute(),
                 
-                XUseVersionAttribute x => new MapToApiVersionAttribute(x.Version),
-                XVersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
+                ToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
+                VersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
 
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 

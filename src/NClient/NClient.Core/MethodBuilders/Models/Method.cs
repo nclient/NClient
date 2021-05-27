@@ -10,7 +10,7 @@ namespace NClient.Core.MethodBuilders.Models
         public string Name { get; }
         public string ClientName { get; }
         public MethodAttribute Attribute { get; }
-        public VersionAttribute? VersionAttribute { get; set; }
+        public UseVersionAttribute? UseVersionAttribute { get; set; }
         public PathAttribute? PathAttribute { get; set; }
         public HeaderAttribute[] HeaderAttributes { get; set; }
         public MethodParam[] Params { get; }

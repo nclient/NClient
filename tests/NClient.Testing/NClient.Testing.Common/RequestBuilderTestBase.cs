@@ -38,7 +38,7 @@ namespace NClient.Testing.Common
             var attributeMapper = new AttributeMapper();
             MethodBuilder = new MethodBuilder(
                 new MethodAttributeProvider(attributeMapper),
-                new VersionAttributeProvider(attributeMapper),
+                new UseVersionAttributeProvider(attributeMapper),
                 new PathAttributeProvider(attributeMapper),
                 new HeaderAttributeProvider(),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));

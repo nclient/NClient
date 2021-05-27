@@ -117,7 +117,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[0].Should().BeEquivalentTo(new AllowAnonymousAttribute());
         }
         
-        [XVersion("1.0")] public interface IInterfaceWithVersionAttribute { }
+        [Version("1.0")] public interface IInterfaceWithVersionAttribute { }
         public class InterfaceWithVersionAttribute : IInterfaceWithVersionAttribute { }
 
         [Test]
@@ -139,15 +139,15 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[0].Should().BeEquivalentTo(new ApiVersionAttribute("1.0"));
         }
         
-        public interface IInterfaceWithUseVersionAttribute { [XUseVersion("1.0")] void Method(); }
-        public class InterfaceWithUseVersionAttribute : IInterfaceWithUseVersionAttribute { public void Method() {} }
+        public interface IInterfaceWithToVersionAttribute { [ToVersion("1.0")] void Method(); }
+        public class InterfaceWithToVersionAttribute : IInterfaceWithToVersionAttribute { public void Method() {} }
 
         [Test]
-        public void Create_InterfaceWithUseVersionAttribute_MapToApiVersionAttribute()
+        public void Create_InterfaceWithToVersionAttribute_MapToApiVersionAttribute()
         {
             var nclientControllers = new[]
             {
-                new NClientControllerInfo(typeof(IInterfaceWithUseVersionAttribute), typeof(InterfaceWithUseVersionAttribute))
+                new NClientControllerInfo(typeof(IInterfaceWithToVersionAttribute), typeof(InterfaceWithToVersionAttribute))
             };
 
             var actualResult = _virtualControllerGenerator
@@ -158,7 +158,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(0);
-            var methodInfo = virtualControllerType.GetMethod(nameof(InterfaceWithUseVersionAttribute.Method))!;
+            var methodInfo = virtualControllerType.GetMethod(nameof(InterfaceWithToVersionAttribute.Method))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
             methodAttributes.Length.Should().Be(1);
             methodAttributes.Should().BeEquivalentTo(new MapToApiVersionAttribute("1.0"));

@@ -3,11 +3,11 @@
 namespace NClient.Annotations.Versioning
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class XUseVersionAttribute : Attribute
+    public class ToVersionAttribute : Attribute
     {
         public string Version { get; }
         
-        public XUseVersionAttribute(string version)
+        public ToVersionAttribute(string version)
         {
             Version = version;
         }

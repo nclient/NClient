@@ -28,7 +28,7 @@ namespace NClient.ControllerBasedClients
             var guidProvider = new GuidProvider();
 
             var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
-            var versionAttributeProvider = new VersionAttributeProvider(attributeMapper);
+            var useVersionAttributeProvider = new UseVersionAttributeProvider(attributeMapper);
             var pathAttributeProvider = new PathAttributeProvider(attributeMapper);
             var headerAttributeProvider = new HeaderAttributeProvider();
             var paramAttributeProvider = new ParamAttributeProvider(attributeMapper);
@@ -36,7 +36,7 @@ namespace NClient.ControllerBasedClients
             var clientMethodParamBuilder = new MethodParamBuilder(paramAttributeProvider);
             var clientMethodBuilder = new MethodBuilder(
                 methodAttributeProvider,
-                versionAttributeProvider,
+                useVersionAttributeProvider,
                 pathAttributeProvider,
                 headerAttributeProvider,
                 clientMethodParamBuilder);

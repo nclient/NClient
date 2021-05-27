@@ -52,7 +52,7 @@ namespace NClient.Core.RequestBuilders
                     methodParam.Attribute))
                 .ToArray();
             var route = _routeProvider
-                .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.VersionAttribute);
+                .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
 
             var uri = new Uri(_host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
