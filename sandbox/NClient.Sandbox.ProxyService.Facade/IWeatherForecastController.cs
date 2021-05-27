@@ -10,7 +10,7 @@ namespace NClient.Sandbox.ProxyService.Facade
 {
     [Api]
     [Path("api/nclient/v{version:apiVersion}/[controller]")]
-    [XVersion("1.0"), XVersion("2.0"), XVersion("3.0")]
+    [Version("1.0"), Version("2.0"), Version("3.0")]
     [Header("client", "NClient")]
     public interface IWeatherForecastController
     {
@@ -26,7 +26,7 @@ namespace NClient.Sandbox.ProxyService.Facade
         Task PutAsync(WeatherForecastDto weatherForecastDto);
 
         [DeleteMethod]
-        [XUseVersion("2.0"), XUseVersion("3.0")]
-        Task Delete(int? id = null);
+        [ToVersion("2.0"), ToVersion("3.0")]
+        Task DeleteAsync(int? id = null);
     }
 }
