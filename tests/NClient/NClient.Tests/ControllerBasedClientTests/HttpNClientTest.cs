@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
@@ -20,6 +21,9 @@ namespace NClient.Tests.ControllerBasedClientTests
     [Parallelizable]
     public class HttpNClientTest
     {
+        private static readonly HttpRequest HttpRequestStub = new(Guid.Empty, new Uri("http://localhost:5000"), HttpMethod.Get);
+        private static readonly HttpResponse HttpResponseStub = new(HttpRequestStub);
+        
         private IReturnClient _returnClient = null!;
         private ReturnApiMockFactory _returnApiMockFactory = null!;
 
@@ -40,7 +44,7 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = await _returnClient.AsHttp().GetHttpResponse(client => client.GetAsync(id));
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -60,7 +64,7 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
-            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(new HttpResponse(null!), httpRequest: null!, entity)
+            result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = "{\"Id\":1,\"Value\":2}",
@@ -77,9 +81,9 @@ namespace NClient.Tests.ControllerBasedClientTests
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
-
+            
             var httpResponse = await _returnClient.AsHttp().GetHttpResponse(client => client.PostAsync(entity));
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(httpRequest: null!)
+            httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
@@ -96,9 +100,9 @@ namespace NClient.Tests.ControllerBasedClientTests
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostMethod(entity);
-
+            
             var httpResponse = _returnClient.AsHttp().GetHttpResponse(client => client.Post(entity));
-            httpResponse.Should().BeEquivalentTo(new HttpResponse(httpRequest: null!)
+            httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
