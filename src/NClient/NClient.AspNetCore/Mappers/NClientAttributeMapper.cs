@@ -5,6 +5,7 @@ using NClient.Annotations;
 using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
@@ -17,6 +18,9 @@ namespace NClient.AspNetCore.Mappers
             return attribute switch
             {
                 ApiAttribute => new ApiControllerAttribute(),
+
+                ToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
+                VersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
 
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 

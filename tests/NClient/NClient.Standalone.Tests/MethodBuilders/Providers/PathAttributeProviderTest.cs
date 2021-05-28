@@ -60,7 +60,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(typeof(IClientOverride))
-                .SetName("With deep inheritance"),
+                .SetName("With override path"),
         };
 
         [TestCaseSource(nameof(ValidTestCases))]
@@ -87,12 +87,5 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         }
 
         private class OtherAttribute : Attribute { }
-
-        private class NotSupportedAttribute : PathAttribute
-        {
-            public NotSupportedAttribute(string template) : base(template)
-            {
-            }
-        }
     }
 }
