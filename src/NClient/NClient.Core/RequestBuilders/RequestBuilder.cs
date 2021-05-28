@@ -51,7 +51,8 @@ namespace NClient.Core.RequestBuilders
                     arguments.ElementAtOrDefault(index),
                     methodParam.Attribute))
                 .ToArray();
-            var route = _routeProvider.Build(routeTemplate, method.ClientName, method.Name, paramValuePairs);
+            var route = _routeProvider
+                .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
 
             var uri = new Uri(_host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);

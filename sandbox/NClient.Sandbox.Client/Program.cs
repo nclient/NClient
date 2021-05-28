@@ -34,13 +34,16 @@ namespace NClient.Sandbox.Client
             var weatherForecast = await client.GetAsync(filter);
             Console.WriteLine($"Forecast summary: {weatherForecast.Summary}.");
 
-            var newWeatherForecast = new WeatherForecastDto { Id = 1, Date = DateTime.Now, Summary = "Cold", TemperatureC = -30 };
+            var newWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -30 };
             await client.PostAsync(newWeatherForecast);
             Console.WriteLine("Forecast is posted.");
 
             var updatedWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -35 };
             await client.PutAsync(updatedWeatherForecast);
             Console.WriteLine("Forecast is put.");
+
+            await client.DeleteAsync(newWeatherForecast.Id);
+            Console.WriteLine("Forecast is deleted.");
         }
     }
 }

@@ -9,7 +9,7 @@ using NClient.Core.Mappers;
 
 namespace NClient.Mappers
 {
-    public class AspNetAttributeMapper : IAttributeMapper
+    internal class AspNetAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
         {
@@ -20,9 +20,14 @@ namespace NClient.Mappers
                 { Name: "RouteAttribute" } => new PathAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "HttpGetAttribute" } => new GetMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpHeadAttribute" } => new HeadMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpPostAttribute" } => new PostMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpPutAttribute" } => new PutMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpDeleteAttribute" } => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpOptionsAttribute" } => new OptionsMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+#if !NETSTANDARD2_0
+                { Name: "HttpPatchAttribute" } => new PatchMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+#endif
 
                 { Name: "ProducesResponseTypeAttribute" } x => new ResponseAttribute(
                     type: GetProperty<Type>(attribute, "Type"),

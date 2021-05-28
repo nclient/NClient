@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NSwag.AspNetCore" Version="13.10.8" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.0" />
 	</ItemGroup>
 
 </Project>

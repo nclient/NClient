@@ -14,9 +14,12 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
         public static IEnumerable ValidTestCases = new[]
         {
             new TestCaseData(new GetMethodAttribute(), HttpMethod.Get),
+            new TestCaseData(new HeadMethodAttribute(), HttpMethod.Head),
             new TestCaseData(new PostMethodAttribute(), HttpMethod.Post),
             new TestCaseData(new PutMethodAttribute(), HttpMethod.Put),
             new TestCaseData(new DeleteMethodAttribute(), HttpMethod.Delete),
+            new TestCaseData(new OptionsMethodAttribute(), HttpMethod.Options),
+            new TestCaseData(new PatchMethodAttribute(), HttpMethod.Patch),
         };
 
         public static IEnumerable InvalidTestCases = new[]

@@ -4,6 +4,7 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 
 namespace NClient
 {
@@ -20,6 +21,9 @@ namespace NClient
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
+            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
@@ -28,6 +32,8 @@ namespace NClient
 
         public TInterface Create<TInterface>(string host) where TInterface : class
         {
+            Ensure.IsNotNull(host, nameof(host));
+
             var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface>(host);
 
@@ -44,6 +50,8 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
+            Ensure.IsNotNull(host, nameof(host));
+
             var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface, TController>(host);
 

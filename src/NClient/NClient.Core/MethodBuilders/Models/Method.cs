@@ -1,6 +1,7 @@
 ﻿using System;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Versioning;
 
 namespace NClient.Core.MethodBuilders.Models
 {
@@ -9,6 +10,7 @@ namespace NClient.Core.MethodBuilders.Models
         public string Name { get; }
         public string ClientName { get; }
         public MethodAttribute Attribute { get; }
+        public UseVersionAttribute? UseVersionAttribute { get; set; }
         public PathAttribute? PathAttribute { get; set; }
         public HeaderAttribute[] HeaderAttributes { get; set; }
         public MethodParam[] Params { get; }

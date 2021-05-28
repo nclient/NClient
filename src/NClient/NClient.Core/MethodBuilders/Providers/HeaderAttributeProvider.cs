@@ -19,7 +19,12 @@ namespace NClient.Core.MethodBuilders.Providers
     {
         public HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
         {
-            var clientHeaders = clientType.GetCustomAttributes<HeaderAttribute>().ToArray();
+            var clientHeaders = (clientType.IsInterface
+                    ? clientType.GetInterfaceCustomAttributes(inherit: true)
+                    : Array.Empty<HeaderAttribute>())
+                .Where(x => x is HeaderAttribute)
+                .Cast<HeaderAttribute>()
+                .ToArray();
             var methodHeaders = methodInfo.GetCustomAttributes<HeaderAttribute>().ToArray();
             var headerAttributes = methodHeaders.Reverse().Concat(clientHeaders.Reverse()).DistinctBy(x => x.Name).ToArray();
 

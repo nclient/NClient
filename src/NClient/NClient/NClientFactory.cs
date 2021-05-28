@@ -6,6 +6,7 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Serialization.System;
 
@@ -74,8 +75,11 @@ namespace NClient
             _loggerFactory = loggerFactory;
         }
 
-        public TInterface Create<TInterface>(string host) where TInterface : class
+        public TInterface Create<TInterface>(string host)
+            where TInterface : class
         {
+            Ensure.IsNotNull(host, nameof(host));
+
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface>(host);
 
@@ -96,6 +100,8 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
+            Ensure.IsNotNull(host, nameof(host));
+
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface, TController>(host);
 
