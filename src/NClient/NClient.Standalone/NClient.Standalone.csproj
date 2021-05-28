@@ -36,10 +36,4 @@
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Include="..\NClient.Common\Helpers\Ensure.cs">
-			<Link>Common\Ensure.cs</Link>
-		</Compile>
-	</ItemGroup>
-
 </Project>
