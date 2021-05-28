@@ -9,7 +9,7 @@ using NClient.Core.Mappers;
 
 namespace NClient.Mappers
 {
-    public class AspNetAttributeMapper : IAttributeMapper
+    internal class AspNetAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
         {

@@ -6,6 +6,7 @@ using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -43,24 +44,32 @@ namespace NClient.ControllerBasedClients
 
         public IControllerBasedClientBuilder<TInterface, TController> WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
+            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+
             _httpClientProvider = httpClientProvider;
             return this;
         }
 
         public IControllerBasedClientBuilder<TInterface, TController> WithCustomSerializer(ISerializerProvider serializerProvider)
         {
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+
             _serializerProvider = serializerProvider;
             return this;
         }
 
         public IControllerBasedClientBuilder<TInterface, TController> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
+            Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
+
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
         public IControllerBasedClientBuilder<TInterface, TController> WithLogging(ILogger<TInterface> logger)
         {
+            Ensure.IsNotNull(logger, nameof(logger));
+
             _logger = logger;
             return this;
         }

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
+using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.RestSharp.Internals;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.SystemTextJson;
-using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
 
@@ -28,6 +26,8 @@ namespace NClient.Providers.HttpClient.RestSharp
 
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
+            Ensure.IsNotNull(request, nameof(request));
+
             var restClient = new RestClient
             {
                 Authenticator = _authenticator,

@@ -1,4 +1,5 @@
 ﻿using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using Newtonsoft.Json;
 
 namespace NClient.Providers.Serialization.Newtonsoft
@@ -14,6 +15,8 @@ namespace NClient.Providers.Serialization.Newtonsoft
 
         public NewtonsoftSerializerProvider(JsonSerializerSettings jsonSerializerSettings)
         {
+            Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
+
             _jsonSerializerSettings = jsonSerializerSettings;
         }
 

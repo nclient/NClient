@@ -1,5 +1,6 @@
 ﻿using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using RestSharp.Authenticators;
 
 namespace NClient.Providers.HttpClient.RestSharp
@@ -15,6 +16,8 @@ namespace NClient.Providers.HttpClient.RestSharp
 
         public IHttpClient Create(ISerializer serializer)
         {
+            Ensure.IsNotNull(serializer, nameof(serializer));
+
             return new RestSharpHttpClient(_authenticator);
         }
     }

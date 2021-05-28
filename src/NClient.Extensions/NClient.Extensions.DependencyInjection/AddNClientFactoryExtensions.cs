@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
+using NClient.Common.Helpers;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -11,6 +12,8 @@ namespace NClient.Extensions.DependencyInjection
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             string? httpClientName = null)
         {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
@@ -21,6 +24,9 @@ namespace NClient.Extensions.DependencyInjection
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             Func<INClientFactoryBuilder, INClientFactoryBuilder> configure, string? httpClientName = null)
         {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(configure, nameof(configure));
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
@@ -31,6 +37,9 @@ namespace NClient.Extensions.DependencyInjection
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             Func<IServiceProvider, INClientFactoryBuilder, INClientFactoryBuilder> configure, string? httpClientName = null)
         {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(configure, nameof(configure));
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);

@@ -1,10 +1,9 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 
 namespace NClient
 {
@@ -17,24 +16,32 @@ namespace NClient
 
         public INClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
+            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+
             _httpClientProvider = httpClientProvider;
             return this;
         }
 
         public INClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
         {
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+
             _serializerProvider = serializerProvider;
             return this;
         }
 
         public INClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
+            Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
+
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
         public INClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
         {
+            Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
+
             _loggerFactory = loggerFactory;
             return this;
         }

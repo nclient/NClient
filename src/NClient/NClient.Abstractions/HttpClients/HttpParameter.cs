@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.HttpClients
+﻿using NClient.Common.Helpers;
+
+namespace NClient.Abstractions.HttpClients
 {
     public class HttpParameter
     {
@@ -7,6 +9,8 @@
 
         public HttpParameter(string name, object? value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+
             Name = name;
             Value = value;
         }
