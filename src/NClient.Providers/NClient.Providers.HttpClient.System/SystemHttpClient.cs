@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System.Internals;
 
 namespace NClient.Providers.HttpClient.System
@@ -15,8 +16,14 @@ namespace NClient.Providers.HttpClient.System
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _httpClientName;
 
-        public SystemHttpClient(ISerializer serializer, IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemHttpClient(
+            ISerializer serializer, 
+            IHttpClientFactory httpClientFactory, 
+            string? httpClientName = null)
         {
+            Ensure.IsNotNull(serializer, nameof(serializer));
+            Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
+            
             _httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
             _httpResponseBuilder = new HttpResponseBuilder(serializer);
             _httpClientFactory = httpClientFactory;
@@ -25,6 +32,8 @@ namespace NClient.Providers.HttpClient.System
 
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
+            Ensure.IsNotNull(request, nameof(request));
+            
             var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
             return await _httpResponseBuilder.BuildAsync(request, httpResponseMessage, bodyType, errorType, exception).ConfigureAwait(false);

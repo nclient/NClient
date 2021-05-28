@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using NClient.Common.Helpers;
 
 namespace NClient.Abstractions.HttpClients
 {
@@ -40,11 +41,15 @@ namespace NClient.Abstractions.HttpClients
 
         public HttpResponse(HttpRequest httpRequest)
         {
+            Ensure.IsNotNull(httpRequest, nameof(httpRequest));
+            
             Request = httpRequest;
         }
 
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
         {
+            Ensure.IsNotNull(httpResponse, nameof(httpResponse));
+            
             ContentType = httpResponse.ContentType;
             ContentLength = httpResponse.ContentLength;
             ContentEncoding = httpResponse.ContentEncoding;

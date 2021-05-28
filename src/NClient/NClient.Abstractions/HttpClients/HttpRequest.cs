@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using NClient.Common.Helpers;
 
 namespace NClient.Abstractions.HttpClients
 {
@@ -18,6 +19,9 @@ namespace NClient.Abstractions.HttpClients
 
         public HttpRequest(Guid id, Uri uri, HttpMethod method)
         {
+            Ensure.IsNotNull(uri, nameof(uri));
+            Ensure.IsNotNull(method, nameof(method));
+            
             Id = id;
             Uri = uri;
             Method = method;
@@ -25,11 +29,17 @@ namespace NClient.Abstractions.HttpClients
 
         public void AddParameter(string name, object value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNull(value, nameof(value));
+            
             _parameters.Add(new HttpParameter(name, value));
         }
 
         public void AddHeader(string name, string value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNull(value, nameof(value));
+            
             _headers.Add(new HttpHeader(name, value));
         }
     }

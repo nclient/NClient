@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Common.Helpers;
 
 namespace NClient.Annotations
 {
@@ -10,8 +11,11 @@ namespace NClient.Annotations
 
         public HeaderAttribute(string name, string value)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNullOrEmpty(value, nameof(value));
+            
+            Name = name;
+            Value = value;
         }
     }
 }

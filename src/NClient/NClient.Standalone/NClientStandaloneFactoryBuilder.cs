@@ -3,6 +3,7 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 
 namespace NClient
 {
@@ -13,8 +14,13 @@ namespace NClient
         private IResiliencePolicyProvider? _resiliencePolicyProvider;
         private ILoggerFactory? _loggerFactory;
 
-        public NClientStandaloneFactoryBuilder(IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
+        public NClientStandaloneFactoryBuilder(
+            IHttpClientProvider httpClientProvider, 
+            ISerializerProvider serializerProvider)
         {
+            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+            
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
         }

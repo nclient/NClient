@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Common.Helpers;
 
 namespace NClient.Annotations.Versioning
 {
@@ -9,6 +10,8 @@ namespace NClient.Annotations.Versioning
 
         public ToVersionAttribute(string version)
         {
+            Ensure.IsNotNullOrEmpty(version, nameof(version));
+            
             Version = version;
         }
     }

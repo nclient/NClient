@@ -11,7 +11,7 @@ using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Mappers
 {
-    public class NClientAttributeMapper : IAttributeMapper
+    internal class NClientAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
         {

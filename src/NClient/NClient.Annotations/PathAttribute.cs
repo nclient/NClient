@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Common.Helpers;
 
 namespace NClient.Annotations
 {
@@ -11,7 +12,9 @@ namespace NClient.Annotations
 
         public PathAttribute(string template)
         {
-            Template = template ?? throw new ArgumentNullException(nameof(template));
+            Ensure.IsNotNullOrEmpty(template, nameof(template));
+            
+            Template = template;
         }
     }
 }

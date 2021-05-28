@@ -13,6 +13,7 @@ using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Filters;
 using NClient.AspNetCore.Mappers;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 
 namespace NClient.AspNetCore.Extensions
@@ -30,10 +31,10 @@ namespace NClient.AspNetCore.Extensions
             VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
         }
 
-        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)
+        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, 
+            Action<MvcOptions>? configure = null)
         {
-            if (serviceCollection == null)
-                throw new ArgumentNullException(nameof(serviceCollection));
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
 
             var mvcCoreBuilder = serviceCollection.AddMvcCore();
             var appAssemblies = mvcCoreBuilder.PartManager.ApplicationParts
@@ -104,6 +105,8 @@ namespace NClient.AspNetCore.Extensions
 
         public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
         {
+            Ensure.IsNotNull(builder, nameof(builder));
+            
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
 

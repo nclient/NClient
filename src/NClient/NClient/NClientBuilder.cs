@@ -2,6 +2,7 @@
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Serialization.System;
 
@@ -18,13 +19,20 @@ namespace NClient
 
         private NClientBuilder(IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
         {
+            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+            
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
         }
 
-        public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host) where TInterface : class
+        public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host) 
+            where TInterface : class
         {
-            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider).Use<TInterface>(host);
+            Ensure.IsNotNull(host, nameof(host));
+            
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface>(host);
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -32,7 +40,10 @@ namespace NClient
             where TInterface : class
             where TController : TInterface
         {
-            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider).Use<TInterface, TController>(host);
+            Ensure.IsNotNull(host, nameof(host));
+            
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface, TController>(host);
         }
     }
 }
