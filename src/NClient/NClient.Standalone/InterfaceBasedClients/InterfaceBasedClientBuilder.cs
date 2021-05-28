@@ -43,7 +43,7 @@ namespace NClient.InterfaceBasedClients
         public IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
-            
+
             _httpClientProvider = httpClientProvider;
             return this;
         }
@@ -51,7 +51,7 @@ namespace NClient.InterfaceBasedClients
         public IInterfaceBasedClientBuilder<TInterface> WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            
+
             _serializerProvider = serializerProvider;
             return this;
         }
@@ -59,7 +59,7 @@ namespace NClient.InterfaceBasedClients
         public IInterfaceBasedClientBuilder<TInterface> WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
-            
+
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
@@ -67,7 +67,7 @@ namespace NClient.InterfaceBasedClients
         public IInterfaceBasedClientBuilder<TInterface> WithLogging(ILogger<TInterface> logger)
         {
             Ensure.IsNotNull(logger, nameof(logger));
-            
+
             _logger = logger;
             return this;
         }

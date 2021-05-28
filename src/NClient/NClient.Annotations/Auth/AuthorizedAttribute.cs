@@ -17,7 +17,7 @@ namespace NClient.Annotations.Auth
         public AuthorizedAttribute(string policy)
         {
             Ensure.IsNotNullOrEmpty(policy, nameof(policy));
-            
+
             Policy = policy;
         }
     }

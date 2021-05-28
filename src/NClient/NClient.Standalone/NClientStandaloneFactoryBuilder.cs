@@ -15,12 +15,12 @@ namespace NClient
         private ILoggerFactory? _loggerFactory;
 
         public NClientStandaloneFactoryBuilder(
-            IHttpClientProvider httpClientProvider, 
+            IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            
+
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
         }

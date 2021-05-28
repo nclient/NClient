@@ -26,7 +26,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
-            
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);
@@ -39,7 +39,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
-            
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientFactoryBuilder = PreBuild(serviceProvider, httpClientName);

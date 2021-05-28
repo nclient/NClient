@@ -10,7 +10,7 @@ namespace NClient.Abstractions.HttpClients
         public HttpParameter(string name, object? value)
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
-            
+
             Name = name;
             Value = value;
         }

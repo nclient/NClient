@@ -6,11 +6,11 @@ namespace NClient
 {
     public static class NClientProvider
     {
-        public static IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host) 
+        public static IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             return new NClientBuilder().Use<TInterface>(host);
         }
 
@@ -20,7 +20,7 @@ namespace NClient
             where TController : TInterface
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             return new NClientBuilder().Use<TInterface, TController>(host);
         }
     }

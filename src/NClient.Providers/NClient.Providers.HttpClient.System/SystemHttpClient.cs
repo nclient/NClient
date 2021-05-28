@@ -17,13 +17,13 @@ namespace NClient.Providers.HttpClient.System
         private readonly string _httpClientName;
 
         public SystemHttpClient(
-            ISerializer serializer, 
-            IHttpClientFactory httpClientFactory, 
+            ISerializer serializer,
+            IHttpClientFactory httpClientFactory,
             string? httpClientName = null)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
-            
+
             _httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
             _httpResponseBuilder = new HttpResponseBuilder(serializer);
             _httpClientFactory = httpClientFactory;
@@ -33,7 +33,7 @@ namespace NClient.Providers.HttpClient.System
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
             Ensure.IsNotNull(request, nameof(request));
-            
+
             var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
             return await _httpResponseBuilder.BuildAsync(request, httpResponseMessage, bodyType, errorType, exception).ConfigureAwait(false);

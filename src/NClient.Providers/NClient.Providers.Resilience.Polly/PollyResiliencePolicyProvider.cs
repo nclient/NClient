@@ -12,7 +12,7 @@ namespace NClient.Providers.Resilience.Polly
         public PollyResiliencePolicyProvider(IAsyncPolicy<HttpResponse> asyncPolicy)
         {
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
-            
+
             _asyncPolicy = asyncPolicy;
         }
 

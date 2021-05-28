@@ -20,7 +20,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
     {
         private static readonly HttpRequest HttpRequestStub = new(Guid.Empty, new Uri("http://localhost:5000"), HttpMethod.Get);
         private static readonly HttpResponse HttpResponseStub = new(HttpRequestStub);
-        
+
         private IReturnClientWithMetadata _returnClient = null!;
         private ReturnApiMockFactory _returnApiMockFactory = null!;
 

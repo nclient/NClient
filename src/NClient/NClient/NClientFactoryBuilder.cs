@@ -17,7 +17,7 @@ namespace NClient
         public INClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
-            
+
             _httpClientProvider = httpClientProvider;
             return this;
         }
@@ -25,7 +25,7 @@ namespace NClient
         public INClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            
+
             _serializerProvider = serializerProvider;
             return this;
         }
@@ -33,7 +33,7 @@ namespace NClient
         public INClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
-            
+
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
@@ -41,7 +41,7 @@ namespace NClient
         public INClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
-            
+
             _loggerFactory = loggerFactory;
             return this;
         }

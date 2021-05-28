@@ -21,7 +21,7 @@ namespace NClient.Abstractions.HttpClients
         {
             Ensure.IsNotNull(uri, nameof(uri));
             Ensure.IsNotNull(method, nameof(method));
-            
+
             Id = id;
             Uri = uri;
             Method = method;
@@ -31,7 +31,7 @@ namespace NClient.Abstractions.HttpClients
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
-            
+
             _parameters.Add(new HttpParameter(name, value));
         }
 
@@ -39,7 +39,7 @@ namespace NClient.Abstractions.HttpClients
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
-            
+
             _headers.Add(new HttpHeader(name, value));
         }
     }

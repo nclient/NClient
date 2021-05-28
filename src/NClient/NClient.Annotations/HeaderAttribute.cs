@@ -13,7 +13,7 @@ namespace NClient.Annotations
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNullOrEmpty(value, nameof(value));
-            
+
             Name = name;
             Value = value;
         }

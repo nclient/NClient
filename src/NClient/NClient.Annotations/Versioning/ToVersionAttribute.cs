@@ -11,7 +11,7 @@ namespace NClient.Annotations.Versioning
         public ToVersionAttribute(string version)
         {
             Ensure.IsNotNullOrEmpty(version, nameof(version));
-            
+
             Version = version;
         }
     }

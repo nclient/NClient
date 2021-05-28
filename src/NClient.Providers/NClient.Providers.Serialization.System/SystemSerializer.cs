@@ -12,7 +12,7 @@ namespace NClient.Providers.Serialization.System
         public SystemSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
-            
+
             _jsonSerializerOptions = jsonSerializerOptions;
         }
 
@@ -20,7 +20,7 @@ namespace NClient.Providers.Serialization.System
         {
             Ensure.IsNotNull(json, nameof(json));
             Ensure.IsNotNull(returnType, nameof(returnType));
-            
+
             return JsonSerializer.Deserialize(json, returnType, _jsonSerializerOptions);
         }
 

@@ -13,7 +13,7 @@ namespace NClient.Annotations
         public PathAttribute(string template)
         {
             Ensure.IsNotNullOrEmpty(template, nameof(template));
-            
+
             Template = template;
         }
     }

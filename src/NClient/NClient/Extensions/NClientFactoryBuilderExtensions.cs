@@ -18,7 +18,7 @@ namespace NClient.Extensions
         {
             Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
-            
+
             return clientFactoryBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
@@ -28,7 +28,7 @@ namespace NClient.Extensions
         {
             Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
-            
+
             return clientFactoryBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
@@ -38,7 +38,7 @@ namespace NClient.Extensions
         {
             Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
-            
+
             return clientFactoryBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }
     }

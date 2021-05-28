@@ -16,7 +16,7 @@ namespace NClient.Providers.Serialization.System
         public SystemSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
-            
+
             _jsonSerializerOptions = jsonSerializerOptions;
         }
 

@@ -17,7 +17,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
-            
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientBuilder = PreBuild<TInterface, TController>(serviceProvider, host, httpClientName);
@@ -34,7 +34,7 @@ namespace NClient.Extensions.DependencyInjection
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(configure, nameof(configure));
-            
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientBuilder = PreBuild<TInterface, TController>(serviceProvider, host, httpClientName);
@@ -51,7 +51,7 @@ namespace NClient.Extensions.DependencyInjection
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(configure, nameof(configure));
-            
+
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var nclientBuilder = PreBuild<TInterface, TController>(serviceProvider, host, httpClientName);

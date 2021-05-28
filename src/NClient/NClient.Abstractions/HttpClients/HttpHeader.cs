@@ -11,7 +11,7 @@ namespace NClient.Abstractions.HttpClients
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNullOrEmpty(value, nameof(value));
-            
+
             Name = name;
             Value = value;
         }

@@ -21,16 +21,16 @@ namespace NClient
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            
+
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
         }
 
-        public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host) 
+        public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface>(host);
         }
@@ -41,7 +41,7 @@ namespace NClient
             where TController : TInterface
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface, TController>(host);
         }

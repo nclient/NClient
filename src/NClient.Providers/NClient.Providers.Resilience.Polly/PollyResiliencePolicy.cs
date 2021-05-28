@@ -14,13 +14,13 @@ namespace NClient.Providers.Resilience.Polly
         public PollyResiliencePolicy(IAsyncPolicy<HttpResponse> asyncPolicy)
         {
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
-            
+
             _asyncPolicy = asyncPolicy;
         }
         public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action)
         {
             Ensure.IsNotNull(action, nameof(action));
-            
+
             return _asyncPolicy.ExecuteAsync(action);
         }
     }

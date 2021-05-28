@@ -12,7 +12,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
         public NewtonsoftSerializer(JsonSerializerSettings jsonSerializerSettings)
         {
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
-            
+
             _jsonSerializerSettings = jsonSerializerSettings;
         }
 
@@ -20,7 +20,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
         {
             Ensure.IsNotNull(json, nameof(json));
             Ensure.IsNotNull(returnType, nameof(returnType));
-            
+
             return JsonConvert.DeserializeObject(json, returnType, _jsonSerializerSettings);
         }
 

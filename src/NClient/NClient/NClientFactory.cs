@@ -75,11 +75,11 @@ namespace NClient
             _loggerFactory = loggerFactory;
         }
 
-        public TInterface Create<TInterface>(string host) 
+        public TInterface Create<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface>(host);
 
@@ -101,7 +101,7 @@ namespace NClient
             where TController : TInterface
         {
             Ensure.IsNotNull(host, nameof(host));
-            
+
             var nclientBuilder = new NClientBuilder()
                 .Use<TInterface, TController>(host);
 

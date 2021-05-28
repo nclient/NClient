@@ -27,7 +27,7 @@ namespace NClient.Providers.HttpClient.RestSharp
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
             Ensure.IsNotNull(request, nameof(request));
-            
+
             var restClient = new RestClient
             {
                 Authenticator = _authenticator,

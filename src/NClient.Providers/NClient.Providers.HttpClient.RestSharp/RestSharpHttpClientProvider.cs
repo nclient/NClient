@@ -17,7 +17,7 @@ namespace NClient.Providers.HttpClient.RestSharp
         public IHttpClient Create(ISerializer serializer)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
-            
+
             return new RestSharpHttpClient(_authenticator);
         }
     }

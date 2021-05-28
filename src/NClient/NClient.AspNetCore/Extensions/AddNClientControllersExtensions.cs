@@ -31,7 +31,7 @@ namespace NClient.AspNetCore.Extensions
             VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
         }
 
-        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, 
+        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection,
             Action<MvcOptions>? configure = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -106,7 +106,7 @@ namespace NClient.AspNetCore.Extensions
         public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
         {
             Ensure.IsNotNull(builder, nameof(builder));
-            
+
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));
 
