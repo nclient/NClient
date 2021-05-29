@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace NClient.Providers.HttpClient.System.Internals
+namespace NClient.Providers.HttpClient.System.Stubs
 {
     internal class StubHttpClientFactory : IHttpClientFactory
     {

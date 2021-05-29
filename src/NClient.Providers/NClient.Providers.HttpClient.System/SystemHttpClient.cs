@@ -3,29 +3,29 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.System.Internals;
+using NClient.Providers.HttpClient.System.Builders;
 
 namespace NClient.Providers.HttpClient.System
 {
-    public class SystemHttpClient : IHttpClient
+    internal class SystemHttpClient : IHttpClient
     {
-        private readonly HttpRequestMessageBuilder _httpRequestMessageBuilder;
-        private readonly HttpResponseBuilder _httpResponseBuilder;
+        private readonly IHttpRequestMessageBuilder _httpRequestMessageBuilder;
+        private readonly IHttpResponseBuilder _httpResponseBuilder;
+        private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _httpClientName;
 
         public SystemHttpClient(
-            ISerializer serializer,
+            IHttpRequestMessageBuilder httpRequestMessageBuilder,
+            IHttpResponseBuilder httpResponseBuilder,
+            IHttpResponsePopulater httpResponsePopulater,
             IHttpClientFactory httpClientFactory,
             string? httpClientName = null)
         {
-            Ensure.IsNotNull(serializer, nameof(serializer));
-            Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
-
-            _httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
-            _httpResponseBuilder = new HttpResponseBuilder(serializer);
+            _httpRequestMessageBuilder = httpRequestMessageBuilder;
+            _httpResponseBuilder = httpResponseBuilder;
+            _httpResponsePopulater = httpResponsePopulater;
             _httpClientFactory = httpClientFactory;
             _httpClientName = httpClientName ?? Options.DefaultName;
         }
@@ -36,7 +36,8 @@ namespace NClient.Providers.HttpClient.System
 
             var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
-            return await _httpResponseBuilder.BuildAsync(request, httpResponseMessage, bodyType, errorType, exception).ConfigureAwait(false);
+            var httpResponse = await _httpResponseBuilder.BuildAsync(request, httpResponseMessage, exception).ConfigureAwait(false);
+            return _httpResponsePopulater.Populate(httpResponse, bodyType, errorType);
         }
 
         private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)

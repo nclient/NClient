@@ -1,33 +1,35 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
-using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.RestSharp.Internals;
+using NClient.Providers.HttpClient.RestSharp.Builders;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.SystemTextJson;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
-
 namespace NClient.Providers.HttpClient.RestSharp
 {
-    public class RestSharpHttpClient : IHttpClient
+    internal class RestSharpHttpClient : IHttpClient
     {
-        private readonly RestRequestBuilder _restRequestBuilder;
-        private readonly HttpResponseBuilder _httpResponseBuilder;
+        private readonly IRestRequestBuilder _restRequestBuilder;
+        private readonly IHttpResponseBuilder _httpResponseBuilder;
+        private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IAuthenticator? _authenticator;
 
-        public RestSharpHttpClient(IAuthenticator? authenticator = null)
+        public RestSharpHttpClient(
+            IRestRequestBuilder restRequestBuilder,
+            IHttpResponseBuilder httpResponseBuilder,
+            IHttpResponsePopulater httpResponsePopulater,
+            IAuthenticator? authenticator = null)
         {
-            _restRequestBuilder = new RestRequestBuilder();
-            _httpResponseBuilder = new HttpResponseBuilder();
+            _restRequestBuilder = restRequestBuilder;
+            _httpResponseBuilder = httpResponseBuilder;
+            _httpResponsePopulater = httpResponsePopulater;
             _authenticator = authenticator;
         }
 
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
         {
-            Ensure.IsNotNull(request, nameof(request));
-
             var restClient = new RestClient
             {
                 Authenticator = _authenticator,
@@ -35,7 +37,8 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             var restRequest = _restRequestBuilder.Build(request);
             var restResponse = await restClient.ExecuteAsync(restRequest).ConfigureAwait(false);
-            return _httpResponseBuilder.Build(request, restResponse, bodyType, errorType);
+            var httpResponse = _httpResponseBuilder.Build(request, restResponse);
+            return _httpResponsePopulater.Populate(httpResponse, bodyType, errorType);
         }
     }
 }

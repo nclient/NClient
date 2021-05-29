@@ -3,7 +3,8 @@ using System.Net.Http;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.System.Internals;
+using NClient.Providers.HttpClient.System.Builders;
+using NClient.Providers.HttpClient.System.Stubs;
 
 namespace NClient.Providers.HttpClient.System
 {
@@ -42,8 +43,17 @@ namespace NClient.Providers.HttpClient.System
         public IHttpClient Create(ISerializer serializer)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
-
-            return new SystemHttpClient(serializer, _httpClientFactory.Invoke(), _httpClientName);
+            
+            var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
+            var httpResponseBuilder = new HttpResponseBuilder();
+            var httpResponsePopulater = new HttpResponsePopulater(serializer);
+            
+            return new SystemHttpClient(
+                httpRequestMessageBuilder, 
+                httpResponseBuilder, 
+                httpResponsePopulater, 
+                _httpClientFactory.Invoke(), 
+                _httpClientName);
         }
     }
 }

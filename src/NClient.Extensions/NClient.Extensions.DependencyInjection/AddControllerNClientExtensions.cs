@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Common.Helpers;
-using NClient.Extensions.DependencyInjection.Internals;
+using NClient.Extensions.DependencyInjection.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
 {

@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 
-namespace NClient.Extensions.DependencyInjection.Internals
+namespace NClient.Extensions.DependencyInjection.Extensions
 {
-    internal static class OptionalBuilderBaseExtensions
+    internal static class InternalOptionalBuilderBaseExtensions
     {
         public static TBuilder WithRegisteredProviders<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> optionalNClientBuilder,
