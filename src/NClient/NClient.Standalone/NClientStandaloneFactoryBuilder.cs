@@ -25,25 +25,25 @@ namespace NClient
             _serializerProvider = serializerProvider;
         }
 
-        public INClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        public IOptionalNClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
             _httpClientProvider = httpClientProvider;
             return this;
         }
 
-        public INClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
+        public IOptionalNClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             _serializerProvider = serializerProvider;
             return this;
         }
 
-        public INClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             _resiliencePolicyProvider = resiliencePolicyProvider;
             return this;
         }
 
-        public INClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
+        public IOptionalNClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
             return this;

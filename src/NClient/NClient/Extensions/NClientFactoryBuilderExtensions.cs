@@ -12,34 +12,34 @@ namespace NClient.Extensions
 {
     public static class NClientFactoryBuilderExtensions
     {
-        public static INClientFactoryBuilder WithCustomHttpClient(
-            this INClientFactoryBuilder clientFactoryBuilder,
+        public static IOptionalNClientFactoryBuilder WithCustomHttpClient(
+            this IOptionalNClientFactoryBuilder optionalNClientFactoryBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
-            Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
+            Ensure.IsNotNull(optionalNClientFactoryBuilder, nameof(optionalNClientFactoryBuilder));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
-            return clientFactoryBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
+            return optionalNClientFactoryBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
-        public static INClientFactoryBuilder WithCustomSerializer(
-            this INClientFactoryBuilder clientFactoryBuilder,
+        public static IOptionalNClientFactoryBuilder WithCustomSerializer(
+            this IOptionalNClientFactoryBuilder optionalNClientFactoryBuilder,
             JsonSerializerOptions jsonSerializerOptions)
         {
-            Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
+            Ensure.IsNotNull(optionalNClientFactoryBuilder, nameof(optionalNClientFactoryBuilder));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
-            return clientFactoryBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
+            return optionalNClientFactoryBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
-        public static INClientFactoryBuilder WithResiliencePolicy(
-            this INClientFactoryBuilder clientFactoryBuilder,
+        public static IOptionalNClientFactoryBuilder WithResiliencePolicy(
+            this IOptionalNClientFactoryBuilder optionalNClientFactoryBuilder,
             IAsyncPolicy<HttpResponse> asyncPolicy)
         {
-            Ensure.IsNotNull(clientFactoryBuilder, nameof(clientFactoryBuilder));
+            Ensure.IsNotNull(optionalNClientFactoryBuilder, nameof(optionalNClientFactoryBuilder));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
-            return clientFactoryBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
+            return optionalNClientFactoryBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }
     }
 }

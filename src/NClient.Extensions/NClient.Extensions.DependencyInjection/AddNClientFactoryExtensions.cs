@@ -22,7 +22,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryBuilder, INClientFactoryBuilder> configure, string? httpClientName = null)
+            Func<IOptionalNClientFactoryBuilder, IOptionalNClientFactoryBuilder> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
@@ -35,7 +35,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryBuilder, INClientFactoryBuilder> configure, string? httpClientName = null)
+            Func<IServiceProvider, IOptionalNClientFactoryBuilder, IOptionalNClientFactoryBuilder> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
@@ -47,7 +47,7 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
-        private static INClientFactoryBuilder PreBuild(
+        private static IOptionalNClientFactoryBuilder PreBuild(
             IServiceProvider serviceProvider, string? httpClientName)
         {
             var nclientFactoryBuilder = new NClientFactoryBuilder();
