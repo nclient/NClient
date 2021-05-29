@@ -10,11 +10,12 @@ using Polly;
 
 namespace NClient.Extensions
 {
-    public static class InterfaceBasedClientExtensions
+    public static class OptionalBuilderBaseExtensions
     {
-        public static IOptionalNClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
-            this IOptionalNClientBuilder<TInterface> clientBuilder,
+        public static TBuilder WithCustomHttpClient<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
@@ -23,9 +24,10 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
-        public static IOptionalNClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
-            this IOptionalNClientBuilder<TInterface> clientBuilder,
+        public static TBuilder WithCustomHttpClient<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             HttpMessageHandler httpMessageHandler)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
@@ -34,9 +36,10 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpMessageHandler));
         }
 
-        public static IOptionalNClientBuilder<TInterface> WithCustomSerializer<TInterface>(
-            this IOptionalNClientBuilder<TInterface> clientBuilder,
+        public static TBuilder WithCustomSerializer<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             JsonSerializerOptions jsonSerializerOptions)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
@@ -45,9 +48,10 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
-        public static IOptionalNClientBuilder<TInterface> WithResiliencePolicy<TInterface>(
-            this IOptionalNClientBuilder<TInterface> clientBuilder,
+        public static TBuilder WithResiliencePolicy<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             IAsyncPolicy<HttpResponse> asyncPolicy)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));

@@ -2,8 +2,8 @@
 
 namespace NClient.Abstractions
 {
-    public interface IOptionalNClientBuilder<TInterface> 
-        : ICustomBuilderBase<IOptionalNClientBuilder<TInterface>, TInterface>
+    public interface IOptionalNClientBuilder<TInterface>
+        : IOptionalBuilderBase<IOptionalNClientBuilder<TInterface>, TInterface>
         where TInterface : class
     {
         IOptionalNClientBuilder<TInterface> WithLogging(ILogger<TInterface> logger);

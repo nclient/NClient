@@ -22,7 +22,9 @@ namespace NClient
         private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
         private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
 
-        public NClientStandaloneBuilder(IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
+        public NClientStandaloneBuilder(
+            IHttpClientProvider httpClientProvider,
+            ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
@@ -40,12 +42,12 @@ namespace NClient
             Ensure.IsNotNull(host, nameof(host));
             _clientValidator.Ensure<TInterface>(_interfaceClientInterceptorFactory);
 
-            return new OptionalInterfaceClientBuilder<TInterface>(
+            return new OptionalInterfaceNClientBuilder<TInterface>(
                 host: new Uri(host),
-                _httpClientProvider,
-                _serializerProvider,
+                ProxyGenerator,
                 _interfaceClientInterceptorFactory,
-                ProxyGenerator);
+                _httpClientProvider,
+                _serializerProvider);
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
@@ -56,12 +58,12 @@ namespace NClient
             Ensure.IsNotNull(host, nameof(host));
             _clientValidator.Ensure<TInterface, TController>(_controllerClientInterceptorFactory);
 
-            return new OptionalControllerClientBuilder<TInterface, TController>(
+            return new OptionalControllerNClientBuilder<TInterface, TController>(
                 host: new Uri(host),
-                _httpClientProvider,
-                _serializerProvider,
+                ProxyGenerator,
                 _controllerClientInterceptorFactory,
-                ProxyGenerator);
+                _httpClientProvider,
+                _serializerProvider);
         }
     }
 }

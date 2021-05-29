@@ -6,22 +6,23 @@ using NClient.Abstractions;
 
 namespace NClient.Extensions.DependencyInjection.Internals
 {
-    internal static class OptionalNClientBuilderExtensions
+    internal static class OptionalBuilderBaseExtensions
     {
-        public static IOptionalNClientBuilder<TInterface> WithRegisteredProviders<TInterface>(
-            this IOptionalNClientBuilder<TInterface> optionalNClientBuilder, 
+        public static TBuilder WithRegisteredProviders<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> optionalNClientBuilder,
             IServiceProvider serviceProvider, string? httpClientName)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             if (httpClientFactory is not null)
                 optionalNClientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
 
-            var logger = serviceProvider.GetService<ILogger<TInterface>>();
-            if (logger is not null)
-                optionalNClientBuilder.WithLogging(logger);
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            if (loggerFactory is not null)
+                optionalNClientBuilder.WithLogging(loggerFactory);
 
-            return optionalNClientBuilder;
+            return (TBuilder)optionalNClientBuilder;
         }
     }
 }

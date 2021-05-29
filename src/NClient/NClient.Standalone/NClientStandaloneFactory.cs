@@ -40,7 +40,7 @@ namespace NClient
             if (_resiliencePolicyProvider is not null)
                 nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
             if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
+                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory);
 
             return nclientBuilder.Build();
         }
@@ -58,7 +58,7 @@ namespace NClient
             if (_resiliencePolicyProvider is not null)
                 nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
             if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
+                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory);
 
             return nclientBuilder.Build();
         }

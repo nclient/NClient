@@ -1,10 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace NClient.Abstractions
+﻿namespace NClient.Abstractions
 {
-    public interface IOptionalNClientFactoryBuilder 
-        : ICustomBuilderBase<IOptionalNClientFactoryBuilder, INClientFactory>
+    public interface IOptionalNClientFactoryBuilder
+        : IOptionalBuilderBase<IOptionalNClientFactoryBuilder, INClientFactory>
     {
-        IOptionalNClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory);
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Common.Helpers;
+using NClient.Extensions.DependencyInjection.Internals;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -50,17 +49,8 @@ namespace NClient.Extensions.DependencyInjection
         private static IOptionalNClientFactoryBuilder PreBuild(
             IServiceProvider serviceProvider, string? httpClientName)
         {
-            var nclientFactoryBuilder = new NClientFactoryBuilder();
-
-            var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-            if (httpClientFactory is not null)
-                nclientFactoryBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
-
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-            if (loggerFactory is not null)
-                nclientFactoryBuilder.WithLogging(loggerFactory);
-
-            return nclientFactoryBuilder;
+            return new NClientFactoryBuilder()
+                .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }
 }
