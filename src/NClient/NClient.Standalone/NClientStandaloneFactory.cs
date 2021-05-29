@@ -5,6 +5,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.Extensions;
 
 namespace NClient
 {
@@ -34,15 +35,11 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
-                .Use<TInterface>(host);
-
-            if (_resiliencePolicyProvider is not null)
-                nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
-            if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory);
-
-            return nclientBuilder.Build();
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface>(host)
+                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetLogging(_loggerFactory)
+                .Build();
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Create<T> method.")]
@@ -52,15 +49,11 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
-                .Use<TInterface, TController>(host);
-
-            if (_resiliencePolicyProvider is not null)
-                nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
-            if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory);
-
-            return nclientBuilder.Build();
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface, TController>(host)
+                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetLogging(_loggerFactory)
+                .Build();
         }
     }
 }

@@ -4,6 +4,7 @@ using NClient.Abstractions;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.ClientGeneration;
 using NClient.Core.Interceptors;
 using NClient.OptionalNClientBuilders.Bases;
 
@@ -15,19 +16,19 @@ namespace NClient.OptionalNClientBuilders
         where TInterface : class
     {
         private readonly Uri _host;
-        private readonly IProxyGenerator _proxyGenerator;
+        private readonly IClientGenerator _clientGenerator;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
 
         public OptionalInterfaceNClientBuilder(
             Uri host,
-            IProxyGenerator proxyGenerator,
+            IClientGenerator clientGenerator,
             IClientInterceptorFactory clientInterceptorFactory,
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
             : base(httpClientProvider, serializerProvider)
         {
             _host = host;
-            _proxyGenerator = proxyGenerator;
+            _clientGenerator = clientGenerator;
             _clientInterceptorFactory = clientInterceptorFactory;
         }
 
@@ -35,15 +36,7 @@ namespace NClient.OptionalNClientBuilders
         {
             var interceptor = _clientInterceptorFactory
                 .Create(_host, HttpClientProvider, SerializerProvider, ResiliencePolicyProvider, Logger);
-            return CreateClient(interceptor);
-        }
-
-        private TInterface CreateClient(IAsyncInterceptor asyncInterceptor)
-        {
-            return (TInterface)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
-                interfaceToProxy: typeof(TInterface),
-                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TInterface>), typeof(IHttpNClient<TInterface>) },
-                interceptors: asyncInterceptor.ToInterceptor());
+            return _clientGenerator.CreateClient<TInterface>(interceptor);
         }
     }
 }

@@ -11,18 +11,15 @@ namespace NClient.Extensions.DependencyInjection.Internals
         public static TBuilder WithRegisteredProviders<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> optionalNClientBuilder,
             IServiceProvider serviceProvider, string? httpClientName)
-            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
+            where TBuilder : class, IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-            if (httpClientFactory is not null)
-                optionalNClientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
-
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-            if (loggerFactory is not null)
-                optionalNClientBuilder.WithLogging(loggerFactory);
-
-            return (TBuilder)optionalNClientBuilder;
+            
+            return optionalNClientBuilder
+                .TrySetCustomHttpClient(httpClientFactory, httpClientName)
+                .TrySetLogging(loggerFactory);
         }
     }
 }

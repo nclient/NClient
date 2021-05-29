@@ -3,6 +3,7 @@ using Castle.DynamicProxy;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.ClientGeneration;
 using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
@@ -21,6 +22,7 @@ namespace NClient
         private readonly IClientValidator _clientValidator;
         private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
         private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
+        private readonly IClientGenerator _clientGenerator;
 
         public NClientStandaloneBuilder(
             IHttpClientProvider httpClientProvider,
@@ -32,6 +34,7 @@ namespace NClient
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
             _clientValidator = new ClientValidator(ProxyGenerator);
+            _clientGenerator = new ClientGenerator(ProxyGenerator);
             _interfaceClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AttributeMapper());
             _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
@@ -44,7 +47,7 @@ namespace NClient
 
             return new OptionalInterfaceNClientBuilder<TInterface>(
                 host: new Uri(host),
-                ProxyGenerator,
+                _clientGenerator,
                 _interfaceClientInterceptorFactory,
                 _httpClientProvider,
                 _serializerProvider);
@@ -60,7 +63,7 @@ namespace NClient
 
             return new OptionalControllerNClientBuilder<TInterface, TController>(
                 host: new Uri(host),
-                ProxyGenerator,
+                _clientGenerator,
                 _controllerClientInterceptorFactory,
                 _httpClientProvider,
                 _serializerProvider);
