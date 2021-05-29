@@ -24,7 +24,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IInterfaceBasedClientBuilder<TInterface>, IInterfaceBasedClientBuilder<TInterface>> configure,
+            string host, Func<IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -40,7 +40,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, IInterfaceBasedClientBuilder<TInterface>, IInterfaceBasedClientBuilder<TInterface>> configure,
+            string host, Func<IServiceProvider, IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -55,7 +55,7 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
-        private static IInterfaceBasedClientBuilder<TInterface> PreBuild<TInterface>(
+        private static IOptionalNClientBuilder<TInterface> PreBuild<TInterface>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TInterface : class
         {

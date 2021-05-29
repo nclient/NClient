@@ -4,18 +4,23 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
-using NClient.ControllerBasedClients;
-using NClient.InterfaceBasedClients;
+using NClient.Core.Interceptors;
+using NClient.Core.Mappers;
+using NClient.Core.Validation;
+using NClient.Mappers;
+using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
     public class NClientStandaloneBuilder : INClientBuilder
     {
+        private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
+
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
-        private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
-        private static readonly InterfaceBasedClientValidator InterfaceBasedValidator = new();
-        private static readonly ControllerBasedClientValidator ControllerBasedClientValidator = new();
+        private readonly IClientValidator _clientValidator;
+        private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
+        private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
 
         public NClientStandaloneBuilder(IHttpClientProvider httpClientProvider, ISerializerProvider serializerProvider)
         {
@@ -24,26 +29,39 @@ namespace NClient
 
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
+            _clientValidator = new ClientValidator(ProxyGenerator);
+            _interfaceClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AttributeMapper());
+            _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
 
-        public IInterfaceBasedClientBuilder<TInterface> Use<TInterface>(string host)
+        public IOptionalNClientBuilder<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
+            _clientValidator.Ensure<TInterface>(_interfaceClientInterceptorFactory);
 
-            InterfaceBasedValidator.Ensure<TInterface>(ProxyGenerator);
-            return new InterfaceBasedClientBuilder<TInterface>(new Uri(host), _httpClientProvider, _serializerProvider, ProxyGenerator);
+            return new OptionalInterfaceClientBuilder<TInterface>(
+                host: new Uri(host),
+                _httpClientProvider,
+                _serializerProvider,
+                _interfaceClientInterceptorFactory,
+                ProxyGenerator);
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
-        public IControllerBasedClientBuilder<TInterface, TController> Use<TInterface, TController>(string host)
+        public IOptionalNClientBuilder<TInterface> Use<TInterface, TController>(string host)
             where TInterface : class
             where TController : TInterface
         {
             Ensure.IsNotNull(host, nameof(host));
+            _clientValidator.Ensure<TInterface, TController>(_controllerClientInterceptorFactory);
 
-            ControllerBasedClientValidator.Ensure<TInterface, TController>(ProxyGenerator);
-            return new ControllerBasedClientBuilder<TInterface, TController>(new Uri(host), _httpClientProvider, _serializerProvider, ProxyGenerator);
+            return new OptionalControllerClientBuilder<TInterface, TController>(
+                host: new Uri(host),
+                _httpClientProvider,
+                _serializerProvider,
+                _controllerClientInterceptorFactory,
+                ProxyGenerator);
         }
     }
 }

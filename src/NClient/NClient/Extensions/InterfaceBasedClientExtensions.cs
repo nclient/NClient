@@ -12,8 +12,8 @@ namespace NClient.Extensions
 {
     public static class InterfaceBasedClientExtensions
     {
-        public static IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
-            this IInterfaceBasedClientBuilder<TInterface> clientBuilder,
+        public static IOptionalNClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
+            this IOptionalNClientBuilder<TInterface> clientBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
             where TInterface : class
         {
@@ -23,8 +23,8 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
-        public static IInterfaceBasedClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
-            this IInterfaceBasedClientBuilder<TInterface> clientBuilder,
+        public static IOptionalNClientBuilder<TInterface> WithCustomHttpClient<TInterface>(
+            this IOptionalNClientBuilder<TInterface> clientBuilder,
             HttpMessageHandler httpMessageHandler)
             where TInterface : class
         {
@@ -34,8 +34,8 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpMessageHandler));
         }
 
-        public static IInterfaceBasedClientBuilder<TInterface> WithCustomSerializer<TInterface>(
-            this IInterfaceBasedClientBuilder<TInterface> clientBuilder,
+        public static IOptionalNClientBuilder<TInterface> WithCustomSerializer<TInterface>(
+            this IOptionalNClientBuilder<TInterface> clientBuilder,
             JsonSerializerOptions jsonSerializerOptions)
             where TInterface : class
         {
@@ -45,8 +45,8 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
-        public static IInterfaceBasedClientBuilder<TInterface> WithResiliencePolicy<TInterface>(
-            this IInterfaceBasedClientBuilder<TInterface> clientBuilder,
+        public static IOptionalNClientBuilder<TInterface> WithResiliencePolicy<TInterface>(
+            this IOptionalNClientBuilder<TInterface> clientBuilder,
             IAsyncPolicy<HttpResponse> asyncPolicy)
             where TInterface : class
         {
