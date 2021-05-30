@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text.Json;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
@@ -11,14 +10,13 @@ using Polly;
 
 namespace NClient.Extensions
 {
-    public static class ControllerBasedClientExtensions
+    public static class OptionalBuilderBaseExtensions
     {
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
-        public static IControllerBasedClientBuilder<TInterface, TController> WithCustomHttpClient<TInterface, TController>(
-            this IControllerBasedClientBuilder<TInterface, TController> clientBuilder,
+        public static TBuilder WithCustomHttpClient<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
-            where TController : TInterface
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
@@ -26,12 +24,11 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
         }
 
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
-        public static IControllerBasedClientBuilder<TInterface, TController> WithCustomHttpClient<TInterface, TController>(
-            this IControllerBasedClientBuilder<TInterface, TController> clientBuilder,
+        public static TBuilder WithCustomHttpClient<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             HttpMessageHandler httpMessageHandler)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
-            where TController : TInterface
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
@@ -39,12 +36,11 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomHttpClient(new SystemHttpClientProvider(httpMessageHandler));
         }
 
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use WithResiliencePolicy<T> method.")]
-        public static IControllerBasedClientBuilder<TInterface, TController> WithCustomSerializer<TInterface, TController>(
-            this IControllerBasedClientBuilder<TInterface, TController> clientBuilder,
+        public static TBuilder WithCustomSerializer<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             JsonSerializerOptions jsonSerializerOptions)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
-            where TController : TInterface
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
@@ -52,12 +48,11 @@ namespace NClient.Extensions
             return clientBuilder.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
         }
 
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use WithResiliencePolicy<T> method.")]
-        public static IControllerBasedClientBuilder<TInterface, TController> WithResiliencePolicy<TInterface, TController>(
-            this IControllerBasedClientBuilder<TInterface, TController> clientBuilder,
+        public static TBuilder WithResiliencePolicy<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             IAsyncPolicy<HttpResponse> asyncPolicy)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
-            where TController : TInterface
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));

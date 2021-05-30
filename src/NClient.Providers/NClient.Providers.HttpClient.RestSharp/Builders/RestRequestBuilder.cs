@@ -2,9 +2,14 @@
 using NClient.Abstractions.HttpClients;
 using RestSharp;
 
-namespace NClient.Providers.HttpClient.RestSharp.Internals
+namespace NClient.Providers.HttpClient.RestSharp.Builders
 {
-    public class RestRequestBuilder
+    internal interface IRestRequestBuilder
+    {
+        IRestRequest Build(HttpRequest request);
+    }
+
+    internal class RestRequestBuilder : IRestRequestBuilder
     {
         public IRestRequest Build(HttpRequest request)
         {

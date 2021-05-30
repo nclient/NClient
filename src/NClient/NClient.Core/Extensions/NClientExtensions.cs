@@ -1,4 +1,5 @@
-﻿using NClient.Abstractions.Clients;
+﻿using NClient.Abstractions;
+using NClient.Abstractions.Clients;
 using NClient.Common.Helpers;
 
 namespace NClient.Core.Extensions

@@ -15,32 +15,29 @@ namespace NClient.Core.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments);
+        HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
     {
-        private readonly Uri _host;
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
         private readonly IHttpMethodProvider _httpMethodProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
 
         public RequestBuilder(
-            Uri host,
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter)
         {
-            _host = host;
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _httpMethodProvider = httpMethodProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
         }
 
-        public HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments)
+        public HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
         {
             var httpMethod = _httpMethodProvider.Get(method.Attribute);
             var routeTemplate = _routeTemplateProvider.Get(method);
@@ -54,7 +51,7 @@ namespace NClient.Core.RequestBuilders
             var route = _routeProvider
                 .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
 
-            var uri = new Uri(_host, route);
+            var uri = new Uri(host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
 
             var headerAttributes = method.HeaderAttributes;

@@ -20,6 +20,7 @@ namespace NClient.Core.Interceptors
 {
     internal class ClientInterceptor<T> : AsyncInterceptorBase
     {
+        private readonly Uri _host;
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
         private readonly IClientInvocationProvider _clientInvocationProvider;
         private readonly IMethodBuilder _methodBuilder;
@@ -29,6 +30,7 @@ namespace NClient.Core.Interceptors
         private readonly ILogger<T>? _logger;
 
         public ClientInterceptor(
+            Uri host,
             IResilienceHttpClientProvider resilienceHttpClientProvider,
             IClientInvocationProvider clientInvocationProvider,
             IMethodBuilder methodBuilder,
@@ -37,6 +39,7 @@ namespace NClient.Core.Interceptors
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
+            _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _clientInvocationProvider = clientInvocationProvider;
             _methodBuilder = methodBuilder;
@@ -71,7 +74,7 @@ namespace NClient.Core.Interceptors
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
             var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
-            var request = _requestBuilder.Build(requestId, clientMethod, clientInvocation.MethodArguments);
+            var request = _requestBuilder.Build(requestId, _host, clientMethod, clientInvocation.MethodArguments);
             var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
                 .ConfigureAwait(false);
 

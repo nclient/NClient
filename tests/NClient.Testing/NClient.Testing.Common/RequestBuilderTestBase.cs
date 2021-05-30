@@ -29,7 +29,6 @@ namespace NClient.Testing.Common
             var objectMemberManager = new ObjectMemberManager();
 
             RequestBuilder = new RequestBuilder(
-                host: new Uri("http://localhost:5000"),
                 new RouteTemplateProvider(),
                 new RouteProvider(objectMemberManager),
                 new HttpMethodProvider(),
@@ -56,7 +55,7 @@ namespace NClient.Testing.Common
 
         internal HttpRequest BuildRequest(Method method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, method, arguments);
+            return RequestBuilder.Build(RequestId, host: new Uri("http://localhost:5000"), method, arguments);
         }
 
         protected static void AssertHttpRequest(

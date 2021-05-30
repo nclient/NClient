@@ -25,9 +25,10 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         [SetUp]
         public void SetUp()
         {
-            var attributeMapper = new NClientAttributeMapper();
-            var guidProvider = new GuidProvider();
-            _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper, guidProvider);
+            _virtualControllerGenerator = new VirtualControllerGenerator(
+                new VirtualControllerAttributeBuilder(),
+                new NClientAttributeMapper(),
+                new GuidProvider());
         }
 
         public interface IInterfaceWithoutAttributes { }

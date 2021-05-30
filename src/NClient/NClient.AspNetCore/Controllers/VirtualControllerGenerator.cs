@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
@@ -20,11 +18,16 @@ namespace NClient.AspNetCore.Controllers
 
     internal class VirtualControllerGenerator : IVirtualControllerGenerator
     {
+        private readonly IVirtualControllerAttributeBuilder _virtualControllerAttributeBuilder;
         private readonly IAttributeMapper _attributeMapper;
         private readonly IGuidProvider _guidProvider;
 
-        public VirtualControllerGenerator(IAttributeMapper attributeMapper, IGuidProvider guidProvider)
+        public VirtualControllerGenerator(
+            IVirtualControllerAttributeBuilder virtualControllerAttributeBuilder,
+            IAttributeMapper attributeMapper,
+            IGuidProvider guidProvider)
         {
+            _virtualControllerAttributeBuilder = virtualControllerAttributeBuilder;
             _attributeMapper = attributeMapper;
             _guidProvider = guidProvider;
         }
@@ -53,7 +56,7 @@ namespace NClient.AspNetCore.Controllers
             var interfaceAttributes = GetAttributes(nclientController.InterfaceType);
             foreach (var interfaceAttribute in interfaceAttributes)
             {
-                typeBuilder.SetCustomAttribute(CreateAttribute(interfaceAttribute));
+                typeBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceAttribute));
             }
 
             var interfaceMethods = nclientController.InterfaceType.GetMethods();
@@ -64,7 +67,7 @@ namespace NClient.AspNetCore.Controllers
                 var interfaceMethodAttributes = GetAttributes(interfaceMethod);
                 foreach (var interfaceMethodAttribute in interfaceMethodAttributes)
                 {
-                    methodBuilder.SetCustomAttribute(CreateAttribute(interfaceMethodAttribute));
+                    methodBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceMethodAttribute));
                 }
             }
 
@@ -85,75 +88,6 @@ namespace NClient.AspNetCore.Controllers
                 .ToArray()!;
         }
 
-        private static CustomAttributeBuilder CreateAttribute(Attribute attribute)
-        {
-            return attribute switch
-            {
-                IRouteTemplateProvider x => CreateRouteTemplateProviderAttribute(x),
-                ApiVersionsBaseAttribute x => CreateApiVersionsBaseAttribute(x),
-                _ => CreateCustomAttribute(attribute)
-            };
-        }
-
-        private static CustomAttributeBuilder CreateRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
-        {
-            var attributeProps = GetProperties(attribute);
-            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-            var attributeFields = GetFields(attribute);
-            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
-            if (attribute.Template is null)
-                return new CustomAttributeBuilder(
-                    attribute.GetType().GetConstructors().First(),
-                    Array.Empty<object>(),
-                    attributeProps,
-                    attributePropValues!,
-                    attributeFields,
-                    attributeFieldValues!);
-
-            return CreateCustomAttribute((Attribute)attribute);
-        }
-
-        private static CustomAttributeBuilder CreateApiVersionsBaseAttribute(ApiVersionsBaseAttribute attribute)
-        {
-            var attributeProps = GetProperties(attribute);
-            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-            var attributeFields = GetFields(attribute);
-            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
-            return new CustomAttributeBuilder(
-                attribute.GetType().GetConstructors().Last(),
-                new[] { attribute.Versions.Single().ToString() },
-                attributeProps,
-                attributePropValues!,
-                attributeFields,
-                attributeFieldValues!);
-        }
-
-        private static CustomAttributeBuilder CreateCustomAttribute(Attribute attribute)
-        {
-            var attributeCtor = attribute.GetType().GetConstructors().Last();
-            var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name));
-            var attributeCtorParamValue = attribute.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-                .Select(x => x.GetValue(attribute))
-                .ToArray();
-
-            var attributeProps = GetProperties(attribute);
-            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-            var attributeFields = GetFields(attribute);
-            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
-            return new CustomAttributeBuilder(
-                attributeCtor,
-                attributeCtorParamValue,
-                attributeProps,
-                attributePropValues!,
-                attributeFields,
-                attributeFieldValues!);
-        }
-
         private MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo methodInfo)
         {
             var methodParams = methodInfo.GetParameters();
@@ -169,7 +103,7 @@ namespace NClient.AspNetCore.Controllers
                 var paramAttributes = GetAttributes(param);
                 foreach (var paramAttribute in paramAttributes)
                 {
-                    paramBuilder.SetCustomAttribute(CreateCustomAttribute(paramAttribute));
+                    paramBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(paramAttribute));
                 }
             }
 
@@ -177,19 +111,6 @@ namespace NClient.AspNetCore.Controllers
             ilGenerator.Emit(OpCodes.Ret);
 
             return methodBuilder;
-        }
-
-        private static PropertyInfo[] GetProperties(object obj)
-        {
-            return obj.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .ToArray();
-        }
-
-        private static FieldInfo[] GetFields(object obj)
-        {
-            return obj.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }

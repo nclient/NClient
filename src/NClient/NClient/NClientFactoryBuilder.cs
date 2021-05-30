@@ -4,55 +4,16 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.OptionalNClientBuilders;
+using NClient.Providers.HttpClient.System;
+using NClient.Providers.Serialization.System;
 
 namespace NClient
 {
-    public class NClientFactoryBuilder : INClientFactoryBuilder
+    public class NClientFactoryBuilder : NClientStandaloneFactoryBuilder
     {
-        private IHttpClientProvider? _httpClientProvider;
-        private ISerializerProvider? _serializerProvider;
-        private IResiliencePolicyProvider? _resiliencePolicyProvider;
-        private ILoggerFactory? _loggerFactory;
-
-        public INClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        public NClientFactoryBuilder() : base(new SystemHttpClientProvider(), new SystemSerializerProvider())
         {
-            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
-
-            _httpClientProvider = httpClientProvider;
-            return this;
-        }
-
-        public INClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
-        {
-            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-
-            _serializerProvider = serializerProvider;
-            return this;
-        }
-
-        public INClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
-        {
-            Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
-
-            _resiliencePolicyProvider = resiliencePolicyProvider;
-            return this;
-        }
-
-        public INClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
-        {
-            Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
-
-            _loggerFactory = loggerFactory;
-            return this;
-        }
-
-        public INClientFactory Build()
-        {
-            return new NClientFactory(
-                _httpClientProvider,
-                _serializerProvider,
-                _resiliencePolicyProvider,
-                _loggerFactory);
         }
     }
 }

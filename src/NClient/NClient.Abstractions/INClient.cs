@@ -1,4 +1,4 @@
-﻿namespace NClient.Abstractions.Clients
+﻿namespace NClient.Abstractions
 {
     public interface INClient
     {

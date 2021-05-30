@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Common.Helpers;
+using NClient.Extensions.DependencyInjection.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
 {
-    public static class AddInterfaceBasedNClientExtensions
+    public static class AddInterfaceNClientExtensions
     {
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
             string host, string? httpClientName = null)
@@ -24,7 +23,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IInterfaceBasedClientBuilder<TInterface>, IInterfaceBasedClientBuilder<TInterface>> configure,
+            string host, Func<IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -40,7 +39,7 @@ namespace NClient.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, IInterfaceBasedClientBuilder<TInterface>, IInterfaceBasedClientBuilder<TInterface>> configure,
+            string host, Func<IServiceProvider, IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -55,22 +54,13 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
-        private static IInterfaceBasedClientBuilder<TInterface> PreBuild<TInterface>(
+        private static IOptionalNClientBuilder<TInterface> PreBuild<TInterface>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TInterface : class
         {
-            var nclientBuilder = new NClientBuilder()
-                .Use<TInterface>(host);
-
-            var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-            if (httpClientFactory is not null)
-                nclientBuilder.WithCustomHttpClient(httpClientFactory, httpClientName);
-
-            var logger = serviceProvider.GetService<ILogger<TInterface>>();
-            if (logger is not null)
-                nclientBuilder.WithLogging(logger);
-
-            return nclientBuilder;
+            return new NClientBuilder()
+                .Use<TInterface>(host)
+                .WithRegisteredProviders(serviceProvider, httpClientName); ;
         }
     }
 }

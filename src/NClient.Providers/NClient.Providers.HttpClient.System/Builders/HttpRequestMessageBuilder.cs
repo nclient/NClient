@@ -7,9 +7,14 @@ using Microsoft.AspNetCore.WebUtilities;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Providers.HttpClient.System.Internals
+namespace NClient.Providers.HttpClient.System.Builders
 {
-    public class HttpRequestMessageBuilder
+    internal interface IHttpRequestMessageBuilder
+    {
+        HttpRequestMessage Build(HttpRequest request);
+    }
+
+    internal class HttpRequestMessageBuilder : IHttpRequestMessageBuilder
     {
         private readonly ISerializer _serializer;
 
