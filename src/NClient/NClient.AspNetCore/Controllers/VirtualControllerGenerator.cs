@@ -24,7 +24,7 @@ namespace NClient.AspNetCore.Controllers
 
         public VirtualControllerGenerator(
             IVirtualControllerAttributeBuilder virtualControllerAttributeBuilder,
-            IAttributeMapper attributeMapper, 
+            IAttributeMapper attributeMapper,
             IGuidProvider guidProvider)
         {
             _virtualControllerAttributeBuilder = virtualControllerAttributeBuilder;

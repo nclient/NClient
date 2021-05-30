@@ -43,16 +43,16 @@ namespace NClient.Providers.HttpClient.System
         public IHttpClient Create(ISerializer serializer)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
-            
+
             var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
             var httpResponseBuilder = new HttpResponseBuilder();
             var httpResponsePopulater = new HttpResponsePopulater(serializer);
-            
+
             return new SystemHttpClient(
-                httpRequestMessageBuilder, 
-                httpResponseBuilder, 
-                httpResponsePopulater, 
-                _httpClientFactory.Invoke(), 
+                httpRequestMessageBuilder,
+                httpResponseBuilder,
+                httpResponsePopulater,
+                _httpClientFactory.Invoke(),
                 _httpClientName);
         }
     }

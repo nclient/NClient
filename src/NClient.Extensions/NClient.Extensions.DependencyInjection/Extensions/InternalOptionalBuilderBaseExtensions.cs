@@ -16,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection.Extensions
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-            
+
             return optionalNClientBuilder
                 .TrySetCustomHttpClient(httpClientFactory, httpClientName)
                 .TrySetLogging(loggerFactory);

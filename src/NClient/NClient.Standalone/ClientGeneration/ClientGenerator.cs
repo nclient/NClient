@@ -16,7 +16,7 @@ namespace NClient.ClientGeneration
         {
             _proxyGenerator = proxyGenerator;
         }
-        
+
         public TInterface CreateClient<TInterface>(IAsyncInterceptor asyncInterceptor)
         {
             return (TInterface)_proxyGenerator.CreateInterfaceProxyWithoutTarget(

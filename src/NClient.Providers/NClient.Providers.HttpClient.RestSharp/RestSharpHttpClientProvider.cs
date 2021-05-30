@@ -22,7 +22,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             var httpRequestMessageBuilder = new RestRequestBuilder();
             var httpResponseBuilder = new HttpResponseBuilder();
             var httpResponsePopulater = new HttpResponsePopulater(serializer);
-            
+
             return new RestSharpHttpClient(
                 httpRequestMessageBuilder,
                 httpResponseBuilder,

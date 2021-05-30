@@ -27,7 +27,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         {
             _virtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
-                new NClientAttributeMapper(), 
+                new NClientAttributeMapper(),
                 new GuidProvider());
         }
 
