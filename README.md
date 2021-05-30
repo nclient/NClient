@@ -15,6 +15,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 - [How to use?](#usage)  
   - [Usage with ASP.NET Core](#usage-aspnet)  
   - [Usage with non ASP.NET web service](#usage-non-aspnet) 
+- [Contributing](#contributing)
 - [Features](#features)  
   - [Creating](#features-creating)
   - [Annotation](#features-annotation)
@@ -38,6 +39,8 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 
 ## Why use NClient?
 Creating clients for web services can be quite a challenge because, in addition to data transfer, you need to implement query building, serialization, retry policy, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs. What if you could create clients with a fraction of the effort? This is exactly what NClient hopes to achieve by allowing you to create clients declaratively.
+
+By the way, you can [contribute](#contributing) to the NClient, not just use it :smiley:
 
 <a name="install" />  
 
@@ -152,6 +155,13 @@ IProductServiceClient client = NClientProvider
 // curl -X POST -H "Content-type: application/json" --data "{ id: 1 }" http://localhost:8080/api/products
 await client.PostAsync(new Product(id: 1));
 ```
+
+<a name="contributing"/>  
+
+## Contributing
+You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
+Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
+It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
 
 <a name="features"/>  
 
