@@ -214,7 +214,7 @@ The base URL route for API can be set by `PathAttribute`.
 [Path("api")] public interface IMyClient { ... }
 ```
 #### Method attributes
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `DeleteMethodAttribute`.
+Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `HeadMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `PatchMethodAttribute`, `DeleteMethodAttribute`, `OptionsMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
