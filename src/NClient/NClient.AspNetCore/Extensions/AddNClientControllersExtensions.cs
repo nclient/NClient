@@ -28,7 +28,10 @@ namespace NClient.AspNetCore.Extensions
         {
             ProxyGenerator = new ProxyGenerator();
             NClientControllerFinder = new NClientControllerFinder();
-            VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
+            VirtualControllerGenerator = new VirtualControllerGenerator(
+                new VirtualControllerAttributeBuilder(),
+                new NClientAttributeMapper(), 
+                new GuidProvider());
         }
 
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection,
