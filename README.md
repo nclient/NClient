@@ -213,8 +213,33 @@ The base URL route for API can be set by `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
+#### Versioning attributes
+There are two attributes for API versioning: `VersionAttribute` and `ToVersionAttribute`. They are the equivalents of `ApiVersionAttribute` and `MapToApiVersionAttribute` (see [ASP.NET API Versioning](https://github.com/microsoft/aspnet-api-versioning)).
+```C#
+[Version("1.0"), Version("2.0")]
+[Path("api/v{version:apiVersion}")]
+public interface IMyController 
+{
+    [GetMethod] Entity[] Get(int id);                      // Available in versions 1.0 and 2.0
+    [DeleteMethod, ToVersion("2.0")] void Delete(int id);  // Available in version 2.0
+}
+```
+You can add `UseVersionAttribute` to set the API version for a client:
+```C#
+[UseVersion("1.0")]
+[Path("api/v{version:apiVersion}")]
+public interface IMyClient
+{ 
+    [GetMethod] Entity[] Get(int id);                       // Uses version 1.0
+    [DeleteMethod, UseVersion("2.0")] void Delete(int id);  // Uses version 2.0
+}
+```
+`UseVersionAttribute` can be used together with the attributes for API versioning, for example:
+```C#
+[UseVersion("1.0")] public interface IMyClient : IMyController { } 
+```
 #### Method attributes
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `DeleteMethodAttribute`.
+Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `HeadMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `PatchMethodAttribute`, `DeleteMethodAttribute`, `OptionsMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
@@ -290,13 +315,13 @@ To execute a request to the web-service asynchronously, you should define the re
 public interface IMyClient : INClient
 {
     [GetMethod]
-    Entity Get(int id);             // sync call
+    Entity Get(int id);             // Sync call
     [GetMethod]
-    Task<Entity> GetAsync(int id);  // async call
+    Task<Entity> GetAsync(int id);  // Async call
     [PostMethod]
-    void Post(Entity entity);       // sync call
+    void Post(Entity entity);       // Sync call
     [PostMethod]
-    Task PostAsync(Entity entity);  // async call
+    Task PostAsync(Entity entity);  // Async call
 }
 ```
 
