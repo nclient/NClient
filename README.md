@@ -160,7 +160,7 @@ await client.PostAsync(new Product(id: 1));
 
 ## Contributing
 You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
-Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our contribution guide.  
+Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
 It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
 
 <a name="features"/>  
