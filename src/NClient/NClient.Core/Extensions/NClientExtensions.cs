@@ -6,7 +6,7 @@ namespace NClient.Core.Extensions
 {
     public static class NClientExtensions
     {
-        public static IResilienceNClient<T> AsResilience<T>(this T client) where T : class, INClient
+        public static IResilienceNClient<T> AsResilient<T>(this T client) where T : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));
             Ensure.IsCompatibleWith<IResilienceNClient<T>>(client, nameof(client));

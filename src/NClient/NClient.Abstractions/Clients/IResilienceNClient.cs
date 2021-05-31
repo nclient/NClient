@@ -6,6 +6,6 @@ namespace NClient.Abstractions.Clients
 {
     public interface IResilienceNClient<T>
     {
-        TResult InvokeResiliently<TResult>(Expression<Func<T, TResult>> apiMethodCall, IResiliencePolicyProvider resiliencePolicyProvider);
+        TResult Invoke<TResult>(Expression<Func<T, TResult>> methodCall, IResiliencePolicyProvider resiliencePolicyProvider);
     }
 }
