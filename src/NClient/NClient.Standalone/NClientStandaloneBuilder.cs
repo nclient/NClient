@@ -13,6 +13,9 @@ using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
+    /// <summary>
+    /// The builder used to create the client with custom providers.
+    /// </summary>
     public class NClientStandaloneBuilder : INClientBuilder
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
@@ -24,6 +27,11 @@ namespace NClient
         private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
+        /// <summary>
+        /// Creates the builder with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
         public NClientStandaloneBuilder(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
@@ -39,6 +47,11 @@ namespace NClient
             _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
 
+        /// <summary>
+        /// Sets the main client settings.
+        /// </summary>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
         public IOptionalNClientBuilder<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
@@ -52,7 +65,13 @@ namespace NClient
                 _httpClientProvider,
                 _serializerProvider);
         }
-
+        
+        /// <summary>
+        /// Sets the main client settings.
+        /// </summary>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
+        /// <typeparam name="TController">The type of controller used to create the client.</typeparam>
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
         public IOptionalNClientBuilder<TInterface> Use<TInterface, TController>(string host)
             where TInterface : class

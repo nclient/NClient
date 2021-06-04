@@ -6,7 +6,7 @@ using NClient.Annotations.Parameters;
 
 namespace NClient.AspNetCore.Controllers
 {
-    public static class ControllerQualifier
+    internal static class ControllerQualifier
     {
         public static bool IsNClientController(Type type)
         {

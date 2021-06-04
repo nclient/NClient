@@ -81,7 +81,7 @@ namespace NClient.AspNetCore.Controllers
                 .Select(x =>
                 {
                     if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
-                        throw OuterExceptionFactory.UsedInvalidAttributeInControllerInterface(attributeProvider.GetType().FullName);
+                        throw OuterExceptionFactory.UsedForbiddenAttributeInControllerInterface(attributeProvider.GetType().FullName);
                     return _attributeMapper.TryMap(x);
                 })
                 .Where(x => x is not null)

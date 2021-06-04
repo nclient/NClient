@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace NClient.Providers.Serialization.Newtonsoft
 {
-    public class NewtonsoftSerializer : ISerializer
+    internal class NewtonsoftSerializer : ISerializer
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 

@@ -4,6 +4,9 @@ using NClient.Abstractions.Exceptions.Providers;
 
 namespace NClient.Abstractions.Exceptions
 {
+    /// <summary>
+    /// Represents exceptions thrown by NClient client during the processing of the HTTP request.
+    /// </summary>
     public class HttpRequestNClientException : NClientException, IClientInfoProviderException
     {
         private readonly string _formattedMessage;

@@ -2,7 +2,7 @@
 
 namespace NClient.AspNetCore.Controllers.Models
 {
-    public class NClientControllerInfo
+    internal class NClientControllerInfo
     {
         public Type InterfaceType { get; }
         public Type ControllerType { get; }

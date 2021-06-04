@@ -4,7 +4,7 @@ using NClient.Providers.HttpClient.System;
 
 namespace NClient.Extensions
 {
-    public static class InternalOptionalBuilderBaseExtensions
+    internal static class InternalOptionalBuilderBaseExtensions
     {
         public static TBuilder TrySetCustomHttpClient<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,

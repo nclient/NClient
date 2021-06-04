@@ -29,8 +29,8 @@ namespace NClient.Core.Exceptions.Factories
         public static RequestNClientException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
 
-        public static InvalidAttributeNClientException UsedInvalidAttributeInControllerInterface(string memberName) =>
-            new($"An invalid attribute is used for '{memberName}' in controller interface.");
+        public static ForbiddenAttributeNClientException UsedForbiddenAttributeInControllerInterface(string memberName) =>
+            new($"An forbidden attribute is used for '{memberName}' in controller interface.");
         public static InvalidRouteNClientException RouteParamWithoutTokenInRoute(string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 

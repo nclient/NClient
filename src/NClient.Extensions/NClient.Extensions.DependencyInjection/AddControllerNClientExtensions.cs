@@ -9,6 +9,14 @@ namespace NClient.Extensions.DependencyInjection
     [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use AddNClient<T> method.")]
     public static class AddControllerNClientExtensions
     {
+        /// <summary>
+        /// Adds a NClient client to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
+        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
+        /// <typeparam name="TController">The type of controller used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, string? httpClientName = null)
             where TInterface : class
@@ -24,6 +32,15 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
+        /// <summary>
+        /// Adds a NClient client to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
+        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
+        /// <typeparam name="TController">The type of controller used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, Func<IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)
@@ -41,6 +58,15 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
+        /// <summary>
+        /// Adds a NClient client to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
+        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
+        /// <typeparam name="TController">The type of controller used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface, TController>(this IServiceCollection serviceCollection,
             string host, Func<IServiceProvider, IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
             string? httpClientName = null)

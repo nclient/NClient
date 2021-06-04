@@ -3,12 +3,12 @@ using NClient.Abstractions.Clients;
 
 namespace NClient.ClientGeneration
 {
-    public interface IClientGenerator
+    internal interface IClientGenerator
     {
         TInterface CreateClient<TInterface>(IAsyncInterceptor asyncInterceptor);
     }
 
-    public class ClientGenerator : IClientGenerator
+    internal class ClientGenerator : IClientGenerator
     {
         private readonly IProxyGenerator _proxyGenerator;
 

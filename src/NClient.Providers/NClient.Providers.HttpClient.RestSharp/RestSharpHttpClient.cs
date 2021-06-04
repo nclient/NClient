@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.HttpClients.Internals;
 using NClient.Providers.HttpClient.RestSharp.Builders;
 using RestSharp;
 using RestSharp.Authenticators;
