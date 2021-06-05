@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.HttpClients.Internals;
 using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System.Builders;
 

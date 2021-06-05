@@ -7,10 +7,18 @@ using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
-    public class NClientStandaloneFactoryBuilder : INClientFactoryBuilder, IOptionalNClientFactoryBuilder
+    /// <summary>
+    /// The builder used to create the client factory with custom providers.
+    /// </summary>
+    public class NClientStandaloneFactoryBuilder : INClientFactoryBuilder
     {
         private readonly OptionalNClientFactoryBuilder _optionalNClientFactoryBuilder;
 
+        /// <summary>
+        /// Creates the client factory with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
         public NClientStandaloneFactoryBuilder(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
@@ -38,6 +46,9 @@ namespace NClient
             return _optionalNClientFactoryBuilder.WithLogging(loggerFactory);
         }
 
+        /// <summary>
+        /// Creates client factory.
+        /// </summary>
         public INClientFactory Build()
         {
             return _optionalNClientFactoryBuilder.Build();

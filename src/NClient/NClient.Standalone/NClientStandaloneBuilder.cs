@@ -13,6 +13,9 @@ using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
+    /// <summary>
+    /// The builder used to create the client with custom providers.
+    /// </summary>
     public class NClientStandaloneBuilder : INClientBuilder
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
@@ -24,6 +27,11 @@ namespace NClient
         private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
+        /// <summary>
+        /// Creates the builder with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
         public NClientStandaloneBuilder(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)

@@ -303,7 +303,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<InvalidAttributeNClientException>();
+                .ThrowExactly<ForbiddenAttributeNClientException>();
         }
 
         public class CustomAttribute : Attribute { }

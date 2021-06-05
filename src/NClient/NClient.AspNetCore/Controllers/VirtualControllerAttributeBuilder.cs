@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace NClient.AspNetCore.Controllers
 {
-    public interface IVirtualControllerAttributeBuilder
+    internal interface IVirtualControllerAttributeBuilder
     {
         CustomAttributeBuilder Build(Attribute attribute);
     }
 
-    public class VirtualControllerAttributeBuilder : IVirtualControllerAttributeBuilder
+    internal class VirtualControllerAttributeBuilder : IVirtualControllerAttributeBuilder
     {
         public CustomAttributeBuilder Build(Attribute attribute)
         {

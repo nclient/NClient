@@ -9,6 +9,9 @@ using NClient.Extensions;
 
 namespace NClient
 {
+    /// <summary>
+    /// The factory used to create the client with custom providers.
+    /// </summary>
     public class NClientStandaloneFactory : INClientFactory
     {
         private readonly IHttpClientProvider _httpClientProvider;
@@ -16,6 +19,13 @@ namespace NClient
         private readonly IResiliencePolicyProvider? _resiliencePolicyProvider;
         private readonly ILoggerFactory? _loggerFactory;
 
+        /// <summary>
+        /// Creates the client factory with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> instances.</param>
+        /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         public NClientStandaloneFactory(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,

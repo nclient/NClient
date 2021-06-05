@@ -4,6 +4,9 @@ using NClient.Abstractions.Exceptions.Providers;
 
 namespace NClient.Core.Exceptions
 {
+    /// <summary>
+    /// Represents exceptions thrown by NClient client during the processing of the request.
+    /// </summary>
     public class RequestNClientException : NClientException, IClientInfoProviderException
     {
         private readonly string _originMessage;

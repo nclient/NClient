@@ -5,7 +5,7 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.System
 {
-    public class SystemSerializer : ISerializer
+    internal class SystemSerializer : ISerializer
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 

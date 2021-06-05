@@ -8,6 +8,11 @@ namespace NClient.Extensions.DependencyInjection
 {
     public static class AddNClientFactoryExtensions
     {
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             string? httpClientName = null)
         {
@@ -20,6 +25,12 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             Func<IOptionalNClientFactoryBuilder, IOptionalNClientFactoryBuilder> configure, string? httpClientName = null)
         {
@@ -33,6 +44,12 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
             Func<IServiceProvider, IOptionalNClientFactoryBuilder, IOptionalNClientFactoryBuilder> configure, string? httpClientName = null)
         {

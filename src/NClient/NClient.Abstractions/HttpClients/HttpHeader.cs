@@ -2,6 +2,9 @@
 
 namespace NClient.Abstractions.HttpClients
 {
+    /// <summary>
+    /// The container for HTTP header data.
+    /// </summary>
     public record HttpHeader
     {
         public string Name { get; }
