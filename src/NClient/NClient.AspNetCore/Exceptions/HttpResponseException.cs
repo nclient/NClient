@@ -12,7 +12,7 @@ namespace NClient.AspNetCore.Exceptions
         /// The HTTP status code.
         /// </summary>
         public HttpStatusCode Status { get; }
-        
+
         /// <summary>
         /// The response content.
         /// </summary>

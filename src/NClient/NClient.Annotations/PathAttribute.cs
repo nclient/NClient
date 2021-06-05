@@ -14,7 +14,7 @@ namespace NClient.Annotations
         ///  of relying on selection of a route based on the given set of route values.
         /// </summary>
         public string? Name { get; set; }
-        
+
         /// <summary>
         /// Gets the route order. The order determines the order of route execution. Routes with a lower
         /// order value are tried first. When a route doesn't specify a value, it gets a default value of 0.
@@ -22,7 +22,7 @@ namespace NClient.Annotations
         /// route.
         /// </summary>
         public int Order { get; set; }
-        
+
         /// <summary>
         /// The route template. May be null.
         /// </summary>

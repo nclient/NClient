@@ -14,7 +14,7 @@ namespace NClient.Annotations
         /// Gets or sets the type of the value returned by an action.
         /// </summary>
         public Type Type { get; }
-        
+
         /// <summary>
         /// Gets or sets the HTTP status code of the response.
         /// </summary>

@@ -13,7 +13,7 @@ namespace NClient.Annotations
         /// Gets header name.
         /// </summary>
         public string Name { get; }
-        
+
         /// <summary>
         /// Gets header value.
         /// </summary>

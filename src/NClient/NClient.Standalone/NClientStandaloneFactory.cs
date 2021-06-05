@@ -51,7 +51,7 @@ namespace NClient
                 .TrySetLogging(_loggerFactory)
                 .Build();
         }
-        
+
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Create<T> method.")]
         public TInterface Create<TInterface, TController>(string host)
             where TInterface : class

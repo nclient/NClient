@@ -60,7 +60,7 @@ namespace NClient
                 _httpClientProvider,
                 _serializerProvider);
         }
-        
+
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
         public IOptionalNClientBuilder<TInterface> Use<TInterface, TController>(string host)
             where TInterface : class

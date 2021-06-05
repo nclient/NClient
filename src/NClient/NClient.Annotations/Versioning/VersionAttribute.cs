@@ -13,7 +13,7 @@ namespace NClient.Annotations.Versioning
         /// Gets the API version defined by the attribute.
         /// </summary>
         public string Version { get; }
-        
+
         /// <summary>
         /// Gets or sets a value indicating whether the specified set of API versions are deprecated.
         /// </summary>
