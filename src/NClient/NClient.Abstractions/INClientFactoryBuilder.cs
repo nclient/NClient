@@ -1,6 +1,9 @@
 ﻿namespace NClient.Abstractions
 {
-    public interface INClientFactoryBuilder
+    /// <summary>
+    /// A builder abstraction used to create the client factory with custom providers.
+    /// </summary>
+    public interface INClientFactoryBuilder : IOptionalNClientFactoryBuilder
     {
     }
 }
