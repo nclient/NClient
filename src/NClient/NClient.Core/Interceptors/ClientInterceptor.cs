@@ -23,6 +23,7 @@ namespace NClient.Core.Interceptors
         private readonly Uri _host;
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
         private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
         private readonly IGuidProvider _guidProvider;
@@ -33,6 +34,7 @@ namespace NClient.Core.Interceptors
             Uri host,
             IResilienceHttpClientProvider resilienceHttpClientProvider,
             IClientInvocationProvider clientInvocationProvider,
+            IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
             IGuidProvider guidProvider,
@@ -42,6 +44,7 @@ namespace NClient.Core.Interceptors
             _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _clientInvocationProvider = clientInvocationProvider;
+            _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
             _guidProvider = guidProvider;
@@ -139,12 +142,12 @@ namespace NClient.Core.Interceptors
             catch (ClientHttpRequestException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw ClientRequestExceptionFactory.WrapClientHttpRequestException(method, e);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(method, e);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw ClientRequestExceptionFactory.WrapException(method, e);
+                throw _clientRequestExceptionFactory.WrapException(method, e);
             }
         }
     }

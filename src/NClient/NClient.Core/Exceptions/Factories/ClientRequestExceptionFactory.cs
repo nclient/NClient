@@ -4,12 +4,18 @@ using NClient.Core.MethodBuilders.Models;
 
 namespace NClient.Core.Exceptions.Factories
 {
-    public static class ClientRequestExceptionFactory
+    public interface IClientRequestExceptionFactory
     {
-        public static ClientRequestException WrapClientHttpRequestException(Method method, ClientHttpRequestException httpRequestException) =>
+        ClientRequestException WrapClientHttpRequestException(Method method, ClientHttpRequestException httpRequestException);
+        ClientRequestException WrapException(Method method, Exception exception);
+    }
+
+    public class ClientRequestExceptionFactory : IClientRequestExceptionFactory
+    {
+        public ClientRequestException WrapClientHttpRequestException(Method method, ClientHttpRequestException httpRequestException) =>
             new(httpRequestException.Message, method, httpRequestException);
         
-        public static ClientRequestException WrapException(Method method, Exception exception) =>
+        public ClientRequestException WrapException(Method method, Exception exception) =>
             new(exception.Message, method, exception);
     }
 }
