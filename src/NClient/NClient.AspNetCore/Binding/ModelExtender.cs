@@ -18,7 +18,7 @@ namespace NClient.AspNetCore.Binding
             {
                 var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(routeParameter.Key);
                 if (!objectName.Equals(bindingContext.ModelName) && !objectName.Equals(bindingContext.OriginalModelName))
-                    throw OuterAspNetExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
+                    throw ControllerValidationExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
                 ObjectMemberManager.SetValue(model, (string)routeParameter.Value, memberPath!, memberNameSelector);
             }
         }

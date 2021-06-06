@@ -17,7 +17,7 @@ namespace NClient.AspNetCore.Controllers
         {
             var nclientControllers = types.Where(ControllerQualifier.IsNClientController).ToArray();
             if (nclientControllers.Length == 0)
-                throw OuterAspNetExceptionFactory.ControllersNotFound();
+                throw ControllerValidationExceptionFactory.ControllersNotFound();
 
             var interfaces = new List<Type>();
             foreach (var controller in nclientControllers)
@@ -27,9 +27,9 @@ namespace NClient.AspNetCore.Controllers
                     .Where(ControllerQualifier.IsNClientControllerInterface)
                     .ToArray();
                 if (nclientInterfaces.Length == 0)
-                    throw OuterAspNetExceptionFactory.ControllerInterfaceNotFound(controller.Name);
+                    throw ControllerValidationExceptionFactory.ControllerInterfaceNotFound(controller.Name);
                 if (nclientInterfaces.Length > 1)
-                    throw OuterAspNetExceptionFactory.ControllerCanHaveOnlyOneInterface(controller.Name);
+                    throw ControllerValidationExceptionFactory.ControllerCanHaveOnlyOneInterface(controller.Name);
 
                 interfaces.Add(nclientInterfaces.Single());
             }
