@@ -32,6 +32,7 @@ namespace NClient.AspNetCore.Extensions
             VirtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
                 new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
                 new GuidProvider());
         }
 
