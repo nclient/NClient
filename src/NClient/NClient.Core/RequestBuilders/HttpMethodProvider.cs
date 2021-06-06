@@ -12,6 +12,13 @@ namespace NClient.Core.RequestBuilders
 
     internal class HttpMethodProvider : IHttpMethodProvider
     {
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
+
+        public HttpMethodProvider(IClientValidationExceptionFactory clientValidationExceptionFactory)
+        {
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
+        }
+        
         public HttpMethod Get(MethodAttribute methodAttribute)
         {
             return methodAttribute switch
@@ -25,7 +32,7 @@ namespace NClient.Core.RequestBuilders
 #if !NETSTANDARD2_0
                 PatchMethodAttribute => HttpMethod.Patch,
 #endif
-                { } => throw ClientValidationExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
+                { } => throw _clientValidationExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
                 _ => throw InnerExceptionFactory.NullReference(nameof(methodAttribute))
             };
         }

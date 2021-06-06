@@ -15,10 +15,14 @@ namespace NClient.Core.MethodBuilders.Providers
     internal class PathAttributeProvider : IPathAttributeProvider
     {
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
-        public PathAttributeProvider(IAttributeMapper attributeMapper)
+        public PathAttributeProvider(
+            IAttributeMapper attributeMapper,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _attributeMapper = attributeMapper;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public PathAttribute? Find(Type clientType)
@@ -31,7 +35,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<PathAttribute>()
                 .ToArray();
             if (pathAttributes.Length > 1)
-                throw ClientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(PathAttribute));
+                throw _clientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(PathAttribute));
             var pathAttribute = pathAttributes.SingleOrDefault();
 
             return pathAttribute;

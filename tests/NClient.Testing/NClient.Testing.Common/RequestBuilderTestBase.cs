@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Mappers;
@@ -26,21 +27,23 @@ namespace NClient.Testing.Common
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
 
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
             RequestBuilder = new RequestBuilder(
-                new RouteTemplateProvider(),
-                new RouteProvider(objectMemberManager),
-                new HttpMethodProvider(),
-                new ObjectToKeyValueConverter(objectMemberManager));
+                new RouteTemplateProvider(clientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, clientValidationExceptionFactory),
+                new HttpMethodProvider(clientValidationExceptionFactory),
+                new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
+                clientValidationExceptionFactory);
 
             var attributeMapper = new AttributeMapper();
             MethodBuilder = new MethodBuilder(
-                new MethodAttributeProvider(attributeMapper),
-                new UseVersionAttributeProvider(attributeMapper),
-                new PathAttributeProvider(attributeMapper),
-                new HeaderAttributeProvider(),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
+                new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new HeaderAttributeProvider(clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
         }
 
         protected static MethodInfo GetMethodInfo<T>()

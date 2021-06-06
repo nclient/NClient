@@ -51,19 +51,21 @@ namespace NClient.Core.Interceptors
             _clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
             _guidProvider = new GuidProvider();
 
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
             _clientMethodBuilder = new MethodBuilder(
-                new MethodAttributeProvider(attributeMapper),
-                new UseVersionAttributeProvider(attributeMapper),
-                new PathAttributeProvider(attributeMapper),
-                new HeaderAttributeProvider(),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
+                new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new HeaderAttributeProvider(clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
 
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
             _requestBuilder = new RequestBuilder(
-                new RouteTemplateProvider(),
-                new RouteProvider(objectMemberManager),
-                new HttpMethodProvider(),
-                new ObjectToKeyValueConverter(objectMemberManager));
+                new RouteTemplateProvider(clientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, clientValidationExceptionFactory),
+                new HttpMethodProvider(clientValidationExceptionFactory),
+                new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
+                clientValidationExceptionFactory);
         }
 
         public IAsyncInterceptor Create<TInterface>(

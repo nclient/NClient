@@ -24,17 +24,20 @@ namespace NClient.Core.RequestBuilders
         private readonly IRouteProvider _routeProvider;
         private readonly IHttpMethodProvider _httpMethodProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public RequestBuilder(
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider,
-            IObjectToKeyValueConverter objectToKeyValueConverter)
+            IObjectToKeyValueConverter objectToKeyValueConverter,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _httpMethodProvider = httpMethodProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
@@ -77,7 +80,7 @@ namespace NClient.Core.RequestBuilders
             foreach (var headerParam in headerParams)
             {
                 if (!headerParam.Type.IsPrimitive())
-                    throw ClientValidationExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
+                    throw _clientValidationExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
@@ -85,7 +88,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
-                throw ClientValidationExceptionFactory.MultipleBodyParametersNotSupported();
+                throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
             request.Body = bodyParams.SingleOrDefault()?.Value;
 
             return request;

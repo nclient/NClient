@@ -39,7 +39,7 @@ namespace NClient.AspNetCore.AspNetBinding
         public BodyModelBinder(IList<IInputFormatter> formatters, IHttpRequestStreamReaderFactory readerFactory)
             : this(formatters, readerFactory, loggerFactory: null)
         {
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
@@ -59,7 +59,7 @@ namespace NClient.AspNetCore.AspNetBinding
             ILoggerFactory? loggerFactory)
             : this(formatters, readerFactory, loggerFactory, options: null)
         {
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
@@ -100,7 +100,7 @@ namespace NClient.AspNetCore.AspNetBinding
 
             _options = options;
             
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }

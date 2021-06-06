@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
 using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -18,8 +19,9 @@ namespace NClient.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            var objectMemberManager = new ObjectMemberManager();
-            _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager);
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+            _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory);
         }
 
         public static IEnumerable ConvertibleObjectSource = new[]

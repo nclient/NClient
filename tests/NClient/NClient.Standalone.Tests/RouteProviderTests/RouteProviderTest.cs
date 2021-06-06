@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
@@ -23,8 +23,9 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [SetUp]
         public void SetUp()
         {
-            var objectMemberManager = new ObjectMemberManager();
-            RouteProvider = new RouteProvider(objectMemberManager);
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+            RouteProvider = new RouteProvider(objectMemberManager, clientValidationExceptionFactory);
         }
 
         [Test]

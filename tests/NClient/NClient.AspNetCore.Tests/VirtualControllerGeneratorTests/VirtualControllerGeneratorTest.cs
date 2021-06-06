@@ -11,6 +11,7 @@ using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
@@ -305,7 +306,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<ClientValidationException>();
+                .ThrowExactly<ControllerValidationException>();
         }
 
         public class CustomAttribute : Attribute { }
