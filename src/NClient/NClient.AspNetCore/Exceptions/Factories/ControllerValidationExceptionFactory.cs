@@ -1,17 +1,25 @@
 ﻿namespace NClient.AspNetCore.Exceptions.Factories
 {
-    internal static class ControllerValidationExceptionFactory
+    internal interface IControllerValidationExceptionFactory
     {
-        public static ControllerValidationException RouteParameterNotMatchModel(string parameterName, string modelName) =>
+        ControllerValidationException RouteParameterNotMatchModel(string parameterName, string modelName);
+        ControllerValidationException ControllerCanHaveOnlyOneInterface(string controllerName);
+        ControllerValidationException ControllerInterfaceNotFound(string controllerName);
+        ControllerValidationException ControllersNotFound();
+    }
+
+    internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory
+    {
+        public ControllerValidationException RouteParameterNotMatchModel(string parameterName, string modelName) =>
             new($"Parameter '{parameterName}' in route template does not match '{modelName}' model.");
 
-        public static ControllerValidationException ControllerCanHaveOnlyOneInterface(string controllerName) =>
+        public ControllerValidationException ControllerCanHaveOnlyOneInterface(string controllerName) =>
             new($"Controller '{controllerName}' can have only one NClient interface.");
 
-        public static ControllerValidationException ControllerInterfaceNotFound(string controllerName) =>
+        public ControllerValidationException ControllerInterfaceNotFound(string controllerName) =>
             new($"NClient interface for controller '{controllerName}' not found.");
 
-        public static ControllerValidationException ControllersNotFound() =>
+        public ControllerValidationException ControllersNotFound() =>
             new($"NClient controllers not found.");
     }
 }

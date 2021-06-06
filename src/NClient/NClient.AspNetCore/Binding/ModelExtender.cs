@@ -1,25 +1,38 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NClient.AspNetCore.Exceptions.Factories;
-using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.Binding
 {
-    internal static class ModelExtender
+    internal interface IModelExtender
     {
-        private static readonly IObjectMemberManager ObjectMemberManager = new ObjectMemberManager();
+        void ExtendWithRouteParams(ModelBindingContext bindingContext, object model, IMemberNameSelector memberNameSelector);
+    }
 
-        public static void ExtendWithRouteParams(ModelBindingContext bindingContext, object model, IMemberNameSelector memberNameSelector)
+    internal class ModelExtender : IModelExtender
+    {
+        private readonly IObjectMemberManager _objectMemberManager;
+        private readonly IControllerValidationExceptionFactory _controllerValidationExceptionFactory;
+
+        public ModelExtender(
+            IObjectMemberManager objectMemberManager,
+            IControllerValidationExceptionFactory controllerValidationExceptionFactory)
+        {
+            _objectMemberManager = objectMemberManager;
+            _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
+        }
+
+        public void ExtendWithRouteParams(ModelBindingContext bindingContext, object model, IMemberNameSelector memberNameSelector)
         {
             foreach (var routeParameter in bindingContext.ActionContext.RouteData.Values
-                .Where(routeDataValue => ObjectMemberManager.IsMemberPath(routeDataValue.Key)))
+                .Where(routeDataValue => _objectMemberManager.IsMemberPath(routeDataValue.Key)))
             {
-                var (objectName, memberPath) = ObjectMemberManager.ParseNextPath(routeParameter.Key);
+                var (objectName, memberPath) = _objectMemberManager.ParseNextPath(routeParameter.Key);
                 if (!objectName.Equals(bindingContext.ModelName) && !objectName.Equals(bindingContext.OriginalModelName))
-                    throw ControllerValidationExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
-                ObjectMemberManager.SetValue(model, (string)routeParameter.Value, memberPath!, memberNameSelector);
+                    throw _controllerValidationExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
+                _objectMemberManager.SetValue(model, (string)routeParameter.Value, memberPath!, memberNameSelector);
             }
         }
     }
