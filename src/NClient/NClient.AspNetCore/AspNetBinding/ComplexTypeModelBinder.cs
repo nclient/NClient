@@ -85,6 +85,10 @@ namespace NClient.AspNetCore.AspNetBinding
 
             _propertyBinders = propertyBinders;
             _logger = loggerFactory.CreateLogger<ComplexTypeModelBinder>();
+            
+            var objectMemberManager = new ObjectMemberManager();
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <inheritdoc/>
