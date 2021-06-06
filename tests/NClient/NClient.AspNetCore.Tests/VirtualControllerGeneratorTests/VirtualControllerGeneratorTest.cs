@@ -11,6 +11,7 @@ using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
 using NClient.Core.Helpers;
@@ -28,6 +29,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
                 new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
                 new GuidProvider());
         }
 
