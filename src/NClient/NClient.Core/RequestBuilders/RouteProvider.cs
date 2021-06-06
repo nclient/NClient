@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NClient.Annotations.Parameters;
@@ -108,7 +109,7 @@ namespace NClient.Core.RequestBuilders
                 BodyParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
                 QueryParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
                 { } => _objectMemberManager.GetValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
-                _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
+                _ => throw new ArgumentNullException($"Parameter '{parameter.Name}' has no attribute.")
             })?.ToString() ?? "";
         }
 
@@ -130,7 +131,7 @@ namespace NClient.Core.RequestBuilders
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
                     throw _clientValidationExceptionFactory.TokenFromTemplateNotExists(token),
-                _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
+                _ => templatePart.Text ?? throw new ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
 

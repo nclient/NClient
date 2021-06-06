@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Reflection;
 using NClient.Annotations.Methods;
 using NClient.Core.Exceptions.Factories;
@@ -33,7 +34,7 @@ namespace NClient.Core.RequestBuilders
                 PatchMethodAttribute => HttpMethod.Patch,
 #endif
                 { } => throw _clientValidationExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
-                _ => throw InnerExceptionFactory.NullReference(nameof(methodAttribute))
+                _ => throw new ArgumentNullException(nameof(methodAttribute))
             };
         }
     }
