@@ -15,6 +15,13 @@ namespace NClient.Providers.HttpClient.System.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+
+        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        {
+            _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
+        }
+        
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage, Exception? exception = null)
         {
@@ -42,7 +49,7 @@ namespace NClient.Providers.HttpClient.System.Builders
             };
             
             httpResponse.ErrorException = exception is not null
-                ? HttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+                ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
                 : null;
 
             return httpResponse;

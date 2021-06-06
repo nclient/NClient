@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.HttpClients.Internals;
 using NClient.Abstractions.Serialization;
@@ -65,7 +66,7 @@ namespace NClient.Providers.HttpClient.System
             Ensure.IsNotNull(serializer, nameof(serializer));
 
             var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
-            var httpResponseBuilder = new HttpResponseBuilder();
+            var httpResponseBuilder = new HttpResponseBuilder(new ClientHttpRequestExceptionFactory());
             var httpResponsePopulater = new HttpResponsePopulater(serializer);
 
             return new SystemHttpClient(

@@ -14,6 +14,13 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+
+        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        {
+            _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
+        }
+        
         public HttpResponse Build(HttpRequest request, IRestResponse restResponse)
         {
             var httpResponse = new HttpResponse(request)
@@ -33,7 +40,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             };
             
             httpResponse.ErrorException = restResponse.ErrorException is not null
-                ? HttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+                ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
                 : null;
 
             return httpResponse;
