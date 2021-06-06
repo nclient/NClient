@@ -28,7 +28,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Select(x => _attributeMapper.TryMap(x))
                 .ToArray();
             if (attributes.Any(x => x is PathAttribute))
-                throw OuterExceptionFactory.MethodAttributeNotSupported(nameof(PathAttribute));
+                throw ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(PathAttribute));
 
             var methodAttributes = method
                 .GetCustomAttributes()
@@ -37,9 +37,9 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<MethodAttribute>()
                 .ToArray();
             if (methodAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported();
+                throw ClientValidationExceptionFactory.MultipleMethodAttributeNotSupported();
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
+                ?? throw ClientValidationExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
 
             return methodAttribute;
         }

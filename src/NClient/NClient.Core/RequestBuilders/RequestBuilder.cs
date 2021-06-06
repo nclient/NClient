@@ -77,7 +77,7 @@ namespace NClient.Core.RequestBuilders
             foreach (var headerParam in headerParams)
             {
                 if (!headerParam.Type.IsPrimitive())
-                    throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
+                    throw ClientValidationExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
@@ -85,7 +85,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
-                throw OuterExceptionFactory.MultipleBodyParametersNotSupported();
+                throw ClientValidationExceptionFactory.MultipleBodyParametersNotSupported();
             request.Body = bodyParams.SingleOrDefault()?.Value;
 
             return request;

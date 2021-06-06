@@ -30,7 +30,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<ParamAttribute>()
                 .ToArray();
             if (paramAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleParameterAttributeNotSupported(paramInfo.Name);
+                throw ClientValidationExceptionFactory.MultipleParameterAttributeNotSupported(paramInfo.Name);
             var paramAttribute = paramAttributes.SingleOrDefault() ?? GetAttributeForImplicitParameter(paramInfo);
 
             return paramAttribute;

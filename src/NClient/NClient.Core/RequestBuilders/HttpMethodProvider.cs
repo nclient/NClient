@@ -25,7 +25,7 @@ namespace NClient.Core.RequestBuilders
 #if !NETSTANDARD2_0
                 PatchMethodAttribute => HttpMethod.Patch,
 #endif
-                { } => throw OuterExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
+                { } => throw ClientValidationExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
                 _ => throw InnerExceptionFactory.NullReference(nameof(methodAttribute))
             };
         }

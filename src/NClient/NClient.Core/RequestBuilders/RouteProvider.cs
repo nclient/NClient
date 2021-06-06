@@ -45,7 +45,7 @@ namespace NClient.Core.RequestBuilders
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
             if (unusedRouteParamNames.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
+                throw ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
 
             var routeParts = routeTemplate.Segments
                 .Select(x =>
@@ -61,7 +61,7 @@ namespace NClient.Core.RequestBuilders
                                 => GetValueForToken(templatePart, parameters),
                             { Text: { } } templatePart
                                 => GetValueForText(templatePart, clientName, methodName),
-                            _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
+                            _ => throw ClientValidationExceptionFactory.TemplatePartWithoutTokenOrText()
                         };
                         partValues.Add(partValue);
                     }
@@ -74,7 +74,7 @@ namespace NClient.Core.RequestBuilders
         private static string GetValueForVersionToken(UseVersionAttribute? versionAttribute)
         {
             if (versionAttribute is null)
-                throw OuterExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();
+                throw ClientValidationExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();
             return versionAttribute.Version;
         }
 
@@ -90,7 +90,7 @@ namespace NClient.Core.RequestBuilders
         {
             var parameter = GetRouteParameter(name, parameters);
             if (!parameter.Value!.GetType().IsPrimitive())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(name);
+                throw ClientValidationExceptionFactory.TemplatePartContainsComplexType(name);
 
             return parameter.Value.ToString() ?? "";
         }
@@ -112,9 +112,9 @@ namespace NClient.Core.RequestBuilders
         {
             var parameterValue = parameters.SingleOrDefault(x => x.Name == name);
             if (parameterValue is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(name);
+                throw ClientValidationExceptionFactory.TokenNotMatchAnyMethodParameter(name);
             if (parameterValue.Value is null)
-                throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(name);
+                throw ClientValidationExceptionFactory.ParameterInRouteTemplateIsNull(name);
             return parameterValue!;
         }
 
@@ -125,7 +125,7 @@ namespace NClient.Core.RequestBuilders
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
-                    throw OuterExceptionFactory.TokenFromTemplateNotExists(token),
+                    throw ClientValidationExceptionFactory.TokenFromTemplateNotExists(token),
                 _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
             };
         }
@@ -134,7 +134,7 @@ namespace NClient.Core.RequestBuilders
         {
             var nameWithoutSuffixAndPrefix = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
             if (string.IsNullOrEmpty(nameWithoutSuffixAndPrefix))
-                throw OuterExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
+                throw ClientValidationExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
             return nameWithoutSuffixAndPrefix;
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Linq;
 using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using RestSharp;
@@ -18,11 +16,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
     {
         public HttpResponse Build(HttpRequest request, IRestResponse restResponse)
         {
-            var nclientException = restResponse.ErrorMessage is not null
-                ? OuterExceptionFactory.HttpRequestFailed(restResponse.StatusCode, restResponse.ErrorMessage, restResponse.Content, restResponse.ErrorException)
-                : null;
-
-            return new HttpResponse(request)
+            var httpResponse = new HttpResponse(request)
             {
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
                 ContentLength = restResponse.ContentLength,
@@ -34,10 +28,15 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
                 Headers = restResponse.Headers
                     .Where(x => x.Name != null)
                     .Select(x => new HttpHeader(x.Name!, x.Value?.ToString() ?? "")).ToArray(),
-                ErrorMessage = nclientException?.Message,
-                ErrorException = nclientException,
+                ErrorMessage = restResponse.ErrorMessage,
                 ProtocolVersion = restResponse.ProtocolVersion
             };
+            
+            httpResponse.ErrorException = restResponse.ErrorException is not null
+                ? HttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+                : null;
+
+            return httpResponse;
         }
     }
 }

@@ -37,7 +37,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .ToArray();
             var duplicateHeaderNames = headerAttributeNames.Intersect(headerParamNames).ToArray();
             if (duplicateHeaderNames.Any())
-                throw OuterExceptionFactory.HeaderParamDuplicatesStaticHeader(duplicateHeaderNames);
+                throw ClientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader(duplicateHeaderNames);
 
             return headerAttributes;
         }

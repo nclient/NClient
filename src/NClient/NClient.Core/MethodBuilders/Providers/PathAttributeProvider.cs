@@ -31,7 +31,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<PathAttribute>()
                 .ToArray();
             if (pathAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(nameof(PathAttribute));
+                throw ClientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(PathAttribute));
             var pathAttribute = pathAttributes.SingleOrDefault();
 
             return pathAttribute;

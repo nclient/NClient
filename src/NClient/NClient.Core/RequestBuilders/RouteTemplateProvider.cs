@@ -32,7 +32,7 @@ namespace NClient.Core.RequestBuilders
             }
             catch (ArgumentException e)
             {
-                throw OuterExceptionFactory.TemplateParsingError(e);
+                throw ClientValidationExceptionFactory.TemplateParsingError(e);
             }
         }
 

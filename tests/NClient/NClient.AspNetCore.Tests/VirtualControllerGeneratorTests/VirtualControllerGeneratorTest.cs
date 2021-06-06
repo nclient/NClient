@@ -293,7 +293,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
 
         [Test]
-        public void Create_AspNetMethodAttributeController_ThrowInvalidAttributeNClientException()
+        public void Create_AspNetMethodAttributeController_ThrowClientValidationException()
         {
             var nclientControllers = new[]
             {
@@ -303,7 +303,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<ForbiddenAttributeNClientException>();
+                .ThrowExactly<ClientValidationException>();
         }
 
         public class CustomAttribute : Attribute { }

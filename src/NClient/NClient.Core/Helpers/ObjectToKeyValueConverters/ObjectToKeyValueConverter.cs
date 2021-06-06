@@ -63,16 +63,16 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
                 {
                     var itemKey = item.GetType().GetProperty("Key")!.GetValue(item, null);
                     if (!IsPrimitive(itemKey))
-                        throw OuterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported();
+                        throw ClientValidationExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported();
 
                     var itemValue = item.GetType().GetProperty("Value")!.GetValue(item, null);
                     if (!TryAddAsPrimitive(stringValues, key: $"{key}[{itemKey}]", itemValue))
-                        throw OuterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported();
+                        throw ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported();
                 }
                 else
                 {
                     if (!TryAddAsPrimitive(stringValues, key, item))
-                        throw OuterExceptionFactory.ArrayWithComplexTypeNotSupported();
+                        throw ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported();
                 }
             }
 

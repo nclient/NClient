@@ -32,7 +32,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<UseVersionAttribute>()
                 .ToArray();
             if (useVersionAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
+                throw ClientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
             var useVersionAttribute = useVersionAttributes.SingleOrDefault();
 
             var methodUseVersionAttribute = methodInfo.GetCustomAttribute<UseVersionAttribute>();

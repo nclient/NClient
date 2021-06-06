@@ -46,11 +46,11 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 .Where(member => member.Name == memberName)
                 .ToArray();
             if (memberNamePairs.Length > 1)
-                throw OuterExceptionFactory.MemberNameConflict(memberName, obj.GetType().Name);
+                throw ClientValidationExceptionFactory.MemberNameConflict(memberName, obj.GetType().Name);
 
             var memberNamePair = memberNamePairs.SingleOrDefault();
             if (memberNamePair.Member is null)
-                throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
+                throw ClientValidationExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
             return memberNamePair.Member;
         }
 
@@ -73,7 +73,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                          ?? throw ClientValidationExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
@@ -110,7 +110,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                          ?? throw ClientValidationExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
@@ -129,7 +129,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             var memberType = GetType(member);
             var converter = TypeDescriptor.GetConverter(memberType);
             if (!converter.IsValid(value))
-                throw OuterExceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
+                throw ClientValidationExceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
             SetValue(member, obj, converter.ConvertFrom(value));
         }
 
@@ -162,7 +162,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
         {
             const int iterationLimit = 10;
             if (iterationCount > iterationLimit)
-                throw OuterExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
+                throw ClientValidationExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
         }
     }
 }
