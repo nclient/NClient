@@ -19,7 +19,7 @@ namespace NClient.Core.RequestBuilders
         {
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
-        
+
         public HttpMethod Get(MethodAttribute methodAttribute)
         {
             return methodAttribute switch

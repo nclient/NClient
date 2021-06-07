@@ -19,7 +19,7 @@ namespace NClient.AspNetCore.Controllers
         {
             _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
         }
-        
+
         public IEnumerable<NClientControllerInfo> Find(IEnumerable<Type> types)
         {
             var nclientControllers = types.Where(ControllerQualifier.IsNClientController).ToArray();

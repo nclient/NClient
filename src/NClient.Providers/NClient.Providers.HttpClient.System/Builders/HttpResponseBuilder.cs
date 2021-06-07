@@ -21,7 +21,7 @@ namespace NClient.Providers.HttpClient.System.Builders
         {
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
-        
+
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage, Exception? exception = null)
         {
@@ -47,7 +47,7 @@ namespace NClient.Providers.HttpClient.System.Builders
                 ErrorMessage = exception?.Message,
                 ProtocolVersion = httpResponseMessage.Version
             };
-            
+
             httpResponse.ErrorException = exception is not null
                 ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
                 : null;

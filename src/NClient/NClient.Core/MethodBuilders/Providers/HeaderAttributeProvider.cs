@@ -23,7 +23,7 @@ namespace NClient.Core.MethodBuilders.Providers
         {
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
-        
+
         public HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
         {
             var clientHeaders = (clientType.IsInterface

@@ -19,7 +19,7 @@ namespace NClient.Core.RequestBuilders
         {
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
-        
+
         public RouteTemplate Get(Method method)
         {
             var baseTemplate = method.PathAttribute?.Template ?? "";

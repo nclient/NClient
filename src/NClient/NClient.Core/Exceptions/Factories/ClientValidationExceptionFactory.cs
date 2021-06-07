@@ -35,10 +35,10 @@ namespace NClient.Core.Exceptions.Factories
 
         public ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
             new($"The client name consists only of suffixes and/or prefixes.");
-        
+
         public ClientValidationException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"The parameter '{parameterName}' used in the path cannot be null.");
-        
+
         public ClientValidationException RouteParamWithoutTokenInRoute(string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 
@@ -71,7 +71,7 @@ namespace NClient.Core.Exceptions.Factories
 
         public ClientValidationException MultipleParameterAttributeNotSupported(string parameterName) =>
             new($"Multiple attributes for a method parameter are not supported. Parameter name: {parameterName}.");
-        
+
         public ClientValidationException MethodAttributeNotFound(string attributeName) =>
             new($"The attribute '{attributeName}' not found.");
 
@@ -80,7 +80,7 @@ namespace NClient.Core.Exceptions.Factories
 
         public ClientValidationException MultipleMethodAttributeNotSupported() =>
             new("Multiple attributes for a method not supported.");
-        
+
         public ClientValidationException DictionaryWithComplexTypeOfKeyNotSupported() =>
             new("Dictionary with custom type keys cannot be passed through uri query.");
 
@@ -89,11 +89,11 @@ namespace NClient.Core.Exceptions.Factories
 
         public ClientValidationException ArrayWithComplexTypeNotSupported() =>
             new("Array with custom types cannot be passed through uri query.");
-        
-        
+
+
         public NClientException MemberNameConflict(string memberName, string objectName) =>
             new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
-       
+
         public NClientException MemberNotFound(string memberName, string objectName) =>
             new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
 

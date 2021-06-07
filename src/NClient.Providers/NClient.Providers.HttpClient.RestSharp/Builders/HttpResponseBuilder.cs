@@ -20,7 +20,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
         {
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
-        
+
         public HttpResponse Build(HttpRequest request, IRestResponse restResponse)
         {
             var httpResponse = new HttpResponse(request)
@@ -38,7 +38,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
                 ErrorMessage = restResponse.ErrorMessage,
                 ProtocolVersion = restResponse.ProtocolVersion
             };
-            
+
             httpResponse.ErrorException = restResponse.ErrorException is not null
                 ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
                 : null;

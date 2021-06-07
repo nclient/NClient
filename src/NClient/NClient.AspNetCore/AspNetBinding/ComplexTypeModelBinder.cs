@@ -35,7 +35,7 @@ namespace NClient.AspNetCore.AspNetBinding
         private readonly IDictionary<ModelMetadata, IModelBinder> _propertyBinders;
         private readonly ILogger _logger;
         private Func<object>? _modelCreator;
-        
+
         private IModelExtender _modelExtender;
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace NClient.AspNetCore.AspNetBinding
 
             _propertyBinders = propertyBinders;
             _logger = loggerFactory.CreateLogger<ComplexTypeModelBinder>();
-            
+
             var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);

@@ -164,7 +164,7 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop", typeof(ClientValidationException), null)
                 .SetName("Inner property with invalid case"),
         };
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -188,7 +188,7 @@ namespace NClient.Core.Tests
             memberNameSelector ??= new DefaultMemberNameSelector();
 
             Func<object?> func = () => _objectMemberManager.GetValue(obj, memberPath, memberNameSelector);
-            
+
             func.Should().Throw<Exception>().Where(x => x.GetType() == exceptionType);
         }
 

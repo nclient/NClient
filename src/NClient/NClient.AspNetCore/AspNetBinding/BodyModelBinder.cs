@@ -25,7 +25,7 @@ namespace NClient.AspNetCore.AspNetBinding
         private readonly Func<Stream, Encoding, TextReader> _readerFactory;
         private readonly ILogger? _logger;
         private readonly MvcOptions? _options;
-        
+
         private readonly IModelExtender _modelExtender;
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace NClient.AspNetCore.AspNetBinding
             }
 
             _options = options;
-            
+
             var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);

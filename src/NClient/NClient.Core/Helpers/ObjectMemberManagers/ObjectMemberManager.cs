@@ -30,7 +30,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
         {
             _exceptionFactory = exceptionFactory;
         }
-        
+
         public MemberInfo[] GetPublic(object obj)
         {
             var properties = obj

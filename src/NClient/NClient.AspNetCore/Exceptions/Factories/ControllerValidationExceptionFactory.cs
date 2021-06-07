@@ -17,7 +17,7 @@ namespace NClient.AspNetCore.Exceptions.Factories
     {
         public ControllerValidationException UsedAspNetCoreAttributeInControllerInterface(string memberName) =>
             new($"Native ASP.NET Core attributes cannot be used in NClient controller interfaces. Member name: '{memberName}'.");
-        
+
         public ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName) =>
             new($"The model was not found for the '{tokenName}' route template token.");
 
@@ -29,11 +29,11 @@ namespace NClient.AspNetCore.Exceptions.Factories
 
         public ControllerValidationException ControllersNotFound() =>
             new($"NClient controllers not found.");
-        
+
 
         public NClientException MemberNameConflict(string memberName, string objectName) =>
             new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
-       
+
         public NClientException MemberNotFound(string memberName, string objectName) =>
             new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
 
