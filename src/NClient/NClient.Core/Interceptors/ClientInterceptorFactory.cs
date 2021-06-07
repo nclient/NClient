@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -40,27 +41,31 @@ namespace NClient.Core.Interceptors
         private readonly IClientInvocationProvider _clientInvocationProvider;
         private readonly IGuidProvider _guidProvider;
         private readonly IRequestBuilder _requestBuilder;
+        private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
 
         public ClientInterceptorFactory(
             IProxyGenerator proxyGenerator,
             IAttributeMapper attributeMapper)
         {
+            _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
             _clientInvocationProvider = new ClientInvocationProvider(proxyGenerator);
             _guidProvider = new GuidProvider();
 
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
             _clientMethodBuilder = new MethodBuilder(
-                new MethodAttributeProvider(attributeMapper),
-                new UseVersionAttributeProvider(attributeMapper),
-                new PathAttributeProvider(attributeMapper),
-                new HeaderAttributeProvider(),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
+                new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new HeaderAttributeProvider(clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
 
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
             _requestBuilder = new RequestBuilder(
-                new RouteTemplateProvider(),
-                new RouteProvider(objectMemberManager),
-                new HttpMethodProvider(),
-                new ObjectToKeyValueConverter(objectMemberManager));
+                new RouteTemplateProvider(clientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, clientValidationExceptionFactory),
+                new HttpMethodProvider(clientValidationExceptionFactory),
+                new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
+                clientValidationExceptionFactory);
         }
 
         public IAsyncInterceptor Create<TInterface>(
@@ -78,6 +83,7 @@ namespace NClient.Core.Interceptors
                     resiliencePolicyProvider,
                     logger),
                 _clientInvocationProvider,
+                _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
                 _guidProvider,
@@ -100,6 +106,7 @@ namespace NClient.Core.Interceptors
                     resiliencePolicyProvider,
                     logger),
                 _clientInvocationProvider,
+                _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
                 _guidProvider,

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
-using NClient.Core.Helpers;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NUnit.Framework;
@@ -16,12 +16,6 @@ namespace NClient.Core.Tests
     public class ObjectMemberManagerTest
     {
         private ObjectMemberManager _objectMemberManager = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _objectMemberManager = new ObjectMemberManager();
-        }
 
         public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
@@ -71,13 +65,13 @@ namespace NClient.Core.Tests
 
         public static IEnumerable InvalidTestCasesForGetMemberValue = new[]
         {
-            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "Prop", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "Prop", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with custom QueryProp name but used real prop name"),
-            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "Prop", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "Prop", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with custom FromQuery name but used real prop name"),
-            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "Prop", typeof(NClientException), new BodyMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "Prop", typeof(ClientValidationException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
-            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "MyProp", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "MyProp", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with member name conflict"),
 
             new TestCaseData(null, null, typeof(ArgumentNullException), null)
@@ -90,17 +84,17 @@ namespace NClient.Core.Tests
                 .SetName("Null object and null path"),
             new TestCaseData(new {}, "", typeof(ArgumentException), null)
                 .SetName("Empty object and empty path"),
-            new TestCaseData(new {}, "Prop", typeof(NClientException), null)
+            new TestCaseData(new {}, "Prop", typeof(ClientValidationException), null)
                 .SetName("Empty object and path"),
             new TestCaseData(new { Prop = 1 }, "", typeof(ArgumentException), null)
                 .SetName("Object and empty path"),
-            new TestCaseData(new { Prop = 1 }, "NonexistentProp", typeof(NClientException), null)
+            new TestCaseData(new { Prop = 1 }, "NonexistentProp", typeof(ClientValidationException), null)
                 .SetName("Object and nonexistent path"),
-            new TestCaseData(new { Prop = new { Prop = 1 } }, "Prop.NonexistentProp", typeof(NClientException), null)
+            new TestCaseData(new { Prop = new { Prop = 1 } }, "Prop.NonexistentProp", typeof(ClientValidationException), null)
                 .SetName("Object and inner nonexistent path"),
-            new TestCaseData(new { Prop = 1 }, "prop", typeof(NClientException), null)
+            new TestCaseData(new { Prop = 1 }, "prop", typeof(ClientValidationException), null)
                 .SetName("Top level property with invalid case"),
-            new TestCaseData(new { Prop = new { Prop = 1 } }, "prop.prop", typeof(NClientException), null)
+            new TestCaseData(new { Prop = new { Prop = 1 } }, "prop.prop", typeof(ClientValidationException), null)
                 .SetName("Inner property with invalid case"),
         };
 
@@ -138,13 +132,13 @@ namespace NClient.Core.Tests
 
         public static IEnumerable InvalidTestCasesForSetMemberValue = new[]
         {
-            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "2", "Prop", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "2", "Prop", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with custom QueryProp name but used real prop name"),
-            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "2", "Prop", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "2", "Prop", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with custom FromQuery name but used real prop name"),
-            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "Prop", typeof(NClientException), new BodyMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "Prop", typeof(ClientValidationException), new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName but used real prop name"),
-            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "2", "MyProp", typeof(NClientException), new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithMemberNameConflict { Prop = 1 }, "2", "MyProp", typeof(ClientValidationException), new QueryMemberNameSelector())
                 .SetName("Object with member name conflict"),
 
             new TestCaseData(null, "2", null, typeof(ArgumentNullException), null)
@@ -157,19 +151,26 @@ namespace NClient.Core.Tests
                 .SetName("Null object and null path"),
             new TestCaseData(new {}, "2", "", typeof(ArgumentException), null)
                 .SetName("Empty object and empty path"),
-            new TestCaseData(new {}, "2", "Prop", typeof(NClientException), null)
+            new TestCaseData(new {}, "2", "Prop", typeof(ClientValidationException), null)
                 .SetName("Empty object and path"),
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "", typeof(ArgumentException), null)
                 .SetName("Object and empty path"),
-            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "NonexistentProp", typeof(NClientException), null)
+            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "NonexistentProp", typeof(ClientValidationException), null)
                 .SetName("Object and nonexistent path"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } }, "2", "Prop.NonexistentProp", typeof(NClientException), null)
+            new TestCaseData(new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } }, "2", "Prop.NonexistentProp", typeof(ClientValidationException), null)
                 .SetName("Object and inner nonexistent path"),
-            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "prop", typeof(NClientException), null)
+            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "prop", typeof(ClientValidationException), null)
                 .SetName("Top level property with invalid case"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop", typeof(NClientException), null)
+            new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop", typeof(ClientValidationException), null)
                 .SetName("Inner property with invalid case"),
         };
+
+        [SetUp]
+        public void SetUp()
+        {
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            _objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+        }
 
         [TestCaseSource(nameof(ValidTestCasesForGetMemberValue))]
         public void GetMemberValue_ValidTestCases(object obj, string memberPath, object expectedResult, IMemberNameSelector? memberNameSelector = null)

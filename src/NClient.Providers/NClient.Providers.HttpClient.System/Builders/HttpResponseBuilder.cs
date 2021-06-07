@@ -15,6 +15,13 @@ namespace NClient.Providers.HttpClient.System.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+
+        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        {
+            _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
+        }
+
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage, Exception? exception = null)
         {
@@ -25,11 +32,8 @@ namespace NClient.Providers.HttpClient.System.Builders
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
                 .ToArray();
             var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var nclientException = exception is not null
-                ? OuterExceptionFactory.HttpRequestFailed(httpResponseMessage.StatusCode, exception.Message, content, exception)
-                : null;
 
-            return new HttpResponse(request)
+            var httpResponse = new HttpResponse(request)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
                 ContentLength = httpResponseMessage.Content.Headers.ContentLength,
@@ -40,10 +44,15 @@ namespace NClient.Providers.HttpClient.System.Builders
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
                 Server = httpResponseMessage.Headers.Server?.ToString(),
                 Headers = headers.Concat(contentHeaders).ToArray(),
-                ErrorMessage = nclientException?.Message,
-                ErrorException = nclientException,
+                ErrorMessage = exception?.Message,
                 ProtocolVersion = httpResponseMessage.Version
             };
+
+            httpResponse.ErrorException = exception is not null
+                ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+                : null;
+
+            return httpResponse;
         }
     }
 }

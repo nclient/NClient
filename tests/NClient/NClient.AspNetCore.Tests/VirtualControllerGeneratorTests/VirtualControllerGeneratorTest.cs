@@ -11,6 +11,8 @@ using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
 using NClient.Core.Helpers;
@@ -28,6 +30,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
                 new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
                 new GuidProvider());
         }
 
@@ -293,7 +296,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
 
         [Test]
-        public void Create_AspNetMethodAttributeController_ThrowInvalidAttributeNClientException()
+        public void Create_AspNetMethodAttributeController_ThrowClientValidationException()
         {
             var nclientControllers = new[]
             {
@@ -303,7 +306,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<ForbiddenAttributeNClientException>();
+                .ThrowExactly<ControllerValidationException>();
         }
 
         public class CustomAttribute : Attribute { }

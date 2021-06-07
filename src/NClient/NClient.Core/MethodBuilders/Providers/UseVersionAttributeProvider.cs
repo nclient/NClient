@@ -16,10 +16,14 @@ namespace NClient.Core.MethodBuilders.Providers
     internal class UseVersionAttributeProvider : IUseVersionAttributeProvider
     {
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
-        public UseVersionAttributeProvider(IAttributeMapper attributeMapper)
+        public UseVersionAttributeProvider(
+            IAttributeMapper attributeMapper,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _attributeMapper = attributeMapper;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo)
@@ -32,7 +36,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<UseVersionAttribute>()
                 .ToArray();
             if (useVersionAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
+                throw _clientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
             var useVersionAttribute = useVersionAttributes.SingleOrDefault();
 
             var methodUseVersionAttribute = methodInfo.GetCustomAttribute<UseVersionAttribute>();

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
@@ -20,15 +21,18 @@ namespace NClient.AspNetCore.Controllers
     {
         private readonly IVirtualControllerAttributeBuilder _virtualControllerAttributeBuilder;
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IControllerValidationExceptionFactory _controllerValidationExceptionFactory;
         private readonly IGuidProvider _guidProvider;
 
         public VirtualControllerGenerator(
             IVirtualControllerAttributeBuilder virtualControllerAttributeBuilder,
             IAttributeMapper attributeMapper,
+            IControllerValidationExceptionFactory controllerValidationExceptionFactory,
             IGuidProvider guidProvider)
         {
             _virtualControllerAttributeBuilder = virtualControllerAttributeBuilder;
             _attributeMapper = attributeMapper;
+            _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
             _guidProvider = guidProvider;
         }
 
@@ -81,7 +85,7 @@ namespace NClient.AspNetCore.Controllers
                 .Select(x =>
                 {
                     if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
-                        throw OuterExceptionFactory.UsedForbiddenAttributeInControllerInterface(attributeProvider.GetType().FullName);
+                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(attributeProvider.GetType().FullName);
                     return _attributeMapper.TryMap(x);
                 })
                 .Where(x => x is not null)

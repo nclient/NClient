@@ -15,8 +15,15 @@ namespace NClient.Core.MethodBuilders.Providers
         HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams);
     }
 
-    public class HeaderAttributeProvider : IHeaderAttributeProvider
+    internal class HeaderAttributeProvider : IHeaderAttributeProvider
     {
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
+
+        public HeaderAttributeProvider(IClientValidationExceptionFactory clientValidationExceptionFactory)
+        {
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
+        }
+
         public HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
         {
             var clientHeaders = (clientType.IsInterface
@@ -37,7 +44,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .ToArray();
             var duplicateHeaderNames = headerAttributeNames.Intersect(headerParamNames).ToArray();
             if (duplicateHeaderNames.Any())
-                throw OuterExceptionFactory.HeaderParamDuplicatesStaticHeader(duplicateHeaderNames);
+                throw _clientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader(duplicateHeaderNames);
 
             return headerAttributes;
         }

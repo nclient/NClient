@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Filters;
 using NClient.AspNetCore.Mappers;
 using NClient.Common.Helpers;
@@ -27,10 +28,11 @@ namespace NClient.AspNetCore.Extensions
         static AddNClientControllersExtensions()
         {
             ProxyGenerator = new ProxyGenerator();
-            NClientControllerFinder = new NClientControllerFinder();
+            NClientControllerFinder = new NClientControllerFinder(new ControllerValidationExceptionFactory());
             VirtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
                 new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
                 new GuidProvider());
         }
 

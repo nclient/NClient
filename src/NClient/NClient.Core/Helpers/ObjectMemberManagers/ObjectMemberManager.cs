@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers.ObjectMemberManagers.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers
@@ -23,6 +24,13 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
 
     internal class ObjectMemberManager : IObjectMemberManager
     {
+        private readonly IObjectMemberManagerExceptionFactory _exceptionFactory;
+
+        public ObjectMemberManager(IObjectMemberManagerExceptionFactory exceptionFactory)
+        {
+            _exceptionFactory = exceptionFactory;
+        }
+
         public MemberInfo[] GetPublic(object obj)
         {
             var properties = obj
@@ -46,11 +54,11 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 .Where(member => member.Name == memberName)
                 .ToArray();
             if (memberNamePairs.Length > 1)
-                throw OuterExceptionFactory.MemberNameConflict(memberName, obj.GetType().Name);
+                throw _exceptionFactory.MemberNameConflict(memberName, obj.GetType().Name);
 
             var memberNamePair = memberNamePairs.SingleOrDefault();
             if (memberNamePair.Member is null)
-                throw OuterExceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
+                throw _exceptionFactory.MemberNotFound(memberName, obj.GetType().Name);
             return memberNamePair.Member;
         }
 
@@ -61,7 +69,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             if (memberPath is null)
                 throw new ArgumentNullException(nameof(memberPath));
             if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
+                throw new ArgumentException("Empty string.", nameof(memberPath));
 
             var iterationCount = 0;
             while (true)
@@ -73,7 +81,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                          ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
@@ -98,7 +106,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             if (memberPath is null)
                 throw new ArgumentNullException(nameof(memberPath));
             if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
+                throw new ArgumentException("Empty string.", nameof(memberPath));
 
             var iterationCount = 0;
             while (true)
@@ -110,7 +118,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw OuterExceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                          ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
@@ -129,7 +137,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             var memberType = GetType(member);
             var converter = TypeDescriptor.GetConverter(memberType);
             if (!converter.IsValid(value))
-                throw OuterExceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
+                throw _exceptionFactory.RoutePropertyConvertError(member.Name, memberType.Name, value);
             SetValue(member, obj, converter.ConvertFrom(value));
         }
 
@@ -158,11 +166,11 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             return (member as PropertyInfo)?.PropertyType ?? (member as FieldInfo)?.FieldType!;
         }
 
-        private static void AvoidInfiniteLoop(int iterationCount, string processingObjectName)
+        private void AvoidInfiniteLoop(int iterationCount, string processingObjectName)
         {
             const int iterationLimit = 10;
             if (iterationCount > iterationLimit)
-                throw OuterExceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
+                throw _exceptionFactory.LimitNestingOfObjects(iterationLimit, processingObjectName);
         }
     }
 }

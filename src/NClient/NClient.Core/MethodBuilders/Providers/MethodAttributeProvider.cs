@@ -15,10 +15,14 @@ namespace NClient.Core.MethodBuilders.Providers
     internal class MethodAttributeProvider : IMethodAttributeProvider
     {
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
-        public MethodAttributeProvider(IAttributeMapper attributeMapper)
+        public MethodAttributeProvider(
+            IAttributeMapper attributeMapper,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _attributeMapper = attributeMapper;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public MethodAttribute Get(MethodInfo method)
@@ -28,7 +32,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Select(x => _attributeMapper.TryMap(x))
                 .ToArray();
             if (attributes.Any(x => x is PathAttribute))
-                throw OuterExceptionFactory.MethodAttributeNotSupported(nameof(PathAttribute));
+                throw _clientValidationExceptionFactory.MethodAttributeNotSupported(nameof(PathAttribute));
 
             var methodAttributes = method
                 .GetCustomAttributes()
@@ -37,9 +41,9 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<MethodAttribute>()
                 .ToArray();
             if (methodAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleMethodAttributeNotSupported();
+                throw _clientValidationExceptionFactory.MultipleMethodAttributeNotSupported();
             var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw OuterExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
+                ?? throw _clientValidationExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
 
             return methodAttribute;
         }

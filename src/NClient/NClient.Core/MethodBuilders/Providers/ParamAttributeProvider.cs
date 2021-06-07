@@ -15,10 +15,14 @@ namespace NClient.Core.MethodBuilders.Providers
     internal class ParamAttributeProvider : IParamAttributeProvider
     {
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
-        public ParamAttributeProvider(IAttributeMapper attributeMapper)
+        public ParamAttributeProvider(
+            IAttributeMapper attributeMapper,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _attributeMapper = attributeMapper;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public ParamAttribute Get(ParameterInfo paramInfo)
@@ -30,7 +34,7 @@ namespace NClient.Core.MethodBuilders.Providers
                 .Cast<ParamAttribute>()
                 .ToArray();
             if (paramAttributes.Length > 1)
-                throw OuterExceptionFactory.MultipleParameterAttributeNotSupported(paramInfo.Name);
+                throw _clientValidationExceptionFactory.MultipleParameterAttributeNotSupported(paramInfo.Name);
             var paramAttribute = paramAttributes.SingleOrDefault() ?? GetAttributeForImplicitParameter(paramInfo);
 
             return paramAttribute;

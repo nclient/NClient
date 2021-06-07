@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.Binding;
+using NClient.AspNetCore.Exceptions.Factories;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.AspNetBinding
@@ -34,6 +36,8 @@ namespace NClient.AspNetCore.AspNetBinding
         private readonly ILogger _logger;
         private Func<object>? _modelCreator;
 
+        private IModelExtender _modelExtender;
+
         /// <summary>
         /// Creates a new <see cref="ComplexTypeModelBinder"/>.
         /// </summary>
@@ -46,6 +50,9 @@ namespace NClient.AspNetCore.AspNetBinding
             ILoggerFactory loggerFactory)
             : this(propertyBinders, loggerFactory, allowValidatingTopLevelNodes: true)
         {
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <summary>
@@ -78,6 +85,10 @@ namespace NClient.AspNetCore.AspNetBinding
 
             _propertyBinders = propertyBinders;
             _logger = loggerFactory.CreateLogger<ComplexTypeModelBinder>();
+
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <inheritdoc/>
@@ -227,7 +238,7 @@ namespace NClient.AspNetCore.AspNetBinding
             }
 
             var model = bindingContext.Model;
-            ModelExtender.ExtendWithRouteParams(bindingContext, model, new QueryMemberNameSelector());
+            _modelExtender.ExtendWithRouteParams(bindingContext, model, new QueryMemberNameSelector());
             bindingContext.Result = ModelBindingResult.Success(model);
         }
 

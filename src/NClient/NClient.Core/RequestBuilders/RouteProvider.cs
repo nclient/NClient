@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NClient.Annotations.Parameters;
@@ -26,10 +27,14 @@ namespace NClient.Core.RequestBuilders
     {
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
         private readonly IObjectMemberManager _objectMemberManager;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
-        public RouteProvider(IObjectMemberManager objectMemberManager)
+        public RouteProvider(
+            IObjectMemberManager objectMemberManager,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _objectMemberManager = objectMemberManager;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
         public string Build(
@@ -45,7 +50,7 @@ namespace NClient.Core.RequestBuilders
                 .Except(routeTemplate.Parameters.Select(x => x.Name))
                 .ToArray();
             if (unusedRouteParamNames.Any())
-                throw OuterExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
+                throw _clientValidationExceptionFactory.RouteParamWithoutTokenInRoute(unusedRouteParamNames!);
 
             var routeParts = routeTemplate.Segments
                 .Select(x =>
@@ -61,7 +66,7 @@ namespace NClient.Core.RequestBuilders
                                 => GetValueForToken(templatePart, parameters),
                             { Text: { } } templatePart
                                 => GetValueForText(templatePart, clientName, methodName),
-                            _ => throw OuterExceptionFactory.TemplatePartWithoutTokenOrText()
+                            _ => throw _clientValidationExceptionFactory.TemplatePartWithoutTokenOrText()
                         };
                         partValues.Add(partValue);
                     }
@@ -71,10 +76,10 @@ namespace NClient.Core.RequestBuilders
             return Path.Combine(routeParts.ToArray()).Replace('\\', '/');
         }
 
-        private static string GetValueForVersionToken(UseVersionAttribute? versionAttribute)
+        private string GetValueForVersionToken(UseVersionAttribute? versionAttribute)
         {
             if (versionAttribute is null)
-                throw OuterExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();
+                throw _clientValidationExceptionFactory.UsedVersionTokenButVersionAttributeNotFound();
             return versionAttribute.Version;
         }
 
@@ -86,11 +91,11 @@ namespace NClient.Core.RequestBuilders
                 : GetCustomParameterValue(objectName, memberPath, parameters);
         }
 
-        private static string GetParameterValue(string name, Parameter[] parameters)
+        private string GetParameterValue(string name, Parameter[] parameters)
         {
             var parameter = GetRouteParameter(name, parameters);
             if (!parameter.Value!.GetType().IsPrimitive())
-                throw OuterExceptionFactory.TemplatePartContainsComplexType(name);
+                throw _clientValidationExceptionFactory.TemplatePartContainsComplexType(name);
 
             return parameter.Value.ToString() ?? "";
         }
@@ -104,37 +109,37 @@ namespace NClient.Core.RequestBuilders
                 BodyParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new BodyMemberNameSelector()),
                 QueryParamAttribute => _objectMemberManager.GetValue(parameter.Value!, memberPath, new QueryMemberNameSelector()),
                 { } => _objectMemberManager.GetValue(parameter.Value!, memberPath, new DefaultMemberNameSelector()),
-                _ => throw InnerExceptionFactory.NullReference($"Parameter '{parameter.Name}' has no attribute.")
+                _ => throw new ArgumentNullException($"Parameter '{parameter.Name}' has no attribute.")
             })?.ToString() ?? "";
         }
 
-        private static Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
+        private Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
         {
             var parameterValue = parameters.SingleOrDefault(x => x.Name == name);
             if (parameterValue is null)
-                throw OuterExceptionFactory.TokenNotMatchAnyMethodParameter(name);
+                throw _clientValidationExceptionFactory.TokenNotMatchAnyMethodParameter(name);
             if (parameterValue.Value is null)
-                throw OuterExceptionFactory.ParameterInRouteTemplateIsNull(name);
+                throw _clientValidationExceptionFactory.ParameterInRouteTemplateIsNull(name);
             return parameterValue!;
         }
 
-        private static string GetValueForText(TemplatePart templatePart, string clientName, string methodName)
+        private string GetValueForText(TemplatePart templatePart, string clientName, string methodName)
         {
             return templatePart.Text switch
             {
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
-                    throw OuterExceptionFactory.TokenFromTemplateNotExists(token),
-                _ => templatePart.Text ?? throw InnerExceptionFactory.ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
+                    throw _clientValidationExceptionFactory.SpecialTokenFromTemplateNotExists(token),
+                _ => templatePart.Text ?? throw new ArgumentException($"Token '{nameof(templatePart.Text)}' from template '{templatePart}' is null.", nameof(templatePart))
             };
         }
 
-        private static string GetControllerName(string name)
+        private string GetControllerName(string name)
         {
             var nameWithoutSuffixAndPrefix = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
             if (string.IsNullOrEmpty(nameWithoutSuffixAndPrefix))
-                throw OuterExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
+                throw _clientValidationExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes();
             return nameWithoutSuffixAndPrefix;
         }
 

@@ -207,7 +207,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface IPrimitiveRouteParamWithoutTokenInRoute {[GetMethod] int Method([RouteParam] int id); }
 
         [Test]
-        public void Build_PrimitiveRouteParamWithoutTokenInRoute_ThrowInvalidRouteNClientException()
+        public void Build_PrimitiveRouteParamWithoutTokenInRoute_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IPrimitiveRouteParamWithoutTokenInRoute>(),
@@ -216,13 +216,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         private interface IMethodRouteWithCustomTypeParamToken {[GetMethod("{entity}")] int Method(BasicEntity entity); }
 
         [Test]
-        public void Build_MethodRouteWithCustomTypeParamToken_ThrowInvalidRouteNClientException()
+        public void Build_MethodRouteWithCustomTypeParamToken_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMethodRouteWithCustomTypeParamToken>(),
@@ -231,13 +231,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Path("{entity}")] private interface IApiRouteWithCustomTypeParamToken {[GetMethod] int Method(BasicEntity entity); }
 
         [Test]
-        public void Build_ApiRouteWithCustomTypeParamToken_ThrowInvalidRouteNClientException()
+        public void Build_ApiRouteWithCustomTypeParamToken_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IApiRouteWithCustomTypeParamToken>(),
@@ -246,13 +246,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         private interface ICustomTypeRouteParam {[GetMethod("{id}")] int Method([RouteParam] BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeRouteParam_ThrowInvalidRouteNClientException()
+        public void Build_CustomTypeRouteParam_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeRouteParam>(),
@@ -261,13 +261,13 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         private interface ICustomTypeRouteParamWithoutTokenInRoute {[GetMethod] int Method([RouteParam] BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeRouteParamWithoutTokenInRoute_ThrowInvalidRouteNClientException()
+        public void Build_CustomTypeRouteParamWithoutTokenInRoute_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeRouteParamWithoutTokenInRoute>(),
@@ -276,7 +276,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [UseVersion("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken {[GetMethod] int Method(); }

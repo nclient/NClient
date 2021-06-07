@@ -6,7 +6,7 @@ using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.MethodBuilders.Models;
 using NClient.Core.MethodBuilders.Providers;
 using NUnit.Framework;
@@ -114,12 +114,19 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("Duplicate method and param headers")
         };
 
+        private HeaderAttributeProvider _headerAttributeProvider = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
+            _headerAttributeProvider = new HeaderAttributeProvider(clientRequestExceptionFactory);
+        }
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams, HeaderAttribute[] expectedAttributes)
         {
-            var headerAttributeProvider = new HeaderAttributeProvider();
-
-            var actualAttributes = headerAttributeProvider.Get(clientType, methodInfo, methodParams);
+            var actualAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams);
 
             actualAttributes.Should().BeEquivalentTo(expectedAttributes, config => config.WithoutStrictOrdering());
         }
@@ -127,9 +134,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams)
         {
-            var headerAttributeProvider = new HeaderAttributeProvider();
-
-            headerAttributeProvider
+            _headerAttributeProvider
                 .Invoking(x => x.Get(clientType, methodInfo, methodParams))
                 .Should()
                 .Throw<NClientException>();

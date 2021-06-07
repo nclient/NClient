@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
@@ -23,8 +23,9 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [SetUp]
         public void SetUp()
         {
-            var objectMemberManager = new ObjectMemberManager();
-            RouteProvider = new RouteProvider(objectMemberManager);
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+            RouteProvider = new RouteProvider(objectMemberManager, clientValidationExceptionFactory);
         }
 
         [Test]
@@ -628,7 +629,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_WrongControllerToken_ThrowInvalidRouteNClientException()
+        public void Build_WrongControllerToken_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("[controller1]");
 
@@ -640,11 +641,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test]
-        public void Build_WrongActionToken_ThrowInvalidRouteNClientException()
+        public void Build_WrongActionToken_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("[action1]");
 
@@ -656,11 +657,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test, Ignore("Use mock for RouteTemplate")]
-        public void Build_DuplicateParameterTokens_ThrowInvalidRouteNClientException()
+        public void Build_DuplicateParameterTokens_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("{id}/{id}");
 
@@ -675,11 +676,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test]
-        public void Build_NotExistsParameterToken_ThrowInvalidRouteNClientException()
+        public void Build_NotExistsParameterToken_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("{prop}");
 
@@ -694,11 +695,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test]
-        public void Build_CustomTypeParameterToken_ThrowInvalidRouteNClientException()
+        public void Build_CustomTypeParameterToken_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("{entity}");
 
@@ -713,11 +714,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test]
-        public void Build_VersionTokenWithoutVersionAttribute_ThrowInvalidRouteNClientException()
+        public void Build_VersionTokenWithoutVersionAttribute_ThrowValidationNClientException()
         {
             var routeTemplate = TemplateParser.Parse("{version:apiVersion}");
 
@@ -729,11 +730,11 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
 
         [Test]
-        public void Build_VersionTokenWithoutType_ThrowInvalidRouteNClientException()
+        public void Build_VersionTokenWithoutType_ThrowValidationNClientException()
         {
             const string version = "1.0";
             var routeTemplate = TemplateParser.Parse("{version}");
@@ -746,7 +747,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: new UseVersionAttribute(version)))
                 .Should()
-                .Throw<InvalidRouteNClientException>();
+                .Throw<ClientValidationException>();
         }
     }
 }
