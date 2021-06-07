@@ -130,8 +130,8 @@ namespace NClient.Core.RequestBuilders
                 "[controller]" => GetControllerName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
-                    throw _clientValidationExceptionFactory.TokenFromTemplateNotExists(token),
-                _ => templatePart.Text ?? throw new ArgumentException($"{nameof(templatePart.Text)} from {templatePart} is null.", nameof(templatePart))
+                    throw _clientValidationExceptionFactory.SpecialTokenFromTemplateNotExists(token),
+                _ => templatePart.Text ?? throw new ArgumentException($"Token '{nameof(templatePart.Text)}' from template '{templatePart}' is null.", nameof(templatePart))
             };
         }
 

@@ -6,23 +6,23 @@ namespace NClient.AspNetCore.Exceptions.Factories
 {
     internal interface IControllerValidationExceptionFactory
     {
-        ControllerValidationException UsedForbiddenAttributeInControllerInterface(string memberName);
-        ControllerValidationException RouteParameterNotMatchModel(string parameterName, string modelName);
-        ControllerValidationException ControllerCanHaveOnlyOneInterface(string controllerName);
+        ControllerValidationException UsedAspNetCoreAttributeInControllerInterface(string memberName);
+        ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName);
+        ControllerValidationException ControllerImplementsMultipleNClientInterfaces(string controllerName);
         ControllerValidationException ControllerInterfaceNotFound(string controllerName);
         ControllerValidationException ControllersNotFound();
     }
 
     internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory, IObjectMemberManagerExceptionFactory
     {
-        public ControllerValidationException UsedForbiddenAttributeInControllerInterface(string memberName) =>
-            new($"An forbidden attribute is used for '{memberName}' in controller interface.");
+        public ControllerValidationException UsedAspNetCoreAttributeInControllerInterface(string memberName) =>
+            new($"Native ASP.NET Core attributes cannot be used in NClient controller interfaces. Member name: '{memberName}'.");
         
-        public ControllerValidationException RouteParameterNotMatchModel(string parameterName, string modelName) =>
-            new($"Parameter '{parameterName}' in route template does not match '{modelName}' model.");
+        public ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName) =>
+            new($"The model was not found for the '{tokenName}' route template token.");
 
-        public ControllerValidationException ControllerCanHaveOnlyOneInterface(string controllerName) =>
-            new($"Controller '{controllerName}' can have only one NClient interface.");
+        public ControllerValidationException ControllerImplementsMultipleNClientInterfaces(string controllerName) =>
+            new($"The controller '{controllerName}' must implement a single NClient interface.");
 
         public ControllerValidationException ControllerInterfaceNotFound(string controllerName) =>
             new($"NClient interface for controller '{controllerName}' not found.");
@@ -32,16 +32,16 @@ namespace NClient.AspNetCore.Exceptions.Factories
         
 
         public NClientException MemberNameConflict(string memberName, string objectName) =>
-            new ClientValidationException($"Object member '{memberName}' not found in '{objectName}' object type.");
+            new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
        
         public NClientException MemberNotFound(string memberName, string objectName) =>
-            new ClientValidationException($"Object member '{memberName}' not found in '{objectName}' object type.");
+            new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
 
         public NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
-            new ClientValidationException($"Value of '{memberName}' member in {objectName} object is null. The value from the path cannot be set.");
+            new ClientValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
 
         public NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
-            new ClientValidationException($"Object member '{memberName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
+            new ClientValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
 
         public NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
             new ClientValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");

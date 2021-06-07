@@ -63,7 +63,7 @@ namespace NClient.Mappers
         private static T GetProperty<T>(Attribute attribute, string name)
         {
             var property = attribute.GetType().GetProperty(name)
-                ?? throw new ArgumentException($"Property '{name}' not found", nameof(name));
+                ?? throw new ArgumentException($"Property '{name}' not found.", nameof(name));
             return (T)property.GetValue(attribute);
         }
     }

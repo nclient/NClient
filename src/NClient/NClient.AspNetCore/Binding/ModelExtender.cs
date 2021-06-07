@@ -26,13 +26,13 @@ namespace NClient.AspNetCore.Binding
 
         public void ExtendWithRouteParams(ModelBindingContext bindingContext, object model, IMemberNameSelector memberNameSelector)
         {
-            foreach (var routeParameter in bindingContext.ActionContext.RouteData.Values
+            foreach (var routeToken in bindingContext.ActionContext.RouteData.Values
                 .Where(routeDataValue => _objectMemberManager.IsMemberPath(routeDataValue.Key)))
             {
-                var (objectName, memberPath) = _objectMemberManager.ParseNextPath(routeParameter.Key);
+                var (objectName, memberPath) = _objectMemberManager.ParseNextPath(routeToken.Key);
                 if (!objectName.Equals(bindingContext.ModelName) && !objectName.Equals(bindingContext.OriginalModelName))
-                    throw _controllerValidationExceptionFactory.RouteParameterNotMatchModel(routeParameter.Key, bindingContext.ModelName);
-                _objectMemberManager.SetValue(model, (string)routeParameter.Value, memberPath!, memberNameSelector);
+                    throw _controllerValidationExceptionFactory.ModelNotFoundForRouteTemplateToken(routeToken.Key);
+                _objectMemberManager.SetValue(model, (string)routeToken.Value, memberPath!, memberNameSelector);
             }
         }
     }

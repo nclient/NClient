@@ -36,7 +36,7 @@ namespace NClient.AspNetCore.Controllers
                 if (nclientInterfaces.Length == 0)
                     throw _controllerValidationExceptionFactory.ControllerInterfaceNotFound(controller.Name);
                 if (nclientInterfaces.Length > 1)
-                    throw _controllerValidationExceptionFactory.ControllerCanHaveOnlyOneInterface(controller.Name);
+                    throw _controllerValidationExceptionFactory.ControllerImplementsMultipleNClientInterfaces(controller.Name);
 
                 interfaces.Add(nclientInterfaces.Single());
             }

@@ -69,7 +69,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             if (memberPath is null)
                 throw new ArgumentNullException(nameof(memberPath));
             if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
+                throw new ArgumentException("Empty string.", nameof(memberPath));
 
             var iterationCount = 0;
             while (true)
@@ -106,7 +106,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             if (memberPath is null)
                 throw new ArgumentNullException(nameof(memberPath));
             if (memberPath == "")
-                throw new ArgumentException("Empty string", nameof(memberPath));
+                throw new ArgumentException("Empty string.", nameof(memberPath));
 
             var iterationCount = 0;
             while (true)

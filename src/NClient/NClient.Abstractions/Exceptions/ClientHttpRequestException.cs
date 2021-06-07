@@ -53,7 +53,7 @@ namespace NClient.Abstractions.Exceptions
         /// Gets HTTP error generated while attempting request.
         /// </summary>
 
-        public ClientHttpRequestException(HttpResponse httpResponse) : base(httpResponse.ErrorMessage!)
+        public ClientHttpRequestException(HttpResponse httpResponse) : base(BuildMessage(httpResponse))
         {
             Request = httpResponse.Request;
             ContentType = httpResponse.ContentType;
@@ -65,6 +65,11 @@ namespace NClient.Abstractions.Exceptions
             ResponseUri = httpResponse.ResponseUri;
             Server = httpResponse.Server;
             Headers = httpResponse.Headers;
+        }
+
+        private static string BuildMessage(HttpResponse httpResponse)
+        {
+            return $"{httpResponse.ErrorMessage}\nResponse content: {httpResponse.Content}";
         }
     }
 }

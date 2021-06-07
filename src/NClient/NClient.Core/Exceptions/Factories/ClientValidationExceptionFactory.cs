@@ -10,7 +10,7 @@ namespace NClient.Core.Exceptions.Factories
         ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes();
         ClientValidationException ParameterInRouteTemplateIsNull(string parameterName);
         ClientValidationException RouteParamWithoutTokenInRoute(string[] paramNames);
-        ClientValidationException TokenFromTemplateNotExists(string tokenName);
+        ClientValidationException SpecialTokenFromTemplateNotExists(string tokenName);
         ClientValidationException TemplateParsingError(ArgumentException e);
         ClientValidationException TemplatePartContainsComplexType(string parameterName);
         ClientValidationException UsedVersionTokenButVersionAttributeNotFound();
@@ -20,7 +20,6 @@ namespace NClient.Core.Exceptions.Factories
         ClientValidationException MultipleBodyParametersNotSupported();
         ClientValidationException ComplexTypeInHeaderNotSupported(string parameterName);
         ClientValidationException MultipleParameterAttributeNotSupported(string parameterName);
-        ClientValidationException UsedNotSupportedAttributeForParameter(string attributeName, string parameterName);
         ClientValidationException MethodAttributeNotFound(string attributeName);
         ClientValidationException MethodAttributeNotSupported(string attributeName);
         ClientValidationException MultipleMethodAttributeNotSupported();
@@ -32,80 +31,77 @@ namespace NClient.Core.Exceptions.Factories
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory, IObjectMemberManagerExceptionFactory
     {
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
-            new($"Header parameter duplicates static header. Header names: {string.Join(",", headerNames)}");
+            new($"Header parameters duplicate static headers. Header names: {string.Join(",", headerNames)}");
 
         public ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
-            new($"Client name consists only of suffixes and prefixes.");
+            new($"The client name consists only of suffixes and/or prefixes.");
         
         public ClientValidationException ParameterInRouteTemplateIsNull(string parameterName) =>
-            new($"Parameter used in the path cannot be null. Parameter name: {parameterName}");
+            new($"The parameter '{parameterName}' used in the path cannot be null.");
         
         public ClientValidationException RouteParamWithoutTokenInRoute(string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 
-        public ClientValidationException TokenFromTemplateNotExists(string tokenName) =>
-            new($"Token '{tokenName}' from route template does not exist.");
+        public ClientValidationException SpecialTokenFromTemplateNotExists(string tokenName) =>
+            new($"The special token '{tokenName}' from route template does not exist.");
 
         public ClientValidationException TemplateParsingError(ArgumentException e) =>
             new(e.Message);
 
         public ClientValidationException TemplatePartContainsComplexType(string parameterName) =>
-            new($"Parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
+            new($"The parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
 
         public ClientValidationException UsedVersionTokenButVersionAttributeNotFound() =>
-            new($"Token 'version' is used, but VersionAttribute not found.");
+            new($"The token 'version' is used, but VersionAttribute not found.");
 
         public ClientValidationException TokenNotMatchAnyMethodParameter(string tokenName) =>
-            new($"Token '{tokenName}' in route template does not match any method parameters.");
+            new($"The token '{tokenName}' in route template does not match any method parameters.");
 
         public ClientValidationException TemplatePartWithoutTokenOrText() =>
-            new($"Template part does not contain a token or text.");
+            new("The template part does not contain a token or text.");
 
         public ClientValidationException MultipleAttributeForClientNotSupported(string attributeName) =>
-            new($"Multiple attributes '{attributeName}' for client are not supported.");
+            new($"Multiple '{attributeName}' attributes for client are not supported.");
 
         public ClientValidationException MultipleBodyParametersNotSupported() =>
-            new($"Client method can contain only one body parameter.");
+            new("Client method must contain no more than one body parameter.");
 
         public ClientValidationException ComplexTypeInHeaderNotSupported(string parameterName) =>
-            new($"Headers cannot contain complex types. Parameter name: {parameterName}.");
+            new($"Headers cannot contain custom types. Parameter name: {parameterName}.");
 
         public ClientValidationException MultipleParameterAttributeNotSupported(string parameterName) =>
             new($"Multiple attributes for a method parameter are not supported. Parameter name: {parameterName}.");
-
-        public ClientValidationException UsedNotSupportedAttributeForParameter(string attributeName, string parameterName) =>
-            new($"Attribute '{attributeName}' not supported for parameters ('{parameterName}').");
-
+        
         public ClientValidationException MethodAttributeNotFound(string attributeName) =>
-            new($"Attribute '{attributeName}' not found.");
+            new($"The attribute '{attributeName}' not found.");
 
         public ClientValidationException MethodAttributeNotSupported(string attributeName) =>
-            new($"Method attribute '{attributeName}' not supported.");
+            new($"The method attribute '{attributeName}' not supported.");
 
         public ClientValidationException MultipleMethodAttributeNotSupported() =>
-            new($"Multiple attributes for a method are not supported.");
+            new("Multiple attributes for a method not supported.");
         
         public ClientValidationException DictionaryWithComplexTypeOfKeyNotSupported() =>
-            new("Dictionary with complex key types cannot be passed through uri query.");
+            new("Dictionary with custom type keys cannot be passed through uri query.");
 
         public ClientValidationException DictionaryWithComplexTypeOfValueNotSupported() =>
-            new("Dictionary with complex value types cannot be passed through uri query.");
+            new("Dictionary with custom type values cannot be passed through uri query.");
 
         public ClientValidationException ArrayWithComplexTypeNotSupported() =>
-            new("Array with complex types cannot be passed through uri query.");
+            new("Array with custom types cannot be passed through uri query.");
         
         
         public NClientException MemberNameConflict(string memberName, string objectName) =>
-            new ClientValidationException($"Object member '{memberName}' not found in '{objectName}' object type.");
+            new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
        
         public NClientException MemberNotFound(string memberName, string objectName) =>
-            new ClientValidationException($"Object member '{memberName}' not found in '{objectName}' object type.");
+            new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
 
         public NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
-            new ClientValidationException($"Value of '{memberName}' member in {objectName} object is null. The value from the path cannot be set.");
+            new ClientValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
 
         public NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
-            new ClientValidationException($"Object member '{memberName}' has '{propertyTypeName}' type, but value in route '{actualValue}'.");
+            new ClientValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
 
         public NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
             new ClientValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
