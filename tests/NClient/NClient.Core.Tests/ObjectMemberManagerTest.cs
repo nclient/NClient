@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions;
+using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.Factories;
@@ -80,20 +80,26 @@ namespace NClient.Core.Tests
                     ExceptionFactory.MemberNameConflict("MyProp", nameof(TestObjWithMemberNameConflict)), new QueryMemberNameSelector())
                 .SetName("Object with member name conflict"),
 
-            new TestCaseData(null, null, new ArgumentNullException("obj", "Value cannot be null."), null)
+            new TestCaseData(null, null,
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
-            new TestCaseData(null, "", new ArgumentNullException("obj", "Value cannot be null."), null)
+            new TestCaseData(null, "",
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and empty path"),
-            new TestCaseData(new {}, null, new ArgumentNullException("memberPath", "Value cannot be null."), null)
+            new TestCaseData(new {}, null,
+                    EnsureExceptionFactory.CreateArgumentNullException("memberPath"), null)
                 .SetName("Empty object and null path"),
-            new TestCaseData(null, "Prop", new ArgumentNullException("obj", "Value cannot be null."), null)
+            new TestCaseData(null, "Prop",
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
-            new TestCaseData(new {}, "", new ArgumentException("Empty string.", "memberPath"), null)
+            new TestCaseData(new {}, "",
+                    EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Empty object and empty path"),
             new TestCaseData(new {}, "Prop",
                     ExceptionFactory.MemberNotFound("Prop", "<>f__AnonymousType1"), null)
                 .SetName("Empty object and path"),
-            new TestCaseData(new { Prop = 1 }, "", new ArgumentException("Empty string.", "memberPath"), null)
+            new TestCaseData(new { Prop = 1 }, "",
+                    EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Object and empty path"),
             new TestCaseData(new { Prop = 1 }, "NonexistentProp",
                     ExceptionFactory.MemberNotFound("NonexistentProp", "<>f__AnonymousType0`1"), null)
@@ -111,20 +117,27 @@ namespace NClient.Core.Tests
 
         public static IEnumerable ValidTestCasesForSetMemberValue = new[]
         {
-            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "2", "MyProp", new TestObjWithCustomQueryPropName { Prop = 2 }, new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomQueryPropName { Prop = 1 }, "2", "MyProp",
+                    new TestObjWithCustomQueryPropName { Prop = 2 }, new QueryMemberNameSelector())
                 .SetName("Object with custom QueryProp name"),
-            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "2", "MyProp", new TestObjWithCustomFromQueryName { Prop = 2 }, new QueryMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomFromQueryName { Prop = 1 }, "2", "MyProp",
+                    new TestObjWithCustomFromQueryName { Prop = 2 }, new QueryMemberNameSelector())
                 .SetName("Object with custom FromQuery name"),
-            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "MyProp", new TestObjWithCustomJsonPropertyName { Prop = 2 }, new BodyMemberNameSelector())
+            new TestCaseData(new TestObjWithCustomJsonPropertyName { Prop = 1 }, "2", "MyProp",
+                    new TestObjWithCustomJsonPropertyName { Prop = 2 }, new BodyMemberNameSelector())
                 .SetName("Object with custom JsonPropertyName"),
 
-            new TestCaseData(new TestObjWithIntField { Field = 1 }, "2", "Field", new TestObjWithIntField { Field = 2 }, null)
+            new TestCaseData(new TestObjWithIntField { Field = 1 }, "2", "Field",
+                    new TestObjWithIntField { Field = 2 }, null)
                 .SetName("Top level primitive field"),
-            new TestCaseData(new TestObjWithNestedField { Field = 1 },"2", "Field", new TestObjWithNestedField { Field = 2 }, null)
+            new TestCaseData(new TestObjWithNestedField { Field = 1 },"2", "Field",
+                    new TestObjWithNestedField { Field = 2 }, null)
                 .SetName("Nested field"),
-            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop", new TestObjWithIntProp { Prop = 2 }, null)
+            new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop",
+                    new TestObjWithIntProp { Prop = 2 }, null)
                 .SetName("Top level primitive property"),
-            new TestCaseData(new TestObjWithNestedProp { Prop = 1 }, "2", "Prop", new TestObjWithNestedProp { Prop = 2 }, null)
+            new TestCaseData(new TestObjWithNestedProp { Prop = 1 }, "2", "Prop",
+                    new TestObjWithNestedProp { Prop = 2 }, null)
                 .SetName("Nested property"),
 
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop",
@@ -157,25 +170,25 @@ namespace NClient.Core.Tests
                 .SetName("Object with member name conflict"),
 
             new TestCaseData(null, "2", null,
-                    new ArgumentNullException("obj", "Value cannot be null."), null)
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
             new TestCaseData(null, "2", "",
-                    new ArgumentNullException("obj", "Value cannot be null."), null)
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and empty path"),
             new TestCaseData(new {}, "2", null,
-                    new ArgumentNullException("memberPath", "Value cannot be null."), null)
+                    EnsureExceptionFactory.CreateArgumentNullException("memberPath"), null)
                 .SetName("Empty object and null path"),
             new TestCaseData(null, "2", "Prop",
-                    new ArgumentNullException("obj", "Value cannot be null."), null)
+                    EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
             new TestCaseData(new {}, "2", "",
-                    new ArgumentException("Empty string.", "memberPath"), null)
+                    EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Empty object and empty path"),
             new TestCaseData(new {}, "2", "Prop",
                     ExceptionFactory.MemberNotFound("Prop", "<>f__AnonymousType1"), null)
                 .SetName("Empty object and path"),
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "",
-                    new ArgumentException("Empty string.", "memberPath"), null)
+                    EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Object and empty path"),
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "NonexistentProp",
                     ExceptionFactory.MemberNotFound("NonexistentProp", nameof(TestObjWithIntProp)), null)

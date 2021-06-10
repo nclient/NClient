@@ -118,9 +118,6 @@ namespace NClient.AspNetCore.Extensions
         {
             Ensure.IsNotNull(builder, nameof(builder));
 
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
-
             builder.Services.Configure<MvcOptions>(x => x.Filters.Add(new HttpResponseExceptionFilter()));
             return builder;
         }

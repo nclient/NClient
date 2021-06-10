@@ -3,6 +3,7 @@ using System.Collections;
 using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations.Methods;
+using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
@@ -28,7 +29,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(null,
-                new ArgumentNullException("methodAttribute", "Value cannot be null.")),
+                EnsureExceptionFactory.CreateArgumentNullException("methodAttribute")),
             new TestCaseData(new NotSupportedAttribute(),
                 ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(NotSupportedAttribute)))
         };
