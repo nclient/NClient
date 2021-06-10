@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using FluentAssertions;
-using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Core.AspNetRouting;
@@ -18,14 +17,15 @@ namespace NClient.Standalone.Tests.RouteProviderTests
     [Parallelizable]
     public class RouteProviderTest
     {
+        private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
+
         internal RouteProvider RouteProvider = null!;
 
         [SetUp]
         public void SetUp()
         {
-            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
-            var objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
-            RouteProvider = new RouteProvider(objectMemberManager, clientValidationExceptionFactory);
+            var objectMemberManager = new ObjectMemberManager(ClientValidationExceptionFactory);
+            RouteProvider = new RouteProvider(objectMemberManager, ClientValidationExceptionFactory);
         }
 
         [Test]
@@ -462,7 +462,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_BodyCustomObjectPropertyTokenWithInvalidObjectCase_ThrowNClientException()
+        public void Build_BodyCustomObjectPropertyTokenWithInvalidObjectCase_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{Entity.Id}");
 
@@ -477,11 +477,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TokenNotMatchAnyMethodParameter("Entity").Message);
         }
 
         [Test]
-        public void Build_BodyCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowNClientException()
+        public void Build_BodyCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{entity.id}");
 
@@ -496,7 +497,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
         }
 
         [Test]
@@ -557,7 +559,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_QueryCustomObjectPropertyTokenWithInvalidObjectCase_ThrowNClientException()
+        public void Build_QueryCustomObjectPropertyTokenWithInvalidObjectCase_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{Entity.Id}");
 
@@ -572,11 +574,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TokenNotMatchAnyMethodParameter("Entity").Message);
         }
 
         [Test]
-        public void Build_QueryCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowNClientException()
+        public void Build_QueryCustomObjectPropertyTokenWithInvalidPropertyCase_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{entity.id}");
 
@@ -591,11 +594,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
         }
 
         [Test]
-        public void Build_ControllerNameConsistsOnlyOfSuffixesAndPrefixes_ThrowNClientException()
+        public void Build_ControllerNameConsistsOnlyOfSuffixesAndPrefixes_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("[controller]");
 
@@ -607,7 +611,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.ClientNameConsistsOnlyOfSuffixesAndPrefixes().Message);
         }
 
         [Test]
@@ -629,7 +634,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         }
 
         [Test]
-        public void Build_WrongControllerToken_ThrowValidationNClientException()
+        public void Build_WrongControllerToken_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("[controller1]");
 
@@ -641,11 +646,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.SpecialTokenFromTemplateNotExists("[controller1]").Message);
         }
 
         [Test]
-        public void Build_WrongActionToken_ThrowValidationNClientException()
+        public void Build_WrongActionToken_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("[action1]");
 
@@ -657,11 +663,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.SpecialTokenFromTemplateNotExists("[action1]").Message);
         }
 
         [Test, Ignore("Use mock for RouteTemplate")]
-        public void Build_DuplicateParameterTokens_ThrowValidationNClientException()
+        public void Build_DuplicateParameterTokens_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{id}/{id}");
 
@@ -676,11 +683,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage("");
         }
 
         [Test]
-        public void Build_NotExistsParameterToken_ThrowValidationNClientException()
+        public void Build_NotExistsParameterToken_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{prop}");
 
@@ -695,11 +703,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("id").Message);
         }
 
         [Test]
-        public void Build_CustomTypeParameterToken_ThrowValidationNClientException()
+        public void Build_CustomTypeParameterToken_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{entity}");
 
@@ -714,11 +723,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     },
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TemplatePartContainsComplexType("entity").Message);
         }
 
         [Test]
-        public void Build_VersionTokenWithoutVersionAttribute_ThrowValidationNClientException()
+        public void Build_VersionTokenWithoutVersionAttribute_ThrowClientValidationException()
         {
             var routeTemplate = TemplateParser.Parse("{version:apiVersion}");
 
@@ -730,11 +740,12 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: null))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.UsedVersionTokenButVersionAttributeNotFound().Message);
         }
 
         [Test]
-        public void Build_VersionTokenWithoutType_ThrowValidationNClientException()
+        public void Build_VersionTokenWithoutType_ThrowClientValidationException()
         {
             const string version = "1.0";
             var routeTemplate = TemplateParser.Parse("{version}");
@@ -747,7 +758,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     parameters: Array.Empty<Parameter>(),
                     useVersionAttribute: new UseVersionAttribute(version)))
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TokenNotMatchAnyMethodParameter("version").Message);
         }
     }
 }

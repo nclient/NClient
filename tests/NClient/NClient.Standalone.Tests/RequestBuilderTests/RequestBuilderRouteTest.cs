@@ -216,7 +216,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("id").Message);
         }
 
         private interface IMethodRouteWithCustomTypeParamToken {[GetMethod("{entity}")] int Method(BasicEntity entity); }
@@ -231,7 +232,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TemplatePartContainsComplexType("entity").Message);
         }
 
         [Path("{entity}")] private interface IApiRouteWithCustomTypeParamToken {[GetMethod] int Method(BasicEntity entity); }
@@ -246,7 +248,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.TemplatePartContainsComplexType("entity").Message);
         }
 
         private interface ICustomTypeRouteParam {[GetMethod("{id}")] int Method([RouteParam] BasicEntity entity); }
@@ -261,7 +264,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("entity").Message);
         }
 
         private interface ICustomTypeRouteParamWithoutTokenInRoute {[GetMethod] int Method([RouteParam] BasicEntity entity); }
@@ -276,7 +280,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<ClientValidationException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("entity").Message);
         }
 
         [UseVersion("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken {[GetMethod] int Method(); }
