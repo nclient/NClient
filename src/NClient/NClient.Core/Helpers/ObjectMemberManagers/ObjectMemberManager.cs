@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
@@ -64,12 +65,8 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
 
         public object? GetValue(object obj, string memberPath, IMemberNameSelector memberNameSelector)
         {
-            if (obj is null)
-                throw new ArgumentNullException(nameof(obj));
-            if (memberPath is null)
-                throw new ArgumentNullException(nameof(memberPath));
-            if (memberPath == "")
-                throw new ArgumentException("Empty string.", nameof(memberPath));
+            Ensure.IsNotNull(obj, nameof(obj));
+            Ensure.IsNotNullOrEmpty(memberPath, nameof(memberPath));
 
             var iterationCount = 0;
             while (true)
@@ -101,12 +98,8 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
 
         public void SetValue(object obj, string? value, string memberPath, IMemberNameSelector memberNameSelector)
         {
-            if (obj is null)
-                throw new ArgumentNullException(nameof(obj));
-            if (memberPath is null)
-                throw new ArgumentNullException(nameof(memberPath));
-            if (memberPath == "")
-                throw new ArgumentException("Empty string.", nameof(memberPath));
+            Ensure.IsNotNull(obj, nameof(obj));
+            Ensure.IsNotNullOrEmpty(memberPath, nameof(memberPath));
 
             var iterationCount = 0;
             while (true)

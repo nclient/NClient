@@ -16,7 +16,7 @@ namespace NClient.AspNetCore.Exceptions.Factories
     internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory, IObjectMemberManagerExceptionFactory
     {
         public ControllerValidationException UsedAspNetCoreAttributeInControllerInterface(string memberName) =>
-            new($"Native ASP.NET Core attributes cannot be used in NClient controller interfaces. Member name: '{memberName}'.");
+            new($"Native ASP.NET Core attributes cannot be used in NClient controller interfaces. Attribute name: '{memberName}'.");
 
         public ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName) =>
             new($"The model was not found for the '{tokenName}' route template token.");

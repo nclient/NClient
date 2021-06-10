@@ -3,6 +3,7 @@ using System.Collections;
 using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations.Methods;
+using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.RequestBuilders;
 using NUnit.Framework;
@@ -12,6 +13,8 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
     [Parallelizable]
     public class HttpMethodProviderTest
     {
+        private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
+
         public static IEnumerable ValidTestCases = new[]
         {
             new TestCaseData(new GetMethodAttribute(), HttpMethod.Get),
@@ -25,8 +28,10 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
 
         public static IEnumerable InvalidTestCases = new[]
         {
-            new TestCaseData(null),
-            new TestCaseData(new NotSupportedAttribute())
+            new TestCaseData(null,
+                EnsureExceptionFactory.CreateArgumentNullException("methodAttribute")),
+            new TestCaseData(new NotSupportedAttribute(),
+                ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(NotSupportedAttribute)))
         };
 
         private HttpMethodProvider _httpMethodProvider = null!;
@@ -47,12 +52,14 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
         }
 
         [TestCaseSource(nameof(InvalidTestCases))]
-        public void Get_MethodAttribute_ThrowException(MethodAttribute methodAttribute)
+        public void Get_MethodAttribute_ThrowException(MethodAttribute methodAttribute, Exception exception)
         {
             _httpMethodProvider
                 .Invoking(x => x.Get(methodAttribute))
                 .Should()
-                .Throw<Exception>();
+                .Throw<Exception>()
+                .Where(x => x.GetType() == exception.GetType())
+                .WithMessage(exception.Message);
         }
 
         private class NotSupportedAttribute : MethodAttribute

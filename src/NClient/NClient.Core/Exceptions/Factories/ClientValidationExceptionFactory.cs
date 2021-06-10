@@ -9,7 +9,7 @@ namespace NClient.Core.Exceptions.Factories
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes();
         ClientValidationException ParameterInRouteTemplateIsNull(string parameterName);
-        ClientValidationException RouteParamWithoutTokenInRoute(string[] paramNames);
+        ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames);
         ClientValidationException SpecialTokenFromTemplateNotExists(string tokenName);
         ClientValidationException TemplateParsingError(ArgumentException e);
         ClientValidationException TemplatePartContainsComplexType(string parameterName);
@@ -39,7 +39,7 @@ namespace NClient.Core.Exceptions.Factories
         public ClientValidationException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"The parameter '{parameterName}' used in the path cannot be null.");
 
-        public ClientValidationException RouteParamWithoutTokenInRoute(string[] paramNames) =>
+        public ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
 
         public ClientValidationException SpecialTokenFromTemplateNotExists(string tokenName) =>

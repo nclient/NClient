@@ -23,10 +23,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
     public class VirtualControllerGeneratorTest
     {
         private VirtualControllerGenerator _virtualControllerGenerator = null!;
+        private IControllerValidationExceptionFactory _controllerValidationExceptionFactory = null!;
 
         [SetUp]
         public void SetUp()
         {
+            _controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _virtualControllerGenerator = new VirtualControllerGenerator(
                 new VirtualControllerAttributeBuilder(),
                 new NClientAttributeMapper(),
@@ -306,7 +308,8 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<ControllerValidationException>();
+                .ThrowExactly<ControllerValidationException>()
+                .WithMessage(_controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(typeof(HttpGetAttribute).FullName!).Message);
         }
 
         public class CustomAttribute : Attribute { }
