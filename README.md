@@ -23,6 +23,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
   - [Asynchronously calls](#features-async)
   - [HTTP response](#features-response)
   - [HTTP response status code](#features-status-code)
+  - [Errors](#features-errors)
   - [HttpClient](#features-httpclient)
   - [Serialization](#features-serialization)
   - [Resilience](#features-resilience)
@@ -396,6 +397,16 @@ public Entity[] Get()
 }
 ```
 For information on how to get HTTP status code, see section [Http response](#features-response).
+
+<a name="features-errors"/>  
+
+## Errors
+All expected exceptions are inherited from `NClientException`. There are two types of errors: client-side errors (`ClientException`) and controller-side errors (`ControllerException`).
+### Client-side errors
+`ControllerValidationException` - errors that occur if a client interface is invalid.  
+`ClientRequestException` - exceptions to return information about a failed client request.   
+### Controller-side errors
+`ControllerValidationException` - errors that occur if a controller is invalid.  
 
 <a name="features-httpclient"/>  
 
