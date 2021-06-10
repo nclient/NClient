@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace NClient.Sandbox.ThirdPartyService
 {
@@ -17,7 +18,10 @@ namespace NClient.Sandbox.ThirdPartyService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerDocument();
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new OpenApiInfo { Title = "ThirdPartyApi", Version = "v1" });
+            });
             services.AddControllers();
         }
 
@@ -28,9 +32,11 @@ namespace NClient.Sandbox.ThirdPartyService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
-            app.UseReDoc();
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint("v1/swagger.json", "v1");
+            });
 
             app.UseRouting();
 

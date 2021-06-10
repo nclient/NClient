@@ -21,6 +21,18 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
+        private interface IHeadMethod {[HeadMethod] int Method(); }
+
+        [Test]
+        public void Build_HeadMethod_HeadHttpMethodRequest()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IHeadMethod>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Head);
+        }
+
         private interface IPostMethod {[PostMethod] int Method(); }
 
         [Test]
@@ -55,6 +67,30 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 HttpMethod.Delete);
+        }
+
+        private interface IOptionsMethod {[OptionsMethod] int Method(); }
+
+        [Test]
+        public void Build_OptionsMethod_OptionsHttpMethodRequest()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IOptionsMethod>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Options);
+        }
+
+        private interface IPatchMethod {[PatchMethod] int Method(); }
+
+        [Test]
+        public void Build_PatchMethod_PatchHttpMethodRequest()
+        {
+            var httpRequest = BuildRequest(BuildMethod<IPatchMethod>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/"),
+                HttpMethod.Patch);
         }
     }
 }

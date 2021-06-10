@@ -8,8 +8,11 @@ using NClient.Annotations;
 using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Exceptions;
 using NClient.Core.Helpers;
@@ -20,13 +23,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
     public class VirtualControllerGeneratorTest
     {
         private VirtualControllerGenerator _virtualControllerGenerator = null!;
+        private IControllerValidationExceptionFactory _controllerValidationExceptionFactory = null!;
 
         [SetUp]
         public void SetUp()
         {
-            var attributeMapper = new NClientAttributeMapper();
-            var guidProvider = new GuidProvider();
-            _virtualControllerGenerator = new VirtualControllerGenerator(attributeMapper, guidProvider);
+            _controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _virtualControllerGenerator = new VirtualControllerGenerator(
+                new VirtualControllerAttributeBuilder(),
+                new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
+                new GuidProvider());
         }
 
         public interface IInterfaceWithoutAttributes { }
@@ -114,6 +121,53 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
             controllerAttributes.Length.Should().Be(1);
             controllerAttributes[0].Should().BeEquivalentTo(new AllowAnonymousAttribute());
+        }
+
+        [Version("1.0")] public interface IInterfaceWithVersionAttribute { }
+        public class InterfaceWithVersionAttribute : IInterfaceWithVersionAttribute { }
+
+        [Test]
+        public void Create_InterfaceWithVersionAttribute_ApiVersionAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithVersionAttribute), typeof(InterfaceWithVersionAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes[0].Should().BeEquivalentTo(new ApiVersionAttribute("1.0"));
+        }
+
+        public interface IInterfaceWithToVersionAttribute {[ToVersion("1.0")] void Method(); }
+        public class InterfaceWithToVersionAttribute : IInterfaceWithToVersionAttribute { public void Method() { } }
+
+        [Test]
+        public void Create_InterfaceWithToVersionAttribute_MapToApiVersionAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IInterfaceWithToVersionAttribute), typeof(InterfaceWithToVersionAttribute))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(0);
+            var methodInfo = virtualControllerType.GetMethod(nameof(InterfaceWithToVersionAttribute.Method))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
+            methodAttributes.Length.Should().Be(1);
+            methodAttributes.Should().BeEquivalentTo(new MapToApiVersionAttribute("1.0"));
         }
 
         [Path("api/[controller]")] public interface IInterfaceWithPathAttributeWithTemplate { }
@@ -244,7 +298,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
 
         [Test]
-        public void Create_AspNetMethodAttributeController_ThrowInvalidAttributeNClientException()
+        public void Create_AspNetMethodAttributeController_ThrowClientValidationException()
         {
             var nclientControllers = new[]
             {
@@ -254,7 +308,8 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             _virtualControllerGenerator
                 .Invoking(x => x.Create(nclientControllers).ToArray())
                 .Should()
-                .ThrowExactly<InvalidAttributeNClientException>();
+                .ThrowExactly<ControllerValidationException>()
+                .WithMessage(_controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(typeof(HttpGetAttribute).FullName!).Message);
         }
 
         public class CustomAttribute : Attribute { }

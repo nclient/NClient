@@ -1,5 +1,10 @@
-﻿namespace NClient.Abstractions.HttpClients
+﻿using NClient.Common.Helpers;
+
+namespace NClient.Abstractions.HttpClients
 {
+    /// <summary>
+    /// The container for HTTP header data.
+    /// </summary>
     public record HttpHeader
     {
         public string Name { get; }
@@ -7,6 +12,9 @@
 
         public HttpHeader(string name, string value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNullOrEmpty(value, nameof(value));
+
             Name = name;
             Value = value;
         }

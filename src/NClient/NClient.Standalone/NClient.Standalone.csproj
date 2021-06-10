@@ -36,4 +36,13 @@
 		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
 	</ItemGroup>
 
+	<ItemGroup>
+	    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		    <_Parameter1>NClient</_Parameter1>
+	    </AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>NClient.Extensions.DependencyInjection</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
 </Project>

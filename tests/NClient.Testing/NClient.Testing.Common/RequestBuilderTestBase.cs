@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Mappers;
@@ -22,25 +23,28 @@ namespace NClient.Testing.Common
 
         internal MethodBuilder MethodBuilder = null!;
         internal RequestBuilder RequestBuilder = null!;
+        internal IClientValidationExceptionFactory ClientValidationExceptionFactory = null!;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var objectMemberManager = new ObjectMemberManager();
+            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
 
+            ClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             RequestBuilder = new RequestBuilder(
-                host: new Uri("http://localhost:5000"),
-                new RouteTemplateProvider(),
-                new RouteProvider(objectMemberManager),
-                new HttpMethodProvider(),
-                new ObjectToKeyValueConverter(objectMemberManager));
+                new RouteTemplateProvider(ClientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, ClientValidationExceptionFactory),
+                new HttpMethodProvider(ClientValidationExceptionFactory),
+                new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory),
+                ClientValidationExceptionFactory);
 
             var attributeMapper = new AttributeMapper();
             MethodBuilder = new MethodBuilder(
-                new MethodAttributeProvider(attributeMapper),
-                new PathAttributeProvider(attributeMapper),
-                new HeaderAttributeProvider(),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper)));
+                new MethodAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
+                new HeaderAttributeProvider(ClientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
         }
 
         protected static MethodInfo GetMethodInfo<T>()
@@ -55,7 +59,7 @@ namespace NClient.Testing.Common
 
         internal HttpRequest BuildRequest(Method method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, method, arguments);
+            return RequestBuilder.Build(RequestId, host: new Uri("http://localhost:5000"), method, arguments);
         }
 
         protected static void AssertHttpRequest(

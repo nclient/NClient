@@ -6,7 +6,7 @@ using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
 using NClient.Core.MethodBuilders.Models;
 using NClient.Core.MethodBuilders.Providers;
 using NUnit.Framework;
@@ -41,6 +41,13 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         private interface IInherited { void Method(); }
         [Inherited("client-header-1", "value"), Header("client-header-2", "value")]
         private interface IInheritedAndHeader { void Method(); }
+
+        public interface IClientInheritance : IControllerInheritance { void Method(); }
+        [Header("client-header-1", "value")] public interface IControllerInheritance { }
+
+        public interface IClientDeepInheritance : IClientDeepInheritanceBase { void Method(); }
+        public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
+        [Header("client-header-1", "value")] public interface IControllerDeepInheritance { }
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -88,6 +95,13 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(typeof(IInheritedAndHeader), GetMethodInfo<IInheritedAndHeader>(), Array.Empty<MethodParam>(),
                     new[] { new InheritedAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value") })
                 .SetName("Inherited and header attribute"),
+
+            new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(), Array.Empty<MethodParam>(),
+                    new[] {  new HeaderAttribute("client-header-1", "value") })
+                .SetName("With inheritance"),
+            new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(), Array.Empty<MethodParam>(),
+                    new[] {  new HeaderAttribute("client-header-1", "value") })
+                .SetName("With deep inheritance"),
         };
 
         public static IEnumerable InvalidTestCases = new[]
@@ -100,12 +114,19 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("Duplicate method and param headers")
         };
 
+        private HeaderAttributeProvider _headerAttributeProvider = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
+            _headerAttributeProvider = new HeaderAttributeProvider(clientRequestExceptionFactory);
+        }
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams, HeaderAttribute[] expectedAttributes)
         {
-            var headerAttributeProvider = new HeaderAttributeProvider();
-
-            var actualAttributes = headerAttributeProvider.Get(clientType, methodInfo, methodParams);
+            var actualAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams);
 
             actualAttributes.Should().BeEquivalentTo(expectedAttributes, config => config.WithoutStrictOrdering());
         }
@@ -113,9 +134,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams)
         {
-            var headerAttributeProvider = new HeaderAttributeProvider();
-
-            headerAttributeProvider
+            _headerAttributeProvider
                 .Invoking(x => x.Get(clientType, methodInfo, methodParams))
                 .Should()
                 .Throw<NClientException>();

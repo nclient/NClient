@@ -5,12 +5,13 @@ using NClient.Annotations;
 using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Mappers
 {
-    public class NClientAttributeMapper : IAttributeMapper
+    internal class NClientAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
         {
@@ -18,11 +19,17 @@ namespace NClient.AspNetCore.Mappers
             {
                 ApiAttribute => new ApiControllerAttribute(),
 
+                ToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
+                VersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
+
                 PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
                 GetMethodAttribute x => x.Template is null
                     ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
                     : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                HeadMethodAttribute x => x.Template is null
+                    ? new HttpHeadAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpHeadAttribute(x.Template) { Order = x.Order, Name = x.Name },
                 PostMethodAttribute x => x.Template is null
                     ? new HttpPostAttribute { Order = x.Order, Name = x.Name }
                     : new HttpPostAttribute(x.Template) { Order = x.Order, Name = x.Name },
@@ -32,6 +39,14 @@ namespace NClient.AspNetCore.Mappers
                 DeleteMethodAttribute x => x.Template is null
                     ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
                     : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                OptionsMethodAttribute x => x.Template is null
+                    ? new HttpOptionsAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpOptionsAttribute(x.Template) { Order = x.Order, Name = x.Name },
+#if !NETSTANDARD2_0
+                PatchMethodAttribute x => x.Template is null
+                    ? new HttpPatchAttribute { Order = x.Order, Name = x.Name }
+                    : new HttpPatchAttribute(x.Template) { Order = x.Order, Name = x.Name },
+#endif
 
                 ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
 
@@ -44,7 +59,7 @@ namespace NClient.AspNetCore.Mappers
                 HeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
                 { } => null,
-                _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
+                _ => throw new ArgumentNullException(nameof(attribute))
             };
         }
     }

@@ -24,7 +24,7 @@ namespace NClient.Core.Helpers
         public static Attribute[] GetInterfaceCustomAttributes(this Type type, bool inherit = false)
         {
             if (!type.IsInterface)
-                throw InnerExceptionFactory.ArgumentException(nameof(type), "Type is not interface.");
+                throw new ArgumentException("Type is not interface.", nameof(type));
             if (inherit == false)
                 return type.GetCustomAttributes().ToArray();
 

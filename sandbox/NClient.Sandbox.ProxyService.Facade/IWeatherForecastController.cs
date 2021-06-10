@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
+using NClient.Annotations.Versioning;
 using NClient.Sandbox.ProxyService.Facade.Dto;
 
 namespace NClient.Sandbox.ProxyService.Facade
 {
     [Api]
-    [Path("api/nclient/[controller]")]
+    [Path("api/nclient/v{version:apiVersion}/[controller]")]
+    [Version("1.0"), Version("2.0"), Version("3.0")]
     [Header("client", "NClient")]
     public interface IWeatherForecastController
     {
@@ -24,6 +26,7 @@ namespace NClient.Sandbox.ProxyService.Facade
         Task PutAsync(WeatherForecastDto weatherForecastDto);
 
         [DeleteMethod]
-        Task Delete(int? id = null);
+        [ToVersion("2.0"), ToVersion("3.0")]
+        Task DeleteAsync(int? id = null);
     }
 }

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
-using NClient.Abstractions.Exceptions.Providers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Core.Exceptions;
@@ -13,6 +12,7 @@ using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.MethodBuilders;
+using NClient.Core.MethodBuilders.Models;
 using NClient.Core.RequestBuilders;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
@@ -20,8 +20,10 @@ namespace NClient.Core.Interceptors
 {
     internal class ClientInterceptor<T> : AsyncInterceptorBase
     {
+        private readonly Uri _host;
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
         private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
         private readonly IGuidProvider _guidProvider;
@@ -29,16 +31,20 @@ namespace NClient.Core.Interceptors
         private readonly ILogger<T>? _logger;
 
         public ClientInterceptor(
+            Uri host,
             IResilienceHttpClientProvider resilienceHttpClientProvider,
             IClientInvocationProvider clientInvocationProvider,
+            IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
             IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
+            _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _clientInvocationProvider = clientInvocationProvider;
+            _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
             _guidProvider = guidProvider;
@@ -51,11 +57,12 @@ namespace NClient.Core.Interceptors
         {
             var requestId = _guidProvider.Create();
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            await InvokeWithLoggingExceptionsAsync(async (inv, id) =>
+            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
+            await InvokeWithLoggingExceptionsAsync(async (reqId, inv, method) =>
             {
-                return (await ProcessInvocationAsync<HttpResponse>(inv, id).ConfigureAwait(false))
+                return (await ProcessInvocationAsync<HttpResponse>(reqId, inv, method).ConfigureAwait(false))
                     .EnsureSuccess();
-            }, clientInvocation, requestId).ConfigureAwait(false);
+            }, requestId, clientInvocation, clientMethod).ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
@@ -63,15 +70,15 @@ namespace NClient.Core.Interceptors
         {
             var requestId = _guidProvider.Create();
             var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, clientInvocation, requestId).ConfigureAwait(false);
+            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
+            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, requestId, clientInvocation, clientMethod).ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(ClientInvocation clientInvocation, Guid requestId)
+        private async Task<TResult> ProcessInvocationAsync<TResult>(Guid requestId, ClientInvocation clientInvocation, Method method)
         {
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
-            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
-            var request = _requestBuilder.Build(requestId, clientMethod, clientInvocation.MethodArguments);
+            var request = _requestBuilder.Build(requestId, _host, method, clientInvocation.MethodArguments);
             var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
                 .ConfigureAwait(false);
 
@@ -120,29 +127,27 @@ namespace NClient.Core.Interceptors
         }
 
         private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
-            Func<ClientInvocation, Guid, Task<TResult>> processInvocation, ClientInvocation clientInvocation, Guid requestId)
+            Func<Guid, ClientInvocation, Method, Task<TResult>> processInvocation, Guid requestId, ClientInvocation clientInvocation, Method method)
         {
-            var clientName = clientInvocation.ClientType.Name;
-            var methodName = clientInvocation.MethodInfo.Name;
-
             try
             {
-                return await processInvocation(clientInvocation, requestId).ConfigureAwait(false);
+                return await processInvocation(requestId, clientInvocation, method).ConfigureAwait(false);
             }
-            catch (NClientException e) when (e is IClientInfoProviderException clientInfoProviderException)
+            catch (ClientValidationException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw clientInfoProviderException.WithRequestInfo(clientName, methodName);
+                e.Method = method;
+                throw;
             }
-            catch (NClientException e)
+            catch (ClientHttpRequestException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(method, e);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw new RequestNClientException(e.Message, e).WithRequestInfo(clientName, methodName);
+                throw _clientRequestExceptionFactory.WrapException(method, e);
             }
         }
     }

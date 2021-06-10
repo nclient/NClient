@@ -15,32 +15,32 @@ namespace NClient.Core.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments);
+        HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
     {
-        private readonly Uri _host;
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
         private readonly IHttpMethodProvider _httpMethodProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public RequestBuilder(
-            Uri host,
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
             IHttpMethodProvider httpMethodProvider,
-            IObjectToKeyValueConverter objectToKeyValueConverter)
+            IObjectToKeyValueConverter objectToKeyValueConverter,
+            IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
-            _host = host;
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _httpMethodProvider = httpMethodProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public HttpRequest Build(Guid requestId, Method method, IEnumerable<object> arguments)
+        public HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
         {
             var httpMethod = _httpMethodProvider.Get(method.Attribute);
             var routeTemplate = _routeTemplateProvider.Get(method);
@@ -51,9 +51,10 @@ namespace NClient.Core.RequestBuilders
                     arguments.ElementAtOrDefault(index),
                     methodParam.Attribute))
                 .ToArray();
-            var route = _routeProvider.Build(routeTemplate, method.ClientName, method.Name, paramValuePairs);
+            var route = _routeProvider
+                .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
 
-            var uri = new Uri(_host, route);
+            var uri = new Uri(host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
 
             var headerAttributes = method.HeaderAttributes;
@@ -79,7 +80,7 @@ namespace NClient.Core.RequestBuilders
             foreach (var headerParam in headerParams)
             {
                 if (!headerParam.Type.IsPrimitive())
-                    throw OuterExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
+                    throw _clientValidationExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
@@ -87,7 +88,7 @@ namespace NClient.Core.RequestBuilders
                 .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)
-                throw OuterExceptionFactory.MultipleBodyParametersNotSupported();
+                throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
             request.Body = bodyParams.SingleOrDefault()?.Value;
 
             return request;

@@ -7,6 +7,7 @@ using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Extensions;
 using NClient.Extensions.DependencyInjection;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
@@ -14,6 +15,8 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Polly;
+
+#pragma warning disable 618
 
 namespace NClient.Packages.Tests
 {
@@ -45,7 +48,8 @@ namespace NClient.Packages.Tests
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddHttpClient()
-                .AddNClient<ITestController, TestController>(host, policy)
+                .AddNClient<ITestController, TestController>(host, builder => builder
+                    .WithResiliencePolicy(policy))
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITestController>();
@@ -75,7 +79,8 @@ namespace NClient.Packages.Tests
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddHttpClient()
-                .AddNClient<ITest>(host, policy)
+                .AddNClient<ITest>(host, builder => builder
+                    .WithResiliencePolicy(policy))
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();

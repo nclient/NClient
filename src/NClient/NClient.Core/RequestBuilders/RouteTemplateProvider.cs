@@ -13,6 +13,13 @@ namespace NClient.Core.RequestBuilders
 
     internal class RouteTemplateProvider : IRouteTemplateProvider
     {
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
+
+        public RouteTemplateProvider(IClientValidationExceptionFactory clientValidationExceptionFactory)
+        {
+            _clientValidationExceptionFactory = clientValidationExceptionFactory;
+        }
+
         public RouteTemplate Get(Method method)
         {
             var baseTemplate = method.PathAttribute?.Template ?? "";
@@ -24,7 +31,7 @@ namespace NClient.Core.RequestBuilders
             return Parse(fullTemplate);
         }
 
-        private static RouteTemplate Parse(string routeTemplateStr)
+        private RouteTemplate Parse(string routeTemplateStr)
         {
             try
             {
@@ -32,7 +39,7 @@ namespace NClient.Core.RequestBuilders
             }
             catch (ArgumentException e)
             {
-                throw OuterExceptionFactory.TemplateParsingError(e);
+                throw _clientValidationExceptionFactory.TemplateParsingError(e);
             }
         }
 

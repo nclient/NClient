@@ -15,7 +15,7 @@ namespace NClient.Core.Mappers
             return attribute switch
             {
                 { } => attribute,
-                _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
+                _ => throw new ArgumentNullException(nameof(attribute))
             };
         }
     }

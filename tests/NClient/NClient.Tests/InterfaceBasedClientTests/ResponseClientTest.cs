@@ -44,39 +44,42 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task GetAsync_ServiceReturnsBadRequest_ThrowHttpRequestNClientException()
+        public async Task GetAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.GetAsync(id))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
-        public async Task GetAsync_ServiceReturnsBadRequestWithError_ThrowHttpRequestNClientException()
+        public async Task GetAsync_ServiceReturnsBadRequestWithError_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.GetAsync(id))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
-        public async Task GetAsync_NotWorkingService_ThrowHttpRequestNClientException()
+        public async Task GetAsync_NotWorkingService_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockInternalServerError();
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.GetAsync(id))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
@@ -149,15 +152,16 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowResponseNClientException()
+        public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.GetResponseWithErrorAsync(id))
                 .Should()
-                .ThrowAsync<RequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError == false);
         }
 
         [Test]
@@ -201,39 +205,42 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task PostAsync_ServiceReturnsBadRequest_ThrowHttpRequestNClientException()
+        public async Task PostAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
-        public async Task PostAsync_ServiceReturnsBadRequestWithError_ThrowHttpRequestNClientException()
+        public async Task PostAsync_ServiceReturnsBadRequestWithError_ThrowClientRequestException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
-        public async Task PostAsync_NotWorkingService_ThrowHttpRequestNClientException()
+        public async Task PostAsync_NotWorkingService_ThrowClientRequestException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockInternalServerError();
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
-                .ThrowAsync<HttpRequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError);
         }
 
         [Test]
@@ -304,15 +311,16 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowRequestNClientException()
+        public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            await _responseClient
+            (await _responseClient
                 .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
                 .Should()
-                .ThrowAsync<RequestNClientException>();
+                .ThrowAsync<ClientRequestException>())
+                .Where(x => x.IsHttpError == false);
         }
 
         [Test]
