@@ -443,7 +443,7 @@ To set specific resilience policy for a method, the client interface must inheri
 ```C#
 public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
 ...
-await myClient.AsResilience().InvokeResiliently(x => x.PostAsync(id), new MyResiliencePolicyProvider());
+await myClient.AsResilient().Invoke(x => x.PostAsync(id), new MyResiliencePolicyProvider());
 ```
 
 <a name="features-logging"/> 
