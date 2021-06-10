@@ -155,13 +155,13 @@ namespace NClient.Tests.InterfaceBasedClientTests
         public async Task GetResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             const int id = 1;
-            using var api = _responseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
+            using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
             (await _responseClient
                 .Invoking(async x => await x.GetResponseWithErrorAsync(id))
                 .Should()
                 .ThrowAsync<ClientRequestException>())
-                .Where(x => x.IsHttpError);
+                .Where(x => x.IsHttpError == false);
         }
 
         [Test]
@@ -314,13 +314,13 @@ namespace NClient.Tests.InterfaceBasedClientTests
         public async Task PostResponseWithErrorAsync_ServiceReturnsBadRequest_ThrowClientRequestException()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _responseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
+            using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
             (await _responseClient
                 .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
                 .Should()
                 .ThrowAsync<ClientRequestException>())
-                .Where(x => x.IsHttpError);
+                .Where(x => x.IsHttpError == false);
         }
 
         [Test]
