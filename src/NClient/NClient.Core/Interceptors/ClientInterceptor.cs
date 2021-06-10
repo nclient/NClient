@@ -142,12 +142,12 @@ namespace NClient.Core.Interceptors
             catch (ClientHttpRequestException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(method, e);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(clientInvocation.ClientType, method, e);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapException(method, e);
+                throw _clientRequestExceptionFactory.WrapException(clientInvocation.ClientType, method, e);
             }
         }
     }
