@@ -24,7 +24,7 @@ namespace NClient.AspNetCore.Controllers
 
         public static bool IsNClientVirtualController(Type type)
         {
-            return type.Assembly.FullName.StartsWith(NClientAssemblyNames.NClientDynamicControllerProxies);
+            return type.Assembly.FullName!.StartsWith(NClientAssemblyNames.NClientDynamicControllerProxies);
         }
 
         public static bool IsNClientControllerInterface(Type type)

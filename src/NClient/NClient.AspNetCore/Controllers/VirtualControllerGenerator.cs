@@ -87,7 +87,7 @@ namespace NClient.AspNetCore.Controllers
                 }
             }
 
-            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo(), nclientController.ControllerType);
+            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo()!, nclientController.ControllerType);
         }
 
         private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
@@ -96,8 +96,8 @@ namespace NClient.AspNetCore.Controllers
             return attributes
                 .Select(x =>
                 {
-                    if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
-                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName);
+                    if (x.GetType().Assembly.FullName!.StartsWith("Microsoft.AspNetCore"))
+                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName!);
                     return _attributeMapper.TryMap(x);
                 })
                 .Where(x => x is not null)

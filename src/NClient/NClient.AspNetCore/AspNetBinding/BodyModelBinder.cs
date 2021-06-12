@@ -180,7 +180,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 if (result.IsModelSet)
                 {
                     var model = result.Model;
-                    _modelExtender.ExtendWithRouteParams(bindingContext, model, new BodyMemberNameSelector());
+                    _modelExtender.ExtendWithRouteParams(bindingContext, model!, new BodyMemberNameSelector());
                     bindingContext.Result = ModelBindingResult.Success(model);
                 }
                 else
