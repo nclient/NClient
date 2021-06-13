@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
@@ -27,6 +26,7 @@ namespace NClient.Core.Interceptors
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
+        private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
@@ -38,6 +38,7 @@ namespace NClient.Core.Interceptors
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
+            IHttpResponsePopulater httpResponsePopulater,
             IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
@@ -48,6 +49,7 @@ namespace NClient.Core.Interceptors
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
+            _httpResponsePopulater = httpResponsePopulater;
             _guidProvider = guidProvider;
             _controllerType = controllerType;
             _logger = logger;
@@ -89,18 +91,19 @@ namespace NClient.Core.Interceptors
 
         private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
-            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
-
             var response = await _resilienceHttpClientProvider
                 .Create(resiliencePolicyProvider)
-                .ExecuteAsync(request, bodyType, errorType)
+                .ExecuteAsync(request)
                 .ConfigureAwait(false);
 
-            if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
-                return (TResult)(object)response;
+            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
+            var populatedResponse = _httpResponsePopulater.Populate(response, bodyType, errorType);
 
-            response.EnsureSuccess();
-            return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
+            if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
+                return (TResult)(object)populatedResponse;
+
+            populatedResponse.EnsureSuccess();
+            return (TResult)populatedResponse.GetType().GetProperty("Value")!.GetValue(populatedResponse);
         }
 
         private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()

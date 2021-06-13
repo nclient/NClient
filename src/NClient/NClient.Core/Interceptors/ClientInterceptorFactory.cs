@@ -86,6 +86,7 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
+                new HttpResponsePopulater(serializerProvider.Create()),
                 _guidProvider,
                 controllerType: null,
                 logger);
@@ -109,6 +110,7 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
+                new HttpResponsePopulater(serializerProvider.Create()),
                 _guidProvider,
                 controllerType: typeof(TController),
                 logger);

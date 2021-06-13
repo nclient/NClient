@@ -1,7 +1,8 @@
 ﻿using System;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.HttpClients.Internals
+namespace NClient.Core.Interceptors
 {
     internal interface IHttpResponsePopulater
     {

@@ -2,7 +2,6 @@
 using System.Net.Http;
 using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.HttpClients.Internals;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System.Builders;
@@ -67,12 +66,10 @@ namespace NClient.Providers.HttpClient.System
 
             var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
             var httpResponseBuilder = new HttpResponseBuilder(new ClientHttpRequestExceptionFactory());
-            var httpResponsePopulater = new HttpResponsePopulater(serializer);
 
             return new SystemHttpClient(
                 httpRequestMessageBuilder,
                 httpResponseBuilder,
-                httpResponsePopulater,
                 _httpClientFactory.Invoke(),
                 _httpClientName);
         }

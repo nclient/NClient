@@ -26,13 +26,13 @@ namespace NClient.Core.HttpClients
             _logger = logger;
         }
 
-        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
+        public async Task<HttpResponse> ExecuteAsync(HttpRequest request)
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
 
             var response = await _resiliencePolicyProvider
                 .Create()
-                .ExecuteAsync(() => ExecuteAttemptAsync(request, bodyType, errorType))
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
 
             _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
@@ -40,14 +40,14 @@ namespace NClient.Core.HttpClients
             return response;
         }
 
-        private async Task<HttpResponse> ExecuteAttemptAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null)
+        private async Task<HttpResponse> ExecuteAttemptAsync(HttpRequest request)
         {
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
-                var response = await client.ExecuteAsync(request, bodyType, errorType).ConfigureAwait(false);
+                var response = await client.ExecuteAsync(request).ConfigureAwait(false);
                 _logger?.LogDebug("Request attempt finished with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, request.Id);
                 return response;
             }

@@ -8,11 +8,17 @@ namespace NClient.Abstractions.Serialization
     public interface ISerializer
     {
         /// <summary>
+        /// Gets supported content type. 
+        /// </summary>
+        string ContentType { get; }
+        
+        /// <summary>
         /// Parse the text representing a single JSON value into a <paramref name="returnType"/>.
         /// </summary>
         /// <param name="json">The JSON text to parse.</param>
         /// <param name="returnType">The type of the object to convert to and return.</param>
         object? Deserialize(string json, Type returnType);
+        
         /// <summary>
         /// Convert the provided value into a <see cref="string"/>.
         /// </summary>

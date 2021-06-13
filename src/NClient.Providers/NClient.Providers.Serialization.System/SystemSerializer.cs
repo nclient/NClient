@@ -9,6 +9,8 @@ namespace NClient.Providers.Serialization.System
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+        public string ContentType { get; } = "application/json";
+
         public SystemSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
