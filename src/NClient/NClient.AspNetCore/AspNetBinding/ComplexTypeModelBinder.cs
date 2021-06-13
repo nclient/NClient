@@ -509,7 +509,7 @@ namespace NClient.AspNetCore.AspNetBinding
                                 Resources.FormatComplexTypeModelBinder_NoParameterlessConstructor_ForProperty(
                                     modelType.FullName!,
                                     metadata.PropertyName!,
-                                    bindingContext.ModelMetadata.ContainerType.FullName!)!);
+                                    bindingContext.ModelMetadata.ContainerType!.FullName!)!);
                         case ModelMetadataKind.Type:
                             throw new InvalidOperationException(
                                 Resources.FormatComplexTypeModelBinder_NoParameterlessConstructor_ForType(
