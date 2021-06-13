@@ -119,7 +119,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 {
                     var modelType = formatterContext.ModelType.FullName;
                     var modelName = formatterContext.ModelName;
-                    _removeFromBodyAttribute(logger, modelName, modelType, null);
+                    _removeFromBodyAttribute(logger, modelName, modelType!, null);
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 case ModelMetadataKind.Parameter:
                     _attemptingToBindParameterModel(
                         logger,
-                        modelMetadata.ParameterName,
+                        modelMetadata.ParameterName!,
                         modelMetadata.ModelType,
                         bindingContext.ModelName,
                         null);
@@ -145,8 +145,8 @@ namespace NClient.AspNetCore.AspNetBinding
                 case ModelMetadataKind.Property:
                     _attemptingToBindPropertyModel(
                         logger,
-                        modelMetadata.ContainerType,
-                        modelMetadata.PropertyName,
+                        modelMetadata.ContainerType!,
+                        modelMetadata.PropertyName!,
                         modelMetadata.ModelType,
                         bindingContext.ModelName,
                         null);
@@ -170,15 +170,15 @@ namespace NClient.AspNetCore.AspNetBinding
                 case ModelMetadataKind.Parameter:
                     _doneAttemptingToBindParameterModel(
                         logger,
-                        modelMetadata.ParameterName,
+                        modelMetadata.ParameterName!,
                         modelMetadata.ModelType,
                         null);
                     break;
                 case ModelMetadataKind.Property:
                     _doneAttemptingToBindPropertyModel(
                         logger,
-                        modelMetadata.ContainerType,
-                        modelMetadata.PropertyName,
+                        modelMetadata.ContainerType!,
+                        modelMetadata.PropertyName!,
                         modelMetadata.ModelType,
                         null);
                     break;

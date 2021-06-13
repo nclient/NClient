@@ -45,14 +45,14 @@ namespace NClient.AspNetCore.Controllers
         private static CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
         {
             var attributeCtor = attribute.GetType().GetConstructors().Last();
-            var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name));
+            var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name!));
             var attributeCtorParamValues = attribute.GetType()
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
                 .Select(x => x.GetValue(attribute))
                 .ToArray();
 
-            return BuildAttribute(attributeCtor, attributeCtorParamValues, attribute);
+            return BuildAttribute(attributeCtor, attributeCtorParamValues!, attribute);
         }
 
         private static CustomAttributeBuilder BuildAttribute(
