@@ -32,18 +32,18 @@ namespace NClient.AspNetCore.Exceptions.Factories
 
 
         public NClientException MemberNameConflict(string memberName, string objectName) =>
-            new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
+            new ControllerValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
 
         public NClientException MemberNotFound(string memberName, string objectName) =>
-            new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
+            new ControllerValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
 
         public NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
-            new ClientValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
+            new ControllerValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
 
         public NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
-            new ClientValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
+            new ControllerValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
 
         public NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
-            new ClientValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
+            new ControllerValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
     }
 }
