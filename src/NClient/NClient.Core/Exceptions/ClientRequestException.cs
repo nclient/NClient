@@ -1,8 +1,9 @@
 ﻿using System;
 using NClient.Abstractions.Exceptions;
+using NClient.Core.Exceptions;
 using NClient.Core.MethodBuilders.Models;
 
-namespace NClient.Core.Exceptions
+namespace NClient.Exceptions
 {
     /// <summary>
     /// Represents exceptions to return information about a failed client request.

@@ -14,6 +14,7 @@ using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.MethodBuilders;
 using NClient.Core.MethodBuilders.Models;
 using NClient.Core.RequestBuilders;
+using NClient.Exceptions;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
 namespace NClient.Core.Interceptors

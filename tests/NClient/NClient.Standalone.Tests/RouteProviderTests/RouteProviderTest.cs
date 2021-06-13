@@ -9,6 +9,7 @@ using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.RequestBuilders;
 using NClient.Core.RequestBuilders.Models;
+using NClient.Exceptions;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

@@ -7,6 +7,7 @@ using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
+using NClient.Exceptions;
 using NUnit.Framework;
 
 namespace NClient.Core.Tests
