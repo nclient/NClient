@@ -2,7 +2,7 @@
 using NClient.Abstractions.Clients;
 using NClient.Common.Helpers;
 
-namespace NClient.Core.Extensions
+namespace NClient
 {
     public static class NClientExtensions
     {

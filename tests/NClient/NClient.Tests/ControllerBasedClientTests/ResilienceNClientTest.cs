@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Core.Extensions;
 using NClient.Core.Resilience;
-using NClient.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
