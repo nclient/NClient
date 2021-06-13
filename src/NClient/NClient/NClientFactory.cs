@@ -15,38 +15,38 @@ namespace NClient
         public NClientFactory(
             JsonSerializerOptions? jsonSerializerOptions = null,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
-            ILoggerFactory? loggerFactory = null) 
+            ILoggerFactory? loggerFactory = null)
             : base(
-                new SystemHttpClientProvider(), 
-                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)), 
-                resiliencePolicyProvider, 
+                new SystemHttpClientProvider(),
+                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)),
+                resiliencePolicyProvider,
                 loggerFactory)
         {
         }
-        
+
         public NClientFactory(
             IHttpClientFactory httpClientFactory,
             string? httpClientFactoryName = null,
             JsonSerializerOptions? jsonSerializerOptions = null,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
-            ILoggerFactory? loggerFactory = null) 
+            ILoggerFactory? loggerFactory = null)
             : base(
-                new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName), 
-                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)), 
-                resiliencePolicyProvider, 
+                new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName),
+                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)),
+                resiliencePolicyProvider,
                 loggerFactory)
         {
         }
-        
+
         public NClientFactory(
             HttpClient httpClient,
             JsonSerializerOptions? jsonSerializerOptions = null,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
-            ILoggerFactory? loggerFactory = null) 
+            ILoggerFactory? loggerFactory = null)
             : base(
-                new SystemHttpClientProvider(httpClient), 
-                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)), 
-                resiliencePolicyProvider, 
+                new SystemHttpClientProvider(httpClient),
+                new SystemSerializerProvider(GetOrDefault(jsonSerializerOptions)),
+                resiliencePolicyProvider,
                 loggerFactory)
         {
         }
