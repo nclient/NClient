@@ -11,6 +11,7 @@ using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.Interceptors.HttpClients;
+using NClient.Core.Interceptors.HttpResponsePopulation;
 using NClient.Core.Interceptors.MethodBuilders;
 using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Interceptors.RequestBuilders;

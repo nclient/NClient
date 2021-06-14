@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Reflection;
 using NClient.Abstractions.Exceptions;
-using NClient.Core.Interceptors.MethodBuilders.Models;
 
 namespace NClient.Core.Exceptions
 {
@@ -17,25 +17,25 @@ namespace NClient.Core.Exceptions
         /// <summary>
         /// The method of client.
         /// </summary>
-        public Method Method { get; set; } = null!;
+        public MethodInfo MethodInfo { get; set; } = null!;
 
         public ClientException(string message)
             : base(message)
         {
         }
 
-        public ClientException(string message, Type interfaceType, Method method)
+        public ClientException(string message, Type interfaceType, MethodInfo methodInfo)
             : base(message)
         {
             InterfaceType = interfaceType;
-            Method = method;
+            MethodInfo = methodInfo;
         }
 
-        protected ClientException(string message, Type interfaceType, Method method, Exception innerException)
+        protected ClientException(string message, Type interfaceType, MethodInfo methodInfo, Exception innerException)
             : base(message, innerException)
         {
             InterfaceType = interfaceType;
-            Method = method;
+            MethodInfo = methodInfo;
         }
     }
 }
