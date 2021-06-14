@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Net.Http;
-using System.Reflection;
 using NClient.Annotations.Methods;
 using NClient.Core.Exceptions.Factories;
 
-namespace NClient.Core.RequestBuilders
+namespace NClient.Core.Interceptors.RequestBuilders
 {
     internal interface IHttpMethodProvider
     {

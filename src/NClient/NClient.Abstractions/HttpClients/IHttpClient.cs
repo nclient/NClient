@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace NClient.Abstractions.HttpClients
 {
@@ -14,6 +13,6 @@ namespace NClient.Abstractions.HttpClients
         /// <param name="request">The container for HTTP request data.</param>
         /// <param name="bodyType">The type of the deserialized response body.</param>
         /// <param name="errorType">The type of the deserialized response body if HTTP status code is not successful.</param>
-        Task<HttpResponse> ExecuteAsync(HttpRequest request, Type? bodyType = null, Type? errorType = null);
+        Task<HttpResponse> ExecuteAsync(HttpRequest request);
     }
 }

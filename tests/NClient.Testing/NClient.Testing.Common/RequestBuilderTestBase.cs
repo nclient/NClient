@@ -8,11 +8,11 @@ using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
+using NClient.Core.Interceptors.MethodBuilders;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Core.Interceptors.RequestBuilders;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.MethodBuilders.Providers;
-using NClient.Core.RequestBuilders;
 using NUnit.Framework;
 
 namespace NClient.Testing.Common

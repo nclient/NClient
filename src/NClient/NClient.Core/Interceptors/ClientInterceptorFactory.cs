@@ -10,10 +10,12 @@ using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
+using NClient.Core.Interceptors.HttpClients;
+using NClient.Core.Interceptors.HttpResponsePopulation;
+using NClient.Core.Interceptors.MethodBuilders;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Core.Interceptors.RequestBuilders;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders;
-using NClient.Core.MethodBuilders.Providers;
-using NClient.Core.RequestBuilders;
 using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors
@@ -86,6 +88,7 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
+                new HttpResponsePopulater(serializerProvider.Create()),
                 _guidProvider,
                 controllerType: null,
                 logger);
@@ -109,6 +112,7 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
+                new HttpResponsePopulater(serializerProvider.Create()),
                 _guidProvider,
                 controllerType: typeof(TController),
                 logger);

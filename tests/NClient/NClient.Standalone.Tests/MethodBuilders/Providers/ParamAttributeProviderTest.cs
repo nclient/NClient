@@ -6,8 +6,8 @@ using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders.Providers;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

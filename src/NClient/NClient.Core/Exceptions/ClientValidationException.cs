@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using NClient.Core.Exceptions;
-using NClient.Core.MethodBuilders.Models;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Exceptions
 {
     /// <summary>
@@ -13,8 +14,8 @@ namespace NClient.Exceptions
         {
         }
 
-        public ClientValidationException(string message, Type interfaceType, Method method)
-            : base(message, interfaceType, method)
+        public ClientValidationException(string message, Type interfaceType, MethodInfo methodInfo)
+            : base(message, interfaceType, methodInfo)
         {
         }
     }

@@ -5,7 +5,7 @@ using NClient.Annotations.Parameters;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
-    public class QueryMemberNameSelector : IMemberNameSelector
+    internal class QueryMemberNameSelector : IMemberNameSelector
     {
         public string GetName(MemberInfo memberInfo)
         {

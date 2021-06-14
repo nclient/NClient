@@ -5,7 +5,7 @@ using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 
-namespace NClient.Core.MethodBuilders.Providers
+namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IParamAttributeProvider
     {
