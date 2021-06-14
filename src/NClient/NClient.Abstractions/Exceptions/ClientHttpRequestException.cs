@@ -17,15 +17,10 @@ namespace NClient.Abstractions.Exceptions
         /// </summary>
         public HttpResponse Response { get; }
 
-        public ClientHttpRequestException(HttpResponse httpResponse) : base(BuildMessage(httpResponse))
+        public ClientHttpRequestException(HttpResponse httpResponse) : base(httpResponse.ErrorMessage!)
         {
             Request = httpResponse.Request;
             Response = httpResponse;
-        }
-
-        private static string BuildMessage(HttpResponse httpResponse)
-        {
-            return $"{httpResponse.ErrorMessage}\nResponse content: {httpResponse.Content}";
         }
     }
 }
