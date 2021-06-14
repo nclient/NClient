@@ -11,7 +11,7 @@ namespace NClient.Abstractions.Exceptions
         /// The HTTP request that the response belongs to.
         /// </summary>
         public HttpRequest Request { get; }
-        
+
         /// <summary>
         /// The HTTP response.
         /// </summary>

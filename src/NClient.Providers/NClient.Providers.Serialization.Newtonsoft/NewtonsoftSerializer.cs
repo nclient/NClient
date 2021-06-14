@@ -8,7 +8,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
     internal class NewtonsoftSerializer : ISerializer
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
-        
+
         public string ContentType { get; } = "application/json";
 
         public NewtonsoftSerializer(JsonSerializerSettings jsonSerializerSettings)

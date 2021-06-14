@@ -76,14 +76,14 @@ namespace NClient.Core.Interceptors
             {
                 var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
                 var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
-            
+
                 var request = _requestBuilder.Build(requestId, _host, clientMethod, clientInvocation.MethodArguments);
 
                 var response = await _resilienceHttpClientProvider
                     .Create(clientInvocation.ResiliencePolicyProvider)
                     .ExecuteAsync(request)
                     .ConfigureAwait(false);
-            
+
                 var populatedResponse = _httpResponsePopulater.Populate<TResult>(response);
 
                 if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
@@ -111,7 +111,7 @@ namespace NClient.Core.Interceptors
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                if (httpResponse is not null) 
+                if (httpResponse is not null)
                     throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, httpResponse, e);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, e);
             }

@@ -16,7 +16,7 @@ namespace NClient.Exceptions
         /// The HTTP request that the response belongs to.
         /// </summary>
         public HttpRequest? HttpRequest { get; }
-        
+
         /// <summary>
         /// The HTTP response.
         /// </summary>
@@ -26,7 +26,7 @@ namespace NClient.Exceptions
         /// Shows HTTP error or not.
         /// </summary>
         public bool IsHttpError => InnerException is ClientHttpRequestException;
-        
+
         public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, ClientHttpRequestException innerException)
             : base(message, interfaceType, methodInfo, innerException)
         {
@@ -38,7 +38,7 @@ namespace NClient.Exceptions
             : base(message, interfaceType, methodInfo, innerException)
         {
         }
-        
+
         public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, HttpResponse httpResponse, Exception innerException)
             : base(message, interfaceType, methodInfo, innerException)
         {

@@ -18,7 +18,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
         {
             _serializer = serializer;
         }
-        
+
         public IRestRequest Build(HttpRequest request)
         {
             Enum.TryParse(request.Method.ToString(), out Method method);

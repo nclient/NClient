@@ -22,7 +22,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
         public HttpResponse Populate<TResult>(HttpResponse httpResponse)
         {
             var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
-            
+
             if (bodyType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
@@ -47,7 +47,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
 
             return httpResponse;
         }
-        
+
         private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
         {
             var resultType = typeof(TResult);
@@ -66,7 +66,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
 
             return (resultType, null);
         }
-        
+
         private static bool IsAssignableFromGeneric<TSource>(Type destType)
         {
             return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
