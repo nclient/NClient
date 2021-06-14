@@ -88,13 +88,13 @@ namespace NClient.Core.Interceptors
                 var populatedResponse = _httpResponsePopulater.Populate<TResult>(response);
                 if (shouldEnsureSuccess)
                     populatedResponse.EnsureSuccess();
-                
+
                 if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
                 {
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                     return (TResult)(object)populatedResponse;
                 }
-                
+
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return (TResult)populatedResponse.GetType().GetProperty("Value")!.GetValue(populatedResponse);
             }
