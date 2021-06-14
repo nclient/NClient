@@ -9,12 +9,12 @@ using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Interceptors.ClientInvocations
 {
-    public interface IClientInvocationProvider
+    internal interface IClientInvocationProvider
     {
         ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation);
     }
 
-    public class ClientInvocationProvider : IClientInvocationProvider
+    internal class ClientInvocationProvider : IClientInvocationProvider
     {
         private readonly IProxyGenerator _proxyGenerator;
 
@@ -30,7 +30,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
 
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
-                throw InnerExceptionFactory.NullArgument(invocation.Method.GetParameters()[0].Name);
+                throw new ArgumentNullException(invocation.Method.GetParameters()[0].Name);
 
             var keepDataInterceptor = new KeepDataInterceptor();
             var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(interfaceType, keepDataInterceptor);

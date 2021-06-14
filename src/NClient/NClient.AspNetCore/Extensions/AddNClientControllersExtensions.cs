@@ -11,9 +11,13 @@ using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.AspNetBinding;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Filters;
 using NClient.AspNetCore.Mappers;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers;
+
+#pragma warning disable 618
 
 namespace NClient.AspNetCore.Extensions
 {
@@ -26,14 +30,21 @@ namespace NClient.AspNetCore.Extensions
         static AddNClientControllersExtensions()
         {
             ProxyGenerator = new ProxyGenerator();
-            NClientControllerFinder = new NClientControllerFinder();
-            VirtualControllerGenerator = new VirtualControllerGenerator(new NClientAttributeMapper(), new GuidProvider());
+            NClientControllerFinder = new NClientControllerFinder(new ControllerValidationExceptionFactory());
+            VirtualControllerGenerator = new VirtualControllerGenerator(
+                new VirtualControllerAttributeBuilder(),
+                new NClientAttributeMapper(),
+                new ControllerValidationExceptionFactory(),
+                new GuidProvider());
         }
 
-        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection, Action<MvcOptions>? configure = null)
+        /// <summary>
+        /// Adds a NClient controllers to the DI container.
+        /// </summary>
+        public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection,
+            Action<MvcOptions>? configure = null)
         {
-            if (serviceCollection == null)
-                throw new ArgumentNullException(nameof(serviceCollection));
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
 
             var mvcCoreBuilder = serviceCollection.AddMvcCore();
             var appAssemblies = mvcCoreBuilder.PartManager.ApplicationParts
@@ -102,10 +113,12 @@ namespace NClient.AspNetCore.Extensions
             return builder;
         }
 
+        /// <summary>
+        /// Registers the NClient exception filter to the DI container.
+        /// </summary>
         public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
         {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
+            Ensure.IsNotNull(builder, nameof(builder));
 
             builder.Services.Configure<MvcOptions>(x => x.Filters.Add(new HttpResponseExceptionFilter()));
             return builder;

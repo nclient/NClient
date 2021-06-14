@@ -5,9 +5,9 @@ using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Methods;
-using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
@@ -71,13 +71,20 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With not supported and method attribute"),
         };
 
+        private MethodAttributeProvider _methodAttributeProvider = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var attributeMapper = new AttributeMapper();
+            var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
+            _methodAttributeProvider = new MethodAttributeProvider(attributeMapper, clientRequestExceptionFactory);
+        }
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_MethodAttribute(MethodInfo methodInfo, MethodAttribute expectedAttribute)
         {
-            var attributeMapper = new AttributeMapper();
-            var methodAttributeProvider = new MethodAttributeProvider(attributeMapper);
-
-            var actualAttribute = methodAttributeProvider.Get(methodInfo);
+            var actualAttribute = _methodAttributeProvider.Get(methodInfo);
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -85,10 +92,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_InvalidTestCase_ThrowNClientException(MethodInfo methodInfo)
         {
-            var attributeMapper = new AttributeMapper();
-            var attributeProvider = new MethodAttributeProvider(attributeMapper);
-
-            attributeProvider
+            _methodAttributeProvider
                 .Invoking(x => x.Get(methodInfo))
                 .Should()
                 .Throw<NClientException>();

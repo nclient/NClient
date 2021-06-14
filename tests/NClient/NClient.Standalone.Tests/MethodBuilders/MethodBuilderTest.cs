@@ -5,9 +5,10 @@ using FluentAssertions;
 using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.Core.MethodBuilders;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.MethodBuilders.Providers;
+using NClient.Annotations.Versioning;
+using NClient.Core.Interceptors.MethodBuilders;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders
@@ -23,12 +24,16 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var clientType = typeof(IBasicClient);
             var methodInfo = clientType.GetMethods().Single();
             var methodAttribute = new GetMethodAttribute();
+            var useVersionAttribute = (UseVersionAttribute)null!;
             var pathAttribute = (PathAttribute)null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<MethodParam>();
             var methodAttributeProviderMock = new Mock<IMethodAttributeProvider>();
             methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>()))
                 .Returns(methodAttribute);
+            var useVersionAttributeProviderMock = new Mock<IUseVersionAttributeProvider>();
+            useVersionAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>()))
+                .Returns(useVersionAttribute);
             var pathAttributeProviderMock = new Mock<IPathAttributeProvider>();
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
@@ -40,6 +45,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
                 .Returns(methodParams);
             var methodBuilder = new MethodBuilder(
                 methodAttributeProviderMock.Object,
+                useVersionAttributeProviderMock.Object,
                 pathAttributeProviderMock.Object,
                 headerAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);

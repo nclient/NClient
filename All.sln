@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serializa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Newtonsoft", "src\NClient.Providers\NClient.Providers.Serialization.Newtonsoft\NClient.Providers.Serialization.Newtonsoft.csproj", "{094AD70B-2B16-49FA-B510-608BA26DAE2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Common", "src\NClient\NClient.Common\NClient.Common.csproj", "{BD55F8A3-3155-44F2-A31A-3311CFB6733F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,11 @@ Global
 		{094AD70B-2B16-49FA-B510-608BA26DAE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{094AD70B-2B16-49FA-B510-608BA26DAE2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{094AD70B-2B16-49FA-B510-608BA26DAE2E}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD55F8A3-3155-44F2-A31A-3311CFB6733F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD55F8A3-3155-44F2-A31A-3311CFB6733F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD55F8A3-3155-44F2-A31A-3311CFB6733F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD55F8A3-3155-44F2-A31A-3311CFB6733F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD55F8A3-3155-44F2-A31A-3311CFB6733F}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

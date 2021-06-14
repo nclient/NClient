@@ -1,35 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using NClient.Common.Helpers;
 
 namespace NClient.Abstractions.HttpClients
 {
+    /// <summary>
+    /// The container for data used to make requests.
+    /// </summary>
     public class HttpRequest
     {
         private readonly List<HttpParameter> _parameters = new();
         private readonly List<HttpHeader> _headers = new();
 
+        /// <summary>
+        /// Gets the request id.
+        /// </summary>
         public Guid Id { get; }
+        /// <summary>
+        /// Gets the <see cref="T:System.Uri" /> used for the HTTP request.
+        /// </summary>
         public Uri Uri { get; }
+        /// <summary>
+        /// Gets HTTP method type.
+        /// </summary>
         public HttpMethod Method { get; }
+        /// <summary>
+        /// Gets object used for request body.
+        /// </summary>
         public object? Body { get; set; }
+        /// <summary>
+        /// Gets collection of URI parameters.
+        /// </summary>
         public IReadOnlyCollection<HttpParameter> Parameters => _parameters;
+        /// <summary>
+        /// Gets collection of HTTP headers.
+        /// </summary>
         public IReadOnlyCollection<HttpHeader> Headers => _headers;
 
+        /// <summary>
+        /// Creates container for HTTP request data.
+        /// </summary>
+        /// <param name="id">The request id.</param>
+        /// <param name="uri">The request URI (without parameters).</param>
+        /// <param name="method">The request HTTP method type.</param>
         public HttpRequest(Guid id, Uri uri, HttpMethod method)
         {
+            Ensure.IsNotNull(uri, nameof(uri));
+            Ensure.IsNotNull(method, nameof(method));
+
             Id = id;
             Uri = uri;
             Method = method;
         }
 
+        /// <summary>
+        /// Adds URI parameter.
+        /// </summary>
+        /// <param name="name">The parameter name.</param>
+        /// <param name="value">The parameter value.</param>
         public void AddParameter(string name, object value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNull(value, nameof(value));
+
             _parameters.Add(new HttpParameter(name, value));
         }
 
+        /// <summary>
+        /// Adds HTTP header.
+        /// </summary>
+        /// <param name="name">The header name.</param>
+        /// <param name="value">The header value.</param>
         public void AddHeader(string name, string value)
         {
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNull(value, nameof(value));
+
             _headers.Add(new HttpHeader(name, value));
         }
     }

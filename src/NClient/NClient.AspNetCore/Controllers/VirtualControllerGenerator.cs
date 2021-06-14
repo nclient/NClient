@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using NClient.AspNetCore.Controllers.Models;
-using NClient.Core.Exceptions.Factories;
+using NClient.AspNetCore.Exceptions;
+using NClient.AspNetCore.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 
@@ -19,12 +19,20 @@ namespace NClient.AspNetCore.Controllers
 
     internal class VirtualControllerGenerator : IVirtualControllerGenerator
     {
+        private readonly IVirtualControllerAttributeBuilder _virtualControllerAttributeBuilder;
         private readonly IAttributeMapper _attributeMapper;
+        private readonly IControllerValidationExceptionFactory _controllerValidationExceptionFactory;
         private readonly IGuidProvider _guidProvider;
 
-        public VirtualControllerGenerator(IAttributeMapper attributeMapper, IGuidProvider guidProvider)
+        public VirtualControllerGenerator(
+            IVirtualControllerAttributeBuilder virtualControllerAttributeBuilder,
+            IAttributeMapper attributeMapper,
+            IControllerValidationExceptionFactory controllerValidationExceptionFactory,
+            IGuidProvider guidProvider)
         {
+            _virtualControllerAttributeBuilder = virtualControllerAttributeBuilder;
             _attributeMapper = attributeMapper;
+            _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
             _guidProvider = guidProvider;
         }
 
@@ -36,7 +44,19 @@ namespace NClient.AspNetCore.Controllers
 
             foreach (var nclientController in nclientControllers)
             {
-                yield return Create(dynamicModule, nclientController);
+                VirtualControllerInfo virtualController;
+                try
+                {
+                    virtualController = Create(dynamicModule, nclientController);
+                }
+                catch (ControllerException e)
+                {
+                    e.ControllerType = nclientController.ControllerType;
+                    e.InterfaceType = nclientController.InterfaceType;
+                    throw;
+                }
+
+                yield return virtualController;
             }
         }
 
@@ -52,7 +72,7 @@ namespace NClient.AspNetCore.Controllers
             var interfaceAttributes = GetAttributes(nclientController.InterfaceType);
             foreach (var interfaceAttribute in interfaceAttributes)
             {
-                typeBuilder.SetCustomAttribute(CreateAttribute(interfaceAttribute));
+                typeBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceAttribute));
             }
 
             var interfaceMethods = nclientController.InterfaceType.GetMethods();
@@ -63,11 +83,11 @@ namespace NClient.AspNetCore.Controllers
                 var interfaceMethodAttributes = GetAttributes(interfaceMethod);
                 foreach (var interfaceMethodAttribute in interfaceMethodAttributes)
                 {
-                    methodBuilder.SetCustomAttribute(CreateAttribute(interfaceMethodAttribute));
+                    methodBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceMethodAttribute));
                 }
             }
 
-            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo(), nclientController.ControllerType);
+            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo()!, nclientController.ControllerType);
         }
 
         private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
@@ -76,62 +96,12 @@ namespace NClient.AspNetCore.Controllers
             return attributes
                 .Select(x =>
                 {
-                    if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
-                        throw OuterExceptionFactory.UsedInvalidAttributeInControllerInterface(attributeProvider.GetType().FullName);
+                    if (x.GetType().Assembly.FullName!.StartsWith("Microsoft.AspNetCore"))
+                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName!);
                     return _attributeMapper.TryMap(x);
                 })
                 .Where(x => x is not null)
                 .ToArray()!;
-        }
-
-        private static CustomAttributeBuilder CreateAttribute(Attribute attribute)
-        {
-            return attribute is IRouteTemplateProvider routeTemplateProvider
-                ? CreateRouteTemplateProviderAttribute(routeTemplateProvider)
-                : CreateCustomAttribute(attribute);
-        }
-
-        private static CustomAttributeBuilder CreateRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
-        {
-            var attributeProps = GetProperties(attribute);
-            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-            var attributeFields = GetFields(attribute);
-            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
-            if (attribute.Template is null)
-                return new CustomAttributeBuilder(
-                    attribute.GetType().GetConstructors().First(),
-                    Array.Empty<object>(),
-                    attributeProps,
-                    attributePropValues!,
-                    attributeFields,
-                    attributeFieldValues!);
-
-            return CreateCustomAttribute((Attribute)attribute);
-        }
-
-        private static CustomAttributeBuilder CreateCustomAttribute(Attribute attribute)
-        {
-            var attributeCtor = attribute.GetType().GetConstructors().Last();
-            var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name));
-            var attributeCtorParamValue = attribute.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-                .Select(x => x.GetValue(attribute))
-                .ToArray();
-
-            var attributeProps = GetProperties(attribute);
-            var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
-            var attributeFields = GetFields(attribute);
-            var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
-
-            return new CustomAttributeBuilder(
-                attributeCtor,
-                attributeCtorParamValue,
-                attributeProps,
-                attributePropValues!,
-                attributeFields,
-                attributeFieldValues!);
         }
 
         private MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo methodInfo)
@@ -149,7 +119,7 @@ namespace NClient.AspNetCore.Controllers
                 var paramAttributes = GetAttributes(param);
                 foreach (var paramAttribute in paramAttributes)
                 {
-                    paramBuilder.SetCustomAttribute(CreateCustomAttribute(paramAttribute));
+                    paramBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(paramAttribute));
                 }
             }
 
@@ -157,19 +127,6 @@ namespace NClient.AspNetCore.Controllers
             ilGenerator.Emit(OpCodes.Ret);
 
             return methodBuilder;
-        }
-
-        private static PropertyInfo[] GetProperties(object obj)
-        {
-            return obj.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .ToArray();
-        }
-
-        private static FieldInfo[] GetFields(object obj)
-        {
-            return obj.GetType().GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }

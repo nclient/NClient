@@ -4,7 +4,7 @@ using NClient.AspNetCore.Exceptions;
 
 namespace NClient.AspNetCore.Filters
 {
-    public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
+    internal class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
     {
         public int Order { get; } = int.MaxValue;
 

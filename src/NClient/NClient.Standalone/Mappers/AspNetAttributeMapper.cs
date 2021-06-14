@@ -9,7 +9,7 @@ using NClient.Core.Mappers;
 
 namespace NClient.Mappers
 {
-    public class AspNetAttributeMapper : IAttributeMapper
+    internal class AspNetAttributeMapper : IAttributeMapper
     {
         public Attribute? TryMap(Attribute attribute)
         {
@@ -20,9 +20,14 @@ namespace NClient.Mappers
                 { Name: "RouteAttribute" } => new PathAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
 
                 { Name: "HttpGetAttribute" } => new GetMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpHeadAttribute" } => new HeadMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpPostAttribute" } => new PostMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpPutAttribute" } => new PutMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpDeleteAttribute" } => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+                { Name: "HttpOptionsAttribute" } => new OptionsMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+#if !NETSTANDARD2_0
+                { Name: "HttpPatchAttribute" } => new PatchMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
+#endif
 
                 { Name: "ProducesResponseTypeAttribute" } x => new ResponseAttribute(
                     type: GetProperty<Type>(attribute, "Type"),
@@ -41,7 +46,7 @@ namespace NClient.Mappers
                 { Name: "FromBodyAttribute" } => new BodyParamAttribute(),
 
                 { } => null,
-                _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
+                _ => throw new ArgumentNullException(nameof(attribute))
             };
         }
 
@@ -58,7 +63,7 @@ namespace NClient.Mappers
         private static T GetProperty<T>(Attribute attribute, string name)
         {
             var property = attribute.GetType().GetProperty(name)
-                ?? throw InnerExceptionFactory.ArgumentException($"Property '{name}' not found", nameof(name));
+                ?? throw new ArgumentException($"Property '{name}' not found.", nameof(name));
             return (T)property.GetValue(attribute);
         }
     }
