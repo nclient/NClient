@@ -10,9 +10,10 @@ using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors.ClientInvocations;
-using NClient.Core.MethodBuilders;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.RequestBuilders;
+using NClient.Core.Interceptors.HttpClients;
+using NClient.Core.Interceptors.MethodBuilders;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.RequestBuilders;
 using NClient.Exceptions;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 

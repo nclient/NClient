@@ -9,9 +9,9 @@ using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
-using NClient.Core.RequestBuilders.Models;
+using NClient.Core.Interceptors.RequestBuilders.Models;
 
-namespace NClient.Core.RequestBuilders
+namespace NClient.Core.Interceptors.RequestBuilders
 {
     internal interface IRouteProvider
     {

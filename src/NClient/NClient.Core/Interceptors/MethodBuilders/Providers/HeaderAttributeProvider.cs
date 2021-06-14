@@ -6,9 +6,9 @@ using NClient.Annotations;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Models;
 
-namespace NClient.Core.MethodBuilders.Providers
+namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     public interface IHeaderAttributeProvider
     {

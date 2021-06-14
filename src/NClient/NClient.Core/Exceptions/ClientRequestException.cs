@@ -1,8 +1,9 @@
 ﻿using System;
 using NClient.Abstractions.Exceptions;
 using NClient.Core.Exceptions;
-using NClient.Core.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Models;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Exceptions
 {
     /// <summary>

@@ -3,7 +3,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Core.HttpClients
+namespace NClient.Core.Interceptors.HttpClients
 {
     public interface IResilienceHttpClientProvider
     {
