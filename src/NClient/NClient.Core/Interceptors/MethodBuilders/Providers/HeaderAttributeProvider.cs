@@ -10,7 +10,7 @@ using NClient.Core.Interceptors.MethodBuilders.Models;
 
 namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
-    public interface IHeaderAttributeProvider
+    internal interface IHeaderAttributeProvider
     {
         HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams);
     }

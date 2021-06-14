@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
-    public class BodyMemberNameSelector : IMemberNameSelector
+    internal class BodyMemberNameSelector : IMemberNameSelector
     {
         public string GetName(MemberInfo memberInfo)
         {

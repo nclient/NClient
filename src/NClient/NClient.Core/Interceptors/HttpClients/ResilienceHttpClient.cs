@@ -7,7 +7,7 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
-    public class ResilienceHttpClient : IHttpClient
+    internal class ResilienceHttpClient : IHttpClient
     {
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;

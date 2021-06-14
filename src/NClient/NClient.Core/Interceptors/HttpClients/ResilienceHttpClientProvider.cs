@@ -5,12 +5,12 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
-    public interface IResilienceHttpClientProvider
+    internal interface IResilienceHttpClientProvider
     {
         IHttpClient Create(IResiliencePolicyProvider? resiliencePolicyProvider);
     }
 
-    public class ResilienceHttpClientProvider : IResilienceHttpClientProvider
+    internal class ResilienceHttpClientProvider : IResilienceHttpClientProvider
     {
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;

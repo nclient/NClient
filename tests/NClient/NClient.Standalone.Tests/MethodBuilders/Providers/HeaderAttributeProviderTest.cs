@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
-    public class HeaderAttributeProviderTest
+    internal class HeaderAttributeProviderTest
     {
         private interface INoHeaders { void Method(); }
 

@@ -9,12 +9,12 @@ using NClient.Core.Exceptions.Factories;
 
 namespace NClient.Core.Interceptors.ClientInvocations
 {
-    public interface IClientInvocationProvider
+    internal interface IClientInvocationProvider
     {
         ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation);
     }
 
-    public class ClientInvocationProvider : IClientInvocationProvider
+    internal class ClientInvocationProvider : IClientInvocationProvider
     {
         private readonly IProxyGenerator _proxyGenerator;
 

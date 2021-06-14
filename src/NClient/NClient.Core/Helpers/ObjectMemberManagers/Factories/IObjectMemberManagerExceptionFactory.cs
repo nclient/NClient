@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.Factories
 {
-    public interface IObjectMemberManagerExceptionFactory
+    internal interface IObjectMemberManagerExceptionFactory
     {
         NClientException MemberNameConflict(string memberName, string objectName);
         NClientException MemberNotFound(string memberName, string objectName);

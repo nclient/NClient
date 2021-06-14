@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Serialization
 {
-    public class StubSerializerProvider : ISerializerProvider
+    internal class StubSerializerProvider : ISerializerProvider
     {
         public ISerializer Create()
         {
