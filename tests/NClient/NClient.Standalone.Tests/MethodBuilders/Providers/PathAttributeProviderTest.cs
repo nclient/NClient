@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
-using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
-using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
@@ -63,13 +60,20 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With override path"),
         };
 
+        private PathAttributeProvider _pathAttributeProvider = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var attributeMapper = new AttributeMapper();
+            var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
+            _pathAttributeProvider = new PathAttributeProvider(attributeMapper, clientRequestExceptionFactory);
+        }
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Find_ValidTestCase_PathAttribute(Type clientType, PathAttribute expectedAttribute)
         {
-            var attributeMapper = new AttributeMapper();
-            var attributeProvider = new PathAttributeProvider(attributeMapper);
-
-            var actualAttribute = attributeProvider.Find(clientType);
+            var actualAttribute = _pathAttributeProvider.Find(clientType);
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -77,10 +81,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Find_InvalidTestCase_ThrowNClientException(Type clientType)
         {
-            var attributeMapper = new AttributeMapper();
-            var attributeProvider = new PathAttributeProvider(attributeMapper);
-
-            attributeProvider
+            _pathAttributeProvider
                 .Invoking(x => x.Find(clientType))
                 .Should()
                 .Throw<NClientException>();

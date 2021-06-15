@@ -82,9 +82,9 @@ namespace NClient.AspNetCore.AspNetBinding
                 if (_formatters.Count == 0)
                 {
                     throw new InvalidOperationException(Resources.FormatInputFormattersAreRequired(
-                        typeof(MvcOptions).FullName,
+                        typeof(MvcOptions).FullName!,
                         nameof(MvcOptions.InputFormatters),
-                        typeof(IInputFormatter).FullName));
+                        typeof(IInputFormatter).FullName!));
                 }
 
                 return new BodyModelBinder(_formatters, _readerFactory, _loggerFactory, _options);

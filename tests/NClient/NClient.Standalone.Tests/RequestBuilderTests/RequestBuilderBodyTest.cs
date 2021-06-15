@@ -7,6 +7,7 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
+using NClient.Exceptions;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -34,7 +35,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface IMultipleBodyParameters {[GetMethod] int Get([BodyParam] BasicEntity entity1, [BodyParam] BasicEntity entity2); }
 
         [Test]
-        public void Build_MultipleBodyParameters_ThrowNClientException()
+        public void Build_MultipleBodyParameters_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParameters>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
@@ -42,7 +43,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .ThrowExactly<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.MultipleBodyParametersNotSupported().Message);
         }
 
         private interface ICustomTypeBodyWithoutAttribute {[GetMethod] int Get(BasicEntity entity); }
@@ -63,7 +65,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface IMultipleBodyParametersWithoutAttributes {[GetMethod] int Get(BasicEntity entity1, BasicEntity entity2); }
 
         [Test]
-        public void Build_MultipleBodyParametersWithoutAttributes_NClientException()
+        public void Build_MultipleBodyParametersWithoutAttributes_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParametersWithoutAttributes>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
@@ -71,7 +73,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .ThrowExactly<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.MultipleBodyParametersNotSupported().Message);
         }
 
         private interface IPrimitiveBody {[GetMethod] int Get([BodyParam] int id); }
@@ -92,7 +95,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Path("api")] private interface IMultiplyPrimitiveBodyParameters {[GetMethod] int Get([BodyParam] int id, [BodyParam] string value); }
 
         [Test]
-        public void Build_MultiplyPrimitiveBodyParameters_ThrowNClientException()
+        public void Build_MultiplyPrimitiveBodyParameters_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyPrimitiveBodyParameters>(), 1, "val");
@@ -100,7 +103,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .ThrowExactly<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.MultipleBodyParametersNotSupported().Message);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace NClient.Mappers
                 { Name: "FromBodyAttribute" } => new BodyParamAttribute(),
 
                 { } => null,
-                _ => throw InnerExceptionFactory.NullArgument(nameof(attribute))
+                _ => throw new ArgumentNullException(nameof(attribute))
             };
         }
 
@@ -63,7 +63,7 @@ namespace NClient.Mappers
         private static T GetProperty<T>(Attribute attribute, string name)
         {
             var property = attribute.GetType().GetProperty(name)
-                ?? throw InnerExceptionFactory.ArgumentException($"Property '{name}' not found", nameof(name));
+                ?? throw new ArgumentException($"Property '{name}' not found.", nameof(name));
             return (T)property.GetValue(attribute);
         }
     }

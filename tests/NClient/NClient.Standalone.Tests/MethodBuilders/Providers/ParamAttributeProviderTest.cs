@@ -5,9 +5,9 @@ using System.Reflection;
 using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions;
+using NClient.Core.Exceptions.Factories;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Mappers;
-using NClient.Core.MethodBuilders.Providers;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -109,13 +109,20 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With not supported and param")
         };
 
+        private ParamAttributeProvider _paramAttributeProvider = null!;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var attributeMapper = new AttributeMapper();
+            var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
+            _paramAttributeProvider = new ParamAttributeProvider(attributeMapper, clientRequestExceptionFactory);
+        }
+
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_ParamAttribute(ParameterInfo parameterInfo, ParamAttribute expectedAttribute)
         {
-            var attributeMapper = new AttributeMapper();
-            var attributeProvider = new ParamAttributeProvider(attributeMapper);
-
-            var actualAttribute = attributeProvider.Get(parameterInfo);
+            var actualAttribute = _paramAttributeProvider.Get(parameterInfo);
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -123,10 +130,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_InvalidTestCase_ThrowNClientException(ParameterInfo parameterInfo)
         {
-            var attributeMapper = new AttributeMapper();
-            var attributeProvider = new ParamAttributeProvider(attributeMapper);
-
-            attributeProvider
+            _paramAttributeProvider
                 .Invoking(x => x.Get(parameterInfo))
                 .Should()
                 .Throw<NClientException>();

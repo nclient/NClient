@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.Binding;
+using NClient.AspNetCore.Exceptions.Factories;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.AspNetBinding
@@ -24,6 +26,8 @@ namespace NClient.AspNetCore.AspNetBinding
         private readonly ILogger? _logger;
         private readonly MvcOptions? _options;
 
+        private readonly IModelExtender _modelExtender;
+
         /// <summary>
         /// Creates a new <see cref="BodyModelBinder"/>.
         /// </summary>
@@ -35,6 +39,9 @@ namespace NClient.AspNetCore.AspNetBinding
         public BodyModelBinder(IList<IInputFormatter> formatters, IHttpRequestStreamReaderFactory readerFactory)
             : this(formatters, readerFactory, loggerFactory: null)
         {
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <summary>
@@ -52,6 +59,9 @@ namespace NClient.AspNetCore.AspNetBinding
             ILoggerFactory? loggerFactory)
             : this(formatters, readerFactory, loggerFactory, options: null)
         {
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <summary>
@@ -89,6 +99,10 @@ namespace NClient.AspNetCore.AspNetBinding
             }
 
             _options = options;
+
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <inheritdoc />
@@ -166,7 +180,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 if (result.IsModelSet)
                 {
                     var model = result.Model;
-                    ModelExtender.ExtendWithRouteParams(bindingContext, model, new BodyMemberNameSelector());
+                    _modelExtender.ExtendWithRouteParams(bindingContext, model!, new BodyMemberNameSelector());
                     bindingContext.Result = ModelBindingResult.Success(model);
                 }
                 else

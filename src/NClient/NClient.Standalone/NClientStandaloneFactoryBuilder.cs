@@ -3,59 +3,55 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.Common.Helpers;
+using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
+    /// <summary>
+    /// The builder used to create the client factory with custom providers.
+    /// </summary>
     public class NClientStandaloneFactoryBuilder : INClientFactoryBuilder
     {
-        private IHttpClientProvider _httpClientProvider;
-        private ISerializerProvider _serializerProvider;
-        private IResiliencePolicyProvider? _resiliencePolicyProvider;
-        private ILoggerFactory? _loggerFactory;
+        private readonly OptionalNClientFactoryBuilder _optionalNClientFactoryBuilder;
 
+        /// <summary>
+        /// Creates the client factory with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
         public NClientStandaloneFactoryBuilder(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
         {
-            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
-            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-
-            _httpClientProvider = httpClientProvider;
-            _serializerProvider = serializerProvider;
+            _optionalNClientFactoryBuilder = new OptionalNClientFactoryBuilder(httpClientProvider, serializerProvider);
         }
 
-        public INClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        public IOptionalNClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
-            _httpClientProvider = httpClientProvider;
-            return this;
+            return _optionalNClientFactoryBuilder.WithCustomHttpClient(httpClientProvider);
         }
 
-        public INClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
+        public IOptionalNClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
         {
-            _serializerProvider = serializerProvider;
-            return this;
+            return _optionalNClientFactoryBuilder.WithCustomSerializer(serializerProvider);
         }
 
-        public INClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
-            _resiliencePolicyProvider = resiliencePolicyProvider;
-            return this;
+            return _optionalNClientFactoryBuilder.WithResiliencePolicy(resiliencePolicyProvider);
         }
 
-        public INClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
+        public IOptionalNClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
         {
-            _loggerFactory = loggerFactory;
-            return this;
+            return _optionalNClientFactoryBuilder.WithLogging(loggerFactory);
         }
 
+        /// <summary>
+        /// Creates client factory.
+        /// </summary>
         public INClientFactory Build()
         {
-            return new NClientStandaloneFactory(
-                _httpClientProvider,
-                _serializerProvider,
-                _resiliencePolicyProvider,
-                _loggerFactory);
+            return _optionalNClientFactoryBuilder.Build();
         }
     }
 }

@@ -13,11 +13,18 @@ namespace NClient.AspNetCore.Controllers
 
     internal class NClientControllerFinder : INClientControllerFinder
     {
+        private readonly IControllerValidationExceptionFactory _controllerValidationExceptionFactory;
+
+        public NClientControllerFinder(IControllerValidationExceptionFactory controllerValidationExceptionFactory)
+        {
+            _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
+        }
+
         public IEnumerable<NClientControllerInfo> Find(IEnumerable<Type> types)
         {
             var nclientControllers = types.Where(ControllerQualifier.IsNClientController).ToArray();
             if (nclientControllers.Length == 0)
-                throw OuterAspNetExceptionFactory.ControllersNotFound();
+                throw _controllerValidationExceptionFactory.ControllersNotFound();
 
             var interfaces = new List<Type>();
             foreach (var controller in nclientControllers)
@@ -27,9 +34,9 @@ namespace NClient.AspNetCore.Controllers
                     .Where(ControllerQualifier.IsNClientControllerInterface)
                     .ToArray();
                 if (nclientInterfaces.Length == 0)
-                    throw OuterAspNetExceptionFactory.ControllerInterfaceNotFound(controller.Name);
+                    throw _controllerValidationExceptionFactory.ControllerInterfaceNotFound(controller.Name);
                 if (nclientInterfaces.Length > 1)
-                    throw OuterAspNetExceptionFactory.ControllerCanHaveOnlyOneInterface(controller.Name);
+                    throw _controllerValidationExceptionFactory.ControllerImplementsMultipleNClientInterfaces(controller.Name);
 
                 interfaces.Add(nclientInterfaces.Single());
             }

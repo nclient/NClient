@@ -5,9 +5,13 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.Extensions;
 
 namespace NClient
 {
+    /// <summary>
+    /// The factory used to create the client with custom providers.
+    /// </summary>
     public class NClientStandaloneFactory : INClientFactory
     {
         private readonly IHttpClientProvider _httpClientProvider;
@@ -15,6 +19,13 @@ namespace NClient
         private readonly IResiliencePolicyProvider? _resiliencePolicyProvider;
         private readonly ILoggerFactory? _loggerFactory;
 
+        /// <summary>
+        /// Creates the client factory with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> instances.</param>
+        /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         public NClientStandaloneFactory(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
@@ -34,15 +45,11 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
-                .Use<TInterface>(host);
-
-            if (_resiliencePolicyProvider is not null)
-                nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
-            if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
-
-            return nclientBuilder.Build();
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface>(host)
+                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetLogging(_loggerFactory)
+                .Build();
         }
 
         [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Create<T> method.")]
@@ -52,15 +59,11 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            var nclientBuilder = new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
-                .Use<TInterface, TController>(host);
-
-            if (_resiliencePolicyProvider is not null)
-                nclientBuilder = nclientBuilder.WithResiliencePolicy(_resiliencePolicyProvider);
-            if (_loggerFactory is not null)
-                nclientBuilder = nclientBuilder.WithLogging(_loggerFactory.CreateLogger<TInterface>());
-
-            return nclientBuilder.Build();
+            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
+                .Use<TInterface, TController>(host)
+                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetLogging(_loggerFactory)
+                .Build();
         }
     }
 }

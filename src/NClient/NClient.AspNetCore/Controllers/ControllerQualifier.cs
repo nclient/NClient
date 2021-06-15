@@ -6,7 +6,7 @@ using NClient.Annotations.Parameters;
 
 namespace NClient.AspNetCore.Controllers
 {
-    public static class ControllerQualifier
+    internal static class ControllerQualifier
     {
         public static bool IsNClientController(Type type)
         {
@@ -24,7 +24,7 @@ namespace NClient.AspNetCore.Controllers
 
         public static bool IsNClientVirtualController(Type type)
         {
-            return type.Assembly.FullName.StartsWith(NClientAssemblyNames.NClientDynamicControllerProxies);
+            return type.Assembly.FullName!.StartsWith(NClientAssemblyNames.NClientDynamicControllerProxies);
         }
 
         public static bool IsNClientControllerInterface(Type type)

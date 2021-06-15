@@ -15,6 +15,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 - [How to use?](#usage)  
   - [Usage with ASP.NET Core](#usage-aspnet)  
   - [Usage with non ASP.NET web service](#usage-non-aspnet) 
+- [Contributing](#contributing)
 - [Features](#features)  
   - [Creating](#features-creating)
   - [Annotation](#features-annotation)
@@ -38,6 +39,8 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 
 ## Why use NClient?
 Creating clients for web services can be quite a challenge because, in addition to data transfer, you need to implement query building, serialization, retry policy, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs. What if you could create clients with a fraction of the effort? This is exactly what NClient hopes to achieve by allowing you to create clients declaratively.
+
+By the way, you can [contribute](#contributing) to the NClient, not just use it :smiley:
 
 <a name="install" />  
 
@@ -153,6 +156,13 @@ IProductServiceClient client = NClientProvider
 await client.PostAsync(new Product(id: 1));
 ```
 
+<a name="contributing"/>  
+
+## Contributing
+You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
+Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
+It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
+
 <a name="features"/>  
 
 # Features
@@ -213,8 +223,33 @@ The base URL route for API can be set by `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
+#### Versioning attributes
+There are two attributes for API versioning: `VersionAttribute` and `ToVersionAttribute`. They are the equivalents of `ApiVersionAttribute` and `MapToApiVersionAttribute` (see [ASP.NET API Versioning](https://github.com/microsoft/aspnet-api-versioning)).
+```C#
+[Version("1.0"), Version("2.0")]
+[Path("api/v{version:apiVersion}")]
+public interface IMyController 
+{
+    [GetMethod] Entity[] Get(int id);                      // Available in versions 1.0 and 2.0
+    [DeleteMethod, ToVersion("2.0")] void Delete(int id);  // Available in version 2.0
+}
+```
+You can add `UseVersionAttribute` to set the API version for a client:
+```C#
+[UseVersion("1.0")]
+[Path("api/v{version:apiVersion}")]
+public interface IMyClient
+{ 
+    [GetMethod] Entity[] Get(int id);                       // Uses version 1.0
+    [DeleteMethod, UseVersion("2.0")] void Delete(int id);  // Uses version 2.0
+}
+```
+`UseVersionAttribute` can be used together with the attributes for API versioning, for example:
+```C#
+[UseVersion("1.0")] public interface IMyClient : IMyController { } 
+```
 #### Method attributes
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `DeleteMethodAttribute`.
+Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `HeadMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `PatchMethodAttribute`, `DeleteMethodAttribute`, `OptionsMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
@@ -290,13 +325,13 @@ To execute a request to the web-service asynchronously, you should define the re
 public interface IMyClient : INClient
 {
     [GetMethod]
-    Entity Get(int id);             // sync call
+    Entity Get(int id);             // Sync call
     [GetMethod]
-    Task<Entity> GetAsync(int id);  // async call
+    Task<Entity> GetAsync(int id);  // Async call
     [PostMethod]
-    void Post(Entity entity);       // sync call
+    void Post(Entity entity);       // Sync call
     [PostMethod]
-    Task PostAsync(Entity entity);  // async call
+    Task PostAsync(Entity entity);  // Async call
 }
 ```
 

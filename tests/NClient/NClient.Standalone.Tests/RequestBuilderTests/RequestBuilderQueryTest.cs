@@ -6,8 +6,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
-using NClient.Core.Interceptors;
-using NClient.Core.Mappers;
+using NClient.Exceptions;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -121,7 +120,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface IArrayOfCustomTypeParameter {[GetMethod] int Get([QueryParam] BasicEntity[] entities); }
 
         [Test]
-        public void Build_ArrayOfCustomTypeParameter_ThrowNotSupportedNClientException()
+        public void Build_ArrayOfCustomTypeParameter_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IArrayOfCustomTypeParameter>(),
@@ -130,7 +129,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NotSupportedNClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported().Message);
         }
 
         private interface IDictionaryOfPrimitivesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, string> dict); }
@@ -151,7 +151,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface IDictionaryOfCustomTypesParameter {[GetMethod] int Get([QueryParam] Dictionary<int, BasicEntity> dict); }
 
         [Test]
-        public void Build_DictionaryOfPCustomTypesParameter_ThrowNotSupportedNClientException()
+        public void Build_DictionaryOfCustomTypesParameter_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDictionaryOfCustomTypesParameter>(),
@@ -160,7 +160,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NotSupportedNClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported().Message);
         }
 
         private interface INestedCustomTypesParameter {[GetMethod] int Get([QueryParam] NestedEntity entity); }
@@ -208,7 +209,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface ICustomTypeWithArrayOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeArray entity); }
 
         [Test]
-        public void Build_ComplexCustomTypeWithCustomTypeArrayQueryParam_ThrowNotSupportedNClientException()
+        public void Build_ComplexCustomTypeWithCustomTypeArrayQueryParam_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeWithArrayOfCustomTypesParameter>(),
@@ -217,7 +218,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NotSupportedNClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported().Message);
         }
 
         private interface ICustomTypeWithDictionaryParameter {[GetMethod] int Get([QueryParam] EntityWithDict entity); }
@@ -244,7 +246,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface ICustomTypeWithDictionaryOfCustomTypesParameter {[GetMethod] int Get([QueryParam] EntityWithCustomTypeDict entity); }
 
         [Test]
-        public void Build_CustomTypeWithDictionaryOfCustomTypesParameter_ThrowNotSupportedNClientException()
+        public void Build_CustomTypeWithDictionaryOfCustomTypesParameter_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeWithDictionaryOfCustomTypesParameter>(),
@@ -253,7 +255,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NotSupportedNClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported().Message);
         }
     }
 }

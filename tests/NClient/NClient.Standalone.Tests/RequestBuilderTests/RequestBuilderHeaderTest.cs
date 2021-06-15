@@ -7,6 +7,7 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions;
+using NClient.Exceptions;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -58,7 +59,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         private interface ICustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeHeader_ThrowNClientException()
+        public void Build_CustomTypeHeader_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeHeader>(), new BasicEntity { Id = 1 });
@@ -66,13 +67,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.ComplexTypeInHeaderNotSupported("entity").Message);
         }
 
         private interface IMultiplyCustomTypeHeader {[GetMethod] int Get([HeaderParam] BasicEntity entity1, [HeaderParam] BasicEntity entity2); }
 
         [Test]
-        public void Build_MultiplyCustomTypeHeader_ThrowNClientException()
+        public void Build_MultiplyCustomTypeHeader_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyCustomTypeHeader>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
@@ -80,7 +82,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.ComplexTypeInHeaderNotSupported("entity1").Message);
         }
 
         [Header("id", "1")] private interface IClientHeader {[GetMethod] int Get(); }
@@ -125,7 +128,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Header("id", "1")] private interface IDuplicateInClientAndParamHeaders {[GetMethod] int Get([HeaderParam] int id); }
 
         [Test]
-        public void Build_DuplicateInClientAndParamHeaders_ThrowNClientException()
+        public void Build_DuplicateInClientAndParamHeaders_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInClientAndParamHeaders>(), 2);
@@ -133,13 +136,14 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader("id").Message);
         }
 
         private interface IDuplicateInMethodAndParamHeaders {[GetMethod, Header("id", "1")] int Get([HeaderParam] int id); }
 
         [Test]
-        public void Build_DuplicateInMethodAndParamHeaders_ThrowNClientException()
+        public void Build_DuplicateInMethodAndParamHeaders_ThrowClientValidationException()
         {
             Func<HttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInMethodAndParamHeaders>(), 2);
@@ -147,7 +151,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             buildRequestFunc
                 .Invoking(x => x.Invoke())
                 .Should()
-                .Throw<NClientException>();
+                .Throw<ClientValidationException>()
+                .WithMessage(ClientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader("id").Message);
         }
     }
 }

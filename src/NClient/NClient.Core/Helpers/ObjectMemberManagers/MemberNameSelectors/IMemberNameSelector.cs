@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
-    public interface IMemberNameSelector
+    internal interface IMemberNameSelector
     {
         string GetName(MemberInfo memberInfo);
     }

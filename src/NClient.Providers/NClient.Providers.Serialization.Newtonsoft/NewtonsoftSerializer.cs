@@ -5,9 +5,11 @@ using Newtonsoft.Json;
 
 namespace NClient.Providers.Serialization.Newtonsoft
 {
-    public class NewtonsoftSerializer : ISerializer
+    internal class NewtonsoftSerializer : ISerializer
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
+
+        public string ContentType { get; } = "application/json";
 
         public NewtonsoftSerializer(JsonSerializerSettings jsonSerializerSettings)
         {

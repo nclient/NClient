@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Logging;
 using NClient.AspNetCore.Binding;
+using NClient.AspNetCore.Exceptions.Factories;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
 namespace NClient.AspNetCore.AspNetBinding
@@ -34,6 +36,8 @@ namespace NClient.AspNetCore.AspNetBinding
         private readonly ILogger _logger;
         private Func<object>? _modelCreator;
 
+        private IModelExtender _modelExtender;
+
         /// <summary>
         /// Creates a new <see cref="ComplexTypeModelBinder"/>.
         /// </summary>
@@ -46,6 +50,9 @@ namespace NClient.AspNetCore.AspNetBinding
             ILoggerFactory loggerFactory)
             : this(propertyBinders, loggerFactory, allowValidatingTopLevelNodes: true)
         {
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <summary>
@@ -78,6 +85,10 @@ namespace NClient.AspNetCore.AspNetBinding
 
             _propertyBinders = propertyBinders;
             _logger = loggerFactory.CreateLogger<ComplexTypeModelBinder>();
+
+            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
+            _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
 
         /// <inheritdoc/>
@@ -149,7 +160,7 @@ namespace NClient.AspNetCore.AspNetBinding
 
                 var fieldName = property.BinderModelName ?? property.PropertyName;
                 var modelName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, fieldName);
-                var result = await BindProperty(bindingContext, property, fieldName, modelName);
+                var result = await BindProperty(bindingContext, property, fieldName!, modelName);
 
                 if (result.IsModelSet)
                 {
@@ -177,7 +188,7 @@ namespace NClient.AspNetCore.AspNetBinding
                     {
                         var fieldName = property.BinderModelName ?? property.PropertyName;
                         var modelName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, fieldName);
-                        await BindProperty(bindingContext, property, fieldName, modelName);
+                        await BindProperty(bindingContext, property, fieldName!, modelName);
                     }
                 }
             }
@@ -227,7 +238,7 @@ namespace NClient.AspNetCore.AspNetBinding
             }
 
             var model = bindingContext.Model;
-            ModelExtender.ExtendWithRouteParams(bindingContext, model, new QueryMemberNameSelector());
+            _modelExtender.ExtendWithRouteParams(bindingContext, model, new QueryMemberNameSelector());
             bindingContext.Result = ModelBindingResult.Success(model);
         }
 
@@ -287,7 +298,7 @@ namespace NClient.AspNetCore.AspNetBinding
                 modelMetadata: property,
                 fieldName: fieldName,
                 modelName: modelName,
-                model: propertyModel))
+                model: propertyModel!))
             {
                 await BindProperty(bindingContext);
                 result = bindingContext.Result;
@@ -408,9 +419,9 @@ namespace NClient.AspNetCore.AspNetBinding
                 var modelName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, fieldName);
                 using (bindingContext.EnterNestedScope(
                     modelMetadata: propertyMetadata,
-                    fieldName: fieldName,
+                    fieldName: fieldName!,
                     modelName: modelName,
-                    model: null))
+                    model: null!))
                 {
                     // If any property can be bound from a value provider, then success.
                     if (bindingContext.ValueProvider.ContainsPrefix(bindingContext.ModelName))
@@ -492,13 +503,13 @@ namespace NClient.AspNetCore.AspNetBinding
                             throw new InvalidOperationException(
                                 Resources.FormatComplexTypeModelBinder_NoParameterlessConstructor_ForParameter(
                                     modelType.FullName!,
-                                    metadata.ParameterName));
+                                    metadata.ParameterName!));
                         case ModelMetadataKind.Property:
                             throw new InvalidOperationException(
                                 Resources.FormatComplexTypeModelBinder_NoParameterlessConstructor_ForProperty(
                                     modelType.FullName!,
-                                    metadata.PropertyName,
-                                    bindingContext.ModelMetadata.ContainerType.FullName!));
+                                    metadata.PropertyName!,
+                                    bindingContext.ModelMetadata.ContainerType!.FullName!)!);
                         case ModelMetadataKind.Type:
                             throw new InvalidOperationException(
                                 Resources.FormatComplexTypeModelBinder_NoParameterlessConstructor_ForType(
@@ -558,7 +569,7 @@ namespace NClient.AspNetCore.AspNetBinding
             var value = result.Model;
             try
             {
-                propertyMetadata.PropertySetter(bindingContext.Model, value);
+                propertyMetadata.PropertySetter(bindingContext.Model, value!);
             }
             catch (Exception exception)
             {
