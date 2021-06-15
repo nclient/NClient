@@ -16,7 +16,7 @@ namespace NClient.Providers.Serialization.System
         /// </summary>
         public SystemSerializerProvider()
         {
-            _jsonSerializerOptions = new JsonSerializerOptions();
+            _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
         /// <summary>
