@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.RequestBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.RequestBuilders.Models;
 
-namespace NClient.Core.RequestBuilders
+namespace NClient.Core.Interceptors.RequestBuilders
 {
     internal interface IRequestBuilder
     {

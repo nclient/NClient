@@ -3,9 +3,9 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Versioning;
 
-namespace NClient.Core.MethodBuilders.Models
+namespace NClient.Core.Interceptors.MethodBuilders.Models
 {
-    public class Method
+    internal class Method
     {
         public string Name { get; }
         public string ClientName { get; }

@@ -5,7 +5,7 @@ using FluentAssertions;
 using NClient.Annotations.Methods;
 using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
-using NClient.Core.RequestBuilders;
+using NClient.Core.Interceptors.RequestBuilders;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.HttpMethodProviderTests

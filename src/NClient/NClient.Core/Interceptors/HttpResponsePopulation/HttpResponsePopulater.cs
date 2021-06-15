@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Linq;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.HttpClients.Internals
+namespace NClient.Core.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulater
     {
-        HttpResponse Populate(HttpResponse httpResponse, Type? bodyType, Type? errorType);
+        HttpResponse Populate<TResult>(HttpResponse httpResponse);
     }
 
     internal class HttpResponsePopulater : IHttpResponsePopulater
@@ -17,8 +19,10 @@ namespace NClient.Abstractions.HttpClients.Internals
             _serializer = serializer;
         }
 
-        public HttpResponse Populate(HttpResponse httpResponse, Type? bodyType, Type? errorType)
+        public HttpResponse Populate<TResult>(HttpResponse httpResponse)
         {
+            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
+
             if (bodyType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
@@ -42,6 +46,30 @@ namespace NClient.Abstractions.HttpClients.Internals
             }
 
             return httpResponse;
+        }
+
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
+        {
+            var resultType = typeof(TResult);
+
+            if (resultType == typeof(HttpResponse))
+                return (null, null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
+                return (null, resultType.GetGenericArguments().Single());
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
+                return (resultType.GetGenericArguments().Single(), null);
+
+            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
+                return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
+
+            return (resultType, null);
+        }
+
+        private static bool IsAssignableFromGeneric<TSource>(Type destType)
+        {
+            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
         private object? TryGetBodyObject(Type bodyType, HttpResponse response)

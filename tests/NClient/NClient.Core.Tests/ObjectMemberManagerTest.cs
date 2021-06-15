@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace NClient.Core.Tests
 {
-    public class ObjectMemberManagerTest
+    internal class ObjectMemberManagerTest
     {
         private ObjectMemberManager _objectMemberManager = null!;
         private static readonly IObjectMemberManagerExceptionFactory ExceptionFactory =

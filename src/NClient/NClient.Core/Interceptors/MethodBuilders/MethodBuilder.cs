@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.MethodBuilders.Providers;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 
-namespace NClient.Core.MethodBuilders
+namespace NClient.Core.Interceptors.MethodBuilders
 {
     internal interface IMethodBuilder
     {

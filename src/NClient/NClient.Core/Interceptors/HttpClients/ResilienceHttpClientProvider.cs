@@ -3,14 +3,14 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Core.HttpClients
+namespace NClient.Core.Interceptors.HttpClients
 {
-    public interface IResilienceHttpClientProvider
+    internal interface IResilienceHttpClientProvider
     {
         IHttpClient Create(IResiliencePolicyProvider? resiliencePolicyProvider);
     }
 
-    public class ResilienceHttpClientProvider : IResilienceHttpClientProvider
+    internal class ResilienceHttpClientProvider : IResilienceHttpClientProvider
     {
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;

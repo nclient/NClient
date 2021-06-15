@@ -35,12 +35,12 @@ namespace NClient.Providers.HttpClient.System.Builders
                 RequestUri = uri
             };
 
-            httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+            httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType));
 
             if (request.Body != null)
             {
                 var body = _serializer.Serialize(request.Body);
-                httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, mediaType: "application/json");
+                httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, _serializer.ContentType);
             }
 
             foreach (var header in request.Headers)

@@ -2,7 +2,8 @@
 using NClient.Abstractions.Clients;
 using NClient.Common.Helpers;
 
-namespace NClient.Core.Extensions
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public static class NClientExtensions
     {

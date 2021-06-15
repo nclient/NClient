@@ -7,13 +7,13 @@ using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.MethodBuilders.Providers;
+using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
-    public class HeaderAttributeProviderTest
+    internal class HeaderAttributeProviderTest
     {
         private interface INoHeaders { void Method(); }
 

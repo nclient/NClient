@@ -1,6 +1,7 @@
 ﻿using System;
 using NClient.Abstractions.Exceptions;
 using NClient.Core.Helpers.ObjectMemberManagers.Factories;
+using NClient.Exceptions;
 
 namespace NClient.Core.Exceptions.Factories
 {

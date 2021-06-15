@@ -1,9 +1,9 @@
 ﻿using System;
 using NClient.Annotations.Parameters;
 
-namespace NClient.Core.MethodBuilders.Models
+namespace NClient.Core.Interceptors.MethodBuilders.Models
 {
-    public class MethodParam
+    internal class MethodParam
     {
         public string Name { get; }
         public Type Type { get; }

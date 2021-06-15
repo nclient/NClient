@@ -5,7 +5,7 @@ using NClient.Annotations.Methods;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
-namespace NClient.Core.MethodBuilders.Providers
+namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IMethodAttributeProvider
     {

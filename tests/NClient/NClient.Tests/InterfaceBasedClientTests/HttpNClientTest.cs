@@ -6,8 +6,6 @@ using FluentAssertions;
 using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
 using NClient.Abstractions.HttpClients;
-using NClient.Core.Extensions;
-using NClient.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
 using NClient.Tests.Clients;

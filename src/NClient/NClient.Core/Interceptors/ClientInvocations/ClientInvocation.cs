@@ -4,7 +4,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Interceptors.ClientInvocations
 {
-    public class ClientInvocation
+    internal class ClientInvocation
     {
         public Type ClientType { get; }
         public MethodInfo MethodInfo { get; }

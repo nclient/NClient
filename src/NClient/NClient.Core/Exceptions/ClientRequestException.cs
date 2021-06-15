@@ -1,30 +1,49 @@
 ﻿using System;
+using System.Reflection;
 using NClient.Abstractions.Exceptions;
-using NClient.Core.MethodBuilders.Models;
+using NClient.Abstractions.HttpClients;
+using NClient.Core.Exceptions;
 
-namespace NClient.Core.Exceptions
+// ReSharper disable once CheckNamespace
+namespace NClient.Exceptions
 {
+    /// <summary>
+    /// Represents exceptions to return information about a failed client request.
+    /// </summary>
     public class ClientRequestException : ClientException
     {
-        public ClientHttpRequestException? HttpRequestException { get; }
+        /// <summary>
+        /// The HTTP request that the response belongs to.
+        /// </summary>
+        public HttpRequest? HttpRequest { get; }
 
-        public bool IsHttpError => HttpRequestException is not null;
+        /// <summary>
+        /// The HTTP response.
+        /// </summary>
+        public HttpResponse? HttpResponse { get; }
 
-        public ClientRequestException(string message, ClientHttpRequestException? httpRequestException = null)
-            : base(message)
+        /// <summary>
+        /// Shows HTTP error or not.
+        /// </summary>
+        public bool IsHttpError => InnerException is ClientHttpRequestException;
+
+        public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, ClientHttpRequestException innerException)
+            : base(message, interfaceType, methodInfo, innerException)
         {
-            HttpRequestException = httpRequestException;
+            HttpRequest = innerException.Request;
+            HttpResponse = innerException.Response;
         }
 
-        public ClientRequestException(string message, Method method, ClientHttpRequestException? httpRequestException = null)
-            : base(message, method, httpRequestException!)
+        public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, Exception innerException)
+            : base(message, interfaceType, methodInfo, innerException)
         {
-            HttpRequestException = httpRequestException;
         }
 
-        public ClientRequestException(string message, Method method, Exception innerException)
-            : base(message, method, innerException)
+        public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, HttpResponse httpResponse, Exception innerException)
+            : base(message, interfaceType, methodInfo, innerException)
         {
+            HttpRequest = httpResponse.Request;
+            HttpResponse = httpResponse;
         }
     }
 }
