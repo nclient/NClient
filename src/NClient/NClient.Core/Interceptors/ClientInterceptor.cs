@@ -56,18 +56,18 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            await ProcessInvocationAsync<HttpResponse>(invocation, shouldForceToEnsureSuccess: true)
+            await ProcessInvocationAsync(invocation, resultType: null)
                 .ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            return await ProcessInvocationAsync<TResult>(invocation, shouldForceToEnsureSuccess: false)
+            return (TResult)await ProcessInvocationAsync(invocation, resultType: typeof(TResult))
                 .ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation, bool shouldForceToEnsureSuccess)
+        private async Task<object> ProcessInvocationAsync(IInvocation invocation, Type? resultType)
         {
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
@@ -85,20 +85,17 @@ namespace NClient.Core.Interceptors
                     .ExecuteAsync(request)
                     .ConfigureAwait(false);
 
-                var populatedResponse = _httpResponsePopulater.Populate<TResult>(response);
-                // TODO: get rid of this condition
-                if (shouldForceToEnsureSuccess)
-                    populatedResponse.EnsureSuccess();
+                var populatedResponse = _httpResponsePopulater.Populate(response, resultType);
 
-                if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
+                if (typeof(HttpResponse).IsAssignableFrom(resultType))
                 {
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                    return (TResult)(object)populatedResponse;
+                    return populatedResponse;
                 }
 
                 populatedResponse.EnsureSuccess();
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                return (TResult)populatedResponse.GetType().GetProperty("Value")!.GetValue(populatedResponse);
+                return populatedResponse.GetType().GetProperty("Value")?.GetValue(populatedResponse)!;
             }
             catch (ClientValidationException e)
             {
