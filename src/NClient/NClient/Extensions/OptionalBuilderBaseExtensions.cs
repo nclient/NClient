@@ -10,7 +10,8 @@ using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
 using Polly;
 
-namespace NClient.Extensions
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public static class OptionalBuilderBaseExtensions
     {

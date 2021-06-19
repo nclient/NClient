@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
-using NClient.Extensions;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.ProxyService.Facade;
 using NClient.Sandbox.ProxyService.Facade.Dto;
