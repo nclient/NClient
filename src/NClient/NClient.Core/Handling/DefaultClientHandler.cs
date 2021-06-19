@@ -5,15 +5,15 @@ using NClient.Abstractions.Invocation;
 
 namespace NClient.Core.Handling
 {
-    internal class DefaultClientHandler : IClientHandler
+    public class DefaultClientHandler : IClientHandler
     {
-        public Task<HttpRequest> HandleRequestAsync(
+        public virtual Task<HttpRequest> HandleRequestAsync(
             HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
             return Task.FromResult(httpRequest);
         }
 
-        public Task<HttpResponse> HandleResponseAsync(
+        public virtual Task<HttpResponse> HandleResponseAsync(
             HttpResponse httpResponse, MethodInvocation methodInvocation)
         {
             if (typeof(HttpResponse).IsAssignableFrom(methodInvocation.ResultType))

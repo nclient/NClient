@@ -52,7 +52,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
 
-            ClientHandlers = CreateClientHandlerCollection(useDefaults, ClientHandlers);
+            ClientHandlers = CreateClientHandlerCollection(useDefaults, handlers);
             return (this as TBuilder)!;
         }
 
