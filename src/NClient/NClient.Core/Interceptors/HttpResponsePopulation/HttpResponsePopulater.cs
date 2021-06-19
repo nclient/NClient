@@ -7,7 +7,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulater
     {
-        HttpResponse Populate<TResult>(HttpResponse httpResponse);
+        HttpResponse Populate(HttpResponse httpResponse, Type resultType);
     }
 
     internal class HttpResponsePopulater : IHttpResponsePopulater
@@ -19,9 +19,9 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
             _serializer = serializer;
         }
 
-        public HttpResponse Populate<TResult>(HttpResponse httpResponse)
+        public HttpResponse Populate(HttpResponse httpResponse, Type resultType)
         {
-            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
+            var (bodyType, errorType) = GetBodyAndErrorType(resultType);
 
             if (bodyType is null && errorType is not null)
             {
@@ -48,28 +48,26 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
             return httpResponse;
         }
 
-        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType(Type resultType)
         {
-            var resultType = typeof(TResult);
-
-            if (resultType == typeof(HttpResponse))
+            if (resultType == typeof(void) || resultType == typeof(HttpResponse))
                 return (null, null);
 
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
+            if (IsAssignableFromGeneric(resultType, typeof(HttpResponseWithError<>)))
                 return (null, resultType.GetGenericArguments().Single());
 
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
+            if (IsAssignableFromGeneric(resultType, typeof(HttpResponse<>)))
                 return (resultType.GetGenericArguments().Single(), null);
 
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
+            if (IsAssignableFromGeneric(resultType, typeof(HttpResponseWithError<,>)))
                 return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 
             return (resultType, null);
         }
 
-        private static bool IsAssignableFromGeneric<TSource>(Type destType)
+        private static bool IsAssignableFromGeneric(Type sourceType, Type destType)
         {
-            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
+            return sourceType.IsGenericType && sourceType.GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
         private object? TryGetBodyObject(Type bodyType, HttpResponse response)

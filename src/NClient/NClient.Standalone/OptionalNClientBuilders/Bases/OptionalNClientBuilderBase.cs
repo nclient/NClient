@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
@@ -13,6 +16,7 @@ namespace NClient.OptionalNClientBuilders.Bases
     {
         protected IHttpClientProvider HttpClientProvider;
         protected ISerializerProvider SerializerProvider;
+        protected IReadOnlyCollection<IClientHandler> ClientHandlers;
         protected IResiliencePolicyProvider? ResiliencePolicyProvider;
         protected ILoggerFactory? LoggerFactory;
         protected ILogger<TResult>? Logger;
@@ -23,6 +27,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             HttpClientProvider = httpClientProvider;
             SerializerProvider = serializerProvider;
+            ClientHandlers = CreateClientHandlerCollection();
         }
 
         public TBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
@@ -38,6 +43,14 @@ namespace NClient.OptionalNClientBuilders.Bases
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
             SerializerProvider = serializerProvider;
+            return (this as TBuilder)!;
+        }
+
+        public TBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
+        {
+            Ensure.IsNotNull(handlers, nameof(handlers));
+
+            ClientHandlers = CreateClientHandlerCollection(handlers);
             return (this as TBuilder)!;
         }
 
@@ -67,5 +80,12 @@ namespace NClient.OptionalNClientBuilders.Bases
         }
 
         public abstract TResult Build();
+
+        private static IReadOnlyCollection<IClientHandler> CreateClientHandlerCollection(
+            IReadOnlyCollection<IClientHandler>? customClientHandlers = null)
+        {
+            var clientHandlerCollection = new List<IClientHandler>(customClientHandlers ?? Array.Empty<IClientHandler>());
+            return clientHandlerCollection;
+        }
     }
 }

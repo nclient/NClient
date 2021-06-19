@@ -10,7 +10,7 @@ using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
 using Polly;
 
-namespace NClient
+namespace NClient.Extensions
 {
     public static class OptionalBuilderBaseExtensions
     {
@@ -73,7 +73,7 @@ namespace NClient
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static TBuilder WithResiliencePolicy<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
-            IAsyncPolicy<HttpResponse> asyncPolicy)
+            IAsyncPolicy<ResponseContext> asyncPolicy)
             where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {

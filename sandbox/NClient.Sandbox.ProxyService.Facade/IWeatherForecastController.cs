@@ -17,6 +17,7 @@ namespace NClient.Sandbox.ProxyService.Facade
         [GetMethod("{filter.id}")]
         [Response(typeof(WeatherForecastDto), HttpStatusCode.OK)]
         [Response(typeof(void), HttpStatusCode.BadRequest)]
+        [Response(typeof(void), HttpStatusCode.NotFound)]
         Task<WeatherForecastDto> GetAsync([QueryParam(Name = "filter")] WeatherForecastFilter weatherForecastFilter);
 
         [PostMethod]

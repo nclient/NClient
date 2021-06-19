@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
@@ -19,6 +21,13 @@ namespace NClient.Abstractions
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
         TBuilder WithCustomSerializer(ISerializerProvider serializerProvider);
+
+        /// <summary>
+        /// Sets collection of <see cref="IClientHandler"/> used to handle HTTP requests and responses />.
+        /// </summary>
+        /// <param name="handlers">The collection of handlers.</param>
+        /// <param name="useDefaults">The flag for using default handlers. If you use false, the exception will not be thrown in case of failed HTTP status code.</param>
+        TBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers);
 
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/>.

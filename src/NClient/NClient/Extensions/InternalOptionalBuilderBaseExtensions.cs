@@ -2,7 +2,7 @@
 using NClient.Abstractions;
 using NClient.Providers.HttpClient.System;
 
-namespace NClient
+namespace NClient.Extensions
 {
     internal static class InternalOptionalBuilderBaseExtensions
     {

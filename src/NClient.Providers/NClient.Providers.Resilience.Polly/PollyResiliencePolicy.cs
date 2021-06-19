@@ -9,19 +9,23 @@ namespace NClient.Providers.Resilience.Polly
 {
     internal class PollyResiliencePolicy : IResiliencePolicy
     {
-        private readonly IAsyncPolicy<HttpResponse> _asyncPolicy;
+        private readonly IAsyncPolicy<ResponseContext> _asyncPolicy;
 
-        public PollyResiliencePolicy(IAsyncPolicy<HttpResponse> asyncPolicy)
+        public PollyResiliencePolicy(
+            IAsyncPolicy<ResponseContext> asyncPolicy)
         {
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
             _asyncPolicy = asyncPolicy;
         }
-        public Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action)
+
+        public async Task<HttpResponse> ExecuteAsync(
+            Func<Task<ResponseContext>> action)
         {
             Ensure.IsNotNull(action, nameof(action));
 
-            return _asyncPolicy.ExecuteAsync(action);
+            var policyResult = await _asyncPolicy.ExecuteAndCaptureAsync(action).ConfigureAwait(false);
+            return policyResult.Result.HttpResponse;
         }
     }
 }

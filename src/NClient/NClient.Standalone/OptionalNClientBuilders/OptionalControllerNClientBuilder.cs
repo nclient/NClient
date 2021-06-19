@@ -35,8 +35,14 @@ namespace NClient.OptionalNClientBuilders
 
         public override TInterface Build()
         {
-            var interceptor = _clientInterceptorFactory
-                .Create<TInterface, TController>(_host, HttpClientProvider, SerializerProvider, ResiliencePolicyProvider, Logger);
+            var interceptor = _clientInterceptorFactory.Create<TInterface, TController>(
+                _host,
+                HttpClientProvider,
+                SerializerProvider,
+                ClientHandlers,
+                ResiliencePolicyProvider,
+                Logger);
+
             return _clientGenerator.CreateClient<TInterface>(interceptor);
         }
     }
