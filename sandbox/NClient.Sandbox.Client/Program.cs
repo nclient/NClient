@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Invocation;
+using NClient.Abstractions.Resilience;
 using NClient.Extensions;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.ProxyService.Facade;
@@ -22,22 +21,18 @@ namespace NClient.Sandbox.Client
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
 
-            var basePolicy = Policy<(HttpResponse Response, MethodInvocation MethodInvocation)>
-                .HandleResult(x =>
-                {
-                    var (response, methodInvocation) = x;
-                    if (methodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) 
-                        && response.StatusCode == HttpStatusCode.NotFound)
-                        return false;
-                    return !response.IsSuccessful;
-                })
-                .Or<Exception>();
-            var retryPolicy = basePolicy
-                .WaitAndRetryAsync(retryCount: 2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-            var fallbackPolicy = basePolicy
-                .FallbackAsync(
-                    default((HttpResponse Response, MethodInvocation MethodInvocation)),
-                    x => throw (x.Exception ?? x.Result.Response.ErrorException!));
+            var basePolicy = Policy<ResponseContext>.HandleResult(x =>
+            { 
+                if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.HttpResponse.StatusCode == HttpStatusCode.NotFound)
+                    return false; 
+                return !x.HttpResponse.IsSuccessful;
+            }).Or<Exception>();
+            var retryPolicy = basePolicy.WaitAndRetryAsync(
+                retryCount: 2, 
+                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            var fallbackPolicy = basePolicy.FallbackAsync(
+                fallbackValue: default(ResponseContext)!,
+                onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
             var policy = fallbackPolicy.WrapAsync(retryPolicy);
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();

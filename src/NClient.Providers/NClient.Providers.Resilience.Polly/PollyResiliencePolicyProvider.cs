@@ -1,6 +1,4 @@
-﻿using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Invocation;
-using NClient.Abstractions.Resilience;
+﻿using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
 using Polly;
 
@@ -11,14 +9,14 @@ namespace NClient.Providers.Resilience.Polly
     /// </summary>
     public class PollyResiliencePolicyProvider : IResiliencePolicyProvider
     {
-        private readonly IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)> _asyncPolicy;
+        private readonly IAsyncPolicy<ResponseContext> _asyncPolicy;
 
         /// <summary>
         /// Creates the Polly based resilience policy provider.
         /// </summary>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public PollyResiliencePolicyProvider(
-            IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)> asyncPolicy)
+            IAsyncPolicy<ResponseContext> asyncPolicy)
         {
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 

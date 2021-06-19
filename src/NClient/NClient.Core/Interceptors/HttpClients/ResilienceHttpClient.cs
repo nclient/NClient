@@ -46,7 +46,7 @@ namespace NClient.Core.Interceptors.HttpClients
                 .ConfigureAwait(false);
         }
 
-        private async Task<(HttpResponse, MethodInvocation)> ExecuteAttemptAsync(HttpRequest request, MethodInvocation methodInvocation)
+        private async Task<ResponseContext> ExecuteAttemptAsync(HttpRequest request, MethodInvocation methodInvocation)
         {
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
@@ -65,7 +65,7 @@ namespace NClient.Core.Interceptors.HttpClients
             
             var populatedResponse = _httpResponsePopulater.Populate(response, methodInvocation.ResultType);
             _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
-            return (populatedResponse, methodInvocation);
+            return new ResponseContext(populatedResponse, methodInvocation);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Invocation;
+using NClient.Abstractions.Resilience;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
@@ -17,7 +16,7 @@ namespace NClient
     {
         public NClientFactory(
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(),
@@ -31,7 +30,7 @@ namespace NClient
             IHttpClientFactory httpClientFactory,
             string? httpClientFactoryName = null,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName),
@@ -44,7 +43,7 @@ namespace NClient
         public NClientFactory(
             HttpClient httpClient,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClient),
@@ -61,7 +60,7 @@ namespace NClient
                 : new SystemSerializerProvider();
         }
 
-        private static PollyResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)>? resiliencePolicy)
+        private static PollyResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<ResponseContext>? resiliencePolicy)
         {
             return resiliencePolicy is not null
                 ? new PollyResiliencePolicyProvider(resiliencePolicy)
