@@ -1,9 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.Core.Handling;
 
 namespace NClient.OptionalNClientBuilders.Bases
 {
@@ -13,6 +18,7 @@ namespace NClient.OptionalNClientBuilders.Bases
     {
         protected IHttpClientProvider HttpClientProvider;
         protected ISerializerProvider SerializerProvider;
+        protected IReadOnlyCollection<IClientHandler> ClientHandlers;
         protected IResiliencePolicyProvider? ResiliencePolicyProvider;
         protected ILoggerFactory? LoggerFactory;
         protected ILogger<TResult>? Logger;
@@ -23,6 +29,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             HttpClientProvider = httpClientProvider;
             SerializerProvider = serializerProvider;
+            ClientHandlers = CreateClientHandlerCollection(useDefaults: true);
         }
 
         public TBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
@@ -38,6 +45,14 @@ namespace NClient.OptionalNClientBuilders.Bases
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
             SerializerProvider = serializerProvider;
+            return (this as TBuilder)!;
+        }
+        
+        public TBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers, bool useDefaults = true)
+        {
+            Ensure.IsNotNull(handlers, nameof(handlers));
+
+            ClientHandlers = CreateClientHandlerCollection(useDefaults, ClientHandlers);
             return (this as TBuilder)!;
         }
 
@@ -67,5 +82,14 @@ namespace NClient.OptionalNClientBuilders.Bases
         }
 
         public abstract TResult Build();
+
+        private static IReadOnlyCollection<IClientHandler> CreateClientHandlerCollection(
+            bool useDefaults, IReadOnlyCollection<IClientHandler>? customClientHandlers = null)
+        {
+            var clientHandlerCollection = new List<IClientHandler>(customClientHandlers ?? Array.Empty<IClientHandler>());
+            if (useDefaults)
+                clientHandlerCollection.Insert(index: 0, new DefaultClientHandler());
+            return clientHandlerCollection;
+        }
     }
 }

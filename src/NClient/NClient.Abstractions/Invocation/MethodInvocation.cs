@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Reflection;
-using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Interceptors.ClientInvocations
+namespace NClient.Abstractions.Invocation
 {
-    internal class ClientInvocation
+    public class MethodInvocation
     {
         public Type ClientType { get; }
         public MethodInfo MethodInfo { get; }
         public object[] MethodArguments { get; }
-        public IResiliencePolicyProvider? ResiliencePolicyProvider { get; set; }
-
-        public ClientInvocation(Type clientType, MethodInfo methodInfo, object[] methodArguments)
+        public Type ResultType { get; }
+        
+        public MethodInvocation(
+            Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType)
         {
             ClientType = clientType;
             MethodInfo = methodInfo;
             MethodArguments = methodArguments;
+            ResultType = resultType;
         }
     }
 }

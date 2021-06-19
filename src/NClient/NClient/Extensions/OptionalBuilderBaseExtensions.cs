@@ -10,7 +10,7 @@ using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
 using Polly;
 
-namespace NClient
+namespace NClient.Extensions
 {
     public static class OptionalBuilderBaseExtensions
     {

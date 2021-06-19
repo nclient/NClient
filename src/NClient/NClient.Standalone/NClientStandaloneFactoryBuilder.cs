@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
@@ -34,6 +36,11 @@ namespace NClient
         public IOptionalNClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             return _optionalNClientFactoryBuilder.WithCustomSerializer(serializerProvider);
+        }
+
+        public IOptionalNClientFactoryBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers, bool useDefaults = true)
+        {
+            return _optionalNClientFactoryBuilder.WithCustomHandlers(handlers);
         }
 
         public IOptionalNClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)

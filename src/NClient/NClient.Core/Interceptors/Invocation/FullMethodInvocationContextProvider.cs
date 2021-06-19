@@ -5,28 +5,29 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.Resilience;
-using NClient.Core.Exceptions.Factories;
 
-namespace NClient.Core.Interceptors.ClientInvocations
+namespace NClient.Core.Interceptors.Invocation
 {
-    internal interface IClientInvocationProvider
+    internal interface IFullMethodInvocationProvider
     {
-        ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation);
+        FullMethodInvocation Get(
+            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation);
     }
 
-    internal class ClientInvocationProvider : IClientInvocationProvider
+    internal class FullMethodInvocationProvider : IFullMethodInvocationProvider
     {
         private readonly IProxyGenerator _proxyGenerator;
 
-        public ClientInvocationProvider(IProxyGenerator proxyGenerator)
+        public FullMethodInvocationProvider(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
         }
 
-        public ClientInvocation Get(Type interfaceType, Type? controllerType, IInvocation invocation)
+        public FullMethodInvocation Get(
+            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation)
         {
             if (!IsNClientMethod(invocation.Method))
-                return BuildInvocation(interfaceType, controllerType, invocation, resiliencePolicyProvider: null);
+                return BuildInvocation(interfaceType, controllerType, resultType, invocation, resiliencePolicyProvider: null);
 
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
@@ -39,11 +40,11 @@ namespace NClient.Core.Interceptors.ClientInvocations
             var innerInvocation = keepDataInterceptor.Invocation!;
             var resiliencePolicyProvider = (IResiliencePolicyProvider?)invocation.Arguments[1];
 
-            return BuildInvocation(interfaceType, controllerType, innerInvocation, resiliencePolicyProvider);
+            return BuildInvocation(interfaceType, controllerType, resultType, innerInvocation, resiliencePolicyProvider);
         }
 
-        private static ClientInvocation BuildInvocation(
-            Type interfaceType, Type? controllerType, IInvocation invocation, IResiliencePolicyProvider? resiliencePolicyProvider)
+        private static FullMethodInvocation BuildInvocation(
+            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation, IResiliencePolicyProvider? resiliencePolicyProvider)
         {
             var clientType = controllerType ?? interfaceType;
             var clientMethod = controllerType is null
@@ -51,7 +52,7 @@ namespace NClient.Core.Interceptors.ClientInvocations
                 : GetMethodImpl(interfaceType, controllerType, invocation.Method);
             var clientMethodArguments = invocation.Arguments;
 
-            return new ClientInvocation(clientType, clientMethod, clientMethodArguments)
+            return new FullMethodInvocation(clientType, clientMethod, clientMethodArguments, resultType)
             {
                 ResiliencePolicyProvider = resiliencePolicyProvider
             };

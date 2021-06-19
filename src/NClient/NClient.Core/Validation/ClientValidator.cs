@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Resilience;
@@ -38,6 +39,7 @@ namespace NClient.Core.Validation
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubSerializerProvider(),
+                    new[] { new StubClientHandler() },
                     new StubResiliencePolicyProvider());
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
@@ -53,6 +55,7 @@ namespace NClient.Core.Validation
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubSerializerProvider(),
+                    new[] { new StubClientHandler() },
                     new StubResiliencePolicyProvider());
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 

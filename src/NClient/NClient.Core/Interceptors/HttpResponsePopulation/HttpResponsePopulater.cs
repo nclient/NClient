@@ -7,7 +7,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulater
     {
-        HttpResponse Populate(HttpResponse httpResponse, Type? resultType);
+        HttpResponse Populate(HttpResponse httpResponse, Type resultType);
     }
 
     internal class HttpResponsePopulater : IHttpResponsePopulater
@@ -19,7 +19,7 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
             _serializer = serializer;
         }
 
-        public HttpResponse Populate(HttpResponse httpResponse, Type? resultType)
+        public HttpResponse Populate(HttpResponse httpResponse, Type resultType)
         {
             var (bodyType, errorType) = GetBodyAndErrorType(resultType);
 
@@ -48,9 +48,9 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
             return httpResponse;
         }
 
-        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType(Type? resultType)
+        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType(Type resultType)
         {
-            if (resultType is null || resultType == typeof(HttpResponse))
+            if (resultType == typeof(void) || resultType == typeof(HttpResponse))
                 return (null, null);
 
             if (IsAssignableFromGeneric(resultType, typeof(HttpResponseWithError<>)))
