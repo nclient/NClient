@@ -45,7 +45,7 @@ namespace NClient.OptionalNClientBuilders.Bases
             SerializerProvider = serializerProvider;
             return (this as TBuilder)!;
         }
-        
+
         public TBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));

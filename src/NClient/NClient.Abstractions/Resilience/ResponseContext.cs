@@ -7,7 +7,7 @@ namespace NClient.Abstractions.Resilience
     {
         public HttpResponse HttpResponse { get; }
         public MethodInvocation MethodInvocation { get; }
-        
+
         public ResponseContext(HttpResponse httpResponse, MethodInvocation methodInvocation)
         {
             HttpResponse = httpResponse;

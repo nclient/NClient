@@ -22,13 +22,13 @@ namespace NClient.Sandbox.Client
                 .BuildServiceProvider();
 
             var basePolicy = Policy<ResponseContext>.HandleResult(x =>
-            { 
+            {
                 if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.HttpResponse.StatusCode == HttpStatusCode.NotFound)
-                    return false; 
+                    return false;
                 return !x.HttpResponse.IsSuccessful;
             }).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
-                retryCount: 2, 
+                retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
             var fallbackPolicy = basePolicy.FallbackAsync(
                 fallbackValue: default(ResponseContext)!,
@@ -48,10 +48,10 @@ namespace NClient.Sandbox.Client
                 .WithResiliencePolicy(policy)
                 .WithLogging(clientLogger)
                 .Build();
-            
+
             var weatherForecast = await client.GetAsync(new WeatherForecastFilter { Id = 1, Date = null });
             programLogger.LogInformation($"Forecast summary: {weatherForecast.Summary}.");
-            
+
             var nonExistingWeatherForecast = await client.GetAsync(new WeatherForecastFilter { Id = 0, Date = null });
             programLogger.LogInformation($"Forecast not found.");
 

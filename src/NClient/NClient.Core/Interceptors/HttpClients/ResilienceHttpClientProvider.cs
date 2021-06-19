@@ -36,10 +36,10 @@ namespace NClient.Core.Interceptors.HttpClients
         public IResilienceHttpClient Create(IResiliencePolicyProvider? resiliencePolicyProvider)
         {
             return new ResilienceHttpClient(
-                _httpClientProvider, 
-                _serializerProvider, 
+                _httpClientProvider,
+                _serializerProvider,
                 _httpResponsePopulater,
-                resiliencePolicyProvider ?? _resiliencePolicyProvider, 
+                resiliencePolicyProvider ?? _resiliencePolicyProvider,
                 _logger);
         }
     }

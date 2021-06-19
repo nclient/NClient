@@ -14,7 +14,7 @@ namespace NClient.Sandbox.Client.ClientHandlers
         {
             _logger = logger;
         }
-        
+
         public Task<HttpRequest> HandleRequestAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
             return Task.FromResult(httpRequest);

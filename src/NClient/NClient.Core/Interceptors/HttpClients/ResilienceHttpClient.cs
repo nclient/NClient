@@ -62,7 +62,7 @@ namespace NClient.Core.Interceptors.HttpClients
                 _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", request.Id);
                 throw;
             }
-            
+
             var populatedResponse = _httpResponsePopulater.Populate(response, methodInvocation.ResultType);
             _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
             return new ResponseContext(populatedResponse, methodInvocation);

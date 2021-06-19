@@ -13,13 +13,13 @@ namespace NClient.Core.Handling
         private readonly ILogger<TClient>? _logger;
 
         public ClientHandlerDecorator(
-            IReadOnlyCollection<IClientHandler> clientHandlers, 
+            IReadOnlyCollection<IClientHandler> clientHandlers,
             ILogger<TClient>? logger)
         {
             _clientHandlers = clientHandlers;
             _logger = logger;
         }
-        
+
         public async Task<HttpRequest> HandleRequestAsync(
             HttpRequest httpRequest, MethodInvocation methodInvocation)
         {

@@ -9,7 +9,7 @@ namespace NClient.Abstractions.Invocation
         public MethodInfo MethodInfo { get; }
         public object[] MethodArguments { get; }
         public Type ResultType { get; }
-        
+
         public MethodInvocation(
             Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType)
         {

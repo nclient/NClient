@@ -10,7 +10,7 @@ namespace NClient.Core.Interceptors.Invocation
         public IResiliencePolicyProvider? ResiliencePolicyProvider { get; set; }
 
         public FullMethodInvocation(
-            Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType) 
+            Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType)
             : base(clientType, methodInfo, methodArguments, resultType)
         {
         }

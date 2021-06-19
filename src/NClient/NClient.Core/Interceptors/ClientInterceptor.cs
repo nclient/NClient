@@ -82,7 +82,7 @@ namespace NClient.Core.Interceptors
                 await _clientHandler
                     .HandleRequestAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
-                
+
                 var response = await _resilienceHttpClientProvider
                     .Create(fullMethodInvocation.ResiliencePolicyProvider)
                     .ExecuteAsync(request, fullMethodInvocation)
@@ -96,7 +96,7 @@ namespace NClient.Core.Interceptors
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                     return response;
                 }
-                
+
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return response.GetType().GetProperty("Value")?.GetValue(response)!;
             }
