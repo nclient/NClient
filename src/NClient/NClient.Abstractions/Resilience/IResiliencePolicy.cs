@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Invocation;
 
 namespace NClient.Abstractions.Resilience
 {
@@ -13,6 +14,6 @@ namespace NClient.Abstractions.Resilience
         /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
-        Task<HttpResponse> ExecuteAsync(Func<Task<HttpResponse>> action);
+        Task<HttpResponse> ExecuteAsync(Func<Task<(HttpResponse Response, MethodInvocation MethodInvocation)>> action);
     }
 }

@@ -38,7 +38,7 @@ namespace NClient
             return _optionalNClientFactoryBuilder.WithCustomSerializer(serializerProvider);
         }
 
-        public IOptionalNClientFactoryBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers, bool useDefaults = true)
+        public IOptionalNClientFactoryBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
         {
             return _optionalNClientFactoryBuilder.WithCustomHandlers(handlers);
         }

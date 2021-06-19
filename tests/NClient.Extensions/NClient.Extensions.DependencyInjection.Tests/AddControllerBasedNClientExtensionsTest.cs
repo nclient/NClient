@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Invocation;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
 using NUnit.Framework;
 using Polly;
@@ -67,7 +68,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClient, TestController>(
                 host: "http://localhost:5000", builder => builder
-                    .WithResiliencePolicy(Policy.NoOpAsync<HttpResponse>()));
+                    .WithResiliencePolicy(Policy.NoOpAsync<(HttpResponse Response, MethodInvocation MethodInvocation)>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();

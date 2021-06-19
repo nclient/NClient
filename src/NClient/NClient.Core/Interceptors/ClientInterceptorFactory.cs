@@ -93,7 +93,6 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
-                new HttpResponsePopulater(serializerProvider.Create()),
                 new ClientHandlerDecorator<TInterface>(clientHandlers, logger),
                 _guidProvider,
                 controllerType: null,
@@ -119,7 +118,6 @@ namespace NClient.Core.Interceptors
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,
-                new HttpResponsePopulater(serializerProvider.Create()),
                 new ClientHandlerDecorator<TInterface>(clientHandlers, logger),
                 _guidProvider,
                 controllerType: typeof(TController),
@@ -135,7 +133,8 @@ namespace NClient.Core.Interceptors
             return new ResilienceHttpClientProvider(
                 httpClientProvider,
                 serializerProvider,
-                resiliencePolicyProvider ?? new StubResiliencePolicyProvider(),
+                new HttpResponsePopulater(serializerProvider.Create()),
+                resiliencePolicyProvider ?? new DefaultResiliencePolicyProvider(),
                 logger);
         }
     }

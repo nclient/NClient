@@ -30,7 +30,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await _returnClient.AsResilient().Invoke(client => client.GetAsync(id), new StubResiliencePolicyProvider());
+            var result = await _returnClient.AsResilient().Invoke(client => client.GetAsync(id), new DefaultResiliencePolicyProvider());
 
             result.Should().BeEquivalentTo(entity);
         }
@@ -42,7 +42,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = _returnClient.AsResilient().Invoke(client => client.Get(id), new StubResiliencePolicyProvider());
+            var result = _returnClient.AsResilient().Invoke(client => client.Get(id), new DefaultResiliencePolicyProvider());
 
             result.Should().BeEquivalentTo(entity);
         }

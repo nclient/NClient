@@ -2,6 +2,7 @@
 using System.Text.Json;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
@@ -73,7 +74,7 @@ namespace NClient.Extensions
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static TBuilder WithResiliencePolicy<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
-            IAsyncPolicy<HttpResponse> asyncPolicy)
+            IAsyncPolicy<(HttpResponse Response, MethodInvocation MethodInvocation)> asyncPolicy)
             where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
             where TInterface : class
         {

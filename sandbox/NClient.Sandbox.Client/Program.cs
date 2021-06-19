@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Invocation;
 using NClient.Extensions;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.ProxyService.Facade;
@@ -20,16 +21,24 @@ namespace NClient.Sandbox.Client
             var serviceProvider = new ServiceCollection()
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
-            
-            var retryPolicy = Policy
-                .HandleResult<HttpResponse>(x =>
+
+            var basePolicy = Policy<(HttpResponse Response, MethodInvocation MethodInvocation)>
+                .HandleResult(x =>
                 {
-                    if (x.StatusCode == HttpStatusCode.NotFound)
+                    var (response, methodInvocation) = x;
+                    if (methodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) 
+                        && response.StatusCode == HttpStatusCode.NotFound)
                         return false;
-                    return !x.IsSuccessful;
+                    return !response.IsSuccessful;
                 })
-                .Or<Exception>()
+                .Or<Exception>();
+            var retryPolicy = basePolicy
                 .WaitAndRetryAsync(retryCount: 2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            var fallbackPolicy = basePolicy
+                .FallbackAsync(
+                    default((HttpResponse Response, MethodInvocation MethodInvocation)),
+                    x => throw (x.Exception ?? x.Result.Response.ErrorException!));
+            var policy = fallbackPolicy.WrapAsync(retryPolicy);
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
             var clientLogger = serviceProvider.GetRequiredService<ILogger<IWeatherForecastClient>>();
@@ -40,9 +49,8 @@ namespace NClient.Sandbox.Client
                 .WithCustomHandlers(new IClientHandler[]
                 {
                     new LoggingClientHandler(handlerLogger),
-                    new WeatherForecastClientHandler(),
-                }, useDefaults: false)
-                .WithResiliencePolicy(retryPolicy)
+                })
+                .WithResiliencePolicy(policy)
                 .WithLogging(clientLogger)
                 .Build();
             

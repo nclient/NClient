@@ -8,7 +8,6 @@ using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors.HttpClients;
-using NClient.Core.Interceptors.HttpResponsePopulation;
 using NClient.Core.Interceptors.Invocation;
 using NClient.Core.Interceptors.MethodBuilders;
 using NClient.Core.Interceptors.RequestBuilders;
@@ -25,7 +24,6 @@ namespace NClient.Core.Interceptors
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
-        private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IClientHandler _clientHandler;
         private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
@@ -38,7 +36,6 @@ namespace NClient.Core.Interceptors
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
-            IHttpResponsePopulater httpResponsePopulater,
             IClientHandler clientHandler,
             IGuidProvider guidProvider,
             Type? controllerType = null,
@@ -50,7 +47,6 @@ namespace NClient.Core.Interceptors
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
-            _httpResponsePopulater = httpResponsePopulater;
             _clientHandler = clientHandler;
             _guidProvider = guidProvider;
             _controllerType = controllerType;
@@ -79,31 +75,30 @@ namespace NClient.Core.Interceptors
             HttpResponse? httpResponse = null;
             try
             {
-                var fullMethodInvocationContext = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
-                var clientMethod = _methodBuilder.Build(fullMethodInvocationContext.ClientType, fullMethodInvocationContext.MethodInfo);
+                var fullMethodInvocation = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                var clientMethod = _methodBuilder.Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
-                var request = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocationContext.MethodArguments);
+                var request = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
                 await _clientHandler
-                    .HandleRequestAsync(request, fullMethodInvocationContext)
+                    .HandleRequestAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
                 
                 var response = await _resilienceHttpClientProvider
-                    .Create(fullMethodInvocationContext.ResiliencePolicyProvider)
-                    .ExecuteAsync(request)
+                    .Create(fullMethodInvocation.ResiliencePolicyProvider)
+                    .ExecuteAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
-                var populatedResponse = _httpResponsePopulater.Populate(response, resultType);
                 await _clientHandler
-                    .HandleResponseAsync(populatedResponse, fullMethodInvocationContext)
+                    .HandleResponseAsync(response, fullMethodInvocation)
                     .ConfigureAwait(false);
 
                 if (typeof(HttpResponse).IsAssignableFrom(resultType))
                 {
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                    return populatedResponse;
+                    return response;
                 }
                 
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                return populatedResponse.GetType().GetProperty("Value")?.GetValue(populatedResponse)!;
+                return response.GetType().GetProperty("Value")?.GetValue(response)!;
             }
             catch (ClientValidationException e)
             {
