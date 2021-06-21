@@ -7,10 +7,17 @@ using Polly;
 
 namespace NClient.Providers.Resilience.Polly
 {
-    internal class PollyResiliencePolicy : IResiliencePolicy
+    /// <summary>
+    /// The Polly based resilience policy.
+    /// </summary>
+    public class PollyResiliencePolicy : IResiliencePolicy
     {
         private readonly IAsyncPolicy<ResponseContext> _asyncPolicy;
 
+        /// <summary>
+        /// Creates the Polly based resilience policy.
+        /// </summary>
+        /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public PollyResiliencePolicy(
             IAsyncPolicy<ResponseContext> asyncPolicy)
         {

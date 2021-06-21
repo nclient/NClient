@@ -8,6 +8,7 @@ using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
+using NClient.Resilience;
 using Polly;
 
 // ReSharper disable once CheckNamespace
@@ -82,6 +83,34 @@ namespace NClient
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
             return clientBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
+        }
+
+        /// <summary>
+        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// </summary>
+        /// <param name="clientBuilder"></param>
+        public static TBuilder WithResiliencePolicyForSafeMethods<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
+
+            return clientBuilder.WithResiliencePolicy(new SafePollyMethodResiliencePolicyProvider());
+        }
+
+        /// <summary>
+        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
+        /// </summary>
+        /// <param name="clientBuilder"></param>
+        public static TBuilder WithResiliencePolicyForIdempotentMethods<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
+
+            return clientBuilder.WithResiliencePolicy(new IdempotentPollyMethodResiliencePolicyProvider());
         }
     }
 }
