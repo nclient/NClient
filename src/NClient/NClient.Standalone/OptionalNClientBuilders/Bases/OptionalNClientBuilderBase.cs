@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Handling;
@@ -7,6 +11,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.Core.Resilience;
 
 namespace NClient.OptionalNClientBuilders.Bases
 {
@@ -14,10 +19,12 @@ namespace NClient.OptionalNClientBuilders.Bases
         : IOptionalBuilderBase<TBuilder, TResult>
         where TBuilder : class, IOptionalBuilderBase<TBuilder, TResult>
     {
+        private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider> _specificResiliencePolicyProviders;
+        private IMethodResiliencePolicyProvider? _methodResiliencePolicyProvider;
+
         protected IHttpClientProvider HttpClientProvider;
         protected ISerializerProvider SerializerProvider;
         protected IReadOnlyCollection<IClientHandler> ClientHandlers;
-        protected IResiliencePolicyProvider? ResiliencePolicyProvider;
         protected ILoggerFactory? LoggerFactory;
         protected ILogger<TResult>? Logger;
 
@@ -25,6 +32,8 @@ namespace NClient.OptionalNClientBuilders.Bases
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
         {
+            _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider>();
+
             HttpClientProvider = httpClientProvider;
             SerializerProvider = serializerProvider;
             ClientHandlers = CreateClientHandlerCollection();
@@ -34,7 +43,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
 
-            HttpClientProvider = httpClientProvider;
+            Interlocked.Exchange(ref HttpClientProvider, httpClientProvider);
             return (this as TBuilder)!;
         }
 
@@ -42,7 +51,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
-            SerializerProvider = serializerProvider;
+            Interlocked.Exchange(ref SerializerProvider, serializerProvider);
             return (this as TBuilder)!;
         }
 
@@ -50,7 +59,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
 
-            ClientHandlers = CreateClientHandlerCollection(handlers);
+            Interlocked.Exchange(ref ClientHandlers, CreateClientHandlerCollection(handlers));
             return (this as TBuilder)!;
         }
 
@@ -58,7 +67,15 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
 
-            ResiliencePolicyProvider = resiliencePolicyProvider;
+            Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider(resiliencePolicyProvider));
+            return (this as TBuilder)!;
+        }
+
+        public TBuilder WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
+        {
+            Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
+
+            Interlocked.Exchange(ref _methodResiliencePolicyProvider, methodResiliencePolicyProvider);
             return (this as TBuilder)!;
         }
 
@@ -66,8 +83,8 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
 
-            LoggerFactory = loggerFactory;
-            Logger = loggerFactory.CreateLogger<TResult>();
+            Interlocked.Exchange(ref LoggerFactory, loggerFactory);
+            Interlocked.Exchange(ref Logger, loggerFactory.CreateLogger<TResult>());
             return (this as TBuilder)!;
         }
 
@@ -75,11 +92,30 @@ namespace NClient.OptionalNClientBuilders.Bases
         {
             Ensure.IsNotNull(logger, nameof(logger));
 
-            Logger = logger;
+            Interlocked.Exchange(ref Logger, logger);
             return (this as TBuilder)!;
         }
 
         public abstract TResult Build();
+
+        protected IMethodResiliencePolicyProvider GetOrCreateMethodResiliencePolicyProvider()
+        {
+            return _methodResiliencePolicyProvider is not null
+                ? new DefaultMethodResiliencePolicyProvider(
+                    _methodResiliencePolicyProvider,
+                    _specificResiliencePolicyProviders)
+                : new DefaultMethodResiliencePolicyProvider(
+                    new DefaultResiliencePolicyProvider(),
+                    _specificResiliencePolicyProviders);
+        }
+
+        protected void AddSpecificResiliencePolicyProvider<TInterface>(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        {
+            var func = methodSelector.Compile();
+            var methodInfo = func.Invoke(default!).Method;
+            _specificResiliencePolicyProviders[methodInfo] = resiliencePolicyProvider;
+        }
 
         private static IReadOnlyCollection<IClientHandler> CreateClientHandlerCollection(
             IReadOnlyCollection<IClientHandler>? customClientHandlers = null)

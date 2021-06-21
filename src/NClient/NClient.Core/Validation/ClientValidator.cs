@@ -40,7 +40,7 @@ namespace NClient.Core.Validation
                     new StubHttpClientProvider(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler() },
-                    new DefaultResiliencePolicyProvider());
+                    new DefaultMethodResiliencePolicyProvider(new DefaultResiliencePolicyProvider()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
             EnsureValidity(client);
@@ -56,7 +56,7 @@ namespace NClient.Core.Validation
                     new StubHttpClientProvider(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler() },
-                    new DefaultResiliencePolicyProvider());
+                    new DefaultMethodResiliencePolicyProvider(new DefaultResiliencePolicyProvider()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
             EnsureValidity(client);

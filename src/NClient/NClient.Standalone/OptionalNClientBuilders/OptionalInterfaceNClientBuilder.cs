@@ -1,8 +1,8 @@
 ﻿using System;
-using Castle.DynamicProxy;
+using System.Linq.Expressions;
 using NClient.Abstractions;
-using NClient.Abstractions.Clients;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.ClientGeneration;
 using NClient.Core.Interceptors;
@@ -39,10 +39,17 @@ namespace NClient.OptionalNClientBuilders
                 HttpClientProvider,
                 SerializerProvider,
                 ClientHandlers,
-                ResiliencePolicyProvider,
+                GetOrCreateMethodResiliencePolicyProvider(),
                 Logger);
 
             return _clientGenerator.CreateClient<TInterface>(interceptor);
+        }
+
+        public IOptionalNClientBuilder<TInterface> WithResiliencePolicy(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        {
+            AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
+            return this;
         }
     }
 }
