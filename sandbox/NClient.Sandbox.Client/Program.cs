@@ -30,9 +30,8 @@ namespace NClient.Sandbox.Client
                 retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
             var fallbackPolicy = basePolicy.FallbackAsync(
-                fallbackValue: default(ResponseContext)!,
+                fallbackValue: default!,
                 onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
-            var policy = fallbackPolicy.WrapAsync(retryPolicy);
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
             var clientLogger = serviceProvider.GetRequiredService<ILogger<IWeatherForecastClient>>();
@@ -44,8 +43,10 @@ namespace NClient.Sandbox.Client
                 {
                     new LoggingClientHandler(handlerLogger),
                 })
-                .WithResiliencePolicy(policy)
-                .WithResiliencePolicy(x => (Func<WeatherForecastDto, Task>)x.PostAsync, policy)
+                .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
+                .WithResiliencePolicy(
+                    methodSelector: x => (Func<WeatherForecastDto, Task>)x.PostAsync,
+                    asyncPolicy: fallbackPolicy)
                 .WithLogging(clientLogger)
                 .Build();
 

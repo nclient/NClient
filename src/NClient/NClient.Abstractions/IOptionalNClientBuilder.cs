@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Resilience;
 
@@ -13,7 +14,7 @@ namespace NClient.Abstractions
         /// </summary>
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
-        IOptionalNClientBuilder<TInterface> WithResiliencePolicy(Func<TInterface, Delegate> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
+        IOptionalNClientBuilder<TInterface> WithResiliencePolicy(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.

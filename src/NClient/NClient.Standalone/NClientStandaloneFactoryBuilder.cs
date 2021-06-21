@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Handling;
@@ -54,8 +55,8 @@ namespace NClient
             return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodResiliencePolicyProvider);
         }
 
-        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TClient>(
-            Func<TClient, Delegate> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
         {
             return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodSelector, resiliencePolicyProvider);
         }

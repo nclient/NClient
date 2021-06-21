@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace NClient.OptionalNClientBuilders.Bases
     {
         private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider> _specificResiliencePolicyProviders;
         private IMethodResiliencePolicyProvider? _methodResiliencePolicyProvider;
-        
+
         protected IHttpClientProvider HttpClientProvider;
         protected ISerializerProvider SerializerProvider;
         protected IReadOnlyCollection<IClientHandler> ClientHandlers;
@@ -32,6 +33,7 @@ namespace NClient.OptionalNClientBuilders.Bases
             ISerializerProvider serializerProvider)
         {
             _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider>();
+
             HttpClientProvider = httpClientProvider;
             SerializerProvider = serializerProvider;
             ClientHandlers = CreateClientHandlerCollection();
@@ -108,9 +110,11 @@ namespace NClient.OptionalNClientBuilders.Bases
         }
 
         protected void AddSpecificResiliencePolicyProvider<TInterface>(
-            Func<TInterface, Delegate> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
         {
-            _specificResiliencePolicyProviders[methodSelector.Method] = resiliencePolicyProvider;
+            var func = methodSelector.Compile();
+            var methodInfo = func.Invoke(default!).Method;
+            _specificResiliencePolicyProviders[methodInfo] = resiliencePolicyProvider;
         }
 
         private static IReadOnlyCollection<IClientHandler> CreateClientHandlerCollection(

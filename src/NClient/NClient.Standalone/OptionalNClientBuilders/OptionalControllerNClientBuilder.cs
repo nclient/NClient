@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
@@ -46,7 +47,7 @@ namespace NClient.OptionalNClientBuilders
         }
 
         public IOptionalNClientBuilder<TInterface> WithResiliencePolicy(
-            Func<TInterface, Delegate> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
         {
             AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
             return this;

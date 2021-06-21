@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
@@ -18,7 +19,7 @@ namespace NClient
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
             this IOptionalNClientFactoryBuilder clientBuilder,
-            Func<TInterface, Delegate> methodSelector, IAsyncPolicy<ResponseContext> asyncPolicy)
+            Expression<Func<TInterface, Delegate>> methodSelector, IAsyncPolicy<ResponseContext> asyncPolicy)
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
