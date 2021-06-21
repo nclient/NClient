@@ -36,6 +36,12 @@ namespace NClient.Abstractions
         TBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
 
         /// <summary>
+        /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
+        /// </summary>
+        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
+        TBuilder WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider);
+
+        /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>

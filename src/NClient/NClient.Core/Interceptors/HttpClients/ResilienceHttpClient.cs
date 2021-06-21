@@ -6,6 +6,7 @@ using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Interceptors.HttpResponsePopulation;
+using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -19,20 +20,20 @@ namespace NClient.Core.Interceptors.HttpClients
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
         private readonly IHttpResponsePopulater _httpResponsePopulater;
-        private readonly IResiliencePolicyProvider _resiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClient(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
             IHttpResponsePopulater httpResponsePopulater,
-            IResiliencePolicyProvider resiliencePolicyProvider,
+            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
             ILogger? logger)
         {
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
             _httpResponsePopulater = httpResponsePopulater;
-            _resiliencePolicyProvider = resiliencePolicyProvider;
+            _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
 
@@ -40,8 +41,8 @@ namespace NClient.Core.Interceptors.HttpClients
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
 
-            return await _resiliencePolicyProvider
-                .Create()
+            return await _methodResiliencePolicyProvider
+                .Create(methodInvocation.MethodInfo)
                 .ExecuteAsync(() => ExecuteAttemptAsync(request, methodInvocation))
                 .ConfigureAwait(false);
         }

@@ -45,6 +45,7 @@ namespace NClient.Sandbox.Client
                     new LoggingClientHandler(handlerLogger),
                 })
                 .WithResiliencePolicy(policy)
+                .WithResiliencePolicy(x => (Func<WeatherForecastDto, Task>)x.PostAsync, policy)
                 .WithLogging(clientLogger)
                 .Build();
 

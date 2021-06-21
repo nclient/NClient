@@ -3,6 +3,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Interceptors.HttpResponsePopulation;
+using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -16,20 +17,20 @@ namespace NClient.Core.Interceptors.HttpClients
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
         private readonly IHttpResponsePopulater _httpResponsePopulater;
-        private readonly IResiliencePolicyProvider _resiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClientProvider(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
             IHttpResponsePopulater httpResponsePopulater,
-            IResiliencePolicyProvider resiliencePolicyProvider,
+            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
             ILogger? logger = null)
         {
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
             _httpResponsePopulater = httpResponsePopulater;
-            _resiliencePolicyProvider = resiliencePolicyProvider;
+            _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
 
@@ -39,7 +40,9 @@ namespace NClient.Core.Interceptors.HttpClients
                 _httpClientProvider,
                 _serializerProvider,
                 _httpResponsePopulater,
-                resiliencePolicyProvider ?? _resiliencePolicyProvider,
+                resiliencePolicyProvider == null
+                    ? _methodResiliencePolicyProvider
+                    : new DefaultMethodResiliencePolicyProvider(resiliencePolicyProvider),
                 _logger);
         }
     }

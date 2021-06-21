@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions
 {
@@ -6,6 +8,13 @@ namespace NClient.Abstractions
         : IOptionalBuilderBase<IOptionalNClientBuilder<TInterface>, TInterface>
         where TInterface : class
     {
+        /// <summary>
+        /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
+        /// </summary>
+        /// <param name="methodSelector">The method to apply the policy to.</param>
+        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
+        IOptionalNClientBuilder<TInterface> WithResiliencePolicy(Func<TInterface, Delegate> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
+
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
         /// </summary>

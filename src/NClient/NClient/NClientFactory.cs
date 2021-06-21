@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Resilience;
+using NClient.Core.Resilience;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
@@ -21,7 +22,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -35,7 +36,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -48,7 +49,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(httpClient),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -60,10 +61,10 @@ namespace NClient
                 : new SystemSerializerProvider();
         }
 
-        private static PollyResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<ResponseContext>? resiliencePolicy)
+        private static DefaultMethodResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<ResponseContext>? resiliencePolicy)
         {
             return resiliencePolicy is not null
-                ? new PollyResiliencePolicyProvider(resiliencePolicy)
+                ? new DefaultMethodResiliencePolicyProvider(new PollyResiliencePolicyProvider(resiliencePolicy))
                 : null;
         }
     }
