@@ -89,5 +89,55 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
+
+        public IWireMockServer MockFlakyGetMethod(int id, BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+
+            api.Given(Request.Create().UsingAnyMethod())
+                .InScenario("Flaky scenario")
+                .WillSetStateTo("Second request", 1)
+                .RespondWith(Response.Create()
+                    .WithStatusCode(500));
+
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
+                    .WithParam("id", id.ToString())
+                    .UsingGet())
+                .InScenario("Flaky scenario")
+                .WhenStateIs("Second request")
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(entity));
+
+            return api;
+        }
+
+        public IWireMockServer MockFlakyPostMethod(BasicEntity entity)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+
+            api.Given(Request.Create().UsingAnyMethod())
+                .InScenario("Flaky scenario")
+                .WillSetStateTo("Second request", 1)
+                .RespondWith(Response.Create()
+                    .WithStatusCode(500));
+
+            api.Given(Request.Create()
+                    .WithPath("/api")
+                    .WithHeader("Accept", "application/json")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithBody(new JsonMatcher(entity))
+                    .UsingPost())
+                .InScenario("Flaky scenario")
+                .WhenStateIs("Second request")
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json"));
+
+            return api;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using NClient.Abstractions.Resilience;
 using NClient.Exceptions;
 using NClient.Providers.Resilience.Polly;
@@ -32,7 +33,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
 
             returnClient.Invoking(x => x.Get(1))
                 .Should()
-                .Throw<ClientRequestException>();
+                .ThrowExactly<ClientRequestException>();
         }
 
         [Test]
@@ -61,6 +62,70 @@ namespace NClient.Tests.InterfaceBasedClientTests
             returnClient.Invoking(x => x.Get(1))
                 .Should()
                 .NotThrow();
+        }
+
+        [Test]
+        public void WithResiliencePolicyForSafeMethods_GetRequestWithInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicyForSafeMethods(sleepDurationProvider: _ => 0.Seconds())
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
+                .Should()
+                .NotThrow();
+        }
+
+        [Test]
+        public void WithResiliencePolicyForSafeMethods_PostRequestWithInternalServerError_ThrowClientRequestException()
+        {
+            var entity = new BasicEntity { Id = 1 };
+            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicyForSafeMethods(sleepDurationProvider: _ => 0.Seconds())
+                .Build();
+
+            returnClient.Invoking(x => x.Post(entity))
+                .Should()
+                .ThrowExactly<ClientRequestException>();
+        }
+
+        [Test]
+        public void WithResiliencePolicyForIdempotentMethods_GetRequestWithInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicyForIdempotentMethods(sleepDurationProvider: _ => 0.Seconds())
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
+                .Should()
+                .NotThrow();
+        }
+
+        [Test]
+        public void WithResiliencePolicyForIdempotentMethods_PostRequestWithInternalServerError_ThrowClientRequestException()
+        {
+            var entity = new BasicEntity { Id = 1 };
+            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicyForIdempotentMethods(sleepDurationProvider: _ => 0.Seconds())
+                .Build();
+
+            returnClient.Invoking(x => x.Post(entity))
+                .Should()
+                .ThrowExactly<ClientRequestException>();
         }
     }
 }

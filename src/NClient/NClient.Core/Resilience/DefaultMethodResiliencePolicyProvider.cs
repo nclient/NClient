@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NClient.Abstractions.Resilience;
+using NClient.Core.Helpers;
 
 namespace NClient.Core.Resilience
 {
@@ -23,7 +25,12 @@ namespace NClient.Core.Resilience
             IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider>? specificResiliencePolicyProviders = null)
         {
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
-            _resiliencePolicyProviders = specificResiliencePolicyProviders ?? new Dictionary<MethodInfo, IResiliencePolicyProvider>();
+            _resiliencePolicyProviders = specificResiliencePolicyProviders is null
+                ? new Dictionary<MethodInfo, IResiliencePolicyProvider>(
+                    new MethodInfoEqualityComparer())
+                : new Dictionary<MethodInfo, IResiliencePolicyProvider>(
+                    specificResiliencePolicyProviders.ToDictionary(x => x.Key, x => x.Value),
+                    new MethodInfoEqualityComparer());
         }
 
         public IResiliencePolicy Create(MethodInfo methodInfo)

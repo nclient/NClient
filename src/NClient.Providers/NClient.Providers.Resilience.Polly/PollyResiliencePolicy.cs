@@ -7,10 +7,17 @@ using Polly;
 
 namespace NClient.Providers.Resilience.Polly
 {
-    internal class PollyResiliencePolicy : IResiliencePolicy
+    /// <summary>
+    /// The Polly based resilience policy.
+    /// </summary>
+    public class PollyResiliencePolicy : IResiliencePolicy
     {
         private readonly IAsyncPolicy<ResponseContext> _asyncPolicy;
 
+        /// <summary>
+        /// Creates the Polly based resilience policy.
+        /// </summary>
+        /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public PollyResiliencePolicy(
             IAsyncPolicy<ResponseContext> asyncPolicy)
         {
@@ -24,8 +31,8 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(action, nameof(action));
 
-            var policyResult = await _asyncPolicy.ExecuteAndCaptureAsync(action).ConfigureAwait(false);
-            return policyResult.Result.HttpResponse;
+            var responseContext = await _asyncPolicy.ExecuteAsync(action).ConfigureAwait(false);
+            return responseContext.HttpResponse;
         }
     }
 }
