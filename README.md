@@ -85,9 +85,7 @@ The annotation in the interface instead of the controller allows you to put the 
 Therefore, the client that will use this interface will not depend on the service.
 #### Step 4 (optional): Create interface for client
 ```C#
-public interface IWeatherForecastClient : IWeatherForecastController, INClient
-{
-}
+public interface IWeatherForecastClient : IWeatherForecastController, INClient { }
 
 [Api, Path("[controller]")]
 public interface IWeatherForecastController
@@ -227,8 +225,7 @@ The base URL route for API can be set by `PathAttribute`.
 #### Versioning attributes
 There are two attributes for API versioning: `VersionAttribute` and `ToVersionAttribute`. They are the equivalents of `ApiVersionAttribute` and `MapToApiVersionAttribute` (see [ASP.NET API Versioning](https://github.com/microsoft/aspnet-api-versioning)).
 ```C#
-[Version("1.0"), Version("2.0")]
-[Path("api/v{version:apiVersion}")]
+[Version("1.0"), Version("2.0"), Path("api/v{version:apiVersion}")]
 public interface IMyController 
 {
     [GetMethod] Entity[] Get(int id);                      // Available in versions 1.0 and 2.0
@@ -237,8 +234,7 @@ public interface IMyController
 ```
 You can add `UseVersionAttribute` to set the API version for a client:
 ```C#
-[UseVersion("1.0")]
-[Path("api/v{version:apiVersion}")]
+[UseVersion("1.0"), Path("api/v{version:apiVersion}")]
 public interface IMyClient
 { 
     [GetMethod] Entity[] Get(int id);                       // Uses version 1.0
@@ -325,14 +321,10 @@ To execute a request to the web-service asynchronously, you should define the re
 ```C#
 public interface IMyClient : INClient
 {
-    [GetMethod]
-    Entity Get(int id);             // Sync call
-    [GetMethod]
-    Task<Entity> GetAsync(int id);  // Async call
-    [PostMethod]
-    void Post(Entity entity);       // Sync call
-    [PostMethod]
-    Task PostAsync(Entity entity);  // Async call
+    [GetMethod] Entity Get(int id);              // Sync call
+    [GetMethod] Task<Entity> GetAsync(int id);   // Async call
+    [PostMethod] void Post(Entity entity);       // Sync call
+    [PostMethod] Task PostAsync(Entity entity);  // Async call
 }
 ```
 
@@ -343,8 +335,7 @@ You can get the full HTTP response, not just the body. To do this, the client in
 ```C#
 public interface IMyClient : INClient
 {
-    [GetMethod]
-    Task<Entity> GetAsync(int id);
+    [GetMethod] Task<Entity> GetAsync(int id);
 }
 ...
 HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.GetAsync(id: 1));
@@ -353,10 +344,8 @@ If your interface is used only as a client and you want to always get an HTTP re
 ```C#
 public interface IMyClient
 {
-    [GetMethod]
-    Task<HttpResponse<Entity>> GetAsync(int id);
-    [PostMethod]
-    Task<HttpResponse> PostAsync(Entity entity);
+    [GetMethod] Task<HttpResponse<Entity>> GetAsync(int id);
+    [PostMethod] Task<HttpResponse> PostAsync(Entity entity);
 }
 ...
 HttpResponse<Entity> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
@@ -366,10 +355,8 @@ You can also specify the type of expected error that is returned with failed HTT
 ```C#
 public interface IMyClient
 {
-    [GetMethod]
-    Task<HttpResponseWithError<Entity, Error>> GetAsync(int id);
-    [PostMethod]
-    Task<HttpResponseWithError<Error>> PostAsync(Entity entity);
+    [GetMethod] Task<HttpResponseWithError<Entity, Error>> GetAsync(int id);
+    [PostMethod] Task<HttpResponseWithError<Error>> PostAsync(Entity entity);
 }
 ...
 HttpResponseWithError<Entity, Error> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
