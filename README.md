@@ -29,6 +29,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
   - [Resilience](#features-resilience)
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
+  - [Handling](#features-handling)
   - [System.Net.Http](#features-system-httpclient)
 - [Providers](#providers) 
   - [RestSharp](#providers-restsharp)
@@ -101,7 +102,7 @@ This should be done if you want your client type not to contain "Сontroller" in
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
-    // ...
+    ...
     services.AddNClientControllers();
 }
 ```
@@ -337,6 +338,7 @@ public interface IMyClient : INClient
 {
     [GetMethod] Task<Entity> GetAsync(int id);
 }
+
 ...
 HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.GetAsync(id: 1));
 ```
@@ -347,6 +349,7 @@ public interface IMyClient
     [GetMethod] Task<HttpResponse<Entity>> GetAsync(int id);
     [PostMethod] Task<HttpResponse> PostAsync(Entity entity);
 }
+
 ...
 HttpResponse<Entity> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
 Entity entity = response.EnsureSuccess().Value;
@@ -358,6 +361,7 @@ public interface IMyClient
     [GetMethod] Task<HttpResponseWithError<Entity, Error>> GetAsync(int id);
     [PostMethod] Task<HttpResponseWithError<Error>> PostAsync(Entity entity);
 }
+
 ...
 HttpResponseWithError<Entity, Error> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
 Error? error = response.Error;
@@ -371,7 +375,7 @@ To use these exceptions you need to add NClient controllers in ASP.NET startup a
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
-    // ...
+    ...
     services.AddNClientControllers().WithResponseExceptions();
 }
 ```
@@ -379,7 +383,7 @@ After that, you can use exceptions in methods of your NClient controllers:
 ```C#
 public Entity[] Get()
 {
-    // ...
+    ...
     throw new HttpResponseException(HttpStatusCode.BadRequest, new { Error = "Error message." });
 }
 ```
@@ -475,6 +479,36 @@ var serviceProvider = new ServiceCollection()
     .AddLogging()
     .AddNClientFactory()
     .BuildServiceProvider();
+```
+
+<a name="features-handling"/>
+
+## Handling
+Create your own implementation of the `IClientHandler` abstraction to provide a custom handling functionality for HTTP requests and responses. For example you can implement authentication:
+```C#
+public class AuthHandler : IClientHandler
+{
+    private readonly IConfiguration _configuration;
+    
+    public AuthHandler(IConfiguration configuration) 
+        => _configuration = configuration;
+
+    public Task<HttpRequest> HandleRequestAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
+    {
+        httpRequest.AddHeader(name: "Authorization", value: _configuration["token"]);
+        return Task.FromResult(httpRequest);
+    }
+
+    public Task<HttpResponse> HandleResponseAsync(HttpResponse httpResponse, MethodInvocation methodInvocation) 
+        => Task.FromResult(httpResponse);
+}
+
+...
+IConfiguration configuration = ...;
+IMyClient client = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithCustomHandlers(new IClientHandler[] { new AuthHandler(configuration) })
+    .Build();
 ```
 
 <a name="features-system-httpclient"/> 
