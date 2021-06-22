@@ -428,25 +428,53 @@ IMyClient myClient = NClientProvider
 <a name="features-resilience"/> 
 
 ## Resilience
-To achieve better resilience, you can create a resilience policy using `Polly` library:
+By default, a request is executed once without retries. If the request ended with an unsuccessful HTTP status code, an exception will be thrown. You can change this logic to achieve better resilience - create a resilience policy using `Polly` library:
 ```C#
-var policy = Policy
-    .HandleResult<HttpResponse>(x => !x.IsSuccessful)
-    .Or<Exception>()
-    .WaitAndRetryAsync(maxRetryAttempts: 3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+var basePolicy = Policy<ResponseContext>.HandleResult(x => !x.HttpResponse.IsSuccessful).Or<Exception>();
+var retryPolicy = basePolicy.WaitAndRetryAsync(
+    retryCount: 2,
+    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+var fallbackPolicy = basePolicy.FallbackAsync(
+    fallbackValue: default!,
+    onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
 
 IMyClient myClient = NClientProvider
     .Use<IMyClient>(host: "http://localhost:8080")
-    .WithResiliencePolicy(policy)
+    .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
     .Build();
 ```
 You can also create your own implementation of `IResiliencePolicyProvider` and pass it to `WithResiliencePolicy` method.  
-To set specific resilience policy for a method, the client interface must inherit `INClient` interface:
+### Provided policies
+Use the `WithResiliencePolicyForSafeMethods` method to retry requests for safe methods (GET, HEAD, OPTIONS):
+```C#
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithResiliencePolicyForSafeMethods(retryCount: 4, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+    .Build();
+```
+The parameters `retryCount` and `sleepDurationProvider` are optional. By default, 3 attempts are used with a quadratic increase in the delay between attempts.  
+To use retries for all methods except POST, use the `WithResiliencePolicyForIdempotentMethods` method.
+### Specific policy for a method
+Set specific resilience policy for a method using the `WithResiliencePolicy` method overload:
+```C#
+var nonIdempotentMethodPolicy = ...;
+
+IMyClient myClient = NClientProvider
+    .Use<IMyClient>(host: "http://localhost:8080")
+    .WithResiliencePolicy(
+        methodSelector: x => (Func<Entity, Task>)x.PostAsync,
+        asyncPolicy: nonIdempotentMethodPolicy)
+    .Build();
+```
+Or create your own implementation of the `IMethodResiliencePolicyProvider` abstraction and pass its instance to the `WithResiliencePolicy` method.
+### Policy for a created client
+Create or change a policy for an already created client using the `Invoke` method:
 ```C#
 public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
 ...
 await myClient.AsResilient().Invoke(x => x.PostAsync(id), new MyResiliencePolicyProvider());
 ```
+Please note, the client interface must inherit `INClient` interface.
 
 <a name="features-logging"/> 
 
