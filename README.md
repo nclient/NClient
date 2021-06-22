@@ -11,7 +11,8 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 
 ## Table of Contents
 - [Why use NClient?](#why)  
-- [How to install?](#install)  
+- [How to install?](#install) 
+- [Requirements](#requirements) 
 - [How to use?](#usage)  
   - [Usage with ASP.NET Core](#usage-aspnet)  
   - [Usage with non ASP.NET web service](#usage-non-aspnet) 
@@ -48,6 +49,11 @@ By the way, you can [contribute](#contributing) to the NClient, not just use it 
 
 ## How to install?
 The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget. To choose which package you need, see below in [NuGet Packages](#nuget) section.
+
+<a name="requirements" />
+
+## Requirements
+Use of the NClient library requires .NET Standard 2.0 or higher. The NClient controllers can be used with ASP.NET Core and .NET Core 3.1 target or higher.
 
 <a name="usage" />  
 
