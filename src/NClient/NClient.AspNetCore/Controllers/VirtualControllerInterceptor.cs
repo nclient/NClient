@@ -21,7 +21,7 @@ namespace NClient.AspNetCore.Controllers
             {
                 var proxyController = invocation.InvocationTarget;
                 controllerBase.ControllerContext = (ControllerContext)proxyController
-                    .GetType().GetProperty(nameof(controllerBase.ControllerContext))!.GetValue(proxyController);
+                    .GetType().GetProperty(nameof(controllerBase.ControllerContext))!.GetValue(proxyController)!;
             }
 
             var methodName = invocation.Method.Name;

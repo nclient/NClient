@@ -9,6 +9,8 @@ namespace NClient.Providers.Serialization.Newtonsoft
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
+        public string ContentType { get; } = "application/json";
+
         public NewtonsoftSerializer(JsonSerializerSettings jsonSerializerSettings)
         {
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));

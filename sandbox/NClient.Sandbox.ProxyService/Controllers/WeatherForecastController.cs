@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NClient.Annotations;
 using NClient.AspNetCore.Exceptions;
 using NClient.Sandbox.ProxyService.Clients;
 using NClient.Sandbox.ProxyService.Facade;
@@ -29,6 +28,8 @@ namespace NClient.Sandbox.ProxyService.Controllers
         {
             if (weatherForecastFilter.Id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (weatherForecastFilter.Id == 0)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());

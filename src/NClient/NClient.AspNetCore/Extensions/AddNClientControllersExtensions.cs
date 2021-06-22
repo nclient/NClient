@@ -17,6 +17,8 @@ using NClient.AspNetCore.Mappers;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 
+#pragma warning disable 618
+
 namespace NClient.AspNetCore.Extensions
 {
     public static class AddNClientControllersExtensions

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
+using NClient.Core.Resilience;
 using NClient.Extensions;
 
 namespace NClient
@@ -16,7 +19,7 @@ namespace NClient
     {
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IResiliencePolicyProvider? _resiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider? _methodResiliencePolicyProvider;
         private readonly ILoggerFactory? _loggerFactory;
 
         /// <summary>
@@ -24,12 +27,28 @@ namespace NClient
         /// </summary>
         /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
-        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> instances.</param>
+        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         public NClientStandaloneFactory(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
             IResiliencePolicyProvider? resiliencePolicyProvider = null,
+            ILoggerFactory? loggerFactory = null)
+            : this(httpClientProvider, serializerProvider, methodResiliencePolicyProvider: GetOrDefault(resiliencePolicyProvider), loggerFactory)
+        {
+        }
+
+        /// <summary>
+        /// Creates the client factory with custom providers.
+        /// </summary>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
+        /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
+        public NClientStandaloneFactory(
+            IHttpClientProvider httpClientProvider,
+            ISerializerProvider serializerProvider,
+            IMethodResiliencePolicyProvider? methodResiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
@@ -37,7 +56,7 @@ namespace NClient
 
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
-            _resiliencePolicyProvider = resiliencePolicyProvider;
+            _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _loggerFactory = loggerFactory;
         }
 
@@ -47,7 +66,7 @@ namespace NClient
 
             return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface>(host)
-                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetResiliencePolicy(_methodResiliencePolicyProvider)
                 .TrySetLogging(_loggerFactory)
                 .Build();
         }
@@ -61,9 +80,16 @@ namespace NClient
 
             return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface, TController>(host)
-                .TrySetResiliencePolicy(_resiliencePolicyProvider)
+                .TrySetResiliencePolicy(_methodResiliencePolicyProvider)
                 .TrySetLogging(_loggerFactory)
                 .Build();
+        }
+
+        private static DefaultMethodResiliencePolicyProvider? GetOrDefault(IResiliencePolicyProvider? resiliencePolicyProvider)
+        {
+            return resiliencePolicyProvider is not null
+                ? new DefaultMethodResiliencePolicyProvider(resiliencePolicyProvider)
+                : null;
         }
     }
 }

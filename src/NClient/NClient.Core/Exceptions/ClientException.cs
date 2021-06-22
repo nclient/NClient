@@ -1,28 +1,41 @@
 ﻿using System;
+using System.Reflection;
 using NClient.Abstractions.Exceptions;
-using NClient.Core.MethodBuilders.Models;
 
 namespace NClient.Core.Exceptions
 {
+    /// <summary>
+    /// Represents exceptions to return information about an client-side errors.
+    /// </summary>
     public abstract class ClientException : NClientException
     {
-        public Method Method { get; set; } = null!;
+        /// <summary>
+        /// The type of client interface.
+        /// </summary>
+        public Type InterfaceType { get; set; } = null!;
+
+        /// <summary>
+        /// The method of client.
+        /// </summary>
+        public MethodInfo MethodInfo { get; set; } = null!;
 
         public ClientException(string message)
             : base(message)
         {
         }
 
-        public ClientException(string message, Method method)
+        public ClientException(string message, Type interfaceType, MethodInfo methodInfo)
             : base(message)
         {
-            Method = method;
+            InterfaceType = interfaceType;
+            MethodInfo = methodInfo;
         }
 
-        protected ClientException(string message, Method method, Exception innerException)
+        protected ClientException(string message, Type interfaceType, MethodInfo methodInfo, Exception innerException)
             : base(message, innerException)
         {
-            Method = method;
+            InterfaceType = interfaceType;
+            MethodInfo = methodInfo;
         }
     }
 }

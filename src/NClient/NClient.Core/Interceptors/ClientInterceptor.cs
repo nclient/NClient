@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
-using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.HttpClients;
-using NClient.Core.Interceptors.ClientInvocations;
-using NClient.Core.MethodBuilders;
-using NClient.Core.MethodBuilders.Models;
-using NClient.Core.RequestBuilders;
+using NClient.Core.Interceptors.HttpClients;
+using NClient.Core.Interceptors.Invocation;
+using NClient.Core.Interceptors.MethodBuilders;
+using NClient.Core.Interceptors.RequestBuilders;
+using NClient.Exceptions;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
 namespace NClient.Core.Interceptors
@@ -22,10 +20,11 @@ namespace NClient.Core.Interceptors
     {
         private readonly Uri _host;
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
-        private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IFullMethodInvocationProvider _fullMethodInvocationProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
+        private readonly IClientHandler _clientHandler;
         private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
@@ -33,20 +32,22 @@ namespace NClient.Core.Interceptors
         public ClientInterceptor(
             Uri host,
             IResilienceHttpClientProvider resilienceHttpClientProvider,
-            IClientInvocationProvider clientInvocationProvider,
+            IFullMethodInvocationProvider fullMethodInvocationProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
+            IClientHandler clientHandler,
             IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
             _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
-            _clientInvocationProvider = clientInvocationProvider;
+            _fullMethodInvocationProvider = fullMethodInvocationProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
+            _clientHandler = clientHandler;
             _guidProvider = guidProvider;
             _controllerType = controllerType;
             _logger = logger;
@@ -55,99 +56,68 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            var requestId = _guidProvider.Create();
-            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
-            await InvokeWithLoggingExceptionsAsync(async (reqId, inv, method) =>
-            {
-                return (await ProcessInvocationAsync<HttpResponse>(reqId, inv, method).ConfigureAwait(false))
-                    .EnsureSuccess();
-            }, requestId, clientInvocation, clientMethod).ConfigureAwait(false);
+            await ProcessInvocationAsync(invocation, resultType: typeof(void))
+                .ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            var requestId = _guidProvider.Create();
-            var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-            var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
-            return await InvokeWithLoggingExceptionsAsync(ProcessInvocationAsync<TResult>, requestId, clientInvocation, clientMethod).ConfigureAwait(false);
+            return (TResult)await ProcessInvocationAsync(invocation, resultType: typeof(TResult))
+                .ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(Guid requestId, ClientInvocation clientInvocation, Method method)
+        private async Task<object> ProcessInvocationAsync(IInvocation invocation, Type resultType)
         {
+            var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
-            var request = _requestBuilder.Build(requestId, _host, method, clientInvocation.MethodArguments);
-            var result = await ExecuteRequestAsync<TResult>(request, clientInvocation.ResiliencePolicyProvider)
-                .ConfigureAwait(false);
-
-            _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-            return result;
-        }
-
-        private async Task<TResult> ExecuteRequestAsync<TResult>(HttpRequest request, IResiliencePolicyProvider? resiliencePolicyProvider)
-        {
-            var (bodyType, errorType) = GetBodyAndErrorType<TResult>();
-
-            var response = await _resilienceHttpClientProvider
-                .Create(resiliencePolicyProvider)
-                .ExecuteAsync(request, bodyType, errorType)
-                .ConfigureAwait(false);
-
-            if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
-                return (TResult)(object)response;
-
-            response.EnsureSuccess();
-            return (TResult)response.GetType().GetProperty("Value")!.GetValue(response);
-        }
-
-        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType<TResult>()
-        {
-            var resultType = typeof(TResult);
-
-            if (resultType == typeof(HttpResponse))
-                return (null, null);
-
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<>)))
-                return (null, resultType.GetGenericArguments().Single());
-
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponse<>)))
-                return (resultType.GetGenericArguments().Single(), null);
-
-            if (IsAssignableFromGeneric<TResult>(typeof(HttpResponseWithError<,>)))
-                return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
-
-            return (resultType, null);
-        }
-
-        private static bool IsAssignableFromGeneric<TSource>(Type destType)
-        {
-            return typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
-        }
-
-        private async Task<TResult> InvokeWithLoggingExceptionsAsync<TResult>(
-            Func<Guid, ClientInvocation, Method, Task<TResult>> processInvocation, Guid requestId, ClientInvocation clientInvocation, Method method)
-        {
+            HttpResponse? httpResponse = null;
             try
             {
-                return await processInvocation(requestId, clientInvocation, method).ConfigureAwait(false);
+                var fullMethodInvocation = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                var clientMethod = _methodBuilder.Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
+
+                var request = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
+                await _clientHandler
+                    .HandleRequestAsync(request, fullMethodInvocation)
+                    .ConfigureAwait(false);
+
+                var response = await _resilienceHttpClientProvider
+                    .Create(fullMethodInvocation.ResiliencePolicyProvider)
+                    .ExecuteAsync(request, fullMethodInvocation)
+                    .ConfigureAwait(false);
+                await _clientHandler
+                    .HandleResponseAsync(response, fullMethodInvocation)
+                    .ConfigureAwait(false);
+
+                if (typeof(HttpResponse).IsAssignableFrom(resultType))
+                {
+                    _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
+                    return response;
+                }
+
+                _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
+                return response.GetType().GetProperty("Value")?.GetValue(response)!;
             }
             catch (ClientValidationException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                e.Method = method;
+                e.InterfaceType = typeof(T);
+                e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (ClientHttpRequestException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(method, e);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(T), invocation.Method, e);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapException(method, e);
+                if (httpResponse is not null)
+                    throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, httpResponse, e);
+                throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, e);
             }
         }
     }

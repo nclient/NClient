@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
 using NClient.AspNetCore.Controllers.Models;
+using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 
@@ -44,7 +44,19 @@ namespace NClient.AspNetCore.Controllers
 
             foreach (var nclientController in nclientControllers)
             {
-                yield return Create(dynamicModule, nclientController);
+                VirtualControllerInfo virtualController;
+                try
+                {
+                    virtualController = Create(dynamicModule, nclientController);
+                }
+                catch (ControllerException e)
+                {
+                    e.ControllerType = nclientController.ControllerType;
+                    e.InterfaceType = nclientController.InterfaceType;
+                    throw;
+                }
+
+                yield return virtualController;
             }
         }
 
@@ -75,7 +87,7 @@ namespace NClient.AspNetCore.Controllers
                 }
             }
 
-            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo(), nclientController.ControllerType);
+            return new VirtualControllerInfo(typeBuilder.CreateTypeInfo()!, nclientController.ControllerType);
         }
 
         private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
@@ -84,8 +96,8 @@ namespace NClient.AspNetCore.Controllers
             return attributes
                 .Select(x =>
                 {
-                    if (x.GetType().Assembly.FullName.StartsWith("Microsoft.AspNetCore"))
-                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName);
+                    if (x.GetType().Assembly.FullName!.StartsWith("Microsoft.AspNetCore"))
+                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName!);
                     return _attributeMapper.TryMap(x);
                 })
                 .Where(x => x is not null)

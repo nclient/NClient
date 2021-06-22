@@ -32,7 +32,7 @@ namespace NClient.AspNetCore.Binding
                 var (objectName, memberPath) = _objectMemberManager.ParseNextPath(routeToken.Key);
                 if (!objectName.Equals(bindingContext.ModelName) && !objectName.Equals(bindingContext.OriginalModelName))
                     throw _controllerValidationExceptionFactory.ModelNotFoundForRouteTemplateToken(routeToken.Key);
-                _objectMemberManager.SetValue(model, (string)routeToken.Value, memberPath!, memberNameSelector);
+                _objectMemberManager.SetValue(model, (string)routeToken.Value!, memberPath!, memberNameSelector);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Serialization;
 using RestSharp;
 
 namespace NClient.Providers.HttpClient.RestSharp.Builders
@@ -11,6 +12,13 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 
     internal class RestRequestBuilder : IRestRequestBuilder
     {
+        private readonly ISerializer _serializer;
+
+        public RestRequestBuilder(ISerializer serializer)
+        {
+            _serializer = serializer;
+        }
+
         public IRestRequest Build(HttpRequest request)
         {
             Enum.TryParse(request.Method.ToString(), out Method method);
@@ -28,7 +36,8 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 
             if (request.Body is not null)
             {
-                restRequest.AddJsonBody(request.Body);
+                var body = _serializer.Serialize(request.Body);
+                restRequest.AddParameter(_serializer.ContentType, body, ParameterType.RequestBody);
             }
 
             return restRequest;

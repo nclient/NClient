@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
@@ -36,9 +40,25 @@ namespace NClient
             return _optionalNClientFactoryBuilder.WithCustomSerializer(serializerProvider);
         }
 
+        public IOptionalNClientFactoryBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
+        {
+            return _optionalNClientFactoryBuilder.WithCustomHandlers(handlers);
+        }
+
         public IOptionalNClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             return _optionalNClientFactoryBuilder.WithResiliencePolicy(resiliencePolicyProvider);
+        }
+
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
+        {
+            return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodResiliencePolicyProvider);
+        }
+
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        {
+            return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodSelector, resiliencePolicyProvider);
         }
 
         public IOptionalNClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
