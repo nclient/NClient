@@ -57,7 +57,7 @@ To generate a client, you just need to create an interface describing available 
 <a name="usage-aspnet" />
 
 ### Usage with ASP.NET Core
-If you want to generate a client for a ASP.NET web service, you need to extract an interface for your controller and annotate it with attributes from `NClient.Annotations`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
+If you want to generate a client for a ASP.NET web service, you need to extract an interface for your controller and annotate it with attributes from the `NClient.Annotations`. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
 #### Step 1: Install `NClient.AspNetCore` on server-side
 ```
 dotnet add package NClient.AspNetCore
@@ -106,7 +106,7 @@ public void ConfigureServices(IServiceCollection services)
     services.AddNClientControllers();
 }
 ```
-`AddNClientControllers` method can be used in combination with `AddControllers`.
+The `AddNClientControllers` method can be used in combination with the `AddControllers`.
 #### Step 6: Install `NClient` on client-side
 ```
 dotnet add package NClient
@@ -117,7 +117,7 @@ IWeatherForecastController client = NClientProvider
     .Use<IWeatherForecastController>(host: "http://localhost:8080")
     .Build();
 ```
-If you decide to follow the 4th step, use `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
+If you decide to follow the 4th step, use the `IWeatherForecastClient` interface instead of `IWeatherForecastController`.
 #### Step 8: Send an http request
 ```C#
 // Equivalent to the following request: 
@@ -181,7 +181,7 @@ IMyClient myClient = NClientProvider
     .Build();
 ```
 #### NClientBuilder
-Option with creating a builder instance. `NClientBuilder` implements `INClientBuilder` interface, so it is suitable for dependency injection.
+Option with creating a builder instance. The `NClientBuilder` class implements the `INClientBuilder` interface, so it is suitable for dependency injection.
 ```C#
 IMyClient myClient = new NClientBuilder()
     .Use<TInterface, TController>(host: "http://localhost:8080")
@@ -211,15 +211,15 @@ var clientFactory = new NClientFactoryBuilder()
 The client and controller interfaces are annotated with attributes. The following attributes can be used:
 
 #### Base attributes
-A client interface can be annotated with `Facade` attribute if no other NClient attributes are used in the client interface. It is needed in the internal logic of the library to find the client interfaces.
+A client interface can be annotated with the `FacadeAttribute` if no other NClient attributes are used in the client interface. It is needed in the internal logic of the library to find the client interfaces.
 ```C#
 [Facade] public interface IMyClient { ... }
 ```
-`Api` attribute is an equivalent of `ApiControllerAttribute` from ASP.NET Core.
+The `Api` attribute is an equivalent of the `ApiControllerAttribute` from ASP.NET Core.
 ```C#
 [Api] public interface IMyController { ... }
 ```
-The base URL route for API can be set by `PathAttribute`.
+The base URL route for API can be set by the `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
@@ -242,7 +242,7 @@ public interface IMyClient
     [DeleteMethod, UseVersion("2.0")] void Delete(int id);  // Uses version 2.0
 }
 ```
-`UseVersionAttribute` can be used together with the attributes for API versioning, for example:
+The `UseVersionAttribute` can be used together with the attributes for API versioning, for example:
 ```C#
 [UseVersion("1.0")] public interface IMyClient : IMyController { } 
 ```
@@ -271,12 +271,12 @@ public class Entity { [QueryParam(Name = "id")] public int Id }
 ```
 The same effect will occur if you use the `FromQueryAttribute` from ASP.NET Core.
 
-The names of the properties of custom objects that are passed in the request body can be changed using `JsonPropertyNameAttribute`.
+The names of the properties of custom objects that are passed in the request body can be changed using the `JsonPropertyNameAttribute`.
 ```C#
 public class Entity { [JsonPropertyName("id")] public int Id }
 ```
 #### Static headers
-Use `HeaderAttribute` attribute to add a static header. Static headers can be added for all methods:
+Use the `HeaderAttribute` attribute to add a static header. Static headers can be added for all methods:
 ```C#
 [Header(Name: "Common-Header", Value: "value")] public interface IMyClient { ... }
 ```
@@ -285,7 +285,7 @@ or for a specific method:
 public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value: "value")] Entity[] Get(); }
 ```
 #### Response type
-`ResponseAttribute` specifies the type of the value and status code returned by the method. This is the equivalent of [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
+`ResponseAttribute` specifies the type of the value and status code returned by the method. This is the equivalent of the [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
 ```C#
 public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
 ```
@@ -332,7 +332,7 @@ public interface IMyClient : INClient
 <a name="features-response"/> 
 
 ## HTTP response
-You can get the full HTTP response, not just the body. To do this, the client interface must inherit `INClient` interface.
+You can get the full HTTP response, not just the body. To do this, the client interface must inherit the `INClient` interface.
 ```C#
 public interface IMyClient : INClient
 {
@@ -342,7 +342,7 @@ public interface IMyClient : INClient
 ...
 HttpResponse<Entity> response = await myClient.AsHttp().GetHttpResponse(x => x.GetAsync(id: 1));
 ```
-If your interface is used only as a client and you want to always get an HTTP response, just make the return type `HttpResponse`:
+If your interface is used only as a client and you want to always get an HTTP response, just make the return type the `HttpResponse`:
 ```C#
 public interface IMyClient
 {
@@ -370,7 +370,7 @@ Error? error = response.Error;
 <a name="features-status-code"/> 
 
 ## HTTP response status code
-It is not always convenient to use with `IActionResult` in NClient controllers, so you can use `HttpResponseException` to return an error object and HTTP status code.
+It is not always convenient to use with the `IActionResult` in NClient controllers, so you can use the `HttpResponseException` to return an error object and HTTP status code.
 To use these exceptions you need to add NClient controllers in ASP.NET startup as follows:
 ```C#
 public void ConfigureServices(IServiceCollection services)
@@ -392,7 +392,7 @@ For information on how to get HTTP status code, see section [Http response](#fea
 <a name="features-errors"/>  
 
 ## Errors
-All expected exceptions are inherited from `NClientException`. There are two types of errors: client-side errors (`ClientException`) and controller-side errors (`ControllerException`).
+All expected exceptions are inherited from the `NClientException`. There are two types of errors: client-side errors (`ClientException`) and controller-side errors (`ControllerException`).
 ### Client-side errors
 `ControllerValidationException` - errors that occur if a client interface is invalid.  
 `ClientRequestException` - exceptions to return information about a failed client request.   
@@ -402,7 +402,7 @@ All expected exceptions are inherited from `NClientException`. There are two typ
 <a name="features-httpclient"/>  
 
 ## HttpClient
-By default, `System.Net.Http.HttpClient` is used for HTTP requests. But you can also create your own implementation of `IHttpClientProvider` and pass it to `WithCustomHttpClient` method:
+By default, `System.Net.Http.HttpClient` is used for HTTP requests. But you can also create your own implementation of the `IHttpClientProvider` and pass it to the `WithCustomHttpClient` method:
 ```C#
 IHttpClientProvider httpClientProvider = ...;
 
@@ -415,7 +415,7 @@ IMyClient myClient = NClientProvider
 <a name="features-serialization"/>  
 
 ## Serialization
-By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of `ISerializerProvider` and pass it to `WithCustomSerializer` method:
+By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of the `ISerializerProvider` and pass it to the `WithCustomSerializer` method:
 ```C#
 ISerializerProvider serializerProvider = ...;
 
@@ -443,7 +443,7 @@ IMyClient myClient = NClientProvider
     .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
     .Build();
 ```
-You can also create your own implementation of `IResiliencePolicyProvider` and pass it to `WithResiliencePolicy` method.  
+You can also create your own implementation of the `IResiliencePolicyProvider` and pass it to the `WithResiliencePolicy` method.  
 ### Provided policies
 Use the `WithResiliencePolicyForSafeMethods` method to retry requests for safe methods (GET, HEAD, OPTIONS):
 ```C#
@@ -474,7 +474,7 @@ public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
 ...
 await myClient.AsResilient().Invoke(x => x.PostAsync(id), new MyResiliencePolicyProvider());
 ```
-Please note, the client interface must inherit `INClient` interface.
+Please note, the client interface must inherit the `INClient` interface.
 
 <a name="features-logging"/> 
 
@@ -492,7 +492,7 @@ IMyClient client = NClientProvider
 <a name="features-di"/> 
 
 ## Dependency injection
-`NClient.Extensions.DependencyInjection` package contains `AddNClient` extension methods:
+The `NClient.Extensions.DependencyInjection` package contains the `AddNClient` extension methods:
 ```C#
 var serviceProvider = new ServiceCollection()
     .AddHttpClient()
@@ -542,7 +542,7 @@ IMyClient client = NClientProvider
 <a name="features-system-httpclient"/> 
 
 ## System.Net.Http.HttpClient
-An `HttpClient` is created for each instance of a client. Keep this in mind, because `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
+An `HttpClient` is created for each instance of a client. Keep this in mind, because the `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
 ```C#
 IHttpClientFactory httpClientFactory = ...;
 
@@ -576,7 +576,7 @@ Providers give additional implementations for sending HTTP requests, serializati
 <a name="providers-restsharp" />  
 
 ## RestSharp
-To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use `RestSharpHttpClientProvider`:
+To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use the `RestSharpHttpClientProvider`:
 ```C#
 IMyClient myClient = NClientProvider
     .Use<IMyClient>(host: "http://localhost:8080")
