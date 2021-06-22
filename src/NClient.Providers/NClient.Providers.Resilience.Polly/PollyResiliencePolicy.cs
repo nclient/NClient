@@ -31,8 +31,8 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(action, nameof(action));
 
-            var policyResult = await _asyncPolicy.ExecuteAndCaptureAsync(action).ConfigureAwait(false);
-            return policyResult.Result.HttpResponse;
+            var responseContext = await _asyncPolicy.ExecuteAsync(action).ConfigureAwait(false);
+            return responseContext.HttpResponse;
         }
     }
 }

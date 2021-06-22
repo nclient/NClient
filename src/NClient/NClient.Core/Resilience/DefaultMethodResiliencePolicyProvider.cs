@@ -25,11 +25,11 @@ namespace NClient.Core.Resilience
             IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider>? specificResiliencePolicyProviders = null)
         {
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
-            _resiliencePolicyProviders = specificResiliencePolicyProviders is null 
+            _resiliencePolicyProviders = specificResiliencePolicyProviders is null
                 ? new Dictionary<MethodInfo, IResiliencePolicyProvider>(
                     new MethodInfoEqualityComparer())
                 : new Dictionary<MethodInfo, IResiliencePolicyProvider>(
-                    specificResiliencePolicyProviders.ToDictionary(x => x.Key, x => x.Value), 
+                    specificResiliencePolicyProviders.ToDictionary(x => x.Key, x => x.Value),
                     new MethodInfoEqualityComparer());
         }
 

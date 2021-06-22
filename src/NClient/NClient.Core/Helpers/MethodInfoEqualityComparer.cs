@@ -8,13 +8,13 @@ namespace NClient.Core.Helpers
     {
         public bool Equals(MethodInfo left, MethodInfo right)
         {
-            if (ReferenceEquals(left, right)) 
+            if (ReferenceEquals(left, right))
                 return true;
-            if (left.GetType() != right.GetType()) 
+            if (left.GetType() != right.GetType())
                 return false;
-            
-            return left.MemberType == right.MemberType 
-                   && left.Name == right.Name 
+
+            return left.MemberType == right.MemberType
+                   && left.Name == right.Name
                    && left.GetParameters().Select(x => x.ParameterType)
                        .SequenceEqual(right.GetParameters().Select(x => x.ParameterType))
                    && left.ReturnType == right.ReturnType;
@@ -24,7 +24,7 @@ namespace NClient.Core.Helpers
         {
             unchecked
             {
-                var hashCode = (int) obj.MemberType;
+                var hashCode = (int)obj.MemberType;
                 hashCode = (hashCode * 397) ^ obj.Name.GetHashCode();
                 hashCode = (hashCode * 397) ^ obj.ReturnType.GetHashCode();
                 return hashCode;

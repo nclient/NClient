@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using NClient.Abstractions.Resilience;
 using NClient.Annotations.Methods;
 using NClient.Core.Resilience;
@@ -8,6 +9,14 @@ namespace NClient.Resilience
 {
     internal class IdempotentPollyMethodResiliencePolicyProvider : PollyMethodResiliencePolicyProviderBase
     {
+        public IdempotentPollyMethodResiliencePolicyProvider(
+            int retryCount = 2,
+            Func<int, TimeSpan>? sleepDurationProvider = null,
+            Func<ResponseContext, bool>? resultPredicate = null)
+            : base(retryCount, sleepDurationProvider, resultPredicate)
+        {
+        }
+
         public override IResiliencePolicy Create(MethodInfo methodInfo)
         {
             var isIdempotentMethod = GetMethodAttributeFor(methodInfo) switch

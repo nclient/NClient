@@ -14,12 +14,15 @@ namespace NClient.Resilience
     {
         protected readonly AsyncPolicyWrap<ResponseContext> Policy;
 
-        protected PollyMethodResiliencePolicyProviderBase()
+        protected PollyMethodResiliencePolicyProviderBase(
+            int retryCount = 2,
+            Func<int, TimeSpan>? sleepDurationProvider = null,
+            Func<ResponseContext, bool>? resultPredicate = null)
         {
-            var basePolicy = Policy<ResponseContext>.HandleResult(x => !x.HttpResponse.IsSuccessful).Or<Exception>();
+            var basePolicy = Policy<ResponseContext>.HandleResult(resultPredicate ?? (x => !x.HttpResponse.IsSuccessful)).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
-                retryCount: 2,
-                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+                retryCount,
+                sleepDurationProvider ?? (retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
             var fallbackPolicy = basePolicy.FallbackAsync(
                 fallbackValue: default!,
                 onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
