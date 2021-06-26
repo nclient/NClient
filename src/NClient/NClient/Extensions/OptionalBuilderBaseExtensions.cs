@@ -93,6 +93,26 @@ namespace NClient
         /// <param name="retryCount">The retry count.</param>
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
+        public static TBuilder WithResiliencePolicy<TBuilder, TInterface>(
+            this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
+            int retryCount = 2,
+            Func<int, TimeSpan>? sleepDurationProvider = null,
+            Func<ResponseContext, bool>? resultPredicate = null)
+            where TBuilder : IOptionalBuilderBase<TBuilder, TInterface>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
+
+            return clientBuilder.WithResiliencePolicy(new AnyMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+        }
+
+        /// <summary>
+        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// </summary>
+        /// <param name="clientBuilder"></param>
+        /// <param name="retryCount">The retry count.</param>
+        /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         public static TBuilder WithResiliencePolicyForSafeMethods<TBuilder, TInterface>(
             this IOptionalBuilderBase<TBuilder, TInterface> clientBuilder,
             int retryCount = 2,
@@ -103,7 +123,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
 
-            return clientBuilder.WithResiliencePolicy(new SafePollyMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+            return clientBuilder.WithResiliencePolicy(new SafeMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
         }
 
         /// <summary>
@@ -123,7 +143,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientBuilder, nameof(clientBuilder));
 
-            return clientBuilder.WithResiliencePolicy(new IdempotentPollyMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+            return clientBuilder.WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
         }
     }
 }

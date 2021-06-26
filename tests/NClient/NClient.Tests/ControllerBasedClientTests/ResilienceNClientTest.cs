@@ -68,6 +68,22 @@ namespace NClient.Tests.ControllerBasedClientTests
         }
 
         [Test]
+        public void WithResiliencePolicy_GetRequestWithInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClient, ReturnController>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicy(sleepDurationProvider: _ => 0.Seconds())
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
+                .Should()
+                .NotThrow();
+        }
+
+        [Test]
         public void WithResiliencePolicyForSafeMethods_GetRequestWithInternalServerError_NotThrow()
         {
             const int id = 1;
