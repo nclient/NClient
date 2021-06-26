@@ -85,7 +85,7 @@ namespace NClient
 
             return clientBuilder.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
         }
-        
+
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>

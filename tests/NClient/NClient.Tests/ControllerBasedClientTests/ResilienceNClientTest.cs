@@ -66,7 +66,7 @@ namespace NClient.Tests.ControllerBasedClientTests
                 .Should()
                 .NotThrow();
         }
-        
+
         [Test]
         public void WithResiliencePolicy_GetRequestWithInternalServerError_NotThrow()
         {
