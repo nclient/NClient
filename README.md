@@ -451,15 +451,15 @@ IMyClient myClient = NClientProvider
 ```
 You can also create your own implementation of the `IResiliencePolicyProvider` and pass it to the `WithResiliencePolicy` method.  
 ### Provided policies
-Use the `WithResiliencePolicyForSafeMethods` method to retry requests for safe methods (GET, HEAD, OPTIONS):
+Use the `WithResiliencePolicy` method overload to retry requests for any methods:
 ```C#
 IMyClient myClient = NClientProvider
     .Use<IMyClient>(host: "http://localhost:8080")
-    .WithResiliencePolicyForSafeMethods(retryCount: 4, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+    .WithResiliencePolicy(retryCount: 4, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
     .Build();
 ```
-The parameters `retryCount` and `sleepDurationProvider` are optional. By default, 3 attempts are used with a quadratic increase in the delay between attempts.  
-To use retries for all methods except POST, use the `WithResiliencePolicyForIdempotentMethods` method.
+The parameters `retryCount` and `sleepDurationProvider` are optional. By default, 3 attempts are used with a quadratic increase in the delay between attempts. 
+To use retries for safe methods (GET, HEAD, OPTIONS), use the `WithResiliencePolicyForSafeMethods` method. To use retries for all methods except POST, use the `WithResiliencePolicyForIdempotentMethods` method.
 ### Specific policy for a method
 Set specific resilience policy for a method using the `WithResiliencePolicy` method overload:
 ```C#
