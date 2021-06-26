@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NClient.AspNetCore.Exceptions;
 using NClient.Sandbox.ProxyService.Clients;
 using NClient.Sandbox.ProxyService.Facade.Dto;
 
@@ -26,8 +28,14 @@ namespace NClient.Sandbox.ProxyService.Controllers
         [HttpGet("{filter.id}")]
         [ProducesResponseType(typeof(WeatherForecastDto), 200)]
         [ProducesResponseType(typeof(void), 400)]
+        [ProducesResponseType(typeof(void), 404)]
         public Task<WeatherForecastDto> GetAsync([FromQuery(Name = "filter")] WeatherForecastFilter weatherForecastFilter)
         {
+            if (weatherForecastFilter.Id < 0)
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (weatherForecastFilter.Id == 0)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
             _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
         }

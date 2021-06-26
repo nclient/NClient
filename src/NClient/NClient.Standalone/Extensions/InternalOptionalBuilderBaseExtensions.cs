@@ -8,11 +8,11 @@ namespace NClient.Extensions
     {
         public static TBuilder TrySetResiliencePolicy<TBuilder, TResult>(
             this IOptionalBuilderBase<TBuilder, TResult> clientBuilder,
-            IResiliencePolicyProvider? resiliencePolicyProvider)
+            IMethodResiliencePolicyProvider? methodResiliencePolicyProvider)
             where TBuilder : class, IOptionalBuilderBase<TBuilder, TResult>
         {
-            if (resiliencePolicyProvider is not null)
-                return clientBuilder.WithResiliencePolicy(resiliencePolicyProvider);
+            if (methodResiliencePolicyProvider is not null)
+                return clientBuilder.WithResiliencePolicy(methodResiliencePolicyProvider);
             return (clientBuilder as TBuilder)!;
         }
 
