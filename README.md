@@ -16,6 +16,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
 - [How to use?](#usage)  
   - [Usage with ASP.NET Core](#usage-aspnet)  
   - [Usage with non ASP.NET web service](#usage-non-aspnet) 
+  - [Samples of applications](#sample-applications)
 - [Contributing](#contributing)
 - [Features](#features)  
   - [Creating](#features-creating)
@@ -161,6 +162,11 @@ IProductServiceClient client = NClientProvider
 // curl -X POST -H "Content-type: application/json" --data "{ id: 1 }" http://localhost:8080/api/products
 await client.PostAsync(new Product(id: 1));
 ```
+
+<a name="sample-applications"/>  
+
+### Samples of applications
+See the sample applications in the [NClient.Samples](https://github.com/nclient/NClient.Samples) project.
 
 <a name="contributing"/>  
 
