@@ -10,11 +10,11 @@ using Polly.Wrap;
 
 namespace NClient.Resilience
 {
-    internal abstract class PollyMethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider
+    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider
     {
         protected readonly AsyncPolicyWrap<ResponseContext> Policy;
 
-        protected PollyMethodResiliencePolicyProviderBase(
+        protected MethodResiliencePolicyProviderBase(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
             Func<ResponseContext, bool>? resultPredicate = null)
