@@ -2,60 +2,71 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Core.Interceptors.HttpResponsePopulation;
+using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
-    internal class ResilienceHttpClient : IHttpClient
+    internal interface IResilienceHttpClient
+    {
+        Task<HttpResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation);
+    }
+
+    internal class ResilienceHttpClient : IResilienceHttpClient
     {
         private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IResiliencePolicyProvider _resiliencePolicyProvider;
+        private readonly IHttpResponsePopulater _httpResponsePopulater;
+        private readonly IMethodResiliencePolicyProvider _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClient(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
-            IResiliencePolicyProvider resiliencePolicyProvider,
+            IHttpResponsePopulater httpResponsePopulater,
+            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
             ILogger? logger)
         {
             _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
-            _resiliencePolicyProvider = resiliencePolicyProvider;
+            _httpResponsePopulater = httpResponsePopulater;
+            _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
 
-        public async Task<HttpResponse> ExecuteAsync(HttpRequest request)
+        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation)
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
 
-            var response = await _resiliencePolicyProvider
-                .Create()
-                .ExecuteAsync(() => ExecuteAttemptAsync(request))
+            return await _methodResiliencePolicyProvider
+                .Create(methodInvocation.MethodInfo)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request, methodInvocation))
                 .ConfigureAwait(false);
-
-            _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
-
-            return response;
         }
 
-        private async Task<HttpResponse> ExecuteAttemptAsync(HttpRequest request)
+        private async Task<ResponseContext> ExecuteAttemptAsync(HttpRequest request, MethodInvocation methodInvocation)
         {
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
+            HttpResponse response;
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
-                var response = await client.ExecuteAsync(request).ConfigureAwait(false);
+                response = await client.ExecuteAsync(request).ConfigureAwait(false);
                 _logger?.LogDebug("Request attempt finished with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, request.Id);
-                return response;
             }
             catch (Exception e)
             {
                 _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", request.Id);
                 throw;
             }
+
+            var populatedResponse = _httpResponsePopulater.Populate(response, methodInvocation.ResultType);
+            _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
+            return new ResponseContext(populatedResponse, methodInvocation);
         }
     }
 }

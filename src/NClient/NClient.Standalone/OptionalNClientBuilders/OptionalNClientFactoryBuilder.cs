@@ -1,5 +1,8 @@
-﻿using NClient.Abstractions;
+﻿using System;
+using System.Linq.Expressions;
+using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.OptionalNClientBuilders.Bases;
 
@@ -21,8 +24,15 @@ namespace NClient.OptionalNClientBuilders
             return new NClientStandaloneFactory(
                 HttpClientProvider,
                 SerializerProvider,
-                ResiliencePolicyProvider,
+                GetOrCreateMethodResiliencePolicyProvider(),
                 LoggerFactory);
+        }
+
+        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        {
+            AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
+            return this;
         }
     }
 }

@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Interceptors.ClientInvocations;
 using NClient.Core.Interceptors.HttpClients;
-using NClient.Core.Interceptors.HttpResponsePopulation;
+using NClient.Core.Interceptors.Invocation;
 using NClient.Core.Interceptors.MethodBuilders;
 using NClient.Core.Interceptors.RequestBuilders;
 using NClient.Exceptions;
@@ -20,11 +20,11 @@ namespace NClient.Core.Interceptors
     {
         private readonly Uri _host;
         private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
-        private readonly IClientInvocationProvider _clientInvocationProvider;
+        private readonly IFullMethodInvocationProvider _fullMethodInvocationProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
-        private readonly IHttpResponsePopulater _httpResponsePopulater;
+        private readonly IClientHandler _clientHandler;
         private readonly IGuidProvider _guidProvider;
         private readonly Type? _controllerType;
         private readonly ILogger<T>? _logger;
@@ -32,22 +32,22 @@ namespace NClient.Core.Interceptors
         public ClientInterceptor(
             Uri host,
             IResilienceHttpClientProvider resilienceHttpClientProvider,
-            IClientInvocationProvider clientInvocationProvider,
+            IFullMethodInvocationProvider fullMethodInvocationProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
-            IHttpResponsePopulater httpResponsePopulater,
+            IClientHandler clientHandler,
             IGuidProvider guidProvider,
             Type? controllerType = null,
             ILogger<T>? logger = null)
         {
             _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
-            _clientInvocationProvider = clientInvocationProvider;
+            _fullMethodInvocationProvider = fullMethodInvocationProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
-            _httpResponsePopulater = httpResponsePopulater;
+            _clientHandler = clientHandler;
             _guidProvider = guidProvider;
             _controllerType = controllerType;
             _logger = logger;
@@ -56,18 +56,18 @@ namespace NClient.Core.Interceptors
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
-            await ProcessInvocationAsync<HttpResponse>(invocation, shouldForceToEnsureSuccess: true)
+            await ProcessInvocationAsync(invocation, resultType: typeof(void))
                 .ConfigureAwait(false);
         }
 
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-            return await ProcessInvocationAsync<TResult>(invocation, shouldForceToEnsureSuccess: false)
+            return (TResult)await ProcessInvocationAsync(invocation, resultType: typeof(TResult))
                 .ConfigureAwait(false);
         }
 
-        private async Task<TResult> ProcessInvocationAsync<TResult>(IInvocation invocation, bool shouldForceToEnsureSuccess)
+        private async Task<object> ProcessInvocationAsync(IInvocation invocation, Type resultType)
         {
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
@@ -75,30 +75,30 @@ namespace NClient.Core.Interceptors
             HttpResponse? httpResponse = null;
             try
             {
-                var clientInvocation = _clientInvocationProvider.Get(interfaceType: typeof(T), _controllerType, invocation);
-                var clientMethod = _methodBuilder.Build(clientInvocation.ClientType, clientInvocation.MethodInfo);
+                var fullMethodInvocation = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                var clientMethod = _methodBuilder.Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
-                var request = _requestBuilder.Build(requestId, _host, clientMethod, clientInvocation.MethodArguments);
-
-                var response = await _resilienceHttpClientProvider
-                    .Create(clientInvocation.ResiliencePolicyProvider)
-                    .ExecuteAsync(request)
+                var request = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
+                await _clientHandler
+                    .HandleRequestAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
 
-                var populatedResponse = _httpResponsePopulater.Populate<TResult>(response);
-                // TODO: get rid of this condition
-                if (shouldForceToEnsureSuccess)
-                    populatedResponse.EnsureSuccess();
+                var response = await _resilienceHttpClientProvider
+                    .Create(fullMethodInvocation.ResiliencePolicyProvider)
+                    .ExecuteAsync(request, fullMethodInvocation)
+                    .ConfigureAwait(false);
+                await _clientHandler
+                    .HandleResponseAsync(response, fullMethodInvocation)
+                    .ConfigureAwait(false);
 
-                if (typeof(HttpResponse).IsAssignableFrom(typeof(TResult)))
+                if (typeof(HttpResponse).IsAssignableFrom(resultType))
                 {
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                    return (TResult)(object)populatedResponse;
+                    return response;
                 }
 
-                populatedResponse.EnsureSuccess();
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                return (TResult)populatedResponse.GetType().GetProperty("Value")!.GetValue(populatedResponse);
+                return response.GetType().GetProperty("Value")?.GetValue(response)!;
             }
             catch (ClientValidationException e)
             {

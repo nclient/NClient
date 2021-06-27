@@ -1,7 +1,8 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
+using NClient.Core.Resilience;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.System;
@@ -16,12 +17,12 @@ namespace NClient
     {
         public NClientFactory(
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<HttpResponse>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -30,12 +31,12 @@ namespace NClient
             IHttpClientFactory httpClientFactory,
             string? httpClientFactoryName = null,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<HttpResponse>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -43,12 +44,12 @@ namespace NClient
         public NClientFactory(
             HttpClient httpClient,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<HttpResponse>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClient),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
-                resiliencePolicyProvider: GetOrDefault(resiliencePolicy),
+                methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
         {
         }
@@ -60,10 +61,10 @@ namespace NClient
                 : new SystemSerializerProvider();
         }
 
-        private static PollyResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<HttpResponse>? resiliencePolicy)
+        private static DefaultMethodResiliencePolicyProvider? GetOrDefault(IAsyncPolicy<ResponseContext>? resiliencePolicy)
         {
             return resiliencePolicy is not null
-                ? new PollyResiliencePolicyProvider(resiliencePolicy)
+                ? new DefaultMethodResiliencePolicyProvider(new PollyResiliencePolicyProvider(resiliencePolicy))
                 : null;
         }
     }
