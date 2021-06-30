@@ -15,6 +15,13 @@ namespace NClient.Testing.Common.Clients
         Task<int> GetAsync(int id);
 
         /// <summary>
+        /// Url: api/simple/{id}
+        /// Body: empty
+        /// Headers: empty
+        /// </summary>
+        Task<string> GetAsync(string id);
+
+        /// <summary>
         /// Url: api/simple
         /// Body: {entity}
         /// Headers: empty

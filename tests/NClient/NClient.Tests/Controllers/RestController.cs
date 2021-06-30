@@ -12,6 +12,9 @@ namespace NClient.Tests.Controllers
         [HttpGet("{id}")]
         public Task<int> GetAsync(int id) => Task.FromResult(1);
 
+        [HttpGet("{id}")]
+        public Task<string> GetAsync(string id) => Task.FromResult("1");
+
         [HttpPost]
         public Task PostAsync(BasicEntity entity) => Task.FromResult(0);
 

@@ -15,9 +15,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddNClient<ITestClient>(host: "http://localhost:5000");
+            serviceCollection.AddNClient<ITestClientWithMetadata>(host: "http://localhost:5000");
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -26,9 +26,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClient<ITestClient>(host: "http://localhost:5000");
+            serviceCollection.AddNClient<ITestClientWithMetadata>(host: "http://localhost:5000");
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -38,11 +38,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
             serviceCollection.AddHttpClient("TestClient");
 
-            serviceCollection.AddNClient<ITestClient>(
+            serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000",
                 httpClientName: "TestClient");
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -51,10 +51,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClient<ITestClient>(
+            serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder);
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -63,11 +63,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClient<ITestClient>(
+            serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
                     .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext>()));
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
+            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
         }
     }
