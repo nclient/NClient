@@ -61,7 +61,12 @@ namespace NClient.Testing.Common
 
         internal HttpRequest BuildRequest(Method method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, host: new Uri("http://localhost:5000"), method, arguments);
+            return BuildRequest(host: "http://localhost:5000", method, arguments);
+        }
+
+        internal HttpRequest BuildRequest(string host, Method method, params object[] arguments)
+        {
+            return RequestBuilder.Build(RequestId, host: new Uri(host), method, arguments);
         }
 
         protected static void AssertHttpRequest(
