@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Castle.DynamicProxy;
+using NClient.Abstractions.Exceptions;
 using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Resilience;
 using NClient.Core.Serialization;
+using NClient.Exceptions;
 
 namespace NClient.Core.Validation
 {
     internal interface IClientValidator
     {
-        void Ensure<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
+        Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
             where TInterface : class;
 
-        void Ensure<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
+        Task EnsureAsync<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
             where TInterface : class
             where TController : TInterface;
     }
@@ -31,7 +34,7 @@ namespace NClient.Core.Validation
             _proxyGenerator = proxyGenerator;
         }
 
-        public void Ensure<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
+        public async Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
             where TInterface : class
         {
             var interceptor = clientInterceptorFactory
@@ -43,10 +46,10 @@ namespace NClient.Core.Validation
                     new DefaultMethodResiliencePolicyProvider(new DefaultResiliencePolicyProvider()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
-            EnsureValidity(client);
+            await EnsureValidityAsync(client).ConfigureAwait(false);
         }
 
-        public void Ensure<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
+        public async Task EnsureAsync<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
             where TInterface : class
             where TController : TInterface
         {
@@ -59,15 +62,29 @@ namespace NClient.Core.Validation
                     new DefaultMethodResiliencePolicyProvider(new DefaultResiliencePolicyProvider()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
-            EnsureValidity(client);
+            await EnsureValidityAsync(client).ConfigureAwait(false);
         }
 
-        private static void EnsureValidity<T>(T client) where T : class
+        private static async Task EnsureValidityAsync<T>(T client) where T : class
         {
             foreach (var methodInfo in typeof(T).GetMethods())
             {
                 var parameters = methodInfo.GetParameters().Select(GetDefaultParameter).ToArray();
-                methodInfo.Invoke(client, parameters);
+
+                try
+                {
+                    var result = methodInfo.Invoke(client, parameters);
+                    if (result is Task task)
+                        await task.ConfigureAwait(false);
+                }
+                catch (ClientValidationException)
+                {
+                    throw;
+                }
+                catch
+                {
+                    // ignored
+                }
             }
         }
 

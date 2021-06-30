@@ -23,17 +23,19 @@ namespace NClient.Testing.Common
 
         internal MethodBuilder MethodBuilder = null!;
         internal RequestBuilder RequestBuilder = null!;
+        internal IClientArgumentExceptionFactory ClientArgumentExceptionFactory = null!;
         internal IClientValidationExceptionFactory ClientValidationExceptionFactory = null!;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
+            var objectMemberManager = new ObjectMemberManager(new ClientObjectMemberManagerExceptionFactory());
 
+            ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             ClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             RequestBuilder = new RequestBuilder(
                 new RouteTemplateProvider(ClientValidationExceptionFactory),
-                new RouteProvider(objectMemberManager, ClientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, ClientValidationExceptionFactory),
                 new HttpMethodProvider(ClientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory),
                 ClientValidationExceptionFactory);

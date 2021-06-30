@@ -27,13 +27,16 @@ namespace NClient.Core.Interceptors.RequestBuilders
     {
         private static readonly string[] Suffixes = new[] { "Controller", "Facade", "Client" };
         private readonly IObjectMemberManager _objectMemberManager;
+        private readonly IClientArgumentExceptionFactory _clientArgumentExceptionFactory;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public RouteProvider(
             IObjectMemberManager objectMemberManager,
+            IClientArgumentExceptionFactory clientArgumentExceptionFactory,
             IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _objectMemberManager = objectMemberManager;
+            _clientArgumentExceptionFactory = clientArgumentExceptionFactory;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
@@ -119,7 +122,7 @@ namespace NClient.Core.Interceptors.RequestBuilders
             if (parameterValue is null)
                 throw _clientValidationExceptionFactory.TokenNotMatchAnyMethodParameter(name);
             if (parameterValue.Value is null)
-                throw _clientValidationExceptionFactory.ParameterInRouteTemplateIsNull(name);
+                throw _clientArgumentExceptionFactory.ParameterInRouteTemplateIsNull(name);
             return parameterValue!;
         }
 

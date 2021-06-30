@@ -15,13 +15,14 @@ namespace NClient.Core.Tests
     [Parallelizable]
     public class ObjectToKeyValueTest
     {
+        private static readonly ClientObjectMemberManagerExceptionFactory ClientObjectMemberManagerExceptionFactory = new();
         private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
         private ObjectToKeyValueConverter _objectToKeyValue = null!;
 
         [SetUp]
         public void SetUp()
         {
-            var objectMemberManager = new ObjectMemberManager(ClientValidationExceptionFactory);
+            var objectMemberManager = new ObjectMemberManager(ClientObjectMemberManagerExceptionFactory);
             _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory);
         }
 

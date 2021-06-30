@@ -50,7 +50,7 @@ namespace NClient.AspNetCore.AspNetBinding
             ILoggerFactory loggerFactory)
             : this(propertyBinders, loggerFactory, allowValidatingTopLevelNodes: true)
         {
-            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var objectMemberManager = new ObjectMemberManager(new ControllerObjectMemberManagerExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
@@ -86,7 +86,7 @@ namespace NClient.AspNetCore.AspNetBinding
             _propertyBinders = propertyBinders;
             _logger = loggerFactory.CreateLogger<ComplexTypeModelBinder>();
 
-            var objectMemberManager = new ObjectMemberManager(new ControllerValidationExceptionFactory());
+            var objectMemberManager = new ObjectMemberManager(new ControllerObjectMemberManagerExceptionFactory());
             var controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _modelExtender = new ModelExtender(objectMemberManager, controllerValidationExceptionFactory);
         }
