@@ -27,7 +27,18 @@ namespace NClient.Tests.InterfaceBasedClientTests
         public async Task RestClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockGetMethod(id);
+            using var api = _restApiMockFactory.MockIntGetMethod(id);
+
+            var result = await _restClient.GetAsync(id);
+
+            result.Should().Be(id);
+        }
+
+        [Test]
+        public async Task RestClient_GetAsync_StringInBody()
+        {
+            const string id = "1";
+            using var api = _restApiMockFactory.MockStringGetMethod(id);
 
             var result = await _restClient.GetAsync(id);
 

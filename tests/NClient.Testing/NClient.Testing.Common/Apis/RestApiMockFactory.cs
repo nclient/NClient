@@ -16,7 +16,22 @@ namespace NClient.Testing.Common.Apis
             ApiUri = new UriBuilder("http", "localhost", port).Uri;
         }
 
-        public IWireMockServer MockGetMethod(int id)
+        public IWireMockServer MockIntGetMethod(int id)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath($"/api/rest/{id}")
+                    .WithHeader("Accept", "application/json")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(id));
+
+            return api;
+        }
+
+        public IWireMockServer MockStringGetMethod(string id)
         {
             var api = WireMockServer.Start(ApiUri.ToString());
             api.Given(Request.Create()
