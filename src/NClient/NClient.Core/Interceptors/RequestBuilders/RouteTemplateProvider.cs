@@ -2,6 +2,7 @@
 using System.IO;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Exceptions.Factories;
+using NClient.Core.Helpers;
 using NClient.Core.Interceptors.MethodBuilders.Models;
 
 namespace NClient.Core.Interceptors.RequestBuilders
@@ -26,7 +27,7 @@ namespace NClient.Core.Interceptors.RequestBuilders
             var methodTemplate = method.Attribute.Template ?? "";
             var fullTemplate = Path.IsPathRooted(methodTemplate)
                 ? methodTemplate
-                : UriCombine(baseTemplate, methodTemplate);
+                : UriHelper.Combine(baseTemplate, methodTemplate);
 
             return Parse(fullTemplate);
         }
@@ -41,11 +42,6 @@ namespace NClient.Core.Interceptors.RequestBuilders
             {
                 throw _clientValidationExceptionFactory.TemplateParsingError(e);
             }
-        }
-
-        private static string UriCombine(string left, string right)
-        {
-            return $"{left.TrimEnd('/')}/{right.TrimStart('/')}";
         }
     }
 }

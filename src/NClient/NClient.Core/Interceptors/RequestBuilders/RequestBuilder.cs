@@ -53,7 +53,7 @@ namespace NClient.Core.Interceptors.RequestBuilders
             var route = _routeProvider
                 .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
 
-            var uri = new Uri(host, route);
+            var uri = UriHelper.Combine(host, route);
             var request = new HttpRequest(requestId, uri, httpMethod);
 
             var headerAttributes = method.HeaderAttributes;
