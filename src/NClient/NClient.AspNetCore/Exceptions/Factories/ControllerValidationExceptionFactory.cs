@@ -1,8 +1,4 @@
-﻿using NClient.Abstractions.Exceptions;
-using NClient.Core.Exceptions;
-using NClient.Core.Helpers.ObjectMemberManagers.Factories;
-
-namespace NClient.AspNetCore.Exceptions.Factories
+﻿namespace NClient.AspNetCore.Exceptions.Factories
 {
     internal interface IControllerValidationExceptionFactory
     {
@@ -13,7 +9,7 @@ namespace NClient.AspNetCore.Exceptions.Factories
         ControllerValidationException ControllersNotFound();
     }
 
-    internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory, IObjectMemberManagerExceptionFactory
+    internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory
     {
         public ControllerValidationException UsedAspNetCoreAttributeInControllerInterface(string memberName) =>
             new($"Native ASP.NET Core attributes cannot be used in NClient controller interfaces. Attribute name: '{memberName}'.");
@@ -29,21 +25,5 @@ namespace NClient.AspNetCore.Exceptions.Factories
 
         public ControllerValidationException ControllersNotFound() =>
             new($"NClient controllers not found.");
-
-
-        public NClientException MemberNameConflict(string memberName, string objectName) =>
-            new ControllerValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
-
-        public NClientException MemberNotFound(string memberName, string objectName) =>
-            new ControllerValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
-
-        public NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
-            new ControllerValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
-
-        public NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
-            new ControllerValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
-
-        public NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
-            new ControllerValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
     }
 }
