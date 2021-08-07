@@ -28,7 +28,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
                 ContentLength = restResponse.ContentLength,
                 ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
-                Content = restResponse.Content,
+                RawBytes = restResponse.RawBytes,
                 StatusCode = restResponse.StatusCode,
                 ResponseUri = restResponse.ResponseUri,
                 Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
