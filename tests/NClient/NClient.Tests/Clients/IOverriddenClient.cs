@@ -29,16 +29,16 @@ namespace NClient.Tests.Clients
     public interface IOverriddenClientWithMetadataBase : INClient
     {
         [GetMethod]
-        new Task<int> GetAsync(int id);
+        Task<int> GetAsync(int id);
 
         [PostMethod]
-        new Task PostAsync(BasicEntity entity);
+        Task PostAsync(BasicEntity entity);
 
         [PutMethod]
         [Header("test", "1")]
-        new Task PutAsync([BodyParam] BasicEntity entity);
+        Task PutAsync([BodyParam] BasicEntity entity);
 
         [DeleteMethod]
-        new Task DeleteAsync([QueryParam] int id);
+        Task DeleteAsync([QueryParam] int id);
     }
 }
