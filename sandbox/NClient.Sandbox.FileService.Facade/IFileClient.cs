@@ -13,7 +13,7 @@ namespace NClient.Sandbox.FileService.Facade
     {
         [GetMethod("textFiles/{id}")]
         new Task<HttpResponse> GetTextFileAsync([RouteParam] long id);
-        
+
         [GetMethod("images/{id}")]
         new Task<HttpResponse> GetImageAsync(long id);
     }

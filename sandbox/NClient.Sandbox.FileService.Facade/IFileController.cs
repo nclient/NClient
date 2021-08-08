@@ -22,7 +22,7 @@ namespace NClient.Sandbox.FileService.Facade
         [PostMethod("textFiles")]
         [Response(typeof(void), HttpStatusCode.BadRequest)]
         Task PostTextFileAsync(byte[] fileBytes);
-        
+
         [GetMethod("images/{id}")]
         [Response(typeof(byte[]), HttpStatusCode.OK)]
         [Response(typeof(void), HttpStatusCode.BadRequest)]

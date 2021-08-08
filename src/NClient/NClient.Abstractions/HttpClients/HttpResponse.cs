@@ -142,12 +142,12 @@ namespace NClient.Abstractions.HttpClients
                 throw ErrorException!;
             return this;
         }
-        
+
         private static string? AsString(byte[]? bytes, string? encodingName)
         {
             if (string.IsNullOrEmpty(encodingName))
                 return AsString(bytes, Encoding.UTF8);
-            
+
             try
             {
                 var encoding = Encoding.GetEncoding(encodingName) ?? Encoding.UTF8;
@@ -158,7 +158,7 @@ namespace NClient.Abstractions.HttpClients
                 return AsString(bytes, Encoding.UTF8);
             }
         }
-        
+
         private static string? AsString(byte[]? buffer, Encoding encoding)
         {
             return buffer == null ? null : encoding.GetString(buffer, 0, buffer.Length);

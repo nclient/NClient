@@ -19,11 +19,11 @@ namespace NClient.Sandbox.FileService.Controllers
         {
             _logger = logger;
         }
-        
+
         public async Task<IActionResult> GetTextFileAsync(long id)
         {
             _logger.LogInformation($"File with an id '{id}'was requested.");
-            
+
             if (id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             if (id == 0)
@@ -36,28 +36,28 @@ namespace NClient.Sandbox.FileService.Controllers
         {
             if (fileBytes.Length == 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-            
+
             _logger.LogInformation($"File was saved (not really).");
             return Task.CompletedTask;
         }
-        
+
         public async Task<IActionResult> GetImageAsync(long id)
         {
             _logger.LogInformation($"File with an id '{id}' was requested.");
-            
+
             if (id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             if (id == 0)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            
+
             return PhysicalFile(Path.GetFullPath("Files/Image.jpg"), "image/jpeg");
         }
-        
+
         public Task PostImageFileAsync(byte[] fileBytes)
         {
             if (fileBytes.Length == 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
-            
+
             _logger.LogInformation($"File was saved (not really).");
             return Task.CompletedTask;
         }

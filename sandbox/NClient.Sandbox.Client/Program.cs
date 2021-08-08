@@ -25,12 +25,12 @@ namespace NClient.Sandbox.Client
         public static async Task Main(string[] args)
         {
             Init();
-            
+
             await (args.Single() switch
             {
                 "weather" => TestWeatherForecastClientAsync(),
                 "file" => TestFileClientAsync(),
-                {} testName => throw new NotSupportedException($"The test name '{testName}' not supported.")
+                { } testName => throw new NotSupportedException($"The test name '{testName}' not supported.")
             });
         }
 
@@ -70,7 +70,7 @@ namespace NClient.Sandbox.Client
                     asyncPolicy: fallbackPolicy)
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
-            
+
             _fileClient = NClientProvider
                 .Use<IFileClient>(host: "http://localhost:5002")
                 .WithCustomHandlers(new IClientHandler[]
@@ -111,7 +111,7 @@ namespace NClient.Sandbox.Client
             const string receivedFilesFolderName = "receivedFiles";
             var receivedFilesDirPath = Path.Combine(tmpFolderName, receivedFilesFolderName);
             Directory.CreateDirectory(receivedFilesDirPath);
-            
+
             var httpResponseWithText = await _fileClient.GetTextFileAsync(id: 1);
             _programLogger.LogInformation($"The text file was received.");
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
@@ -119,10 +119,10 @@ namespace NClient.Sandbox.Client
                 await textFileStream.WriteAsync(httpResponseWithText.RawBytes);
                 _programLogger.LogInformation($"The text file was saved.");
             }
-            
+
             await _fileClient.PostTextFileAsync(httpResponseWithText.RawBytes!);
             _programLogger.LogInformation($"The text file has been sent.");
-            
+
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
             _programLogger.LogInformation($"The image was received.");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
@@ -130,10 +130,10 @@ namespace NClient.Sandbox.Client
                 await imageStream.WriteAsync(httpResponseWithImage.RawBytes);
                 _programLogger.LogInformation($"The image was saved.");
             }
-            
+
             await _fileClient.PostImageFileAsync(httpResponseWithImage.RawBytes!);
             _programLogger.LogInformation($"The image has been sent.");
-            
+
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);
         }
     }

@@ -32,7 +32,7 @@ namespace NClient.Sandbox.FileService
                 x.SwaggerDoc("v2", new OpenApiInfo { Title = "ProxyApi", Version = "v2" });
                 x.SwaggerDoc("v3", new OpenApiInfo { Title = "ProxyApi", Version = "v3" });
             });
-            
+
             services.AddNClientControllers().WithResponseExceptions();
         }
 

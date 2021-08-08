@@ -33,7 +33,7 @@ namespace NClient.Providers.HttpClient.System
 
             using var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
-            
+
             try
             {
                 return await _httpResponseBuilder
