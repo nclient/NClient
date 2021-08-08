@@ -76,13 +76,13 @@ namespace NClient.Core.Interceptors
             HttpResponse? httpResponse = null;
             try
             {
-                var fullMethodInvocation = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType,
-                    resultType, invocation);
-                var clientMethod =
-                    _methodBuilder.Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
+                var fullMethodInvocation = _fullMethodInvocationProvider
+                    .Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                var clientMethod = _methodBuilder
+                    .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
-                var request =
-                    _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
+                var request = _requestBuilder
+                    .Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
                 await _clientHandler
                     .HandleRequestAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
