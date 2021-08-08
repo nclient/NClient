@@ -9,7 +9,7 @@ namespace NClient.Tests.Clients
     public interface IGenericClientWithMetadata : IGenericClientWithMetadataBase<BasicEntity, int>
     {
     }
-    
+
     [Path("api/generic")]
     public interface IGenericClientWithMetadataBase<TIn, TOut>
     {
