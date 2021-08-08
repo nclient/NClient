@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Abstractions;
 using NClient.Annotations.Parameters;
@@ -9,7 +10,7 @@ namespace NClient.Core.Interceptors.MethodBuilders
 {
     internal interface IMethodParamBuilder
     {
-        MethodParam[] Build(MethodInfo method);
+        MethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class MethodParamBuilder : IMethodParamBuilder
@@ -21,13 +22,17 @@ namespace NClient.Core.Interceptors.MethodBuilders
             _paramAttributeProvider = paramAttributeProvider;
         }
 
-        public MethodParam[] Build(MethodInfo method)
+        public MethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
         {
             return method
                 .GetParameters()
                 .Select(x =>
                 {
-                    var paramAttribute = _paramAttributeProvider.Get(x);
+                    var overridingParams = overridingMethods
+                        .Select(overridingMethod => overridingMethod
+                            .GetParameters().Single(overridingParam => overridingParam.Name == x.Name))
+                        .ToArray();
+                    var paramAttribute = _paramAttributeProvider.Get(x, overridingParams);
                     var paramName = GetParamName(x, paramAttribute);
                     var paramType = x.ParameterType;
                     return new MethodParam(paramName, paramType, paramAttribute);

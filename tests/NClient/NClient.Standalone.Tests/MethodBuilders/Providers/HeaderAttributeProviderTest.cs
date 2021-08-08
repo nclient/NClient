@@ -126,7 +126,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams, HeaderAttribute[] expectedAttributes)
         {
-            var actualAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams);
+            var actualAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams);
 
             actualAttributes.Should().BeEquivalentTo(expectedAttributes, config => config.WithoutStrictOrdering());
         }
@@ -135,7 +135,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public void Get_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams)
         {
             _headerAttributeProvider
-                .Invoking(x => x.Get(clientType, methodInfo, methodParams))
+                .Invoking(x => x.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams))
                 .Should()
                 .Throw<NClientException>();
         }

@@ -39,5 +39,35 @@ namespace NClient.Core.Helpers
 
             return attributes.ToArray();
         }
+
+        public static MethodInfo[] GetInterfaceMethods(this Type type, bool inherit = false)
+        {
+            if (!type.IsInterface)
+                throw new ArgumentException("Type is not interface.", nameof(type));
+            if (inherit == false)
+                return type.GetMethods().ToArray();
+
+            var methodInfos = new HashSet<MethodInfo>(type.GetMethods());
+            foreach (var interfaceType in type.GetInterfaces())
+            {
+                foreach (var methodInfo in GetInterfaceMethods(interfaceType, inherit: true))
+                {
+                    methodInfos.Add(methodInfo);
+                }
+            }
+
+            return methodInfos.ToArray();
+        }
+
+        public static bool HasMultipleInheritance(this Type type)
+        {
+            var interfaces = type.GetInterfaces();
+            if (interfaces.Length == 0)
+                return false;
+            if (interfaces.Length > 1)
+                return true;
+
+            return HasMultipleInheritance(interfaces.Single());
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Moq;
@@ -22,11 +24,11 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var paramInfo = methodInfo.GetParameters().Single();
             var paramAttribute = new QueryParamAttribute();
             var paramAttributeProvider = new Mock<IParamAttributeProvider>();
-            paramAttributeProvider.Setup(x => x.Get(It.IsAny<ParameterInfo>()))
+            paramAttributeProvider.Setup(x => x.Get(It.IsAny<ParameterInfo>(), It.IsAny<IEnumerable<ParameterInfo>>()))
                 .Returns(paramAttribute);
             var methodBuilder = new MethodParamBuilder(paramAttributeProvider.Object);
 
-            var actualResult = methodBuilder.Build(methodInfo);
+            var actualResult = methodBuilder.Build(methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
             actualResult.Should().BeEquivalentTo(new MethodParam(
                 paramInfo.Name!,
