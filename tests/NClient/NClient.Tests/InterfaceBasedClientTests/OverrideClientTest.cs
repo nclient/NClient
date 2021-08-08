@@ -25,7 +25,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task OverriddenClient_GetAsync_IntInBody()
+        public async Task OverriddenClient_GetAsync_SendsGetRequestAndReceivesHttpResponseWithIntContent()
         {
             const int id = 1;
             using var api = _overriddenApiMockFactory.MockGetMethod(id);
@@ -38,7 +38,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task OverriddenClient_PostAsync_NotThrow()
+        public async Task OverriddenClient_PostAsync_SendsPutRequestAndReceivesHttpResponse()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _overriddenApiMockFactory.MockPostMethod(entity);
@@ -50,7 +50,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task OverriddenClient_PutAsync_NotThrow()
+        public async Task OverriddenClient_PutAsync_SendsPutWithTestHeaderAndNotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _overriddenApiMockFactory.MockPutMethod(entity);
@@ -62,7 +62,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task OverriddenClient_DeleteAsync_NotThrow()
+        public async Task OverriddenClient_DeleteAsync_SendsIntInBodyAndReceivesOkString()
         {
             const int id = 1;
             using var api = _overriddenApiMockFactory.MockDeleteMethod(id);
