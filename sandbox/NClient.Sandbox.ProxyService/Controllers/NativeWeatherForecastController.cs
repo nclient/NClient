@@ -31,12 +31,13 @@ namespace NClient.Sandbox.ProxyService.Controllers
         [ProducesResponseType(typeof(void), 404)]
         public Task<WeatherForecastDto> GetAsync([FromQuery(Name = "filter")] WeatherForecastFilter weatherForecastFilter)
         {
+            _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
+
             if (weatherForecastFilter.Id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             if (weatherForecastFilter.Id == 0)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
             return Task.FromResult(_thirdPartyWeatherForecastClient.Get().First());
         }
 
@@ -44,14 +45,14 @@ namespace NClient.Sandbox.ProxyService.Controllers
         public Task PostAsync(WeatherForecastDto weatherForecastDto)
         {
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         [HttpPut("{weatherForecastDto.id}")]
         public Task PutAsync(WeatherForecastDto weatherForecastDto)
         {
             _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         [HttpDelete]
@@ -59,7 +60,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         public Task DeleteAsync(int? id = null)
         {
             _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 }
