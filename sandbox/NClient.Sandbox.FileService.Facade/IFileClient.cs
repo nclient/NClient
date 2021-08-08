@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 
@@ -11,10 +10,10 @@ namespace NClient.Sandbox.FileService.Facade
     [Header("client", "NClient")]
     public interface IFileClient : IFileController
     {
-        [GetMethod("textFiles/{id}")]
+        [Override]
         new Task<HttpResponse> GetTextFileAsync([RouteParam] long id);
 
-        [GetMethod("images/{id}")]
+        [Override]
         new Task<HttpResponse> GetImageAsync(long id);
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using NClient.Annotations;
 using NClient.Exceptions;
 
 namespace NClient.Core.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {
+        ClientValidationException OverrideAttributeWithMultipleInheritance();
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes();
         ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames);
@@ -28,6 +30,9 @@ namespace NClient.Core.Exceptions.Factories
 
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
     {
+        public ClientValidationException OverrideAttributeWithMultipleInheritance() =>
+            new($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
+
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
             new($"Header parameters duplicate static headers. Header names: {string.Join(",", headerNames)}");
 
