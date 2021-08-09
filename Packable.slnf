@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "All.sln",
+    "path": "NClient.sln",
     "projects": [
       "src\\NClient.Extensions\\NClient.Extensions.DependencyInjection\\NClient.Extensions.DependencyInjection.csproj",
       "src\\NClient.Providers\\NClient.Providers.HttpClient.System\\NClient.Providers.HttpClient.System.csproj",
