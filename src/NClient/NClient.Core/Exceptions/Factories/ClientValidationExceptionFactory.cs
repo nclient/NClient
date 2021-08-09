@@ -1,15 +1,14 @@
 ﻿using System;
-using NClient.Abstractions.Exceptions;
-using NClient.Core.Helpers.ObjectMemberManagers.Factories;
+using NClient.Annotations;
 using NClient.Exceptions;
 
 namespace NClient.Core.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {
+        ClientValidationException OverrideAttributeWithMultipleInheritance();
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes();
-        ClientValidationException ParameterInRouteTemplateIsNull(string parameterName);
         ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames);
         ClientValidationException SpecialTokenFromTemplateNotExists(string tokenName);
         ClientValidationException TemplateParsingError(ArgumentException e);
@@ -29,16 +28,16 @@ namespace NClient.Core.Exceptions.Factories
         ClientValidationException ArrayWithComplexTypeNotSupported();
     }
 
-    internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory, IObjectMemberManagerExceptionFactory
+    internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
     {
+        public ClientValidationException OverrideAttributeWithMultipleInheritance() =>
+            new($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
+
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
             new($"Header parameters duplicate static headers. Header names: {string.Join(",", headerNames)}");
 
         public ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
             new($"The client name consists only of suffixes and/or prefixes.");
-
-        public ClientValidationException ParameterInRouteTemplateIsNull(string parameterName) =>
-            new($"The parameter '{parameterName}' used in the path cannot be null.");
 
         public ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
@@ -90,21 +89,5 @@ namespace NClient.Core.Exceptions.Factories
 
         public ClientValidationException ArrayWithComplexTypeNotSupported() =>
             new("Array with custom types cannot be passed through uri query.");
-
-
-        public NClientException MemberNameConflict(string memberName, string objectName) =>
-            new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");
-
-        public NClientException MemberNotFound(string memberName, string objectName) =>
-            new ClientValidationException($"The member '{memberName}' not found in '{objectName}' object type.");
-
-        public NClientException MemberValueOfObjectInRouteIsNull(string memberName, string objectName) =>
-            new ClientValidationException($"The value of '{memberName}' member in {objectName} object is null. The value cannot be inserted in the route template.");
-
-        public NClientException RoutePropertyConvertError(string memberName, string propertyTypeName, string? actualValue) =>
-            new ClientValidationException($"The object member '{memberName}' has '{propertyTypeName}' type, but value in route is '{actualValue}'.");
-
-        public NClientException LimitNestingOfObjects(int limit, string processingObjectName) =>
-            new ClientValidationException($"The maximum nesting of objects is limited to {limit}. Processing stopped on '{processingObjectName}' object.");
     }
 }

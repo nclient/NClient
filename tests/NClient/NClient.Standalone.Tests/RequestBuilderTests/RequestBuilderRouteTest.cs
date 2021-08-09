@@ -19,6 +19,42 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
     [Parallelizable]
     public class RequestBuilderRouteTest : RequestBuilderTestBase
     {
+        [Path("api")] private interface IHostAndStaticRoute {[GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000", BuildMethod<IHostAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api"),
+                HttpMethod.Get);
+        }
+
+        [Path("controller")] private interface IHostPathAndStaticRoute {[GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api", BuildMethod<IHostPathAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/controller"),
+                HttpMethod.Get);
+        }
+
+        [Path("controller")] private interface IHostPathWithSlashAndStaticRoute {[GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api/", BuildMethod<IHostPathWithSlashAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/controller"),
+                HttpMethod.Get);
+        }
+
         [Path("api")] private interface ICommonStaticRoute {[GetMethod] int Method(); }
 
         [Test]

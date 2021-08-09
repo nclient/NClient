@@ -4,28 +4,23 @@ using System.Reflection;
 
 namespace NClient.Core.Helpers
 {
-    internal class MethodInfoEqualityComparer : IEqualityComparer<MethodInfo>
+    internal class MethodInfoEqualityComparer : OverridingMethodInfoEqualityComparer, IEqualityComparer<MethodInfo>
     {
-        public bool Equals(MethodInfo left, MethodInfo right)
+        public override bool Equals(MethodInfo left, MethodInfo right)
         {
             if (ReferenceEquals(left, right))
                 return true;
             if (left.GetType() != right.GetType())
                 return false;
 
-            return left.MemberType == right.MemberType
-                   && left.Name == right.Name
-                   && left.GetParameters().Select(x => x.ParameterType)
-                       .SequenceEqual(right.GetParameters().Select(x => x.ParameterType))
-                   && left.ReturnType == right.ReturnType;
+            return base.Equals(left, right) && left.ReturnType == right.ReturnType;
         }
 
-        public int GetHashCode(MethodInfo obj)
+        public override int GetHashCode(MethodInfo obj)
         {
             unchecked
             {
-                var hashCode = (int)obj.MemberType;
-                hashCode = (hashCode * 397) ^ obj.Name.GetHashCode();
+                var hashCode = base.GetHashCode(obj);
                 hashCode = (hashCode * 397) ^ obj.ReturnType.GetHashCode();
                 return hashCode;
             }

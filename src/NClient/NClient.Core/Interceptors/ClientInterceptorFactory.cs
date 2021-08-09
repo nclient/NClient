@@ -56,7 +56,10 @@ namespace NClient.Core.Interceptors
             _fullMethodInvocationProvider = new FullMethodInvocationProvider(proxyGenerator);
             _guidProvider = new GuidProvider();
 
+            var clientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var clientObjectMemberManagerExceptionFactory = new ClientObjectMemberManagerExceptionFactory();
+
             _clientMethodBuilder = new MethodBuilder(
                 new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
@@ -64,10 +67,10 @@ namespace NClient.Core.Interceptors
                 new HeaderAttributeProvider(clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
 
-            var objectMemberManager = new ObjectMemberManager(new ClientValidationExceptionFactory());
+            var objectMemberManager = new ObjectMemberManager(clientObjectMemberManagerExceptionFactory);
             _requestBuilder = new RequestBuilder(
                 new RouteTemplateProvider(clientValidationExceptionFactory),
-                new RouteProvider(objectMemberManager, clientValidationExceptionFactory),
+                new RouteProvider(objectMemberManager, clientArgumentExceptionFactory, clientValidationExceptionFactory),
                 new HttpMethodProvider(clientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
                 clientValidationExceptionFactory);

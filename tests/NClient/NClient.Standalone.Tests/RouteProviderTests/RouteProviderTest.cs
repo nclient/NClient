@@ -18,6 +18,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
     [Parallelizable]
     public class RouteProviderTest
     {
+        private static readonly ClientObjectMemberManagerExceptionFactory ClientObjectMemberManagerExceptionFactory = new();
+        private static readonly ClientArgumentExceptionFactory ClientArgumentExceptionFactory = new();
         private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
 
         internal RouteProvider RouteProvider = null!;
@@ -25,8 +27,8 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [SetUp]
         public void SetUp()
         {
-            var objectMemberManager = new ObjectMemberManager(ClientValidationExceptionFactory);
-            RouteProvider = new RouteProvider(objectMemberManager, ClientValidationExceptionFactory);
+            var objectMemberManager = new ObjectMemberManager(ClientObjectMemberManagerExceptionFactory);
+            RouteProvider = new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, ClientValidationExceptionFactory);
         }
 
         [Test]
@@ -499,7 +501,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
-                .WithMessage(ClientValidationExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
+                .WithMessage(ClientObjectMemberManagerExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
         }
 
         [Test]
@@ -596,7 +598,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
-                .WithMessage(ClientValidationExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
+                .WithMessage(ClientObjectMemberManagerExceptionFactory.MemberNotFound("id", "BasicEntity").Message);
         }
 
         [Test]

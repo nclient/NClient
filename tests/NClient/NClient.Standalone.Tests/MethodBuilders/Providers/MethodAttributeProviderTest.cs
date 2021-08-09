@@ -84,7 +84,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_MethodAttribute(MethodInfo methodInfo, MethodAttribute expectedAttribute)
         {
-            var actualAttribute = _methodAttributeProvider.Get(methodInfo);
+            var actualAttribute = _methodAttributeProvider.Get(methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -93,7 +93,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public void Get_InvalidTestCase_ThrowNClientException(MethodInfo methodInfo)
         {
             _methodAttributeProvider
-                .Invoking(x => x.Get(methodInfo))
+                .Invoking(x => x.Get(methodInfo, overridingMethods: Array.Empty<MethodInfo>()))
                 .Should()
                 .Throw<NClientException>();
         }

@@ -12,7 +12,7 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IHeaderAttributeProvider
     {
-        HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams);
+        HeaderAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<MethodParam> methodParams);
     }
 
     internal class HeaderAttributeProvider : IHeaderAttributeProvider
@@ -24,7 +24,24 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public HeaderAttribute[] Get(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
+        public HeaderAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<MethodParam> methodParams)
+        {
+            var returnedHeaderNames = new HashSet<string>();
+
+            return Find(clientType, methodInfo, methodParams)
+                .Concat(overridingMethods.SelectMany(x => Find(clientType, x, methodParams)))
+                .Where(x =>
+                {
+                    if (returnedHeaderNames.Contains(x.Name))
+                        return false;
+
+                    returnedHeaderNames.Add(x.Name);
+                    return true;
+                })
+                .ToArray();
+        }
+
+        private HeaderAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
         {
             var clientHeaders = (clientType.IsInterface
                     ? clientType.GetInterfaceCustomAttributes(inherit: true)

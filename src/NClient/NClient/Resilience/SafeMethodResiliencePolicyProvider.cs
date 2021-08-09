@@ -7,9 +7,9 @@ using NClient.Providers.Resilience.Polly;
 
 namespace NClient.Resilience
 {
-    internal class SafePollyMethodResiliencePolicyProvider : PollyMethodResiliencePolicyProviderBase
+    internal class SafeMethodResiliencePolicyProvider : MethodResiliencePolicyProviderBase
     {
-        public SafePollyMethodResiliencePolicyProvider(
+        public SafeMethodResiliencePolicyProvider(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
             Func<ResponseContext, bool>? resultPredicate = null)

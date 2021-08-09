@@ -29,7 +29,7 @@ namespace NClient.Core.Helpers
                 return type.GetCustomAttributes().ToArray();
 
             var attributes = new HashSet<Attribute>(type.GetCustomAttributes());
-            foreach (var interfaceType in type.GetInterfaces())
+            foreach (var interfaceType in type.GetDeclaredInterfaces())
             {
                 foreach (var attribute in GetInterfaceCustomAttributes(interfaceType, inherit: true))
                 {
@@ -38,6 +38,45 @@ namespace NClient.Core.Helpers
             }
 
             return attributes.ToArray();
+        }
+
+        public static MethodInfo[] GetInterfaceMethods(this Type type, bool inherit = false)
+        {
+            if (!type.IsInterface)
+                throw new ArgumentException("Type is not interface.", nameof(type));
+            if (inherit == false)
+                return type.GetMethods().ToArray();
+
+            var methodInfos = new HashSet<MethodInfo>(type.GetMethods());
+            foreach (var interfaceType in type.GetDeclaredInterfaces())
+            {
+                foreach (var methodInfo in GetInterfaceMethods(interfaceType, inherit: true))
+                {
+                    methodInfos.Add(methodInfo);
+                }
+            }
+
+            return methodInfos.ToArray();
+        }
+
+        public static bool HasMultipleInheritance(this Type type)
+        {
+            var interfaces = type.GetDeclaredInterfaces();
+            if (interfaces.Length == 0)
+                return false;
+            if (interfaces.Length > 1)
+                return true;
+
+            return HasMultipleInheritance(interfaces.Single());
+        }
+
+        public static Type[] GetDeclaredInterfaces(this Type type)
+        {
+            Type[] allInterfaces = type.GetInterfaces();
+            var selection = allInterfaces
+                .Where(x => !allInterfaces.Any(i => i.GetInterfaces().Contains(x)))
+                .Except(type.BaseType?.GetInterfaces() ?? Array.Empty<Type>());
+            return selection.ToArray();
         }
     }
 }

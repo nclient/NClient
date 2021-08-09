@@ -31,9 +31,19 @@ namespace NClient.Providers.HttpClient.System
         {
             Ensure.IsNotNull(request, nameof(request));
 
-            var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
+            using var httpRequestMessage = _httpRequestMessageBuilder.Build(request);
             var (httpResponseMessage, exception) = await TrySendAsync(httpRequestMessage).ConfigureAwait(false);
-            return await _httpResponseBuilder.BuildAsync(request, httpResponseMessage, exception).ConfigureAwait(false);
+
+            try
+            {
+                return await _httpResponseBuilder
+                    .BuildAsync(request, httpResponseMessage, exception)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                httpRequestMessage.Dispose();
+            }
         }
 
         private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)

@@ -15,9 +15,8 @@ namespace NClient.Core.Tests
 {
     internal class ObjectMemberManagerTest
     {
+        private static readonly ClientObjectMemberManagerExceptionFactory ExceptionFactory = new();
         private ObjectMemberManager _objectMemberManager = null!;
-        private static readonly IObjectMemberManagerExceptionFactory ExceptionFactory =
-            new ClientValidationExceptionFactory();
 
         public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
         public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
@@ -207,8 +206,7 @@ namespace NClient.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
-            _objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+            _objectMemberManager = new ObjectMemberManager(ExceptionFactory);
         }
 
         [TestCaseSource(nameof(ValidTestCasesForGetMemberValue))]

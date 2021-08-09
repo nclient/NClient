@@ -110,7 +110,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(ValidTestCases))]
         public void Find_ValidTestCase_VersionAttribute(Type clientType, MethodInfo methodInfo, UseVersionAttribute expectedAttribute)
         {
-            var actualAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo);
+            var actualAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -119,7 +119,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public void Find_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo)
         {
             _useVersionAttributeProvider
-                .Invoking(x => x.Find(clientType, methodInfo))
+                .Invoking(x => x.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>()))
                 .Should()
                 .Throw<NClientException>();
         }

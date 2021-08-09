@@ -80,6 +80,8 @@ namespace NClient.Core.Interceptors.Invocation
         {
             if (methodInfo.DeclaringType is null || !methodInfo.DeclaringType.IsGenericType)
                 return false;
+            if (nclientMethodInfo.DeclaringType!.GetGenericArguments().Length != methodInfo.DeclaringType.GetGenericArguments().Length)
+                return false;
 
             var nclientDeclaringTypeWithParam = nclientMethodInfo.DeclaringType!.MakeGenericType(methodInfo.DeclaringType.GetGenericArguments());
             var methodDeclaringTypeWithParam = methodInfo.DeclaringType;
