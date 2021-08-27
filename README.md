@@ -32,6 +32,7 @@ NClient is an automatic type-safe .NET HTTP client that allows you to call web s
   - [Logging](#features-logging)
   - [Dependency injection](#features-di)
   - [Handling](#features-handling)
+  - [File upload/download](#features-files)
   - [System.Net.Http](#features-system-httpclient)
 - [Providers](#providers) 
   - [RestSharp](#providers-restsharp)
@@ -196,7 +197,7 @@ IMyClient myClient = NClientProvider
 Option with creating a builder instance. The `NClientBuilder` class implements the `INClientBuilder` interface, so it is suitable for dependency injection.
 ```C#
 IMyClient myClient = new NClientBuilder()
-    .Use<TInterface, TController>(host: "http://localhost:8080")
+    .Use<TInterface>(host: "http://localhost:8080")
     .Build();
 ```
 #### NClientFactory
@@ -267,6 +268,13 @@ Optionally, you can specify a relative path.
 ```C#
 public interface IMyClient { [GetMethod("entities")] Entity[] Get(); }
 ```
+#### Override attribute
+The methods of the interface can be overridden in the inheriting interfaces. Although this is not an override in the usual sense, because you can change the return type of the method:
+```C#
+public interface IMyController { [GetMethod] Task<int> GetAsync([RouteParam] long id); }
+public interface IMyClient : IMyController { [Override] new Task<string> GetFileAsync(long id); }
+```
+Overridden methods inherit all method and parameters attributes from the method of the inherited interface. If necessary, you can replace the attributes or add new ones. It is worth noting that multiple inheritance is forbidden if you want to override the method.
 #### Parameter attributes
 By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`.
 ```C#
@@ -549,6 +557,50 @@ IMyClient client = NClientProvider
     .Use<IMyClient>(host: "http://localhost:8080")
     .WithCustomHandlers(new IClientHandler[] { new AuthHandler(configuration) })
     .Build();
+```
+
+<a name="features-files"/> 
+
+## File upload/download
+Clients and controllers are able to upload and download files.
+### Controller side
+On the controller side, you do not need to perform any special actions, work with files as in the original ASP.NET Core:
+```C#
+[Api, Path("api/[controller]")]
+public interface IFileController
+{
+    [GetMethod("files/{id}")] Task<IActionResult> GetFileAsync([RouteParam] long id);
+    [PostMethod("files")] Task PostFileAsync(byte[] fileBytes);
+}
+
+public class FileController : ControllerBase, IFileController
+{
+    public async Task<IActionResult> GetTextFileAsync(long id) => 
+        PhysicalFile(physicalPath: "/TextFile.txt", contentType: "text/plain");
+
+    public Task PostTextFileAsync(byte[] fileBytes) => 
+        ...;
+}
+```
+### Client side
+Since one method from the `IFileController` returns the `IActionResult`, it is necessary to override it using the `HttpResponse` as the return value:
+```C#
+public interface IFileClient : IFileController
+{
+    [Override] new Task<HttpResponse> GetFileAsync([RouteParam] long id);
+}
+```
+After creating an interface for a client with an overridden method, you can create a client for downloading and uploading files:
+```C#
+IFileClient client = NClientProvider
+    .Use<IFileClient>(host: "http://localhost:8080")
+    .Build();
+    
+var httpResponseWithFile = await client.GetFileAsync(id: 1);
+var fileBytes = httpResponseWithFile.RawBytes;
+
+var fileBytesForSave = ...;
+await client.PostFileAsync(fileBytesForSave);
 ```
 
 <a name="features-system-httpclient"/> 
