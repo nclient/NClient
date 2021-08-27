@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using NClient;
 using NClient.Abstractions;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
