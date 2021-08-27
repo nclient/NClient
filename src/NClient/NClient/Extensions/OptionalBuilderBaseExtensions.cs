@@ -87,7 +87,7 @@ namespace NClient
         }
 
         /// <summary>
-        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
         /// <param name="clientBuilder"></param>
         /// <param name="retryCount">The retry count.</param>
