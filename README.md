@@ -196,7 +196,7 @@ IMyClient myClient = NClientProvider
 Option with creating a builder instance. The `NClientBuilder` class implements the `INClientBuilder` interface, so it is suitable for dependency injection.
 ```C#
 IMyClient myClient = new NClientBuilder()
-    .Use<TInterface, TController>(host: "http://localhost:8080")
+    .Use<TInterface>(host: "http://localhost:8080")
     .Build();
 ```
 #### NClientFactory
