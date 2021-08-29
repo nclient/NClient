@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<IsPackable>false</IsPackable>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <IsPackable>false</IsPackable>
+        <Configurations>Debug;Release;ReleaseTest</Configurations>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="NClient" Version="*-*" />
-		<PackageReference Include="NClient.Standalone" Version="*-*" />
-		<PackageReference Include="NClient.AspNetCore" Version="*-*" />
-		<PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*" />
-		<PackageReference Include="NClient.Providers.Serialization.Newtonsoft" Version="*-*" />
-		<PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NClient" Version="*-*"/>
+        <PackageReference Include="NClient.Standalone" Version="*-*"/>
+        <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Newtonsoft" Version="*-*"/>
+        <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="Moq" Version="4.16.0" />
-		<PackageReference Include="NUnit" Version="3.12.0" />
-		<PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-		<PackageReference Include="WireMock.Net" Version="1.4.6" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="5.10.3"/>
+        <PackageReference Include="Moq" Version="4.16.0"/>
+        <PackageReference Include="NUnit" Version="3.12.0"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0"/>
+        <PackageReference Include="WireMock.Net" Version="1.4.6"/>
+    </ItemGroup>
 
 </Project>
