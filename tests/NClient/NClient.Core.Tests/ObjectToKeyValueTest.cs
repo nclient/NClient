@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
-using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
@@ -88,13 +87,13 @@ namespace NClient.Core.Tests
             {
                 new("obj", 1),
                 new("obj", 2),
-                new("obj", 3),
+                new("obj", 3)
             }).SetName("Array of int32: multiple items"),
             new TestCaseData(new[] { "str1", "str2", "str3" }, new PropertyKeyValue[]
             {
                 new("obj", "str1"),
                 new("obj", "str2"),
-                new("obj", "str3"),
+                new("obj", "str3")
             }).SetName("Array of strings: multiple items"),
             new TestCaseData(new Dictionary<string, int> { ["str1"] = 1 }, new PropertyKeyValue[]
             {
@@ -104,13 +103,13 @@ namespace NClient.Core.Tests
             {
                 new("obj[str1]", 1),
                 new("obj[str2]", 2),
-                new("obj[str3]", 3),
+                new("obj[str3]", 3)
             }).SetName("Dictionary of strings/int32: multiple items"),
             new TestCaseData(new Dictionary<int, string> { [1] = "str1", [2] = "str2", [3] = "str3" }, new PropertyKeyValue[]
             {
                 new("obj[1]", "str1"),
                 new("obj[2]", "str2"),
-                new("obj[3]", "str3"),
+                new("obj[3]", "str3")
             }).SetName("Dictionary of int32/strings: multiple items"),
             new TestCaseData(new { Prop1 = 1 }, new PropertyKeyValue[]
             {
@@ -135,26 +134,26 @@ namespace NClient.Core.Tests
             {
                 new("obj.Prop1", 1),
                 new("obj.Prop1", 2),
-                new("obj.Prop1", 3),
+                new("obj.Prop1", 3)
             }).SetName("Custom object: array of int32 property"),
             new TestCaseData(new { Prop1 = new[] { "str1", "str2", "str3" } }, new PropertyKeyValue[]
             {
                 new("obj.Prop1", "str1"),
                 new("obj.Prop1", "str2"),
-                new("obj.Prop1", "str3"),
+                new("obj.Prop1", "str3")
             }).SetName("Custom object: array of strings property"),
             new TestCaseData(new { Prop1 = new Dictionary<string, int> { ["str1"] = 1, ["str2"] = 2, ["str3"] = 3 } }, new PropertyKeyValue[]
             {
                 new("obj.Prop1[str1]", 1),
                 new("obj.Prop1[str2]", 2),
-                new("obj.Prop1[str3]", 3),
+                new("obj.Prop1[str3]", 3)
             }).SetName("Custom object: dictionary of int32 property"),
             new TestCaseData(new { Prop1 = new Dictionary<int, string> { [1] = "str1", [2] = "str2", [3] = "str3" } }, new PropertyKeyValue[]
             {
                 new("obj.Prop1[1]", "str1"),
                 new("obj.Prop1[2]", "str2"),
-                new("obj.Prop1[3]", "str3"),
-            }).SetName("Custom object: dictionary of strings property"),
+                new("obj.Prop1[3]", "str3")
+            }).SetName("Custom object: dictionary of strings property")
         };
 
         public static IEnumerable NotSupportedObjectSource = new[]

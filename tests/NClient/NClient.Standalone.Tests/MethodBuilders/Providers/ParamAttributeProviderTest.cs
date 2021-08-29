@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -14,6 +15,8 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     public class ParamAttributeProviderTest
     {
         private interface IImplicitQuery { void Method(int id); }

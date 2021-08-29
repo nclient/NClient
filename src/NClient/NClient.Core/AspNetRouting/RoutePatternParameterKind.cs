@@ -19,6 +19,6 @@
         /// <summary>
         /// The <see cref="RoutePatternParameterKind"/> of a catch-all parameter.
         /// </summary>
-        CatchAll,
+        CatchAll
     }
 }

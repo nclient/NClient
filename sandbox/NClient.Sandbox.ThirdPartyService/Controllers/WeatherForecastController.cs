@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ namespace NClient.Sandbox.ThirdPartyService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [SuppressMessage("ReSharper", "DateTimeNow")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -28,13 +30,13 @@ namespace NClient.Sandbox.ThirdPartyService.Controllers
         {
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Id = rng.Next(1, 10000),
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                {
+                    Id = rng.Next(1, 10000),
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = rng.Next(-20, 55),
+                    Summary = Summaries[rng.Next(Summaries.Length)]
+                })
+                .ToArray();
         }
     }
 }

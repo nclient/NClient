@@ -18,6 +18,6 @@
         /// <summary>
         /// The <see cref="RoutePatternPartKind"/> of a <see cref="RoutePatternSeparatorPart"/>.
         /// </summary>
-        Separator,
+        Separator
     }
 }

@@ -34,7 +34,7 @@ namespace NClient.Core.Castle
         private static readonly ConcurrentDictionary<Type, GenericSynchronousHandler> GenericSynchronousHandlers =
             new ConcurrentDictionary<Type, GenericSynchronousHandler>
             {
-                [typeof(void)] = InterceptSynchronousVoid,
+                [typeof(void)] = InterceptSynchronousVoid
             };
 
         private delegate void GenericSynchronousHandler(AsyncInterceptorBase me, IInvocation invocation);

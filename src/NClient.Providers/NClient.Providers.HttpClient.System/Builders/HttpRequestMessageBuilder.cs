@@ -29,11 +29,7 @@ namespace NClient.Providers.HttpClient.System.Builders
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
             var uri = new Uri(QueryHelpers.AddQueryString(request.Uri.ToString(), parameters));
 
-            var httpRequestMessage = new HttpRequestMessage
-            {
-                Method = request.Method,
-                RequestUri = uri
-            };
+            var httpRequestMessage = new HttpRequestMessage { Method = request.Method, RequestUri = uri };
 
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType));
 

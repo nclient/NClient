@@ -28,9 +28,7 @@ namespace NClient.Sandbox.ThirdPartyService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
             app.UseSwagger();
             app.UseSwaggerUI(x =>

@@ -53,8 +53,8 @@ namespace NClient.Core.Interceptors.MethodBuilders
                     .ToArray();
                 overridingMethods.Add(allOverridingMethods.First());
                 overridingMethods.AddRange(allOverridingMethods.Skip(1)
-                        .TakeWhile(x => x.GetCustomAttribute<OverrideAttribute>() is not null)
-                        .ToArray());
+                    .TakeWhile(x => x.GetCustomAttribute<OverrideAttribute>() is not null)
+                    .ToArray());
             }
 
             var methodAttribute = _methodAttributeProvider.Get(methodInfo, overridingMethods);

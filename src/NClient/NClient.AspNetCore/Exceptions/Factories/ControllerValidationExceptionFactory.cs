@@ -24,6 +24,6 @@
             new($"NClient interface for controller '{controllerName}' not found.");
 
         public ControllerValidationException ControllersNotFound() =>
-            new($"NClient controllers not found.");
+            new("NClient controllers not found.");
     }
 }
