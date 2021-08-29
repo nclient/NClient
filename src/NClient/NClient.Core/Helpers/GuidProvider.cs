@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NClient.Core.Helpers
 {
@@ -7,6 +8,7 @@ namespace NClient.Core.Helpers
         Guid Create();
     }
 
+    [SuppressMessage("ReSharper", "GuidNew")]
     public class GuidProvider : IGuidProvider
     {
         public Guid Create()
