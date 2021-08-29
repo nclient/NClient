@@ -361,7 +361,7 @@
 	
 	
 	<s:String x:Key="/Default/CodeStyle/CodeCleanup/Profiles/=Copy_0020of_0020Built_002Din_003A_0020Full_0020Cleanup/@EntryIndexedValue">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Profile name="Copy of Built-in: Full Cleanup"&gt;&lt;XMLReformatCode&gt;True&lt;/XMLReformatCode&gt;&lt;CSCodeStyleAttributes ArrangeTypeAccessModifier="False" ArrangeTypeMemberAccessModifier="False" SortModifiers="False" RemoveRedundantParentheses="False" AddMissingParentheses="False" ArrangeBraces="False" ArrangeAttributes="False" ArrangeArgumentsStyle="False" ArrangeCodeBodyStyle="False" ArrangeVarStyle="False" ArrangeTrailingCommas="False" ArrangeObjectCreation="False" ArrangeDefaultValue="False" /&gt;&lt;Xaml.RedundantFreezeAttribute&gt;True&lt;/Xaml.RedundantFreezeAttribute&gt;&lt;Xaml.RemoveRedundantModifiersAttribute&gt;True&lt;/Xaml.RemoveRedundantModifiersAttribute&gt;&lt;Xaml.RemoveRedundantNameAttribute&gt;True&lt;/Xaml.RemoveRedundantNameAttribute&gt;&lt;Xaml.RemoveRedundantResource&gt;True&lt;/Xaml.RemoveRedundantResource&gt;&lt;Xaml.RemoveRedundantCollectionProperty&gt;True&lt;/Xaml.RemoveRedundantCollectionProperty&gt;&lt;Xaml.RemoveRedundantAttachedPropertySetter&gt;True&lt;/Xaml.RemoveRedundantAttachedPropertySetter&gt;&lt;Xaml.RemoveRedundantStyledValue&gt;True&lt;/Xaml.RemoveRedundantStyledValue&gt;&lt;Xaml.RemoveRedundantNamespaceAlias&gt;True&lt;/Xaml.RemoveRedundantNamespaceAlias&gt;&lt;Xaml.RemoveForbiddenResourceName&gt;True&lt;/Xaml.RemoveForbiddenResourceName&gt;&lt;Xaml.RemoveRedundantGridDefinitionsAttribute&gt;True&lt;/Xaml.RemoveRedundantGridDefinitionsAttribute&gt;&lt;Xaml.RemoveRedundantGridSpanAttribut&gt;True&lt;/Xaml.RemoveRedundantGridSpanAttribut&gt;&lt;Xaml.RemoveRedundantUpdateSourceTriggerAttribute&gt;True&lt;/Xaml.RemoveRedundantUpdateSourceTriggerAttribute&gt;&lt;Xaml.RemoveRedundantBindingModeAttribute&gt;True&lt;/Xaml.RemoveRedundantBindingModeAttribute&gt;&lt;CSOptimizeUsings&gt;&lt;OptimizeUsings&gt;False&lt;/OptimizeUsings&gt;&lt;EmbraceInRegion&gt;False&lt;/EmbraceInRegion&gt;&lt;RegionName&gt;&lt;/RegionName&gt;&lt;/CSOptimizeUsings&gt;&lt;CSReformatCode&gt;True&lt;/CSReformatCode&gt;&lt;/Profile&gt;</s:String>
-	<s:String x:Key="/Default/CodeStyle/CodeCleanup/RecentlyUsedProfile/@EntryValue">Copy of Built-in: Full Cleanup</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeCleanup/RecentlyUsedProfile/@EntryValue">Built-in: Reformat Code</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/SHOW_AUTODETECT_CONFIGURE_FORMATTING_TIP/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpCodeStyle/ARGUMENTS_ANONYMOUS_FUNCTION/@EntryValue">Named</s:String>
 	
@@ -407,6 +407,7 @@
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_EXPR_ACCESSOR_ON_SINGLE_LINE/@EntryValue">ALWAYS</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_EXPR_METHOD_ON_SINGLE_LINE/@EntryValue">ALWAYS</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_EXPR_PROPERTY_ON_SINGLE_LINE/@EntryValue">ALWAYS</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_FIELD_ATTRIBUTE_ON_SAME_LINE_EX/@EntryValue">NEVER</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_SIMPLE_ANONYMOUSMETHOD_ON_SINGLE_LINE/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/PLACE_SIMPLE_EMBEDDED_STATEMENT_ON_SAME_LINE/@EntryValue">NEVER</s:String>
 	
@@ -418,6 +419,9 @@
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_BEFORE_BINARY_OPSIGN/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_EXTENDS_LIST_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_LIMIT/@EntryValue">413</s:Int64>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/XmlDocFormatter/IndentSubtags/@EntryValue">RemoveIndent</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/XmlDocFormatter/IndentTagContent/@EntryValue">ZeroIndent</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/XmlDocFormatter/ProcessingInstructionAttributeIndenting/@EntryValue">OneStep</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CSharpUsing/CanUseGlobalAlias/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CSharpVarKeywordUsage/PreferExplicitDiscardDeclaration/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CSharpVarKeywordUsage/PreferSeparateDeconstructedVariablesDeclaration/@EntryValue">True</s:Boolean>
