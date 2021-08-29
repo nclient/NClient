@@ -30,7 +30,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public interface IClientDeepInheritance : IClientDeepInheritanceBase { }
         public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
         [Path("template")] public interface IControllerDeepInheritance { }
-        
+
         public static IEnumerable ValidTestCases = new[]
         {
             new TestCaseData(typeof(IClientWithout), null)

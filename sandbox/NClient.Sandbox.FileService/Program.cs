@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace NClient.Sandbox.FileService
@@ -15,7 +15,7 @@ namespace NClient.Sandbox.FileService
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>(); 
+                    webBuilder.UseStartup<Startup>();
                 });
         }
     }

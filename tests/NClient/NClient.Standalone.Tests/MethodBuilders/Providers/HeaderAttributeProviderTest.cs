@@ -82,8 +82,8 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                     new[] { new HeaderAttribute("client-header", "value"), new HeaderAttribute("method-header", "value") })
                 .SetName("Client and method header"),
             new TestCaseData(typeof(IClientAndMethodHeaders), GetMethodInfo<IClientAndMethodHeaders>(), Array.Empty<MethodParam>(),
-                    new[] 
-                    { 
+                    new[]
+                    {
                         new HeaderAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value"),
                         new HeaderAttribute("method-header-1", "value"), new HeaderAttribute("method-header-2", "value")
                     })
