@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace NClient.Core.Helpers
 {
-    internal class MethodInfoEqualityComparer : OverridingMethodInfoEqualityComparer, IEqualityComparer<MethodInfo>
+    internal class MethodInfoEqualityComparer : OverridingMethodInfoEqualityComparer
     {
         public override bool Equals(MethodInfo left, MethodInfo right)
         {

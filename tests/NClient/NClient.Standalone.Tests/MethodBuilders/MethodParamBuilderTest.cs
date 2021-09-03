@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -13,6 +14,7 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class MethodParamBuilderTest
     {
         private interface IBasicClient { int Get(int id); }

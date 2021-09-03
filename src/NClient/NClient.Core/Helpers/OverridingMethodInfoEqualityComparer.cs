@@ -14,9 +14,9 @@ namespace NClient.Core.Helpers
                 return false;
 
             return left.MemberType == right.MemberType
-                   && left.Name == right.Name
-                   && left.GetParameters().Select(x => x.ParameterType)
-                       .SequenceEqual(right.GetParameters().Select(x => x.ParameterType));
+                && left.Name == right.Name
+                && left.GetParameters().Select(x => x.ParameterType)
+                    .SequenceEqual(right.GetParameters().Select(x => x.ParameterType));
         }
 
         public virtual int GetHashCode(MethodInfo obj)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -13,21 +14,23 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     public class MethodAttributeProviderTest
     {
-        private interface IGetMethod {[GetMethod] void Method(); }
-        private interface IPostMethod {[PostMethod] void Method(); }
-        private interface IPutMethod {[PutMethod] void Method(); }
-        private interface IDeleteMethod {[DeleteMethod] void Method(); }
+        private interface IGetMethod { [GetMethod] void Method(); }
+        private interface IPostMethod { [PostMethod] void Method(); }
+        private interface IPutMethod { [PutMethod] void Method(); }
+        private interface IDeleteMethod { [DeleteMethod] void Method(); }
 
-        private interface IMethodWithTemplate {[GetMethod("template")] void Method(); }
-        private interface IMethodWithName {[GetMethod(Name = "name")] void Method(); }
-        private interface IMethodWithOrder {[GetMethod(Order = 1)] void Method(); }
-        private interface IMethodWithFull {[GetMethod("template", Name = "name", Order = 1)] void Method(); }
+        private interface IMethodWithTemplate { [GetMethod("template")] void Method(); }
+        private interface IMethodWithName { [GetMethod(Name = "name")] void Method(); }
+        private interface IMethodWithOrder { [GetMethod(Order = 1)] void Method(); }
+        private interface IMethodWithFull { [GetMethod("template", Name = "name", Order = 1)] void Method(); }
 
-        private interface IOtherAndMethod {[Other, GetMethod] void Method(); }
-        private interface INotSupported {[NotSupported] void Method(); }
-        private interface IMNotSupportedWithTemplate {[NotSupported("template")] void Method(); }
+        private interface IOtherAndMethod { [Other, GetMethod] void Method(); }
+        private interface INotSupported { [NotSupported] void Method(); }
+        private interface IMNotSupportedWithTemplate { [NotSupported("template")] void Method(); }
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -54,12 +57,12 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(GetMethodInfo<INotSupported>(), new NotSupportedAttribute())
                 .SetName("With not supported attribute"),
             new TestCaseData(GetMethodInfo<IMNotSupportedWithTemplate>(), new NotSupportedAttribute("template"))
-                .SetName("With not supported method attribute with template"),
+                .SetName("With not supported method attribute with template")
         };
 
         private interface IWithout { void Method(); }
-        private interface IOther {[Other] void Method(); }
-        private interface INotSupportedAndMethod {[NotSupported, GetMethod] void Method(); }
+        private interface IOther { [Other] void Method(); }
+        private interface INotSupportedAndMethod { [NotSupported, GetMethod] void Method(); }
 
         public static IEnumerable InvalidTestCases = new[]
         {
@@ -68,7 +71,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(GetMethodInfo<IOther>())
                 .SetName("With other attribute"),
             new TestCaseData(GetMethodInfo<INotSupportedAndMethod>())
-                .SetName("With not supported and method attribute"),
+                .SetName("With not supported and method attribute")
         };
 
         private MethodAttributeProvider _methodAttributeProvider = null!;

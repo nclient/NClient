@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using NClient.Annotations.Methods;
 using NClient.Testing.Common;
@@ -7,9 +8,10 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class RequestBuilderMethodTest : RequestBuilderTestBase
     {
-        private interface IGetMethod {[GetMethod] int Method(); }
+        private interface IGetMethod { [GetMethod] int Method(); }
 
         [Test]
         public void Build_GetMethod_GetHttpMethodRequest()

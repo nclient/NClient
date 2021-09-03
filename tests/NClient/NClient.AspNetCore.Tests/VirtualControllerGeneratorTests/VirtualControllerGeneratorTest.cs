@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using FluentAssertions;
@@ -14,12 +15,14 @@ using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
-using NClient.Core.Exceptions;
 using NClient.Core.Helpers;
 using NUnit.Framework;
 
 namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
 {
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]
     public class VirtualControllerGeneratorTest
     {
         private VirtualControllerGenerator _virtualControllerGenerator = null!;

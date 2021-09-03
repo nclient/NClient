@@ -1,6 +1,6 @@
 ﻿namespace NClient.Annotations.Methods
 {
-#if !NETSTANDARD2_0
+    #if !NETSTANDARD2_0
     /// <summary>
     /// Identifies an action that supports the HTTP PATCH method.
     /// </summary>
@@ -14,5 +14,5 @@
         {
         }
     }
-#endif
+    #endif
 }

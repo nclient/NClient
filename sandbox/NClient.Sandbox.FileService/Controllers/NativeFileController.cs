@@ -44,7 +44,7 @@ namespace NClient.Sandbox.FileService.Controllers
             if (fileBytes.Length == 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-            _logger.LogInformation($"File was saved (not really).");
+            _logger.LogInformation("File was saved (not really).");
             return Task.CompletedTask;
         }
 

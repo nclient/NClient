@@ -19,12 +19,12 @@ namespace NClient.Core.Exceptions
         /// </summary>
         public MethodInfo MethodInfo { get; set; } = null!;
 
-        public ClientException(string message)
+        protected ClientException(string message)
             : base(message)
         {
         }
 
-        public ClientException(string message, Type interfaceType, MethodInfo methodInfo)
+        protected ClientException(string message, Type interfaceType, MethodInfo methodInfo)
             : base(message)
         {
             InterfaceType = interfaceType;

@@ -403,9 +403,9 @@ namespace NClient.Core.AspNetRouting
                     if (!found)
                     {
                         throw new InvalidOperationException(
-                            $"No corresponding parameter or default value could be found for the required value " +
+                            "No corresponding parameter or default value could be found for the required value " +
                             $"'{kvp.Key}={kvp.Value}'. A non-null required value must correspond to a route parameter or the " +
-                            $"route pattern must have a matching default value.");
+                            "route pattern must have a matching default value.");
                     }
                 }
             }

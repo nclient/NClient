@@ -4,7 +4,6 @@ using FluentAssertions;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Core.AspNetRouting;
-using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Interceptors.RequestBuilders;
@@ -260,7 +259,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [Test]
         public void Build_PrimitiveParameterToken_MethodParameterValue()
         {
-            var intValue = 1;
+            const int intValue = 1;
             var routeTemplate = TemplateParser.Parse("{id}");
 
             var route = RouteProvider.Build(
@@ -279,7 +278,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [Test]
         public void Build_ParameterTokenWithStaticPart_MethodParameterValueWithStaticPart()
         {
-            var intValue = 1;
+            const int intValue = 1;
             var routeTemplate = TemplateParser.Parse("id-{id}");
 
             var route = RouteProvider.Build(
@@ -299,7 +298,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [Test]
         public void Build_StringParameterToken_MethodParameterValue()
         {
-            var stringValue = "str";
+            const string stringValue = "str";
             var routeTemplate = TemplateParser.Parse("{id}");
 
             var route = RouteProvider.Build(
@@ -318,7 +317,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [Test]
         public void Build_DecimalParameterToken_MethodParameterValue()
         {
-            var decimalValue = 1.2d;
+            const double decimalValue = 1.2d;
             var routeTemplate = TemplateParser.Parse("{id}");
 
             var route = RouteProvider.Build(
@@ -356,7 +355,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
         [Test]
         public void Build_EnumParameterToken_MethodParameterValue()
         {
-            var enumValue = HttpStatusCode.OK;
+            const HttpStatusCode enumValue = HttpStatusCode.OK;
             var routeTemplate = TemplateParser.Parse("{id}");
 
             var route = RouteProvider.Build(
@@ -438,7 +437,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id , Value = 2 }, new BodyParamAttribute())
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new BodyParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -457,7 +456,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomJsonName { Id = id , Value = 2 }, new BodyParamAttribute())
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomJsonName { Id = id, Value = 2 }, new BodyParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -476,7 +475,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new BodyParamAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -496,7 +495,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new BodyParamAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -516,7 +515,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id , Value = 2 }, new QueryParamAttribute())
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -535,7 +534,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomQueryName { Id = id , Value = 2 }, new QueryParamAttribute())
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -554,7 +553,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomFromQueryName { Id = id , Value = 2 }, new QueryParamAttribute())
+                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomFromQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -573,7 +572,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new QueryParamAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -593,7 +592,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1 , Value = 2 }, new QueryParamAttribute())
+                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()

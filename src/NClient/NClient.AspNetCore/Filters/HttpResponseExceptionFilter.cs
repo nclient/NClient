@@ -6,9 +6,11 @@ namespace NClient.AspNetCore.Filters
 {
     internal class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
     {
-        public int Order { get; } = int.MaxValue;
+        public int Order => int.MaxValue;
 
-        public void OnActionExecuting(ActionExecutingContext context) { }
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+        }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {

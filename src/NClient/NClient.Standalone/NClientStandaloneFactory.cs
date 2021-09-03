@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;

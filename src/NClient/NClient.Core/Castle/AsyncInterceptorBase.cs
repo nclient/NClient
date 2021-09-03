@@ -20,12 +20,12 @@ namespace NClient.Core.Castle
         Justification = "Must propagate the same exceptions.")]
     internal abstract class AsyncInterceptorBase : IAsyncInterceptor
     {
-#if !NETSTANDARD2_0 && !NET5_0
+        #if !NETSTANDARD2_0 && !NET5_0
         /// <summary>
         /// A completed <see cref="Task"/>.
         /// </summary>
         private static readonly Task CompletedTask = Task.FromResult(0);
-#endif
+        #endif
 
         private static readonly MethodInfo InterceptSynchronousMethodInfo =
             typeof(AsyncInterceptorBase).GetMethod(
@@ -34,7 +34,7 @@ namespace NClient.Core.Castle
         private static readonly ConcurrentDictionary<Type, GenericSynchronousHandler> GenericSynchronousHandlers =
             new ConcurrentDictionary<Type, GenericSynchronousHandler>
             {
-                [typeof(void)] = InterceptSynchronousVoid,
+                [typeof(void)] = InterceptSynchronousVoid
             };
 
         private delegate void GenericSynchronousHandler(AsyncInterceptorBase me, IInvocation invocation);
@@ -141,21 +141,21 @@ namespace NClient.Core.Castle
             try
             {
                 proceedInfo.Invoke();
-#if NETSTANDARD2_0 || NET5_0
+                #if NETSTANDARD2_0 || NET5_0
                 return Task.CompletedTask;
-#else
+                #else
                 return CompletedTask;
-#endif
+                #endif
             }
             catch (Exception e)
             {
-#if NETSTANDARD2_0 || NET5_0
+                #if NETSTANDARD2_0 || NET5_0
                 return Task.FromException(e);
-#else
+                #else
                 var tcs = new TaskCompletionSource<int>();
                 tcs.SetException(e);
                 return tcs.Task;
-#endif
+                #endif
             }
         }
 
@@ -170,13 +170,13 @@ namespace NClient.Core.Castle
             }
             catch (Exception e)
             {
-#if NETSTANDARD2_0 || NET5_0
+                #if NETSTANDARD2_0 || NET5_0
                 return Task.FromException<TResult>(e);
-#else
+                #else
                 var tcs = new TaskCompletionSource<TResult>();
                 tcs.SetException(e);
                 return tcs.Task;
-#endif
+                #endif
             }
         }
 

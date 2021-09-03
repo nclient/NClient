@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Tests.Clients;
 using NUnit.Framework;

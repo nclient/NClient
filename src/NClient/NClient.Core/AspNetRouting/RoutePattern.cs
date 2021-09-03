@@ -29,17 +29,17 @@ namespace NClient.Core.AspNetRouting
 
         private const string SeparatorString = "/";
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         internal RoutePattern(
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             string? rawText,
             IReadOnlyDictionary<string, object?> defaults,
             IReadOnlyDictionary<string, IReadOnlyList<RoutePatternParameterPolicyReference>> parameterPolicies,
@@ -54,21 +54,21 @@ namespace NClient.Core.AspNetRouting
             Debug.Assert(pathSegments != null);
 
             RawText = rawText;
-#pragma warning disable CS8601 // Possible null reference assignment.
+            #pragma warning disable CS8601 // Possible null reference assignment.
             Defaults = defaults;
-#pragma warning restore CS8601 // Possible null reference assignment.
-#pragma warning disable CS8601 // Possible null reference assignment.
+            #pragma warning restore CS8601 // Possible null reference assignment.
+            #pragma warning disable CS8601 // Possible null reference assignment.
             ParameterPolicies = parameterPolicies;
-#pragma warning restore CS8601 // Possible null reference assignment.
-#pragma warning disable CS8601 // Possible null reference assignment.
+            #pragma warning restore CS8601 // Possible null reference assignment.
+            #pragma warning disable CS8601 // Possible null reference assignment.
             RequiredValues = requiredValues;
-#pragma warning restore CS8601 // Possible null reference assignment.
-#pragma warning disable CS8601 // Possible null reference assignment.
+            #pragma warning restore CS8601 // Possible null reference assignment.
+            #pragma warning disable CS8601 // Possible null reference assignment.
             Parameters = parameters;
-#pragma warning restore CS8601 // Possible null reference assignment.
-#pragma warning disable CS8601 // Possible null reference assignment.
+            #pragma warning restore CS8601 // Possible null reference assignment.
+            #pragma warning disable CS8601 // Possible null reference assignment.
             PathSegments = pathSegments;
-#pragma warning restore CS8601 // Possible null reference assignment.
+            #pragma warning restore CS8601 // Possible null reference assignment.
 
             InboundPrecedence = RoutePrecedence.ComputeInbound(this);
             OutboundPrecedence = RoutePrecedence.ComputeOutbound(this);

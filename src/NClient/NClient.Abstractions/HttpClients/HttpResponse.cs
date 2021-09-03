@@ -150,7 +150,7 @@ namespace NClient.Abstractions.HttpClients
 
             try
             {
-                var encoding = Encoding.GetEncoding(encodingName) ?? Encoding.UTF8;
+                var encoding = Encoding.GetEncoding(encodingName);
                 return AsString(bytes, encoding);
             }
             catch (ArgumentException)

@@ -51,7 +51,7 @@ namespace NClient.Tests.ControllerBasedClientTests
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -71,7 +71,7 @@ namespace NClient.Tests.ControllerBasedClientTests
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -90,7 +90,7 @@ namespace NClient.Tests.ControllerBasedClientTests
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -109,7 +109,7 @@ namespace NClient.Tests.ControllerBasedClientTests
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 

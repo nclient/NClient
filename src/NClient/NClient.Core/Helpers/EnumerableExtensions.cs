@@ -11,9 +11,7 @@ namespace NClient.Core.Helpers
             foreach (var element in source)
             {
                 if (seenKeys.Add(keySelector(element)))
-                {
                     yield return element;
-                }
             }
         }
     }

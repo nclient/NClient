@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using NClient.Abstractions;
-using NClient.Abstractions.Clients;
 
 namespace NClient.Testing.Common.Clients
 {
