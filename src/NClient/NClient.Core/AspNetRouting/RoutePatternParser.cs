@@ -81,9 +81,9 @@ namespace NClient.Core.AspNetRouting
 
             while (true)
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var i = context.Index;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 if (context.Current == OpenBrace)
                 {
@@ -137,9 +137,9 @@ namespace NClient.Core.AspNetRouting
 
             if (IsSegmentValid(context, parts))
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 segments.Add(new RoutePatternPathSegment(parts));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                #pragma warning restore CS8602 // Dereference of a possibly null reference.
                 return true;
             }
             else
@@ -453,13 +453,13 @@ namespace NClient.Core.AspNetRouting
             Debug.Assert(context != null);
             Debug.Assert(literal != null);
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (literal.IndexOf(QuestionMark) != -1)
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                #pragma warning restore CS8602 // Dereference of a possibly null reference.
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 context.Error = string.Format("The literal section '{0}' is invalid. Literal sections cannot contain the '?' character.", literal);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                #pragma warning restore CS8602 // Dereference of a possibly null reference.
                 return false;
             }
 
@@ -492,14 +492,14 @@ namespace NClient.Core.AspNetRouting
 
             private readonly HashSet<string> _parameterNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public Context(string template)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+                #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             {
                 Debug.Assert(template != null);
-#pragma warning disable CS8601 // Possible null reference assignment.
+                #pragma warning disable CS8601 // Possible null reference assignment.
                 _template = template;
-#pragma warning restore CS8601 // Possible null reference assignment.
+                #pragma warning restore CS8601 // Possible null reference assignment.
 
                 _index = -1;
             }
@@ -511,11 +511,7 @@ namespace NClient.Core.AspNetRouting
 
             public int Index => _index;
 
-            public string Error
-            {
-                get;
-                set;
-            }
+            public string Error { get; set; }
 
             public HashSet<string> ParameterNames
             {
@@ -555,9 +551,9 @@ namespace NClient.Core.AspNetRouting
                 }
                 else
                 {
-#pragma warning disable CS8603 // Possible null reference return.
+                    #pragma warning disable CS8603 // Possible null reference return.
                     return null;
-#pragma warning restore CS8603 // Possible null reference return.
+                    #pragma warning restore CS8603 // Possible null reference return.
                 }
             }
 

@@ -13,9 +13,7 @@ namespace NClient.Core.Interceptors
             var concreteMethod = invocation.GetConcreteMethod();
 
             if (concreteMethod.ReturnType.IsValueType && concreteMethod.ReturnType != typeof(void))
-            {
                 invocation.ReturnValue = Activator.CreateInstance(concreteMethod.ReturnType);
-            }
         }
     }
 }

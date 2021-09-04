@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
@@ -6,6 +7,7 @@ namespace NClient.Tests.Controllers
 {
     [ApiController]
     [Route("api/sync")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     public class SyncController : ControllerBase, ISyncClient
     {
         [HttpGet]

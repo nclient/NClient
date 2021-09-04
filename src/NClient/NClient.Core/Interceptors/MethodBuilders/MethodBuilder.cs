@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using NClient.Annotations;
+using NClient.Core.Helpers;
 using NClient.Core.Interceptors.MethodBuilders.Models;
 using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Exceptions;
 
 namespace NClient.Core.Interceptors.MethodBuilders
 {
@@ -34,14 +39,32 @@ namespace NClient.Core.Interceptors.MethodBuilders
 
         public Method Build(Type clientType, MethodInfo methodInfo)
         {
-            var methodAttribute = _methodAttributeProvider.Get(methodInfo);
-            var methodParams = _methodParamBuilder.Build(methodInfo);
+            var overridingMethods = new List<MethodInfo>();
+            var isOverridingMethod = methodInfo.GetCustomAttribute<OverrideAttribute>() is not null;
+            if (isOverridingMethod)
+            {
+                if (clientType.HasMultipleInheritance())
+                    throw new ClientValidationException($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
+
+                var overridingMethodInfoEqualityComparer = new OverridingMethodInfoEqualityComparer();
+                var allOverridingMethods = clientType.GetInterfaceMethods(inherit: true)
+                    .Where(x => overridingMethodInfoEqualityComparer.Equals(x, methodInfo))
+                    .Except(new[] { methodInfo })
+                    .ToArray();
+                overridingMethods.Add(allOverridingMethods.First());
+                overridingMethods.AddRange(allOverridingMethods.Skip(1)
+                    .TakeWhile(x => x.GetCustomAttribute<OverrideAttribute>() is not null)
+                    .ToArray());
+            }
+
+            var methodAttribute = _methodAttributeProvider.Get(methodInfo, overridingMethods);
+            var methodParams = _methodParamBuilder.Build(methodInfo, overridingMethods);
 
             return new Method(methodInfo.Name, clientType.Name, methodAttribute, methodParams)
             {
-                UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo),
                 PathAttribute = _pathAttributeProvider.Find(clientType),
-                HeaderAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams),
+                UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
+                HeaderAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams)
             };
         }
     }

@@ -10,8 +10,8 @@ namespace NClient.Core.Interceptors.MethodBuilders.Models
         public string Name { get; }
         public string ClientName { get; }
         public MethodAttribute Attribute { get; }
-        public UseVersionAttribute? UseVersionAttribute { get; set; }
         public PathAttribute? PathAttribute { get; set; }
+        public UseVersionAttribute? UseVersionAttribute { get; set; }
         public HeaderAttribute[] HeaderAttributes { get; set; }
         public MethodParam[] Params { get; }
 

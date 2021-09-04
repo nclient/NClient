@@ -1,40 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<PackageId>$(AssemblyName)</PackageId>
-		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
-		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageTags>NClient;RestSharp;HttpClient;Api;WebApi;Rest</PackageTags>
-		<Description>RestSharp based HTTP client provider for NClient.</Description>
-		<Authors>smolchanovsky</Authors>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <PackageId>$(AssemblyName)</PackageId>
+        <VersionPrefix>$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>NClient;RestSharp;HttpClient;Api;WebApi;Rest</PackageTags>
+        <Description>RestSharp based HTTP client provider for NClient.</Description>
+        <Authors>smolchanovsky</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Configurations>Debug;Release;ReleaseTest</Configurations>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="RestSharp" Version="106.11.7" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="RestSharp" Version="106.12.0"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
 </Project>

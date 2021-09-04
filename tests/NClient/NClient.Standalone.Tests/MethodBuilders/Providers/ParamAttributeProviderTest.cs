@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -14,6 +15,8 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     public class ParamAttributeProviderTest
     {
         private interface IImplicitQuery { void Method(int id); }
@@ -122,7 +125,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_ParamAttribute(ParameterInfo parameterInfo, ParamAttribute expectedAttribute)
         {
-            var actualAttribute = _paramAttributeProvider.Get(parameterInfo);
+            var actualAttribute = _paramAttributeProvider.Get(parameterInfo, overridingParams: Array.Empty<ParameterInfo>());
 
             actualAttribute.Should().BeEquivalentTo(expectedAttribute);
         }
@@ -131,7 +134,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public void Get_InvalidTestCase_ThrowNClientException(ParameterInfo parameterInfo)
         {
             _paramAttributeProvider
-                .Invoking(x => x.Get(parameterInfo))
+                .Invoking(x => x.Get(parameterInfo, overridingParams: Array.Empty<ParameterInfo>()))
                 .Should()
                 .Throw<NClientException>();
         }

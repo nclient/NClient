@@ -26,16 +26,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="5.0.2" />
+        <PackageReference Include="System.Text.Json" Version="5.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
     </ItemGroup>
 
     <ItemGroup>

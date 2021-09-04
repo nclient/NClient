@@ -4,7 +4,6 @@ using NClient.Annotations;
 using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
 namespace NClient.Mappers
@@ -25,11 +24,11 @@ namespace NClient.Mappers
                 { Name: "HttpPutAttribute" } => new PutMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpDeleteAttribute" } => new DeleteMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
                 { Name: "HttpOptionsAttribute" } => new OptionsMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
-#if !NETSTANDARD2_0
+                #if !NETSTANDARD2_0
                 { Name: "HttpPatchAttribute" } => new PatchMethodAttribute(GetTemplate(attribute)) { Order = GetOrder(attribute) },
-#endif
+                #endif
 
-                { Name: "ProducesResponseTypeAttribute" } x => new ResponseAttribute(
+                { Name: "ProducesResponseTypeAttribute" } => new ResponseAttribute(
                     type: GetProperty<Type>(attribute, "Type"),
                     statusCode: GetProperty<HttpStatusCode>(attribute, "StatusCode")),
 

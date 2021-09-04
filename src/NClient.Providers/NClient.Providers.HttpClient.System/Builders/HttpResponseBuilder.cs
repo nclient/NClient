@@ -31,14 +31,14 @@ namespace NClient.Providers.HttpClient.System.Builders
             var contentHeaders = httpResponseMessage.Content.Headers
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
                 .ToArray();
-            var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var rawBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
             var httpResponse = new HttpResponse(request)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
                 ContentLength = httpResponseMessage.Content.Headers.ContentLength,
                 ContentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault(),
-                Content = content,
+                RawBytes = rawBytes,
                 StatusCode = httpResponseMessage.StatusCode,
                 StatusDescription = httpResponseMessage.StatusCode.ToString(),
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,

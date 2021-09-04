@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using NClient.Common.Helpers;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 
@@ -47,7 +46,6 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
             return properties.Concat(fields).ToArray();
         }
 
-
         public MemberInfo GetByName(object obj, string memberName, IMemberNameSelector memberNameSelector)
         {
             var memberNamePairs = GetPublic(obj)
@@ -78,7 +76,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                        ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else
@@ -111,7 +109,7 @@ namespace NClient.Core.Helpers.ObjectMemberManagers
                 {
                     var member = GetByName(obj, nextObjName, memberNameSelector);
                     obj = GetValue(member, obj)
-                          ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
+                        ?? throw _exceptionFactory.MemberValueOfObjectInRouteIsNull(member.Name, obj.GetType().Name);
                     memberPath = nextMemberPath;
                 }
                 else

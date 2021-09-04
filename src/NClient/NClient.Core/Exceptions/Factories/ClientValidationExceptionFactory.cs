@@ -1,10 +1,12 @@
 ﻿using System;
+using NClient.Annotations;
 using NClient.Exceptions;
 
 namespace NClient.Core.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {
+        ClientValidationException OverrideAttributeWithMultipleInheritance();
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes();
         ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames);
@@ -28,11 +30,14 @@ namespace NClient.Core.Exceptions.Factories
 
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
     {
+        public ClientValidationException OverrideAttributeWithMultipleInheritance() =>
+            new($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
+
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
             new($"Header parameters duplicate static headers. Header names: {string.Join(",", headerNames)}");
 
         public ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
-            new($"The client name consists only of suffixes and/or prefixes.");
+            new("The client name consists only of suffixes and/or prefixes.");
 
         public ClientValidationException RouteParamWithoutTokenInRoute(params string[] paramNames) =>
             new($"Parameters with route attribute '{string.Join(",", paramNames)}' do not have tokens in route template.");
@@ -47,7 +52,7 @@ namespace NClient.Core.Exceptions.Factories
             new($"The parameter '{parameterName}' cannot be be used in a route template: parameters in a route template must be a primitive type.");
 
         public ClientValidationException UsedVersionTokenButVersionAttributeNotFound() =>
-            new($"The token 'version' is used, but VersionAttribute not found.");
+            new("The token 'version' is used, but VersionAttribute not found.");
 
         public ClientValidationException TokenNotMatchAnyMethodParameter(string tokenName) =>
             new($"The token '{tokenName}' in route template does not match any method parameters.");

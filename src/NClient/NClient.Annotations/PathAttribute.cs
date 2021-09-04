@@ -4,7 +4,7 @@ using NClient.Common.Helpers;
 namespace NClient.Annotations
 {
     /// <summary>
-    /// Specifies an attribute route on a controller.
+    /// An attribute that specifies route on a controller.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
     public class PathAttribute : Attribute

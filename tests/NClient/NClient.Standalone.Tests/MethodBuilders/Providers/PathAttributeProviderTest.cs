@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
@@ -11,6 +12,8 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     public class PathAttributeProviderTest
     {
         private interface IClientWithout { }
@@ -27,7 +30,6 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public interface IClientDeepInheritance : IClientDeepInheritanceBase { }
         public interface IClientDeepInheritanceBase : IControllerDeepInheritance { }
         [Path("template")] public interface IControllerDeepInheritance { }
-
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -48,7 +50,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(typeof(IClientInheritance), new PathAttribute("template"))
                 .SetName("With inheritance"),
             new TestCaseData(typeof(IClientDeepInheritance), new PathAttribute("template"))
-                .SetName("With deep inheritance"),
+                .SetName("With deep inheritance")
         };
 
         [Path("template")] public interface IClientOverride : IControllerOverride { }
@@ -57,7 +59,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(typeof(IClientOverride))
-                .SetName("With override path"),
+                .SetName("With override path")
         };
 
         private PathAttributeProvider _pathAttributeProvider = null!;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Versioning;
@@ -10,7 +11,7 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IUseVersionAttributeProvider
     {
-        UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo);
+        UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class UseVersionAttributeProvider : IUseVersionAttributeProvider
@@ -26,7 +27,12 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo)
+        public UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods)
+        {
+            return Find(clientType, methodInfo) ?? overridingMethods.Select(x => Find(clientType, x)).FirstOrDefault();
+        }
+
+        private UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo)
         {
             var useVersionAttributes = (clientType.IsInterface
                     ? clientType.GetInterfaceCustomAttributes(inherit: true)

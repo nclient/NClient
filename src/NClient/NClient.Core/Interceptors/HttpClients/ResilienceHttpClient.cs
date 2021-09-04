@@ -6,7 +6,6 @@ using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Interceptors.HttpResponsePopulation;
-using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {

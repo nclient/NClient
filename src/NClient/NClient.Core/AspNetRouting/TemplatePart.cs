@@ -60,7 +60,7 @@ namespace NClient.Core.AspNetRouting
             return new TemplatePart()
             {
                 IsLiteral = true,
-                Text = text,
+                Text = text
             };
         }
 
@@ -92,7 +92,7 @@ namespace NClient.Core.AspNetRouting
                 IsCatchAll = isCatchAll,
                 IsOptional = isOptional,
                 DefaultValue = defaultValue,
-                InlineConstraints = inlineConstraints ?? Enumerable.Empty<InlineConstraint>(),
+                InlineConstraints = inlineConstraints ?? Enumerable.Empty<InlineConstraint>()
             };
         }
 
