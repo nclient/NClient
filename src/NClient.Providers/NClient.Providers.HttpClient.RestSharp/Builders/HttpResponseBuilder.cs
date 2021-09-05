@@ -14,16 +14,22 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
         private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
 
-        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        public HttpResponseBuilder(
+            IFinalHttpRequestBuilder finalHttpRequestBuilder,
+            IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
         {
+            _finalHttpRequestBuilder = finalHttpRequestBuilder;
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
 
         public HttpResponse Build(HttpRequest request, IRestResponse restResponse)
         {
-            var httpResponse = new HttpResponse(request)
+            var finalRequest = _finalHttpRequestBuilder.Build(request, restResponse.Request);
+            
+            var httpResponse = new HttpResponse(finalRequest)
             {
                 ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
                 ContentLength = restResponse.ContentLength,

@@ -85,7 +85,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        public HttpHeader[]? Headers { get; set; }
+        public HttpHeader[] Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -113,6 +113,7 @@ namespace NClient.Abstractions.HttpClients
             Ensure.IsNotNull(httpRequest, nameof(httpRequest));
 
             Request = httpRequest;
+            Headers = Array.Empty<HttpHeader>();
         }
 
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
