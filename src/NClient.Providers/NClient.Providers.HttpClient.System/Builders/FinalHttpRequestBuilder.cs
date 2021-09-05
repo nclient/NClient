@@ -25,9 +25,7 @@ namespace NClient.Providers.HttpClient.System.Builders
         public async Task<HttpRequest> BuildAsync(HttpRequest request, HttpRequestMessage httpRequestMessage)
         {
             var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
-            var content = httpRequestMessage.Content is null 
-                ? null 
-                : await httpRequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var content = httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var finalRequest = new HttpRequest(request.Id, resource, httpRequestMessage.Method)
             {
@@ -37,15 +35,21 @@ namespace NClient.Providers.HttpClient.System.Builders
                 Content = content
             };
 
-            foreach (var header in httpRequestMessage.Headers)
+            var headers = httpRequestMessage.Headers?
+                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<HttpHeader>();
+            var contentHeaders = httpRequestMessage.Content?.Headers
+                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<HttpHeader>();
+            foreach (var header in headers.Concat(contentHeaders))
             {
-                finalRequest.AddHeader(header.Key, header.Value.FirstOrDefault() ?? "");
+                finalRequest.AddHeader(header.Name, header.Value);
             }
 
             var queryParameterCollection = HttpUtility.ParseQueryString(httpRequestMessage.RequestUri.Query);
             foreach (var parameterName in queryParameterCollection.AllKeys)
             {
-                var parameterValue = queryParameterCollection[parameterName];
+                var parameterValue = queryParameterCollection[parameterName] ?? "";
                 finalRequest.AddParameter(parameterName, parameterValue);
             }
 
