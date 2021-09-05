@@ -15,16 +15,24 @@ namespace NClient.Providers.HttpClient.System.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
         private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
 
-        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        public HttpResponseBuilder(
+            IFinalHttpRequestBuilder finalHttpRequestBuilder,
+            IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
         {
+            _finalHttpRequestBuilder = finalHttpRequestBuilder;
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
 
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage, Exception? exception = null)
         {
+            var finalRequest = await _finalHttpRequestBuilder
+                .BuildAsync(request, httpResponseMessage.RequestMessage)
+                .ConfigureAwait(false);
+            
             var headers = httpResponseMessage.Headers
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
                 .ToArray();
@@ -33,7 +41,7 @@ namespace NClient.Providers.HttpClient.System.Builders
                 .ToArray();
             var rawBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
-            var httpResponse = new HttpResponse(request)
+            var httpResponse = new HttpResponse(finalRequest)
             {
                 ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
                 ContentLength = httpResponseMessage.Content.Headers.ContentLength,

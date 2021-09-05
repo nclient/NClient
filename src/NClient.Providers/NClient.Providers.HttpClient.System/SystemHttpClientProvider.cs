@@ -65,7 +65,9 @@ namespace NClient.Providers.HttpClient.System
             Ensure.IsNotNull(serializer, nameof(serializer));
 
             var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
-            var httpResponseBuilder = new HttpResponseBuilder(new ClientHttpRequestExceptionFactory());
+            var httpResponseBuilder = new HttpResponseBuilder(
+                new FinalHttpRequestBuilder(serializer),
+                new ClientHttpRequestExceptionFactory());
 
             return new SystemHttpClient(
                 httpRequestMessageBuilder,
