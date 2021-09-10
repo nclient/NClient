@@ -49,9 +49,55 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Should()
                 .NotThrow();
         }
+        
+        [Test]
+        public void WithResiliencePolicy_GetRequestWithFlakyInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicy()
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
+                .Should()
+                .NotThrow();
+        }
+        
+        [Test]
+        public void WithResiliencePolicy_PostRequestWithFlakyInternalServerError_NotThrow()
+        {
+            var entity = new BasicEntity { Id = 1 };
+            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
+            api.AllowPartialMapping();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicy()
+                .Build();
+
+            returnClient.Invoking(x => x.Post(entity))
+                .Should()
+                .NotThrow();
+        }
+        
+        [Test]
+        public void WithResiliencePolicy_GetHttpResponseWithInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockInternalServerError();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicy()
+                .Build();
+
+            returnClient.Invoking(x => x.GetHttpResponse(id))
+                .Should()
+                .NotThrow();
+        }
 
         [Test]
-        public void WithResiliencePolicy_InternalServerError_NotThrow()
+        public void WithResiliencePolicyForGet_GetRequestWithInternalServerError_NotThrow()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
@@ -62,6 +108,21 @@ namespace NClient.Tests.InterfaceBasedClientTests
             returnClient.Invoking(x => x.Get(1))
                 .Should()
                 .NotThrow();
+        }
+        
+        [Test]
+        public void WithResiliencePolicyForGet_PostRequestWithInternalServerError_ThrowClientRequestException()
+        {
+            var entity = new BasicEntity { Id = 1 };
+            using var api = _returnApiMockFactory.MockInternalServerError();
+            var returnClient = new NClientBuilder()
+                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext>())
+                .Build();
+
+            returnClient.Invoking(x => x.Post(entity))
+                .Should()
+                .ThrowExactly<ClientRequestException>();
         }
 
         [Test]
