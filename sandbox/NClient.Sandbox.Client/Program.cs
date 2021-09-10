@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.FileService.Facade;
@@ -51,8 +52,15 @@ namespace NClient.Sandbox.Client
                 retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
             var fallbackPolicy = basePolicy.FallbackAsync(
-                fallbackValue: default!,
-                onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
+                fallbackAction: (delegateResult, _, _) => Task.FromResult(delegateResult.Result),
+                onFallbackAsync: (delegateResult, _) =>
+                {
+                    if (delegateResult.Exception is not null)
+                        throw delegateResult.Exception;
+                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                        return Task.CompletedTask;
+                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                });
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
             var weatherForecastClientLogger = serviceProvider.GetRequiredService<ILogger<IWeatherForecastClient>>();

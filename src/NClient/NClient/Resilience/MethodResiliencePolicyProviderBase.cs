@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Annotations.Methods;
 using NClient.Core.Mappers;
@@ -24,8 +26,15 @@ namespace NClient.Resilience
                 retryCount,
                 sleepDurationProvider ?? (retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
             var fallbackPolicy = basePolicy.FallbackAsync(
-                fallbackValue: default!,
-                onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
+                fallbackAction: (delegateResult, _, _) => Task.FromResult(delegateResult.Result),
+                onFallbackAsync: (delegateResult, _) =>
+                {
+                    if (delegateResult.Exception is not null)
+                        throw delegateResult.Exception;
+                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                        return Task.CompletedTask;
+                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                });
 
             Policy = fallbackPolicy.WrapAsync(retryPolicy);
         }

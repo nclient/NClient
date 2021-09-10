@@ -21,21 +21,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }
-
+        
         [Test]
-        public async Task ResultClient_GetAsync_HttpResponseWithValue()
-        {
-            const int id = 1;
-            var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
-
-            var result = await _returnClient.GetAsync(id);
-
-            result.Should().BeEquivalentTo(entity);
-        }
-
-        [Test]
-        public void ResultClient_Get_HttpResponseWithValue()
+        public void ResultClient_Get_BasicEntity()
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
@@ -47,7 +35,41 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public async Task ResultClient_PostAsync_HttpResponseWithoutValue()
+        public async Task ResultClient_GetAsync_TaskWithBasicEntity()
+        {
+            const int id = 1;
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
+
+            var result = await _returnClient.GetAsync(id);
+
+            result.Should().BeEquivalentTo(entity);
+        }
+
+        [Test]
+        public void ResultClient_GetHttpResponse_HttpResponseWithBasicEntity()
+        {
+            const int id = 1;
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
+
+            var result = _returnClient.GetHttpResponse(id);
+
+            result.IsSuccessful.Should().BeTrue();
+            result.Value.Should().BeEquivalentTo(entity);
+        }
+        
+        [Test]
+        public void ResultClient_Post_Void()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            using var api = _returnApiMockFactory.MockPostMethod(entity);
+
+            _returnClient.Post(entity);
+        }
+
+        [Test]
+        public async Task ResultClient_PostAsync_Task()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostAsyncMethod(entity);
@@ -56,12 +78,14 @@ namespace NClient.Tests.InterfaceBasedClientTests
         }
 
         [Test]
-        public void ResultClient_Post_HttpResponseWithoutValue()
+        public void ResultClient_PostHttpResponse_HttpResponseWithoutValue()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockPostMethod(entity);
 
-            _returnClient.Post(entity);
+            var result = _returnClient.PostHttpResponse(entity);
+
+            result.IsSuccessful.Should().BeTrue();
         }
     }
 }
