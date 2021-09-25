@@ -215,7 +215,6 @@ Global
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.TestRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
