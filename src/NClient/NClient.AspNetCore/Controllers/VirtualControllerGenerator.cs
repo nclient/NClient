@@ -94,12 +94,7 @@ namespace NClient.AspNetCore.Controllers
         {
             var attributes = attributeProvider.GetCustomAttributes(inherit: false).Cast<Attribute>();
             return attributes
-                .Select(x =>
-                {
-                    if (x.GetType().Assembly.FullName!.StartsWith("Microsoft.AspNetCore"))
-                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName!);
-                    return _attributeMapper.TryMap(x);
-                })
+                .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is not null)
                 .ToArray()!;
         }

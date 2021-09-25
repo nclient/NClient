@@ -12,7 +12,6 @@ using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
-using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Helpers;
@@ -218,7 +217,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes[1].Should().BeEquivalentTo(new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        public interface IMethodAttributeController {[GetMethod] int Get(); }
+        public interface IMethodAttributeController { [GetMethod] int Get(); }
         public class MethodAttributeController : IMethodAttributeController { public int Get() => 1; }
 
         [Test]
@@ -242,8 +241,33 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Length.Should().Be(1);
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
         }
+        
+        public interface IAspNetMethodAttributeController { [HttpGet] int Get(); }
+        public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
 
-        public interface IMethodAttributeWithTemplateController {[GetMethod("[action]")] int Get(); }
+        [Test]
+        public void Create_AspNetMethodAttributeController_AddMethodAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IAspNetMethodAttributeController), typeof(AspNetMethodAttributeController))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: false);
+            controllerAttributes.Length.Should().Be(0);
+            var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeController.Get))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: false);
+            methodAttributes.Length.Should().Be(1);
+            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
+        }
+
+        public interface IMethodAttributeWithTemplateController { [GetMethod("[action]")] int Get(); }
         public class MethodAttributeWithTemplateController : IMethodAttributeWithTemplateController { public int Get() => 1; }
 
         [Test]
@@ -268,7 +292,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("[action]") { Order = 0 });
         }
 
-        public interface IMultipleMethodController {[GetMethod] int Get();[PostMethod] int Post(); }
+        public interface IMultipleMethodController { [GetMethod] int Get(); [PostMethod] int Post(); }
         public class MultipleMethodController : IMultipleMethodController { public int Get() => 1; public int Post() => 1; }
 
         [Test]
@@ -295,24 +319,6 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var postMethodAttributes = postMethodInfo.GetCustomAttributes(inherit: false);
             postMethodAttributes.Length.Should().Be(1);
             postMethodAttributes.Should().BeEquivalentTo(new HttpPostAttribute { Order = 0 });
-        }
-
-        public interface IAspNetMethodAttributeController {[HttpGet] int Get(); }
-        public class AspNetMethodAttributeController : IAspNetMethodAttributeController { public int Get() => 1; }
-
-        [Test]
-        public void Create_AspNetMethodAttributeController_ThrowClientValidationException()
-        {
-            var nclientControllers = new[]
-            {
-                new NClientControllerInfo(typeof(IAspNetMethodAttributeController), typeof(AspNetMethodAttributeController))
-            };
-
-            _virtualControllerGenerator
-                .Invoking(x => x.Create(nclientControllers).ToArray())
-                .Should()
-                .ThrowExactly<ControllerValidationException>()
-                .WithMessage(_controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(typeof(HttpGetAttribute).FullName!).Message);
         }
 
         public class CustomAttribute : Attribute { }
