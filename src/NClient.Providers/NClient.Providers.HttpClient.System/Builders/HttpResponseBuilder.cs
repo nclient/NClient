@@ -15,38 +15,47 @@ namespace NClient.Providers.HttpClient.System.Builders
 
     internal class HttpResponseBuilder : IHttpResponseBuilder
     {
+        private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
         private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
 
-        public HttpResponseBuilder(IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+        public HttpResponseBuilder(
+            IFinalHttpRequestBuilder finalHttpRequestBuilder,
+            IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
         {
+            _finalHttpRequestBuilder = finalHttpRequestBuilder;
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
 
         public async Task<HttpResponse> BuildAsync(
             HttpRequest request, HttpResponseMessage httpResponseMessage, Exception? exception = null)
         {
-            var headers = httpResponseMessage.Headers
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray();
-            var contentHeaders = httpResponseMessage.Content.Headers
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray();
-            var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var finalRequest = await _finalHttpRequestBuilder
+                .BuildAsync(request, httpResponseMessage.RequestMessage)
+                .ConfigureAwait(false);
+            
+            var rawBytes = httpResponseMessage.Content is null ? null : await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 
-            var httpResponse = new HttpResponse(request)
+            var httpResponse = new HttpResponse(finalRequest)
             {
-                ContentType = httpResponseMessage.Content.Headers.ContentType?.MediaType,
-                ContentLength = httpResponseMessage.Content.Headers.ContentLength,
-                ContentEncoding = httpResponseMessage.Content.Headers.ContentEncoding.FirstOrDefault(),
-                Content = content,
+                ContentType = httpResponseMessage.Content?.Headers?.ContentType?.MediaType,
+                ContentLength = httpResponseMessage.Content?.Headers?.ContentLength,
+                ContentEncoding = httpResponseMessage.Content?.Headers?.ContentEncoding.FirstOrDefault(),
+                RawBytes = rawBytes,
                 StatusCode = httpResponseMessage.StatusCode,
                 StatusDescription = httpResponseMessage.StatusCode.ToString(),
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
-                Server = httpResponseMessage.Headers.Server?.ToString(),
-                Headers = headers.Concat(contentHeaders).ToArray(),
+                Server = httpResponseMessage.Headers?.Server?.ToString(),
                 ErrorMessage = exception?.Message,
                 ProtocolVersion = httpResponseMessage.Version
             };
+            
+            var headers = httpResponseMessage.Headers?
+                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<HttpHeader>();
+            var contentHeaders = httpResponseMessage.Content?.Headers?
+                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<HttpHeader>();
+            httpResponse.Headers = headers.Concat(contentHeaders).ToArray();
 
             httpResponse.ErrorException = exception is not null
                 ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)

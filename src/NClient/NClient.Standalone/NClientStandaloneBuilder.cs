@@ -51,7 +51,10 @@ namespace NClient
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            _clientValidator.Ensure<TInterface>(_interfaceClientInterceptorFactory);
+            _clientValidator
+                .EnsureAsync<TInterface>(_interfaceClientInterceptorFactory)
+                .GetAwaiter()
+                .GetResult();
 
             return new OptionalInterfaceNClientBuilder<TInterface>(
                 host: new Uri(host),
@@ -67,7 +70,10 @@ namespace NClient
             where TController : TInterface
         {
             Ensure.IsNotNull(host, nameof(host));
-            _clientValidator.Ensure<TInterface, TController>(_controllerClientInterceptorFactory);
+            _clientValidator
+                .EnsureAsync<TInterface, TController>(_controllerClientInterceptorFactory)
+                .GetAwaiter()
+                .GetResult();
 
             return new OptionalControllerNClientBuilder<TInterface, TController>(
                 host: new Uri(host),

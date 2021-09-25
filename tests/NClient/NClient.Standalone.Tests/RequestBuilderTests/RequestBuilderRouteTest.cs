@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
@@ -6,9 +7,6 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
-using NClient.Core.Exceptions;
-using NClient.Core.Interceptors;
-using NClient.Core.Mappers;
 using NClient.Exceptions;
 using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
@@ -17,9 +15,46 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.RequestBuilderTests
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class RequestBuilderRouteTest : RequestBuilderTestBase
     {
-        [Path("api")] private interface ICommonStaticRoute {[GetMethod] int Method(); }
+        [Path("api")] private interface IHostAndStaticRoute { [GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000", BuildMethod<IHostAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api"),
+                HttpMethod.Get);
+        }
+
+        [Path("controller")] private interface IHostPathAndStaticRoute { [GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api", BuildMethod<IHostPathAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/controller"),
+                HttpMethod.Get);
+        }
+
+        [Path("controller")] private interface IHostPathWithSlashAndStaticRoute { [GetMethod] int Method(); }
+
+        [Test]
+        public void Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
+        {
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api/", BuildMethod<IHostPathWithSlashAndStaticRoute>());
+
+            AssertHttpRequest(httpRequest,
+                new Uri("http://localhost:5000/api/controller"),
+                HttpMethod.Get);
+        }
+
+        [Path("api")] private interface ICommonStaticRoute { [GetMethod] int Method(); }
 
         [Test]
         public void Build_CommonStaticRoute_OnlyCommonStaticRoute()
@@ -31,7 +66,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api/[controller]")] private interface ICommonStaticRouteWithControllerToken {[GetMethod] int Method(); }
+        [Path("api/[controller]")] private interface ICommonStaticRouteWithControllerToken { [GetMethod] int Method(); }
 
         [Test]
         public void Build_CommonStaticRouteWithControllerToken_StaticRouteWithInterfaceName()
@@ -43,7 +78,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api/[controller]")] private interface IStaticRouteWithControllerToken {[GetMethod("entity")] int Method(); }
+        [Path("api/[controller]")] private interface IStaticRouteWithControllerToken { [GetMethod("entity")] int Method(); }
 
         [Test]
         public void Build_StaticRouteWithControllerToken_StaticRouteWithInterfaceName()
@@ -55,7 +90,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api/[controller]")] private interface IStaticRouteWithControllerAndActionTokens {[GetMethod("[action]")] int Method(); }
+        [Path("api/[controller]")] private interface IStaticRouteWithControllerAndActionTokens { [GetMethod("[action]")] int Method(); }
 
         [Test]
         public void Build_StaticRouteWithControllerAndActionTokens_StaticRouteWithInterfaceAndMethodNames()
@@ -67,7 +102,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api")] private interface IStaticRoute {[GetMethod("action")] int Method(); }
+        [Path("api")] private interface IStaticRoute { [GetMethod("action")] int Method(); }
 
         [Test]
         public void Build_StaticRoute_StaticRoute()
@@ -79,7 +114,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("/api")] private interface IClientWithRootedRoute {[GetMethod("action")] int Method(); }
+        [Path("/api")] private interface IClientWithRootedRoute { [GetMethod("action")] int Method(); }
 
         [Test]
         public void Build_ClientWithRootedRoute_ExtraSlashRemoved()
@@ -91,7 +126,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api")] private interface IOverrideClientRoute {[GetMethod("/action")] int Method(); }
+        [Path("api")] private interface IOverrideClientRoute { [GetMethod("/action")] int Method(); }
 
         [Test]
         public void Build_OverrideClientRoute_IgnoreClientRoute()
@@ -103,7 +138,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api/")] private interface IClientRouteEndsWithSlash {[GetMethod("action")] int Method(); }
+        [Path("api/")] private interface IClientRouteEndsWithSlash { [GetMethod("action")] int Method(); }
 
         [Test]
         public void Build_ClientRouteEndsWithSlash_ExtraSlashRemoved()
@@ -115,7 +150,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api")] private interface IMethodRouteEndsWithSlash {[GetMethod("action/")] int Method(); }
+        [Path("api")] private interface IMethodRouteEndsWithSlash { [GetMethod("action/")] int Method(); }
 
         [Test]
         public void Build_MethodRouteEndsWithSlash_ExtraSlashRemoved()
@@ -127,7 +162,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("api")] private interface IStaticRouteWithActionToken {[GetMethod("action/[action]")] int Method(); }
+        [Path("api")] private interface IStaticRouteWithActionToken { [GetMethod("action/[action]")] int Method(); }
 
         [Test]
         public void Build_StaticRouteWithActionToken_StaticRouteWithMethodName()
@@ -139,7 +174,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("[action]")] private interface IApiRouteWithActionToken {[GetMethod] int Method(); }
+        [Path("[action]")] private interface IApiRouteWithActionToken { [GetMethod] int Method(); }
 
         [Test]
         public void Build_ApiRouteWithActionToken_RouteWithMethodName()
@@ -151,7 +186,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        private interface IMethodRouteWithControllerToken {[GetMethod("[controller]")] int Method(); }
+        private interface IMethodRouteWithControllerToken { [GetMethod("[controller]")] int Method(); }
 
         [Test]
         public void Build_MethodRouteWithControllerToken_RouteWithInterfaceName()
@@ -163,7 +198,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        private interface IMethodRouteWithPrimitiveParamTokenWithoutAttribute {[GetMethod("{id}")] int Method([RouteParam] int id); }
+        private interface IMethodRouteWithPrimitiveParamTokenWithoutAttribute { [GetMethod("{id}")] int Method([RouteParam] int id); }
 
         [Test]
         public void Build_MethodRouteWithPrimitiveParamTokenWithoutAttribute_RouteWithParamValue()
@@ -177,7 +212,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        [Path("{id}")] private interface IApiRouteWithPrimitiveParamTokenWithoutAttribute {[GetMethod] int Method([RouteParam] int id); }
+        [Path("{id}")] private interface IApiRouteWithPrimitiveParamTokenWithoutAttribute { [GetMethod] int Method([RouteParam] int id); }
 
         [Test]
         public void Build_ApiRouteWithPrimitiveParamTokenWithoutAttribute_RouteWithParamValue()
@@ -191,7 +226,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        private interface IPrimitiveRouteParam {[GetMethod("{id}")] int Method([RouteParam] int id); }
+        private interface IPrimitiveRouteParam { [GetMethod("{id}")] int Method([RouteParam] int id); }
 
         [Test]
         public void Build_PrimitiveRouteParam_RouteWithParamValue()
@@ -205,7 +240,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 HttpMethod.Get);
         }
 
-        private interface IPrimitiveRouteParamWithoutTokenInRoute {[GetMethod] int Method([RouteParam] int id); }
+        private interface IPrimitiveRouteParamWithoutTokenInRoute { [GetMethod] int Method([RouteParam] int id); }
 
         [Test]
         public void Build_PrimitiveRouteParamWithoutTokenInRoute_ThrowClientValidationException()
@@ -221,7 +256,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("id").Message);
         }
 
-        private interface IMethodRouteWithCustomTypeParamToken {[GetMethod("{entity}")] int Method(BasicEntity entity); }
+        private interface IMethodRouteWithCustomTypeParamToken { [GetMethod("{entity}")] int Method(BasicEntity entity); }
 
         [Test]
         public void Build_MethodRouteWithCustomTypeParamToken_ThrowClientValidationException()
@@ -237,7 +272,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .WithMessage(ClientValidationExceptionFactory.TemplatePartContainsComplexType("entity").Message);
         }
 
-        [Path("{entity}")] private interface IApiRouteWithCustomTypeParamToken {[GetMethod] int Method(BasicEntity entity); }
+        [Path("{entity}")] private interface IApiRouteWithCustomTypeParamToken { [GetMethod] int Method(BasicEntity entity); }
 
         [Test]
         public void Build_ApiRouteWithCustomTypeParamToken_ThrowClientValidationException()
@@ -253,7 +288,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .WithMessage(ClientValidationExceptionFactory.TemplatePartContainsComplexType("entity").Message);
         }
 
-        private interface ICustomTypeRouteParam {[GetMethod("{id}")] int Method([RouteParam] BasicEntity entity); }
+        private interface ICustomTypeRouteParam { [GetMethod("{id}")] int Method([RouteParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeRouteParam_ThrowClientValidationException()
@@ -269,7 +304,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("entity").Message);
         }
 
-        private interface ICustomTypeRouteParamWithoutTokenInRoute {[GetMethod] int Method([RouteParam] BasicEntity entity); }
+        private interface ICustomTypeRouteParamWithoutTokenInRoute { [GetMethod] int Method([RouteParam] BasicEntity entity); }
 
         [Test]
         public void Build_CustomTypeRouteParamWithoutTokenInRoute_ThrowClientValidationException()
@@ -285,7 +320,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
                 .WithMessage(ClientValidationExceptionFactory.RouteParamWithoutTokenInRoute("entity").Message);
         }
 
-        [UseVersion("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken {[GetMethod] int Method(); }
+        [UseVersion("1.0"), Path("api/v{version:apiVersion}")] private interface IPathWithApiVersionToken { [GetMethod] int Method(); }
 
         [Test]
         public void Build_PathWithApiVersionToken_RouteWithApiVersion()

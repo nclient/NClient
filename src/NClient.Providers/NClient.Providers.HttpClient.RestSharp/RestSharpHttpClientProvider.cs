@@ -3,6 +3,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.RestSharp.Builders;
+using NClient.Providers.HttpClient.RestSharp.Helpers;
 using RestSharp.Authenticators;
 
 namespace NClient.Providers.HttpClient.RestSharp
@@ -27,8 +28,11 @@ namespace NClient.Providers.HttpClient.RestSharp
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
 
-            var httpRequestMessageBuilder = new RestRequestBuilder(serializer);
-            var httpResponseBuilder = new HttpResponseBuilder(new ClientHttpRequestExceptionFactory());
+            var restSharpMethodMapper = new RestSharpMethodMapper();
+            var httpRequestMessageBuilder = new RestRequestBuilder(serializer, restSharpMethodMapper);
+            var httpResponseBuilder = new HttpResponseBuilder(
+                new FinalHttpRequestBuilder(serializer, restSharpMethodMapper),
+                new ClientHttpRequestExceptionFactory());
 
             return new RestSharpHttpClient(
                 httpRequestMessageBuilder,

@@ -29,9 +29,9 @@ namespace NClient.Core.Interceptors.RequestBuilders
                 PutMethodAttribute => HttpMethod.Put,
                 DeleteMethodAttribute => HttpMethod.Delete,
                 OptionsMethodAttribute => HttpMethod.Options,
-#if !NETSTANDARD2_0
+                #if !NETSTANDARD2_0
                 PatchMethodAttribute => HttpMethod.Patch,
-#endif
+                #endif
                 { } => throw _clientValidationExceptionFactory.MethodAttributeNotSupported(methodAttribute.GetType().Name),
                 _ => throw new ArgumentNullException(nameof(methodAttribute))
             };

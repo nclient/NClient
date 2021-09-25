@@ -12,6 +12,9 @@ namespace NClient.Tests.Clients
         [GetMethod("{id}")]
         new Task<int> GetAsync(int id);
 
+        [GetMethod("{id}")]
+        new Task<string> GetAsync(string id);
+
         [PostMethod]
         new Task PostAsync(BasicEntity entity);
 

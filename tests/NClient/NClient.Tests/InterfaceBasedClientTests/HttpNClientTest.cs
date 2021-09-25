@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
@@ -43,12 +44,12 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = "{\"Id\":1,\"Value\":2}",
+                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                 ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -65,7 +66,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().BeEquivalentTo(new HttpResponseWithError<BasicEntity, Error>(HttpResponseStub, HttpRequestStub, entity, error: null)
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = "{\"Id\":1,\"Value\":2}",
+                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                 ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
@@ -86,12 +87,12 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = "{\"Id\":1,\"Value\":2}",
+                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                 ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -107,12 +108,12 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().BeEquivalentTo(new HttpResponseWithError<BasicEntity, Error>(HttpResponseStub, HttpRequestStub, entity, error: null)
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = "{\"Id\":1,\"Value\":2}",
+                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                 ContentLength = 18,
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -128,11 +129,11 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                Content = "",
+                RawBytes = Encoding.UTF8.GetBytes(""),
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -148,11 +149,11 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                Content = "",
+                RawBytes = Encoding.UTF8.GetBytes(""),
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -168,11 +169,11 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                Content = "",
+                RawBytes = Encoding.UTF8.GetBytes(""),
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -188,11 +189,11 @@ namespace NClient.Tests.InterfaceBasedClientTests
             {
                 StatusCode = HttpStatusCode.OK,
                 ContentLength = 0,
-                Content = "",
+                RawBytes = Encoding.UTF8.GetBytes(""),
                 ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
                 Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 

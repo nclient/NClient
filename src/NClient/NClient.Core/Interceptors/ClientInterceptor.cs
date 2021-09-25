@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
+using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors.HttpClients;
@@ -75,10 +76,13 @@ namespace NClient.Core.Interceptors
             HttpResponse? httpResponse = null;
             try
             {
-                var fullMethodInvocation = _fullMethodInvocationProvider.Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
-                var clientMethod = _methodBuilder.Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
+                var fullMethodInvocation = _fullMethodInvocationProvider
+                    .Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                var clientMethod = _methodBuilder
+                    .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
-                var request = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
+                var request = _requestBuilder
+                    .Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
                 await _clientHandler
                     .HandleRequestAsync(request, fullMethodInvocation)
                     .ConfigureAwait(false);
@@ -102,7 +106,14 @@ namespace NClient.Core.Interceptors
             }
             catch (ClientValidationException e)
             {
-                _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
+                _logger?.LogError(e, "Client validation error. Request id: '{requestId}'.", requestId);
+                e.InterfaceType = typeof(T);
+                e.MethodInfo = invocation.Method;
+                throw;
+            }
+            catch (ClientArgumentException e)
+            {
+                _logger?.LogError(e, "Method call error. Request id: '{requestId}'.", requestId);
                 e.InterfaceType = typeof(T);
                 e.MethodInfo = invocation.Method;
                 throw;

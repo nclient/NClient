@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
@@ -30,10 +29,20 @@ namespace NClient.Tests.ControllerBasedClientTests
         public async Task RestClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockGetMethod(id);
+            using var api = _restApiMockFactory.MockIntGetMethod(id);
 
             var result = await _restClient.GetAsync(id);
             result.Should().Be(1);
+        }
+
+        [Test]
+        public async Task RestClient_GetAsync_StringInBody()
+        {
+            const string id = "1";
+            using var api = _restApiMockFactory.MockStringGetMethod(id);
+
+            var result = await _restClient.GetAsync(id);
+            result.Should().Be(id);
         }
 
         [Test]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,22 +8,23 @@ using NClient.Annotations.Parameters;
 using NClient.Common.Helpers;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
-using NClient.Core.Helpers.ObjectMemberManagers.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NUnit.Framework;
 
 namespace NClient.Core.Tests
 {
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]
     internal class ObjectMemberManagerTest
     {
+        private static readonly ClientObjectMemberManagerExceptionFactory ExceptionFactory = new();
         private ObjectMemberManager _objectMemberManager = null!;
-        private static readonly IObjectMemberManagerExceptionFactory ExceptionFactory =
-            new ClientValidationExceptionFactory();
 
-        public class TestObjWithCustomQueryPropName {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomFromQueryName {[FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithCustomJsonPropertyName {[JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
-        public class TestObjWithMemberNameConflict {[QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; public int MyProp { get; set; } = 2; }
+        public class TestObjWithCustomQueryPropName { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomFromQueryName { [FromQuery(Name = "MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithCustomJsonPropertyName { [JsonPropertyName("MyProp")] public int Prop { get; set; } = 1; }
+        public class TestObjWithMemberNameConflict { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; public int MyProp { get; set; } = 2; }
 
         public class TestObjWithIntField { public int Field = 1; }
         public class TestObjWithNestedField : TestObjWithIntField { }
@@ -30,7 +32,7 @@ namespace NClient.Core.Tests
         public class TestObjWithNestedProp : TestObjWithIntProp { }
         public class TestObjWithStringProp { public string Prop { get; set; } = "test"; }
         public class TestObjWithObjectProp { public TestObjWithIntProp Prop { get; set; } = new() { Prop = 1 }; }
-        public class TestObjWithDeepObjectProp { public TestObjWithObjectProp Prop { get; set; } = new() { Prop = new() { Prop = 1 } }; }
+        public class TestObjWithDeepObjectProp { public TestObjWithObjectProp Prop { get; set; } = new() { Prop = new TestObjWithIntProp { Prop = 1 } }; }
 
         public static IEnumerable ValidTestCasesForGetMemberValue = new[]
         {
@@ -62,7 +64,6 @@ namespace NClient.Core.Tests
                 .SetName("Inner property"),
             new TestCaseData(new { Prop = new { Prop = new { Prop = 1 } } }, "Prop.Prop.Prop", 1, null)
                 .SetName("Deep property")
-
         };
 
         public static IEnumerable InvalidTestCasesForGetMemberValue = new[]
@@ -86,16 +87,16 @@ namespace NClient.Core.Tests
             new TestCaseData(null, "",
                     EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and empty path"),
-            new TestCaseData(new {}, null,
+            new TestCaseData(new { }, null,
                     EnsureExceptionFactory.CreateArgumentNullException("memberPath"), null)
                 .SetName("Empty object and null path"),
             new TestCaseData(null, "Prop",
                     EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
-            new TestCaseData(new {}, "",
+            new TestCaseData(new { }, "",
                     EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Empty object and empty path"),
-            new TestCaseData(new {}, "Prop",
+            new TestCaseData(new { }, "Prop",
                     ExceptionFactory.MemberNotFound("Prop", "<>f__AnonymousType1"), null)
                 .SetName("Empty object and path"),
             new TestCaseData(new { Prop = 1 }, "",
@@ -112,7 +113,7 @@ namespace NClient.Core.Tests
                 .SetName("Top level property with invalid case"),
             new TestCaseData(new { Prop = new { Prop = 1 } }, "prop.prop",
                     ExceptionFactory.MemberNotFound("Prop", "<>f__AnonymousType0`1"), null)
-                .SetName("Inner property with invalid case"),
+                .SetName("Inner property with invalid case")
         };
 
         public static IEnumerable ValidTestCasesForSetMemberValue = new[]
@@ -130,7 +131,7 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithIntField { Field = 1 }, "2", "Field",
                     new TestObjWithIntField { Field = 2 }, null)
                 .SetName("Top level primitive field"),
-            new TestCaseData(new TestObjWithNestedField { Field = 1 },"2", "Field",
+            new TestCaseData(new TestObjWithNestedField { Field = 1 }, "2", "Field",
                     new TestObjWithNestedField { Field = 2 }, null)
                 .SetName("Nested field"),
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "Prop",
@@ -146,11 +147,11 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithStringProp { Prop = "test" }, "test2", "Prop",
                     new TestObjWithStringProp { Prop = "test2" }, null)
                 .SetName("Top level string property"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new() { Prop = 1 } }, "2", "Prop.Prop",
-                    new TestObjWithObjectProp { Prop = new() { Prop = 2 } }, null)
+            new TestCaseData(new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } }, "2", "Prop.Prop",
+                    new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 2 } }, null)
                 .SetName("Inner property"),
-            new TestCaseData(new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 1 } } }, "2", "Prop.Prop.Prop",
-                    new TestObjWithDeepObjectProp { Prop = new() { Prop = new() { Prop = 2 } } }, null)
+            new TestCaseData(new TestObjWithDeepObjectProp { Prop = new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } } }, "2", "Prop.Prop.Prop",
+                    new TestObjWithDeepObjectProp { Prop = new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 2 } } }, null)
                 .SetName("Deep property")
         };
 
@@ -175,16 +176,16 @@ namespace NClient.Core.Tests
             new TestCaseData(null, "2", "",
                     EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and empty path"),
-            new TestCaseData(new {}, "2", null,
+            new TestCaseData(new { }, "2", null,
                     EnsureExceptionFactory.CreateArgumentNullException("memberPath"), null)
                 .SetName("Empty object and null path"),
             new TestCaseData(null, "2", "Prop",
                     EnsureExceptionFactory.CreateArgumentNullException("obj"), null)
                 .SetName("Null object and null path"),
-            new TestCaseData(new {}, "2", "",
+            new TestCaseData(new { }, "2", "",
                     EnsureExceptionFactory.CreateEmptyArgumentException("memberPath"), null)
                 .SetName("Empty object and empty path"),
-            new TestCaseData(new {}, "2", "Prop",
+            new TestCaseData(new { }, "2", "Prop",
                     ExceptionFactory.MemberNotFound("Prop", "<>f__AnonymousType1"), null)
                 .SetName("Empty object and path"),
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "",
@@ -199,16 +200,15 @@ namespace NClient.Core.Tests
             new TestCaseData(new TestObjWithIntProp { Prop = 1 }, "2", "prop",
                     ExceptionFactory.MemberNotFound("prop", nameof(TestObjWithIntProp)), null)
                 .SetName("Top level property with invalid case"),
-            new TestCaseData(new TestObjWithObjectProp { Prop = new () { Prop = 1 } }, "2", "prop.prop",
+            new TestCaseData(new TestObjWithObjectProp { Prop = new TestObjWithIntProp { Prop = 1 } }, "2", "prop.prop",
                     ExceptionFactory.MemberNotFound("prop", nameof(TestObjWithObjectProp)), null)
-                .SetName("Inner property with invalid case"),
+                .SetName("Inner property with invalid case")
         };
 
         [SetUp]
         public void SetUp()
         {
-            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
-            _objectMemberManager = new ObjectMemberManager(clientValidationExceptionFactory);
+            _objectMemberManager = new ObjectMemberManager(ExceptionFactory);
         }
 
         [TestCaseSource(nameof(ValidTestCasesForGetMemberValue))]

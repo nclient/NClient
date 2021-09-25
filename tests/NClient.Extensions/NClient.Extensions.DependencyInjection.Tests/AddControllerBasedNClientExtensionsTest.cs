@@ -54,7 +54,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClient, TestController>(
-                host: "http://localhost:5000", builder => builder);
+                host: "http://localhost:5000", builder => builder.WithResiliencePolicy());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClient>();
             client.Should().NotBeNull();

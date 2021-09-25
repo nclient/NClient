@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
@@ -9,7 +10,7 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IMethodAttributeProvider
     {
-        MethodAttribute Get(MethodInfo method);
+        MethodAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class MethodAttributeProvider : IMethodAttributeProvider
@@ -25,7 +26,13 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public MethodAttribute Get(MethodInfo method)
+        public MethodAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
+        {
+            return Find(method) ?? overridingMethods.Select(Find).FirstOrDefault()
+                ?? throw _clientValidationExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
+        }
+
+        private MethodAttribute? Find(MethodInfo method)
         {
             var attributes = method
                 .GetCustomAttributes()
@@ -42,10 +49,8 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw _clientValidationExceptionFactory.MultipleMethodAttributeNotSupported();
-            var methodAttribute = methodAttributes.SingleOrDefault()
-                ?? throw _clientValidationExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
 
-            return methodAttribute;
+            return methodAttributes.SingleOrDefault();
         }
     }
 }

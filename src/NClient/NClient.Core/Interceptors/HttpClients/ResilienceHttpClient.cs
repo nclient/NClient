@@ -6,7 +6,6 @@ using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Interceptors.HttpResponsePopulation;
-using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -39,7 +38,7 @@ namespace NClient.Core.Interceptors.HttpClients
 
         public async Task<HttpResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation)
         {
-            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Uri, request.Id);
+            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Resource, request.Id);
 
             return await _methodResiliencePolicyProvider
                 .Create(methodInvocation.MethodInfo)

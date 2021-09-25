@@ -193,9 +193,9 @@ namespace NClient.Core.AspNetRouting
             Debug.Assert(propertyInfo != null);
 
             return MakeFastPropertyGetter(
-#pragma warning disable CS8604 // Possible null reference argument.
+                #pragma warning disable CS8604 // Possible null reference argument.
                 propertyInfo,
-#pragma warning restore CS8604 // Possible null reference argument.
+                #pragma warning restore CS8604 // Possible null reference argument.
                 CallPropertyGetterOpenGenericMethod,
                 CallPropertyGetterByReferenceOpenGenericMethod);
         }
@@ -214,9 +214,9 @@ namespace NClient.Core.AspNetRouting
             Debug.Assert(propertyInfo != null);
 
             return MakeFastPropertyGetter(
-#pragma warning disable CS8604 // Possible null reference argument.
+                #pragma warning disable CS8604 // Possible null reference argument.
                 propertyInfo,
-#pragma warning restore CS8604 // Possible null reference argument.
+                #pragma warning restore CS8604 // Possible null reference argument.
                 CallNullSafePropertyGetterOpenGenericMethod,
                 CallNullSafePropertyGetterByReferenceOpenGenericMethod);
         }
@@ -230,25 +230,25 @@ namespace NClient.Core.AspNetRouting
 
             // Must be a generic method with a Func<,> parameter
             Debug.Assert(propertyGetterWrapperMethod != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Debug.Assert(propertyGetterWrapperMethod.IsGenericMethodDefinition);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
             Debug.Assert(propertyGetterWrapperMethod.GetParameters().Length == 2);
 
             // Must be a generic method with a ByRefFunc<,> parameter
             Debug.Assert(propertyGetterByRefWrapperMethod != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Debug.Assert(propertyGetterByRefWrapperMethod.IsGenericMethodDefinition);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
             Debug.Assert(propertyGetterByRefWrapperMethod.GetParameters().Length == 2);
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var getMethod = propertyInfo.GetMethod;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
             Debug.Assert(getMethod != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Debug.Assert(!getMethod.IsStatic);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
             Debug.Assert(getMethod.GetParameters().Length == 0);
 
             // Instance methods in the CLR can be turned into static methods where the first parameter
@@ -303,15 +303,15 @@ namespace NClient.Core.AspNetRouting
         public static Action<object, object?> MakeFastPropertySetter(PropertyInfo propertyInfo)
         {
             Debug.Assert(propertyInfo != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Debug.Assert(!propertyInfo.DeclaringType!.IsValueType);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             var setMethod = propertyInfo.SetMethod;
             Debug.Assert(setMethod != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Debug.Assert(!setMethod.IsStatic);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            #pragma warning restore CS8602 // Dereference of a possibly null reference.
             Debug.Assert(setMethod.ReturnType == typeof(void));
             var parameters = setMethod.GetParameters();
             Debug.Assert(parameters.Length == 1);

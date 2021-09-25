@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Parameters;
 using NClient.Core.Exceptions.Factories;
@@ -9,7 +10,7 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
 {
     internal interface IParamAttributeProvider
     {
-        ParamAttribute Get(ParameterInfo paramInfo);
+        ParamAttribute Get(ParameterInfo paramInfo, IEnumerable<ParameterInfo> overridingParams);
     }
 
     internal class ParamAttributeProvider : IParamAttributeProvider
@@ -25,7 +26,13 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public ParamAttribute Get(ParameterInfo paramInfo)
+        public ParamAttribute Get(ParameterInfo paramInfo, IEnumerable<ParameterInfo> overridingParams)
+        {
+            return Find(paramInfo) ?? overridingParams.Select(Find).FirstOrDefault()
+                ?? GetAttributeForImplicitParameter(paramInfo);
+        }
+
+        private ParamAttribute? Find(ParameterInfo paramInfo)
         {
             var paramAttributes = paramInfo
                 .GetCustomAttributes()
@@ -35,9 +42,7 @@ namespace NClient.Core.Interceptors.MethodBuilders.Providers
                 .ToArray();
             if (paramAttributes.Length > 1)
                 throw _clientValidationExceptionFactory.MultipleParameterAttributeNotSupported(paramInfo.Name);
-            var paramAttribute = paramAttributes.SingleOrDefault() ?? GetAttributeForImplicitParameter(paramInfo);
-
-            return paramAttribute;
+            return paramAttributes.SingleOrDefault();
         }
 
         private static ParamAttribute GetAttributeForImplicitParameter(ParameterInfo paramInfo)

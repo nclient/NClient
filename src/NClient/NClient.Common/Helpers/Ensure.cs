@@ -34,19 +34,13 @@ namespace NClient.Common.Helpers
 
     internal static class EnsureExceptionFactory
     {
-        public static ArgumentNullException CreateArgumentNullException(string paramName)
-        {
-            return new(paramName, "Value cannot be null.");
-        }
+        public static ArgumentNullException CreateArgumentNullException(string paramName) =>
+            new(paramName, "Value cannot be null.");
 
-        public static ArgumentException CreateEmptyArgumentException(string paramName)
-        {
-            return new("Value cannot be empty.", paramName);
-        }
+        public static ArgumentException CreateEmptyArgumentException(string paramName) =>
+            new("Value cannot be empty.", paramName);
 
-        public static ArgumentException CreateIncompatibleArgumentException<T>(string paramName)
-        {
-            return new($"Value is incompatible with '{typeof(T)}' type.", paramName);
-        }
+        public static ArgumentException CreateIncompatibleArgumentException<T>(string paramName) =>
+            new($"Value is incompatible with '{typeof(T)}' type.", paramName);
     }
 }

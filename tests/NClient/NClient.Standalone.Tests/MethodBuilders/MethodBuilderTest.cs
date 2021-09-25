@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -14,6 +16,7 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class MethodBuilderTest
     {
         private interface IBasicClient { int Get(int id); }
@@ -29,19 +32,19 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<MethodParam>();
             var methodAttributeProviderMock = new Mock<IMethodAttributeProvider>();
-            methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>()))
+            methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(methodAttribute);
             var useVersionAttributeProviderMock = new Mock<IUseVersionAttributeProvider>();
-            useVersionAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>()))
+            useVersionAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(useVersionAttribute);
             var pathAttributeProviderMock = new Mock<IPathAttributeProvider>();
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
             var headerAttributeProviderMock = new Mock<IHeaderAttributeProvider>();
-            headerAttributeProviderMock.Setup(x => x.Get(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<MethodParam[]>()))
+            headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))
                 .Returns(headerAttributes);
             var methodParamBuilderMock = new Mock<IMethodParamBuilder>();
-            methodParamBuilderMock.Setup(x => x.Build(It.IsAny<MethodInfo>()))
+            methodParamBuilderMock.Setup(x => x.Build(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(methodParams);
             var methodBuilder = new MethodBuilder(
                 methodAttributeProviderMock.Object,

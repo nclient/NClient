@@ -225,7 +225,6 @@ namespace NClient.Core.AspNetRouting
                 }
 
                 currentIndex++;
-
             } while (state != ParseState.End);
 
             return new ParameterPolicyParseResults(currentIndex, constraints.ToArray());

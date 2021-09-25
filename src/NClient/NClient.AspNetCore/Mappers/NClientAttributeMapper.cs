@@ -6,7 +6,6 @@ using NClient.Annotations.Auth;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Mappers
@@ -42,11 +41,11 @@ namespace NClient.AspNetCore.Mappers
                 OptionsMethodAttribute x => x.Template is null
                     ? new HttpOptionsAttribute { Order = x.Order, Name = x.Name }
                     : new HttpOptionsAttribute(x.Template) { Order = x.Order, Name = x.Name },
-#if !NETSTANDARD2_0
+                #if !NETSTANDARD2_0
                 PatchMethodAttribute x => x.Template is null
                     ? new HttpPatchAttribute { Order = x.Order, Name = x.Name }
                     : new HttpPatchAttribute(x.Template) { Order = x.Order, Name = x.Name },
-#endif
+                #endif
 
                 ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
 

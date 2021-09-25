@@ -1,20 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.Extensions;
 using NClient.Extensions.DependencyInjection;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using Polly;
 
 #pragma warning disable 618
 
@@ -42,14 +38,9 @@ namespace NClient.Packages.Tests
         {
             const int id = 1;
             const string host = "http://localhost:5001";
-            var policy = Policy
-                .HandleResult<HttpResponse>(x => !x.IsSuccessful)
-                .Or<Exception>()
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddHttpClient()
-                .AddNClient<ITestController, TestController>(host, builder => builder
-                    .WithResiliencePolicy(policy))
+                .AddNClient<ITestController, TestController>(host, builder => builder.WithResiliencePolicy())
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITestController>();
@@ -73,14 +64,9 @@ namespace NClient.Packages.Tests
         {
             const int id = 1;
             const string host = "http://localhost:5002";
-            var policy = Policy
-                .HandleResult<HttpResponse>(x => !x.IsSuccessful)
-                .Or<Exception>()
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt)));
             var client = new ServiceCollection()
                 .AddHttpClient()
-                .AddNClient<ITest>(host, builder => builder
-                    .WithResiliencePolicy(policy))
+                .AddNClient<ITest>(host, builder => builder.WithResiliencePolicy())
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();

@@ -39,10 +39,10 @@ namespace NClient.AspNetCore.Controllers
                 return false;
 
             return type.IsDefined(typeof(FacadeAttribute), inherit: true)
-                   || type.IsDefined(typeof(ApiAttribute), inherit: true)
-                   || type.IsDefined(typeof(PathAttribute), inherit: true)
-                   || type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true))
-                   || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));
+                || type.IsDefined(typeof(ApiAttribute), inherit: true)
+                || type.IsDefined(typeof(PathAttribute), inherit: true)
+                || type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true))
+                || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));
         }
     }
 }

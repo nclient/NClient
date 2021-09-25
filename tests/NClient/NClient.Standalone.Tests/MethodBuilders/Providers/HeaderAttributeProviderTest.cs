@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -13,6 +14,8 @@ using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     internal class HeaderAttributeProviderTest
     {
         private interface INoHeaders { void Method(); }
@@ -79,8 +82,11 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                     new[] { new HeaderAttribute("client-header", "value"), new HeaderAttribute("method-header", "value") })
                 .SetName("Client and method header"),
             new TestCaseData(typeof(IClientAndMethodHeaders), GetMethodInfo<IClientAndMethodHeaders>(), Array.Empty<MethodParam>(),
-                    new[] { new HeaderAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value"),
-                            new HeaderAttribute("method-header-1", "value"), new HeaderAttribute("method-header-2", "value") })
+                    new[]
+                    {
+                        new HeaderAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value"),
+                        new HeaderAttribute("method-header-1", "value"), new HeaderAttribute("method-header-2", "value")
+                    })
                 .SetName("Client and method headers"),
 
             new TestCaseData(typeof(IOther), GetMethodInfo<IOther>(), Array.Empty<MethodParam>(),
@@ -97,20 +103,20 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("Inherited and header attribute"),
 
             new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(), Array.Empty<MethodParam>(),
-                    new[] {  new HeaderAttribute("client-header-1", "value") })
+                    new[] { new HeaderAttribute("client-header-1", "value") })
                 .SetName("With inheritance"),
             new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(), Array.Empty<MethodParam>(),
-                    new[] {  new HeaderAttribute("client-header-1", "value") })
-                .SetName("With deep inheritance"),
+                    new[] { new HeaderAttribute("client-header-1", "value") })
+                .SetName("With deep inheritance")
         };
 
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(typeof(IClientHeader), GetMethodInfo<IClientHeader>(),
-                    new[] { new MethodParam("client-header", typeof(string), new HeaderParamAttribute { Name ="client-header" }) })
+                    new[] { new MethodParam("client-header", typeof(string), new HeaderParamAttribute { Name = "client-header" }) })
                 .SetName("Duplicate client and param headers"),
             new TestCaseData(typeof(IMethodHeader), GetMethodInfo<IMethodHeader>(),
-                    new[] { new MethodParam("method-header", typeof(string), new HeaderParamAttribute { Name ="method-header" }) })
+                    new[] { new MethodParam("method-header", typeof(string), new HeaderParamAttribute { Name = "method-header" }) })
                 .SetName("Duplicate method and param headers")
         };
 
@@ -126,7 +132,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         [TestCaseSource(nameof(ValidTestCases))]
         public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams, HeaderAttribute[] expectedAttributes)
         {
-            var actualAttributes = _headerAttributeProvider.Get(clientType, methodInfo, methodParams);
+            var actualAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams);
 
             actualAttributes.Should().BeEquivalentTo(expectedAttributes, config => config.WithoutStrictOrdering());
         }
@@ -135,7 +141,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public void Get_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams)
         {
             _headerAttributeProvider
-                .Invoking(x => x.Get(clientType, methodInfo, methodParams))
+                .Invoking(x => x.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams))
                 .Should()
                 .Throw<NClientException>();
         }
