@@ -47,7 +47,7 @@ namespace NClient.Providers.HttpClient.System.Tests
             var response = await httpClient.ExecuteAsync(request);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
-            response.Headers.Where(x => x.Name != "Date" && x.Name != "Transfer-Encoding")
+            response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Headers, x => x.WithoutStrictOrdering());
         }
 
@@ -72,12 +72,18 @@ namespace NClient.Providers.HttpClient.System.Tests
                 ContentType = null,
                 ContentLength = int.Parse(EmptyContentLengthHeader.Value),
                 ContentEncoding = null,
-                RawBytes = Array.Empty<byte>(),
+                Content = new HttpResponseContent(headerContainer: new HttpResponseContentHeaderContainer(new[]
+                {
+                    EmptyContentLengthHeader
+                })),
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
                 Server = ServerHeader.Value,
-                Headers = new[] { ServerHeader, EmptyContentLengthHeader },
+                Headers = new HttpResponseHeaderContainer(new[]
+                {
+                    ServerHeader
+                }),
                 ErrorMessage = null,
                 ErrorException = null,
                 ProtocolVersion = new Version(1, 1)
@@ -116,23 +122,25 @@ namespace NClient.Providers.HttpClient.System.Tests
             finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
             
             var content = Serializer.Serialize(Body);
-            var rawBytes = Encoding.UTF8.GetBytes(content);
+            var bytes = Encoding.UTF8.GetBytes(content);
             var response = new HttpResponse(finalRequest)
             {
                 ContentType = AcceptHeader.Value,
                 ContentLength = content.Length,
                 ContentEncoding = null,
-                RawBytes = rawBytes,
+                Content = new HttpResponseContent(bytes, new HttpResponseContentHeaderContainer(new[]
+                {
+                    ContentTypeHeader,
+                    new HttpHeader(EmptyContentLengthHeader.Name, content.Length.ToString())
+                })),
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
                 Server = ServerHeader.Value,
-                Headers = new[]
+                Headers = new HttpResponseHeaderContainer(new[]
                 {
-                    ServerHeader,
-                    ContentTypeHeader,
-                    new HttpHeader(EmptyContentLengthHeader.Name, content.Length.ToString())
-                },
+                    ServerHeader
+                }),
                 ErrorMessage = null,
                 ErrorException = null,
                 ProtocolVersion = new Version(1, 1)
@@ -182,18 +190,20 @@ namespace NClient.Providers.HttpClient.System.Tests
                 ContentType = AcceptHeader.Value,
                 ContentLength = int.Parse(EmptyContentLengthHeader.Value),
                 ContentEncoding = ContentEncodingHeader.Value,
-                RawBytes = Array.Empty<byte>(),
+                Content = new HttpResponseContent(headerContainer: new HttpResponseContentHeaderContainer(new[]
+                {
+                    ContentTypeHeader,
+                    ContentEncodingHeader,
+                    EmptyContentLengthHeader
+                })),
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
                 Server = ServerHeader.Value,
-                Headers = new[]
+                Headers = new HttpResponseHeaderContainer(new[]
                 {
-                    ServerHeader,
-                    ContentTypeHeader,
-                    ContentEncodingHeader,
-                    EmptyContentLengthHeader
-                },
+                    ServerHeader
+                }),
                 ErrorMessage = null,
                 ErrorException = null,
                 ProtocolVersion = new Version(1, 1)

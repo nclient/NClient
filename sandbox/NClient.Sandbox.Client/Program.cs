@@ -125,22 +125,22 @@ namespace NClient.Sandbox.Client
             _programLogger.LogInformation("The text file was received.");
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
             {
-                await textFileStream.WriteAsync(httpResponseWithText.RawBytes);
+                await textFileStream.WriteAsync(httpResponseWithText.Content.Bytes);
                 _programLogger.LogInformation("The text file was saved.");
             }
 
-            await _fileClient.PostTextFileAsync(httpResponseWithText.RawBytes!);
+            await _fileClient.PostTextFileAsync(httpResponseWithText.Content.Bytes!);
             _programLogger.LogInformation("The text file has been sent.");
 
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
             _programLogger.LogInformation("The image was received.");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
             {
-                await imageStream.WriteAsync(httpResponseWithImage.RawBytes);
+                await imageStream.WriteAsync(httpResponseWithImage.Content.Bytes);
                 _programLogger.LogInformation("The image was saved.");
             }
 
-            await _fileClient.PostImageFileAsync(httpResponseWithImage.RawBytes!);
+            await _fileClient.PostImageFileAsync(httpResponseWithImage.Content.Bytes!);
             _programLogger.LogInformation("The image has been sent.");
 
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);
