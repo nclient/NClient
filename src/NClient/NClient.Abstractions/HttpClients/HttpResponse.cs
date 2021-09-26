@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 using NClient.Common.Helpers;
 
 namespace NClient.Abstractions.HttpClients
@@ -61,11 +60,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        public string? Content => AsString(RawBytes, ContentEncoding);
-        /// <summary>
-        /// Response content
-        /// </summary>
-        public byte[]? RawBytes { get; set; }
+        public HttpResponseContent Content { get; set; }
         /// <summary>
         /// Gets HTTP response status code.
         /// </summary>
@@ -85,7 +80,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        public HttpHeader[] Headers { get; set; }
+        public HttpResponseHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -113,7 +108,8 @@ namespace NClient.Abstractions.HttpClients
             Ensure.IsNotNull(httpRequest, nameof(httpRequest));
 
             Request = httpRequest;
-            Headers = Array.Empty<HttpHeader>();
+            Content = new HttpResponseContent();
+            Headers = new HttpResponseHeaderContainer(Array.Empty<HttpHeader>());
         }
 
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
@@ -123,7 +119,7 @@ namespace NClient.Abstractions.HttpClients
             ContentType = httpResponse.ContentType;
             ContentLength = httpResponse.ContentLength;
             ContentEncoding = httpResponse.ContentEncoding;
-            RawBytes = httpResponse.RawBytes;
+            Content = httpResponse.Content;
             StatusCode = httpResponse.StatusCode;
             StatusDescription = httpResponse.StatusDescription;
             ResponseUri = httpResponse.ResponseUri;
@@ -142,27 +138,6 @@ namespace NClient.Abstractions.HttpClients
             if (!IsSuccessful)
                 throw ErrorException!;
             return this;
-        }
-
-        private static string? AsString(byte[]? bytes, string? encodingName)
-        {
-            if (string.IsNullOrEmpty(encodingName))
-                return AsString(bytes, Encoding.UTF8);
-
-            try
-            {
-                var encoding = Encoding.GetEncoding(encodingName);
-                return AsString(bytes, encoding);
-            }
-            catch (ArgumentException)
-            {
-                return AsString(bytes, Encoding.UTF8);
-            }
-        }
-
-        private static string? AsString(byte[]? buffer, Encoding encoding)
-        {
-            return buffer == null ? null : encoding.GetString(buffer, 0, buffer.Length);
         }
     }
 }

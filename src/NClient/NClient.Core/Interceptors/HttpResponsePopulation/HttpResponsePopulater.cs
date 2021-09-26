@@ -73,14 +73,14 @@ namespace NClient.Core.Interceptors.HttpResponsePopulation
         private object? TryGetBodyObject(Type bodyType, HttpResponse response)
         {
             return response.IsSuccessful
-                ? _serializer.Deserialize(response.Content!, bodyType)
+                ? _serializer.Deserialize(response.Content.ToString(), bodyType)
                 : null;
         }
 
         private object? TryGetErrorObject(Type errorType, HttpResponse response)
         {
             return !response.IsSuccessful
-                ? _serializer.Deserialize(response.Content!, errorType)
+                ? _serializer.Deserialize(response.Content.ToString(), errorType)
                 : null;
         }
     }
