@@ -57,7 +57,7 @@ namespace NClient.AspNetCore.Mappers
                 BodyParamAttribute => new FromBodyAttribute(),
                 HeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
-                { } => null,
+                { } => attribute,
                 _ => throw new ArgumentNullException(nameof(attribute))
             };
         }
