@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.FileService.Facade;
@@ -16,6 +17,7 @@ using Polly;
 
 namespace NClient.Sandbox.Client
 {
+    [SuppressMessage("ReSharper", "DateTimeNow")]
     public class Program
     {
         private static ILogger<Program> _programLogger = null!;
@@ -50,8 +52,15 @@ namespace NClient.Sandbox.Client
                 retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
             var fallbackPolicy = basePolicy.FallbackAsync(
-                fallbackValue: default!,
-                onFallbackAsync: x => throw (x.Exception ?? x.Result.HttpResponse.ErrorException!));
+                fallbackAction: (delegateResult, _, _) => Task.FromResult(delegateResult.Result),
+                onFallbackAsync: (delegateResult, _) =>
+                {
+                    if (delegateResult.Exception is not null)
+                        throw delegateResult.Exception;
+                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                        return Task.CompletedTask;
+                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                });
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
             var weatherForecastClientLogger = serviceProvider.GetRequiredService<ILogger<IWeatherForecastClient>>();
@@ -62,7 +71,7 @@ namespace NClient.Sandbox.Client
                 .Use<IWeatherForecastClient>(host: "http://localhost:5000")
                 .WithCustomHandlers(new IClientHandler[]
                 {
-                    new LoggingClientHandler(handlerLogger),
+                    new LoggingClientHandler(handlerLogger)
                 })
                 .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
                 .WithResiliencePolicy(
@@ -75,7 +84,7 @@ namespace NClient.Sandbox.Client
                 .Use<IFileClient>(host: "http://localhost:5002")
                 .WithCustomHandlers(new IClientHandler[]
                 {
-                    new LoggingClientHandler(handlerLogger),
+                    new LoggingClientHandler(handlerLogger)
                 })
                 .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
                 .WithResiliencePolicy(
@@ -90,8 +99,8 @@ namespace NClient.Sandbox.Client
             var weatherForecast = await _weatherForecastClient.GetAsync(new WeatherForecastFilter { Id = 1, Date = null });
             _programLogger.LogInformation($"The forecast summary: {weatherForecast.Summary}.");
 
-            var nonExistingWeatherForecast = await _weatherForecastClient.GetAsync(new WeatherForecastFilter { Id = 0, Date = null });
-            _programLogger.LogInformation($"The forecast not found.");
+            await _weatherForecastClient.GetAsync(new WeatherForecastFilter { Id = 0, Date = null });
+            _programLogger.LogInformation("The forecast not found.");
 
             var newWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -30 };
             await _weatherForecastClient.PostAsync(newWeatherForecast);
@@ -113,26 +122,26 @@ namespace NClient.Sandbox.Client
             Directory.CreateDirectory(receivedFilesDirPath);
 
             var httpResponseWithText = await _fileClient.GetTextFileAsync(id: 1);
-            _programLogger.LogInformation($"The text file was received.");
+            _programLogger.LogInformation("The text file was received.");
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
             {
-                await textFileStream.WriteAsync(httpResponseWithText.RawBytes);
-                _programLogger.LogInformation($"The text file was saved.");
+                await textFileStream.WriteAsync(httpResponseWithText.Content.Bytes);
+                _programLogger.LogInformation("The text file was saved.");
             }
 
-            await _fileClient.PostTextFileAsync(httpResponseWithText.RawBytes!);
-            _programLogger.LogInformation($"The text file has been sent.");
+            await _fileClient.PostTextFileAsync(httpResponseWithText.Content.Bytes!);
+            _programLogger.LogInformation("The text file has been sent.");
 
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
-            _programLogger.LogInformation($"The image was received.");
+            _programLogger.LogInformation("The image was received.");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
             {
-                await imageStream.WriteAsync(httpResponseWithImage.RawBytes);
-                _programLogger.LogInformation($"The image was saved.");
+                await imageStream.WriteAsync(httpResponseWithImage.Content.Bytes);
+                _programLogger.LogInformation("The image was saved.");
             }
 
-            await _fileClient.PostImageFileAsync(httpResponseWithImage.RawBytes!);
-            _programLogger.LogInformation($"The image has been sent.");
+            await _fileClient.PostImageFileAsync(httpResponseWithImage.Content.Bytes!);
+            _programLogger.LogInformation("The image has been sent.");
 
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);
         }

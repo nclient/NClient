@@ -1,40 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<PackageId>$(AssemblyName)</PackageId>
-		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
-		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
-		<Description>Extension methods for registration of clients in ServiceCollection.</Description>
-		<Authors>smolchanovsky</Authors>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <PackageId>$(AssemblyName)</PackageId>
+        <VersionPrefix>$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
+        <Description>Extension methods for registration of clients in ServiceCollection.</Description>
+        <Authors>smolchanovsky</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Configurations>Debug;Release;ReleaseTest</Configurations>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\NClient\NClient\NClient.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\NClient\NClient\NClient.csproj"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
 </Project>

@@ -37,8 +37,8 @@ namespace NClient.Core.Resilience
         {
             _resiliencePolicyProviders.TryGetValue(methodInfo, out var provider);
             return provider?.Create()
-                   ?? _defaultMethodResiliencePolicyProvider?.Create(methodInfo)
-                   ?? _defaultResiliencePolicyProvider!.Create();
+                ?? _defaultMethodResiliencePolicyProvider?.Create(methodInfo)
+                ?? _defaultResiliencePolicyProvider!.Create();
         }
     }
 }

@@ -83,7 +83,7 @@ namespace NClient.Extensions.DependencyInjection
         {
             return new NClientBuilder()
                 .Use<TInterface>(host)
-                .WithRegisteredProviders(serviceProvider, httpClientName); ;
+                .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }
 }

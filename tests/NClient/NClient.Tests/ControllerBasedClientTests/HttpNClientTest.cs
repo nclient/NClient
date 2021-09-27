@@ -46,12 +46,15 @@ namespace NClient.Tests.ControllerBasedClientTests
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
-                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                ContentLength = 18,
-                ContentType = "application/json",
+                Content = new HttpResponseContent(
+                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new HttpResponseContentHeaderContainer(new[]
+                    {
+                        new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
+                    })),
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -63,15 +66,19 @@ namespace NClient.Tests.ControllerBasedClientTests
             using var api = _returnApiMockFactory.MockGetMethod(id, entity);
 
             var result = _returnClient.AsHttp().GetHttpResponse(client => client.Get(id));
+
             result.Should().BeEquivalentTo(new HttpResponse<BasicEntity>(HttpResponseStub, HttpRequestStub, entity)
             {
                 StatusCode = HttpStatusCode.OK,
-                RawBytes = Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                ContentLength = 18,
-                ContentType = "application/json",
+                Content = new HttpResponseContent(
+                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new HttpResponseContentHeaderContainer(new[]
+                    {
+                        new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
+                    })),
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -85,12 +92,15 @@ namespace NClient.Tests.ControllerBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
-                RawBytes = Encoding.UTF8.GetBytes(""),
-                ContentType = "application/json",
+                Content = new HttpResponseContent(
+                    Encoding.UTF8.GetBytes(""),
+                    new HttpResponseContentHeaderContainer(new[]
+                    {
+                        new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
+                    })),
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 
@@ -104,12 +114,15 @@ namespace NClient.Tests.ControllerBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
-                RawBytes = Encoding.UTF8.GetBytes(""),
-                ContentType = "application/json",
+                Content = new HttpResponseContent(
+                    Encoding.UTF8.GetBytes(""),
+                    new HttpResponseContentHeaderContainer(new[]
+                    {
+                        new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
+                    })),
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
-                StatusDescription = "OK",
+                StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
 

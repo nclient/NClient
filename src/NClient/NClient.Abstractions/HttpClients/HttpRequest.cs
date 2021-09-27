@@ -18,9 +18,9 @@ namespace NClient.Abstractions.HttpClients
         /// </summary>
         public Guid Id { get; }
         /// <summary>
-        /// Gets the <see cref="T:System.Uri" /> used for the HTTP request.
+        /// Gets the <see cref="T:System.Uri" /> used for the HTTP request. Should not include query.
         /// </summary>
-        public Uri Uri { get; }
+        public Uri Resource { get; }
         /// <summary>
         /// Gets HTTP method type.
         /// </summary>
@@ -29,6 +29,10 @@ namespace NClient.Abstractions.HttpClients
         /// Gets object used for request body.
         /// </summary>
         public object? Body { get; set; }
+        /// <summary>
+        /// Gets string representation of request body.
+        /// </summary>
+        public string? Content { get; set; }
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
@@ -42,15 +46,15 @@ namespace NClient.Abstractions.HttpClients
         /// Creates container for HTTP request data.
         /// </summary>
         /// <param name="id">The request id.</param>
-        /// <param name="uri">The request URI (without parameters).</param>
+        /// <param name="resource">The request URI (without parameters).</param>
         /// <param name="method">The request HTTP method type.</param>
-        public HttpRequest(Guid id, Uri uri, HttpMethod method)
+        public HttpRequest(Guid id, Uri resource, HttpMethod method)
         {
-            Ensure.IsNotNull(uri, nameof(uri));
+            Ensure.IsNotNull(resource, nameof(resource));
             Ensure.IsNotNull(method, nameof(method));
 
             Id = id;
-            Uri = uri;
+            Resource = resource;
             Method = method;
         }
 

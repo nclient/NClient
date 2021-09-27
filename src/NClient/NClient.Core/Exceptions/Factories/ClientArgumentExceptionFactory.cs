@@ -8,6 +8,6 @@
     public class ClientArgumentExceptionFactory : IClientArgumentExceptionFactory
     {
         public ClientArgumentException ParameterInRouteTemplateIsNull(string parameterName) =>
-            new ClientArgumentException($"The parameter '{parameterName}' used in the path cannot be null.");
+            new($"The parameter '{parameterName}' used in the path cannot be null.");
     }
 }

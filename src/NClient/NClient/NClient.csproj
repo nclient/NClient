@@ -1,45 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<PackageId>$(AssemblyName)</PackageId>
-		<VersionPrefix>$(VersionPrefix)</VersionPrefix>
-		<VersionSuffix>$(VersionSuffix)</VersionSuffix>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-		<Description>The open source HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, retry policies and logging. The package provides a complete set of tools for creating HTTP clients including third-party solutions.</Description>
-		<Authors>smolchanovsky</Authors>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <PackageId>$(AssemblyName)</PackageId>
+        <VersionPrefix>$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
+        <Description>The open source HTTP client that allows you to call web service API methods using annotated interfaces or controllers. The client supports asynchronous calls, retry policies and logging. The package provides a complete set of tools for creating HTTP clients including third-party solutions.</Description>
+        <Authors>smolchanovsky</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<Configurations>Debug;Release;ReleaseTest</Configurations>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Configurations>Debug;Release;ReleaseTest</Configurations>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj" />
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
-		<ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
-		<ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj"/>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj"/>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj"/>
+        <ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-		<None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>NClient.Extensions.DependencyInjection</_Parameter1>
-		</AssemblyAttribute>
-	</ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Extensions.DependencyInjection</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
 </Project>

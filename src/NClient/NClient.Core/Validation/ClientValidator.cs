@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Exceptions;
 using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;

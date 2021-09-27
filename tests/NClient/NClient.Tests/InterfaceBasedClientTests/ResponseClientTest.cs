@@ -48,9 +48,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
             (await _responseClient
-                .Invoking(async x => await x.GetAsync(id))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.GetAsync(id))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -61,9 +61,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
             (await _responseClient
-                .Invoking(async x => await x.GetAsync(id))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.GetAsync(id))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -74,9 +74,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockInternalServerError();
 
             (await _responseClient
-                .Invoking(async x => await x.GetAsync(id))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.GetAsync(id))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -118,7 +118,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Content.Should().Be(JsonSerializer.Serialize(BadRequestError));
+            result.Content.ToString().Should().Be(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]
@@ -156,9 +156,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockGetMethodWithBadRequest(id);
 
             (await _responseClient
-                .Invoking(async x => await x.GetResponseWithErrorAsync(id))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.GetResponseWithErrorAsync(id))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError == false);
         }
 
@@ -209,9 +209,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
             (await _responseClient
-                .Invoking(async x => await x.PostAsync(entity))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.PostAsync(entity))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -222,9 +222,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
 
             (await _responseClient
-                .Invoking(async x => await x.PostAsync(entity))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.PostAsync(entity))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -235,9 +235,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockInternalServerError();
 
             (await _responseClient
-                .Invoking(async x => await x.PostAsync(entity))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.PostAsync(entity))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -278,7 +278,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Content.Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
+            result.Content.ToString().Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]
@@ -315,9 +315,9 @@ namespace NClient.Tests.InterfaceBasedClientTests
             using var api = _responseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
             (await _responseClient
-                .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
-                .Should()
-                .ThrowAsync<ClientRequestException>())
+                    .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
+                    .Should()
+                    .ThrowAsync<ClientRequestException>())
                 .Where(x => x.IsHttpError == false);
         }
 

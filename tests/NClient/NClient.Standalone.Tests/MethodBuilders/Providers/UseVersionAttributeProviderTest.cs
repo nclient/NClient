@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
@@ -15,6 +16,9 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
+    [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
+    [SuppressMessage("ReSharper", "RedundantBlankLines")]
     public class UseVersionAttributeProviderTest
     {
         private interface IClientWithout { void Method(); }
@@ -85,7 +89,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
             new TestCaseData(typeof(IClientWithInterfaceAndMethodVersion), GetMethodInfo<IClientWithInterfaceAndMethodVersion>(), new UseVersionAttribute("2.0"))
                 .SetName("Without method version"),
             new TestCaseData(typeof(IClientMethodOverride), GetMethodInfo<IClientMethodOverride>(), new UseVersionAttribute("2.0"))
-                .SetName("Without method version"),
+                .SetName("Without method version")
         };
 
         [UseVersion("2.0")] public interface IClientOverride : IControllerOverride { void Method(); }
@@ -94,7 +98,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(typeof(IClientOverride), GetMethodInfo<IClientOverride>())
-                .SetName("With override version"),
+                .SetName("With override version")
         };
 
         private UseVersionAttributeProvider _useVersionAttributeProvider = null!;

@@ -49,7 +49,7 @@ namespace NClient.Providers.HttpClient.System
         private async Task<(HttpResponseMessage HttpResponseMessage, Exception? Exception)> TrySendAsync(HttpRequestMessage httpRequestMessage)
         {
             var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false); ;
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             try
             {

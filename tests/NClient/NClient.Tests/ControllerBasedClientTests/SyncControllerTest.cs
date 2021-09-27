@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NClient.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
