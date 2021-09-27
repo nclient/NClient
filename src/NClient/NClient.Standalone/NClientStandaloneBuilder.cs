@@ -56,7 +56,7 @@ namespace NClient
                 .GetAwaiter()
                 .GetResult();
 
-            return new OptionalInterfaceNClientBuilder<TInterface>(
+            return new OptionalNClientBuilder<TInterface>(
                 host: new Uri(host),
                 _clientGenerator,
                 _interfaceClientInterceptorFactory,

@@ -10,7 +10,7 @@ using NClient.OptionalNClientBuilders.Bases;
 
 namespace NClient.OptionalNClientBuilders
 {
-    internal class OptionalInterfaceNClientBuilder<TInterface> :
+    internal class OptionalNClientBuilder<TInterface> :
         OptionalNClientBuilderBase<IOptionalNClientBuilder<TInterface>, TInterface>,
         IOptionalNClientBuilder<TInterface>
         where TInterface : class
@@ -19,7 +19,7 @@ namespace NClient.OptionalNClientBuilders
         private readonly IClientGenerator _clientGenerator;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
 
-        public OptionalInterfaceNClientBuilder(
+        public OptionalNClientBuilder(
             Uri host,
             IClientGenerator clientGenerator,
             IClientInterceptorFactory clientInterceptorFactory,

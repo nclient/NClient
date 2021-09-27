@@ -6,7 +6,7 @@ using NClient.Extensions.DependencyInjection.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
 {
-    public static class AddInterfaceNClientExtensions
+    public static class AddNClientExtensions
     {
         /// <summary>
         /// Adds a NClient client to the DI container.
