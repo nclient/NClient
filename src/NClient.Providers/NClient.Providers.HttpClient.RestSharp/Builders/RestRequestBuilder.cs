@@ -1,6 +1,6 @@
-﻿using System;
-using NClient.Abstractions.HttpClients;
+﻿using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Providers.HttpClient.RestSharp.Helpers;
 using RestSharp;
 
 namespace NClient.Providers.HttpClient.RestSharp.Builders
@@ -13,16 +13,20 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
     internal class RestRequestBuilder : IRestRequestBuilder
     {
         private readonly ISerializer _serializer;
+        private readonly IRestSharpMethodMapper _restSharpMethodMapper;
 
-        public RestRequestBuilder(ISerializer serializer)
+        public RestRequestBuilder(
+            ISerializer serializer,
+            IRestSharpMethodMapper restSharpMethodMapper)
         {
             _serializer = serializer;
+            _restSharpMethodMapper = restSharpMethodMapper;
         }
 
         public IRestRequest Build(HttpRequest request)
         {
-            Enum.TryParse(request.Method.ToString(), out Method method);
-            var restRequest = new RestRequest(request.Uri, method, DataFormat.Json);
+            var method = _restSharpMethodMapper.Map(request.Method);
+            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
 
             foreach (var param in request.Parameters)
             {

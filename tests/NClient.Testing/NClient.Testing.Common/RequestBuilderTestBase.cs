@@ -77,7 +77,7 @@ namespace NClient.Testing.Common
             IEnumerable<HttpHeader>? headers = null,
             object? body = null)
         {
-            actualRequest.Uri.Should().Be(uri);
+            actualRequest.Resource.Should().Be(uri);
             actualRequest.Method.Should().Be(httpMethod);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<HttpParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<HttpHeader>(), config => config.WithoutStrictOrdering());

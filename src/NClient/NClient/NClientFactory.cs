@@ -29,12 +29,12 @@ namespace NClient
 
         public NClientFactory(
             IHttpClientFactory httpClientFactory,
-            string? httpClientFactoryName = null,
+            string? httpClientName = null,
             JsonSerializerOptions? jsonSerializerOptions = null,
             IAsyncPolicy<ResponseContext>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
-                new SystemHttpClientProvider(httpClientFactory, httpClientFactoryName),
+                new SystemHttpClientProvider(httpClientFactory, httpClientName),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
                 methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
