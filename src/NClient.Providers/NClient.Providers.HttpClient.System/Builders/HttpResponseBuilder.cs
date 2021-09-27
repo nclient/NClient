@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NClient.Abstractions.Exceptions.Factories;
@@ -42,14 +41,10 @@ namespace NClient.Providers.HttpClient.System.Builders
             var httpResponse = new HttpResponse(finalRequest)
             {
                 Headers = new HttpResponseHeaderContainer(httpResponseMessage.Headers),
-                ContentType = httpResponseMessage.Content?.Headers?.ContentType?.MediaType,
-                ContentLength = httpResponseMessage.Content?.Headers?.ContentLength,
-                ContentEncoding = httpResponseMessage.Content?.Headers?.ContentEncoding.FirstOrDefault(),
                 Content = content,
                 StatusCode = httpResponseMessage.StatusCode,
                 StatusDescription = httpResponseMessage.StatusCode.ToString(),
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
-                Server = httpResponseMessage.Headers?.Server?.ToString(),
                 ErrorMessage = exception?.Message,
                 ProtocolVersion = httpResponseMessage.Version
             };

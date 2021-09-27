@@ -45,13 +45,9 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             
             var httpResponse = new HttpResponse(finalRequest)
             {
-                ContentType = string.IsNullOrEmpty(restResponse.ContentType) ? null : restResponse.ContentType,
-                ContentLength = restResponse.ContentLength,
-                ContentEncoding = string.IsNullOrEmpty(restResponse.ContentEncoding) ? null : restResponse.ContentEncoding,
                 Content = new HttpResponseContent(restResponse.RawBytes, new HttpResponseContentHeaderContainer(contentHeaders)),
                 StatusCode = restResponse.StatusCode,
                 ResponseUri = restResponse.ResponseUri,
-                Server = string.IsNullOrEmpty(restResponse.Server) ? null : restResponse.Server,
                 Headers = new HttpResponseHeaderContainer(responseHeaders),
                 ErrorMessage = restResponse.ErrorMessage,
                 ProtocolVersion = restResponse.ProtocolVersion

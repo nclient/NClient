@@ -1,20 +1,48 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace NClient.Abstractions.HttpClients
 {
+    /// <summary>
+    /// Response content.
+    /// </summary>
     public class HttpResponseContent
     {
+        /// <summary>
+        /// Gets byte representation of response content.
+        /// </summary>
         public byte[] Bytes { get; }
+        /// <summary>
+        /// Gets headers returned by server with the response content.
+        /// </summary>
         public HttpResponseContentHeaderContainer Headers { get; }
 
+        [SuppressMessage("ReSharper", "UnusedVariable")]
         public HttpResponseContent(byte[]? bytes = null, HttpResponseContentHeaderContainer? headerContainer = null)
         {
             Bytes = bytes ?? Array.Empty<byte>();
             Headers = headerContainer ?? new HttpResponseContentHeaderContainer(Array.Empty<HttpHeader>());
+            
+            // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
+            // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.
+            var unusedAllow = Headers.Allow;
+            var unusedContentLength = Headers.ContentLength;
+            var unusedContentDisposition = Headers.ContentDisposition;
+            var unusedContentEncoding = Headers.ContentEncoding;
+            var unusedContentLanguage = Headers.ContentLanguage;
+            var unusedContentLocation = Headers.ContentLocation;
+            var unusedContentRange = Headers.ContentRange;
+            var unusedContentType = Headers.ContentType;
+            var unusedLastModified = Headers.LastModified;
+            var unusedContentMd5 = Headers.ContentMD5;
+            var unusedExpires = Headers.Expires;
         }
 
+        /// <summary>
+        /// Gets string representation of response content.
+        /// </summary>
         public override string ToString()
         {
             if (Headers.ContentEncoding.Count == 0 || string.IsNullOrEmpty(Headers.ContentEncoding.First()))

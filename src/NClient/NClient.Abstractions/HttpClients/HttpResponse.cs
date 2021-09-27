@@ -46,18 +46,6 @@ namespace NClient.Abstractions.HttpClients
         /// </summary>
         public HttpRequest Request { get; }
         /// <summary>
-        /// Gets MIME content type of response.
-        /// </summary>
-        public string? ContentType { get; set; }
-        /// <summary>
-        /// Gets the length in bytes of the response content.
-        /// </summary>
-        public long? ContentLength { get; set; }
-        /// <summary>
-        /// Gets encoding of the response content.
-        /// </summary>
-        public string? ContentEncoding { get; set; }
-        /// <summary>
         /// Gets string representation of response content.
         /// </summary>
         public HttpResponseContent Content { get; set; }
@@ -73,10 +61,6 @@ namespace NClient.Abstractions.HttpClients
         /// Gets the URL that actually responded to the content (different from request if redirected).
         /// </summary>
         public Uri? ResponseUri { get; set; }
-        /// <summary>
-        /// Gets HttpWebResponse.Server.
-        /// </summary>
-        public string? Server { get; set; }
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
@@ -115,15 +99,11 @@ namespace NClient.Abstractions.HttpClients
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
         {
             Ensure.IsNotNull(httpResponse, nameof(httpResponse));
-
-            ContentType = httpResponse.ContentType;
-            ContentLength = httpResponse.ContentLength;
-            ContentEncoding = httpResponse.ContentEncoding;
+            
             Content = httpResponse.Content;
             StatusCode = httpResponse.StatusCode;
             StatusDescription = httpResponse.StatusDescription;
             ResponseUri = httpResponse.ResponseUri;
-            Server = httpResponse.Server;
             Headers = httpResponse.Headers;
             ErrorMessage = httpResponse.ErrorMessage;
             ErrorException = httpResponse.ErrorException;
