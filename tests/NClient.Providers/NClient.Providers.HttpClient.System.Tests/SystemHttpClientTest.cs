@@ -69,9 +69,6 @@ namespace NClient.Providers.HttpClient.System.Tests
             
             var response = new HttpResponse(finalRequest)
             {
-                ContentType = null,
-                ContentLength = int.Parse(EmptyContentLengthHeader.Value),
-                ContentEncoding = null,
                 Content = new HttpResponseContent(headerContainer: new HttpResponseContentHeaderContainer(new[]
                 {
                     EmptyContentLengthHeader
@@ -79,7 +76,6 @@ namespace NClient.Providers.HttpClient.System.Tests
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
-                Server = ServerHeader.Value,
                 Headers = new HttpResponseHeaderContainer(new[]
                 {
                     ServerHeader
@@ -125,9 +121,6 @@ namespace NClient.Providers.HttpClient.System.Tests
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new HttpResponse(finalRequest)
             {
-                ContentType = AcceptHeader.Value,
-                ContentLength = content.Length,
-                ContentEncoding = null,
                 Content = new HttpResponseContent(bytes, new HttpResponseContentHeaderContainer(new[]
                 {
                     ContentTypeHeader,
@@ -136,7 +129,6 @@ namespace NClient.Providers.HttpClient.System.Tests
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
-                Server = ServerHeader.Value,
                 Headers = new HttpResponseHeaderContainer(new[]
                 {
                     ServerHeader
@@ -187,9 +179,6 @@ namespace NClient.Providers.HttpClient.System.Tests
             
             var response = new HttpResponse(finalRequest)
             {
-                ContentType = AcceptHeader.Value,
-                ContentLength = int.Parse(EmptyContentLengthHeader.Value),
-                ContentEncoding = ContentEncodingHeader.Value,
                 Content = new HttpResponseContent(headerContainer: new HttpResponseContentHeaderContainer(new[]
                 {
                     ContentTypeHeader,
@@ -199,7 +188,6 @@ namespace NClient.Providers.HttpClient.System.Tests
                 StatusCode = HttpStatusCode.OK,
                 StatusDescription = "OK",
                 ResponseUri = Resource,
-                Server = ServerHeader.Value,
                 Headers = new HttpResponseHeaderContainer(new[]
                 {
                     ServerHeader

@@ -51,10 +51,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
                     })),
-                ContentLength = 18,
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -79,10 +76,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
                     })),
-                ContentLength = 18,
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -106,10 +100,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
                     })),
-                ContentLength = 18,
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -133,10 +124,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "18")
                     })),
-                ContentLength = 18,
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -152,7 +140,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
                 Content = new HttpResponseContent(
                     Encoding.UTF8.GetBytes(""),
                     new HttpResponseContentHeaderContainer(new[]
@@ -160,9 +147,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
                     })),
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -178,7 +163,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
                 Content = new HttpResponseContent(
                     Encoding.UTF8.GetBytes(""),
                     new HttpResponseContentHeaderContainer(new[]
@@ -186,9 +170,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
                     })),
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -204,7 +186,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponse(HttpRequestStub)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
                 Content = new HttpResponseContent(
                     Encoding.UTF8.GetBytes(""),
                     new HttpResponseContentHeaderContainer(new[]
@@ -212,9 +193,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
                     })),
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
@@ -230,7 +209,6 @@ namespace NClient.Tests.InterfaceBasedClientTests
             httpResponse.Should().BeEquivalentTo(new HttpResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = HttpStatusCode.OK,
-                ContentLength = 0,
                 Content = new HttpResponseContent(
                     Encoding.UTF8.GetBytes(""),
                     new HttpResponseContentHeaderContainer(new[]
@@ -238,9 +216,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
                         new HttpHeader(HttpKnownHeaderNames.ContentType, "application/json"),
                         new HttpHeader(HttpKnownHeaderNames.ContentLength, "0")
                     })),
-                ContentType = "application/json",
                 ProtocolVersion = new Version("1.1"),
-                Server = "Kestrel",
                 StatusDescription = "OK"
             }, ExcludeInessentialFields);
         }
