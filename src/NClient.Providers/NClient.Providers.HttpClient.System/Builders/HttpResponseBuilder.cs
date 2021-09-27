@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NClient.Abstractions.Exceptions.Factories;
@@ -32,30 +31,23 @@ namespace NClient.Providers.HttpClient.System.Builders
             var finalRequest = await _finalHttpRequestBuilder
                 .BuildAsync(request, httpResponseMessage.RequestMessage)
                 .ConfigureAwait(false);
-            
-            var rawBytes = httpResponseMessage.Content is null ? null : await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+
+            var content = httpResponseMessage.Content is null 
+                ? new HttpResponseContent() 
+                : new HttpResponseContent(
+                    await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
+                    new HttpResponseContentHeaderContainer(httpResponseMessage.Content.Headers));
 
             var httpResponse = new HttpResponse(finalRequest)
             {
-                ContentType = httpResponseMessage.Content?.Headers?.ContentType?.MediaType,
-                ContentLength = httpResponseMessage.Content?.Headers?.ContentLength,
-                ContentEncoding = httpResponseMessage.Content?.Headers?.ContentEncoding.FirstOrDefault(),
-                RawBytes = rawBytes,
+                Headers = new HttpResponseHeaderContainer(httpResponseMessage.Headers),
+                Content = content,
                 StatusCode = httpResponseMessage.StatusCode,
                 StatusDescription = httpResponseMessage.StatusCode.ToString(),
                 ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
-                Server = httpResponseMessage.Headers?.Server?.ToString(),
                 ErrorMessage = exception?.Message,
                 ProtocolVersion = httpResponseMessage.Version
             };
-            
-            var headers = httpResponseMessage.Headers?
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<HttpHeader>();
-            var contentHeaders = httpResponseMessage.Content?.Headers?
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<HttpHeader>();
-            httpResponse.Headers = headers.Concat(contentHeaders).ToArray();
 
             httpResponse.ErrorException = exception is not null
                 ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)

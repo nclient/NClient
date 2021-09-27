@@ -118,7 +118,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Content.Should().Be(JsonSerializer.Serialize(BadRequestError));
+            result.Content.ToString().Should().Be(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]
@@ -278,7 +278,7 @@ namespace NClient.Tests.InterfaceBasedClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            result.Content.Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
+            result.Content.ToString().Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]

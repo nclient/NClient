@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 using NClient.Common.Helpers;
 
 namespace NClient.Abstractions.HttpClients
@@ -47,25 +46,9 @@ namespace NClient.Abstractions.HttpClients
         /// </summary>
         public HttpRequest Request { get; }
         /// <summary>
-        /// Gets MIME content type of response.
-        /// </summary>
-        public string? ContentType { get; set; }
-        /// <summary>
-        /// Gets the length in bytes of the response content.
-        /// </summary>
-        public long? ContentLength { get; set; }
-        /// <summary>
-        /// Gets encoding of the response content.
-        /// </summary>
-        public string? ContentEncoding { get; set; }
-        /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        public string? Content => AsString(RawBytes, ContentEncoding);
-        /// <summary>
-        /// Response content
-        /// </summary>
-        public byte[]? RawBytes { get; set; }
+        public HttpResponseContent Content { get; set; }
         /// <summary>
         /// Gets HTTP response status code.
         /// </summary>
@@ -79,13 +62,9 @@ namespace NClient.Abstractions.HttpClients
         /// </summary>
         public Uri? ResponseUri { get; set; }
         /// <summary>
-        /// Gets HttpWebResponse.Server.
-        /// </summary>
-        public string? Server { get; set; }
-        /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        public HttpHeader[] Headers { get; set; }
+        public HttpResponseHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -113,21 +92,18 @@ namespace NClient.Abstractions.HttpClients
             Ensure.IsNotNull(httpRequest, nameof(httpRequest));
 
             Request = httpRequest;
-            Headers = Array.Empty<HttpHeader>();
+            Content = new HttpResponseContent();
+            Headers = new HttpResponseHeaderContainer(Array.Empty<HttpHeader>());
         }
 
         internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
         {
             Ensure.IsNotNull(httpResponse, nameof(httpResponse));
-
-            ContentType = httpResponse.ContentType;
-            ContentLength = httpResponse.ContentLength;
-            ContentEncoding = httpResponse.ContentEncoding;
-            RawBytes = httpResponse.RawBytes;
+            
+            Content = httpResponse.Content;
             StatusCode = httpResponse.StatusCode;
             StatusDescription = httpResponse.StatusDescription;
             ResponseUri = httpResponse.ResponseUri;
-            Server = httpResponse.Server;
             Headers = httpResponse.Headers;
             ErrorMessage = httpResponse.ErrorMessage;
             ErrorException = httpResponse.ErrorException;
@@ -142,27 +118,6 @@ namespace NClient.Abstractions.HttpClients
             if (!IsSuccessful)
                 throw ErrorException!;
             return this;
-        }
-
-        private static string? AsString(byte[]? bytes, string? encodingName)
-        {
-            if (string.IsNullOrEmpty(encodingName))
-                return AsString(bytes, Encoding.UTF8);
-
-            try
-            {
-                var encoding = Encoding.GetEncoding(encodingName);
-                return AsString(bytes, encoding);
-            }
-            catch (ArgumentException)
-            {
-                return AsString(bytes, Encoding.UTF8);
-            }
-        }
-
-        private static string? AsString(byte[]? buffer, Encoding encoding)
-        {
-            return buffer == null ? null : encoding.GetString(buffer, 0, buffer.Length);
         }
     }
 }
