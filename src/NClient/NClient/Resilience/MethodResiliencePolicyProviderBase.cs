@@ -21,7 +21,7 @@ namespace NClient.Resilience
             Func<int, TimeSpan>? sleepDurationProvider = null,
             Func<ResponseContext, bool>? resultPredicate = null)
         {
-            var basePolicy = Policy<ResponseContext>.HandleResult(resultPredicate ?? (x => !x.HttpResponse.IsSuccessful)).Or<Exception>();
+            var basePolicy = Policy<ResponseContext>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessful)).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount,
                 sleepDurationProvider ?? (retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
@@ -33,7 +33,7 @@ namespace NClient.Resilience
                         throw delegateResult.Exception;
                     if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
-                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                    throw delegateResult.Result.Response.ErrorException!;
                 });
 
             Policy = fallbackPolicy.WrapAsync(retryPolicy);

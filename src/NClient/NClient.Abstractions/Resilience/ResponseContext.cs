@@ -1,16 +1,15 @@
-﻿using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Invocation;
+﻿using NClient.Abstractions.Invocation;
 
 namespace NClient.Abstractions.Resilience
 {
-    public class ResponseContext
+    public class ResponseContext<TResponse>
     {
-        public HttpResponse HttpResponse { get; }
+        public TResponse Response { get; }
         public MethodInvocation MethodInvocation { get; }
 
-        public ResponseContext(HttpResponse httpResponse, MethodInvocation methodInvocation)
+        public ResponseContext(TResponse response, MethodInvocation methodInvocation)
         {
-            HttpResponse = httpResponse;
+            Response = response;
             MethodInvocation = methodInvocation;
         }
     }

@@ -44,9 +44,9 @@ namespace NClient.Sandbox.Client
 
             var basePolicy = Policy<ResponseContext>.HandleResult(x =>
             {
-                if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.HttpResponse.StatusCode == HttpStatusCode.NotFound)
+                if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
                     return false;
-                return !x.HttpResponse.IsSuccessful;
+                return !x.Response.IsSuccessful;
             }).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount: 2,
@@ -59,7 +59,7 @@ namespace NClient.Sandbox.Client
                         throw delegateResult.Exception;
                     if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
-                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                    throw delegateResult.Result.Response.ErrorException!;
                 });
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();

@@ -7,25 +7,25 @@ namespace NClient.Providers.Resilience.Polly
     /// <summary>
     /// The Polly based provider for a component that can create <see cref="IResiliencePolicy"/> instances.
     /// </summary>
-    public class PollyResiliencePolicyProvider : IResiliencePolicyProvider
+    public class PollyResiliencePolicyProvider<TResponse> : IResiliencePolicyProvider<TResponse>
     {
-        private readonly IAsyncPolicy<ResponseContext> _asyncPolicy;
+        private readonly IAsyncPolicy<ResponseContext<TResponse>> _asyncPolicy;
 
         /// <summary>
         /// Creates the Polly based resilience policy provider.
         /// </summary>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public PollyResiliencePolicyProvider(
-            IAsyncPolicy<ResponseContext> asyncPolicy)
+            IAsyncPolicy<ResponseContext<TResponse>> asyncPolicy)
         {
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
             _asyncPolicy = asyncPolicy;
         }
 
-        public IResiliencePolicy Create()
+        public IResiliencePolicy<TResponse> Create()
         {
-            return new PollyResiliencePolicy(_asyncPolicy);
+            return new PollyResiliencePolicy<TResponse>(_asyncPolicy);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using NClient.Abstractions.Resilience;
+﻿using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Resilience
 {
-    internal class DefaultResiliencePolicyProvider : IResiliencePolicyProvider
+    internal class DefaultResiliencePolicyProvider : IResiliencePolicyProvider<HttpResponse>
     {
-        public IResiliencePolicy Create()
+        public IResiliencePolicy<HttpResponse> Create()
         {
             return new DefaultResiliencePolicy();
         }
