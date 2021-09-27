@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
@@ -64,20 +63,6 @@ namespace NClient
 
             return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
                 .Use<TInterface>(host)
-                .TrySetResiliencePolicy(_methodResiliencePolicyProvider)
-                .TrySetLogging(_loggerFactory)
-                .Build();
-        }
-
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Create<T> method.")]
-        public TInterface Create<TInterface, TController>(string host)
-            where TInterface : class
-            where TController : TInterface
-        {
-            Ensure.IsNotNull(host, nameof(host));
-
-            return new NClientStandaloneBuilder(_httpClientProvider, _serializerProvider)
-                .Use<TInterface, TController>(host)
                 .TrySetResiliencePolicy(_methodResiliencePolicyProvider)
                 .TrySetLogging(_loggerFactory)
                 .Build();

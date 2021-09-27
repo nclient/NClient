@@ -63,24 +63,5 @@ namespace NClient
                 _httpClientProvider,
                 _serializerProvider);
         }
-
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
-        public IOptionalNClientBuilder<TInterface> Use<TInterface, TController>(string host)
-            where TInterface : class
-            where TController : TInterface
-        {
-            Ensure.IsNotNull(host, nameof(host));
-            _clientValidator
-                .EnsureAsync<TInterface, TController>(_controllerClientInterceptorFactory)
-                .GetAwaiter()
-                .GetResult();
-
-            return new OptionalControllerNClientBuilder<TInterface, TController>(
-                host: new Uri(host),
-                _clientGenerator,
-                _controllerClientInterceptorFactory,
-                _httpClientProvider,
-                _serializerProvider);
-        }
     }
 }
