@@ -9,7 +9,6 @@ using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.Validation;
 using NClient.Customizers;
-using NClient.Mappers;
 
 namespace NClient
 {
@@ -24,7 +23,6 @@ namespace NClient
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientValidator _clientValidator;
         private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
-        private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
         /// <summary>
@@ -44,7 +42,6 @@ namespace NClient
             _clientValidator = new ClientValidator(ProxyGenerator);
             _clientGenerator = new ClientGenerator(ProxyGenerator);
             _interfaceClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AttributeMapper());
-            _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
 
         public INClientBuilderCustomizer<TInterface> Use<TInterface>(string host)

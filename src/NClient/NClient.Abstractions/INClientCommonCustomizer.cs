@@ -7,45 +7,45 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Abstractions
 {
-    public interface INClientCommonCustomizer<TSpecificCustomizer, TResult>
-        where TSpecificCustomizer : INClientCommonCustomizer<TSpecificCustomizer, TResult>
+    public interface INClientCommonCustomizer<TCustomizer, TResult>
+        where TCustomizer : INClientCommonCustomizer<TCustomizer, TResult>
     {
         /// <summary>
         /// Sets custom <see cref="IHttpClientProvider"/> used to create instances of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
-        TSpecificCustomizer WithCustomHttpClient(IHttpClientProvider httpClientProvider);
+        TCustomizer WithCustomHttpClient(IHttpClientProvider httpClientProvider);
 
         /// <summary>
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
-        TSpecificCustomizer WithCustomSerializer(ISerializerProvider serializerProvider);
+        TCustomizer WithCustomSerializer(ISerializerProvider serializerProvider);
 
         /// <summary>
         /// Sets collection of <see cref="IClientHandler"/> used to handle HTTP requests and responses />.
         /// </summary>
         /// <param name="handlers">The collection of handlers.</param>
         /// <param name="useDefaults">The flag for using default handlers. If you use false, the exception will not be thrown in case of failed HTTP status code.</param>
-        TSpecificCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers);
+        TCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers);
 
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/>.
         /// </summary>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> instances.</param>
-        TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
+        TCustomizer WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
         /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
-        TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider);
+        TCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
-        TSpecificCustomizer WithLogging(ILoggerFactory loggerFactory);
+        TCustomizer WithLogging(ILoggerFactory loggerFactory);
 
         /// <summary>
         /// Creates <see cref="TResult"/>.
