@@ -30,14 +30,6 @@ namespace NClient.Core.Interceptors
             IReadOnlyCollection<IClientHandler> clientHandlers,
             IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
             ILogger<TInterface>? logger = null);
-
-        IAsyncInterceptor Create<TInterface, TController>(
-            Uri host,
-            IHttpClientProvider httpClientProvider,
-            ISerializerProvider serializerProvider,
-            IReadOnlyCollection<IClientHandler> clientHandlers,
-            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null);
     }
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
@@ -97,32 +89,6 @@ namespace NClient.Core.Interceptors
                 _requestBuilder,
                 new ClientHandlerDecorator<TInterface>(clientHandlers, logger),
                 _guidProvider,
-                controllerType: null,
-                logger);
-        }
-
-        public IAsyncInterceptor Create<TInterface, TController>(
-            Uri host,
-            IHttpClientProvider httpClientProvider,
-            ISerializerProvider serializerProvider,
-            IReadOnlyCollection<IClientHandler> clientHandlers,
-            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null)
-        {
-            return new ClientInterceptor<TInterface>(
-                host,
-                CreateResilienceHttpClientProvider(
-                    httpClientProvider,
-                    serializerProvider,
-                    methodResiliencePolicyProvider,
-                    logger),
-                _fullMethodInvocationProvider,
-                _clientRequestExceptionFactory,
-                _clientMethodBuilder,
-                _requestBuilder,
-                new ClientHandlerDecorator<TInterface>(clientHandlers, logger),
-                _guidProvider,
-                controllerType: typeof(TController),
                 logger);
         }
 

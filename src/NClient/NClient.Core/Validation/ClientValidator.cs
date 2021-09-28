@@ -16,10 +16,6 @@ namespace NClient.Core.Validation
     {
         Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
             where TInterface : class;
-
-        Task EnsureAsync<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class
-            where TController : TInterface;
     }
 
     internal class ClientValidator : IClientValidator
@@ -38,22 +34,6 @@ namespace NClient.Core.Validation
         {
             var interceptor = clientInterceptorFactory
                 .Create<TInterface>(
-                    FakeHost,
-                    new StubHttpClientProvider(),
-                    new StubSerializerProvider(),
-                    new[] { new StubClientHandler() },
-                    new DefaultMethodResiliencePolicyProvider(new DefaultResiliencePolicyProvider()));
-            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
-
-            await EnsureValidityAsync(client).ConfigureAwait(false);
-        }
-
-        public async Task EnsureAsync<TInterface, TController>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class
-            where TController : TInterface
-        {
-            var interceptor = clientInterceptorFactory
-                .Create<TInterface, TController>(
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubSerializerProvider(),

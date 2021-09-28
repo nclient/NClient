@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Microsoft.Extensions.Logging;
-using NClient.Abstractions;
-using NClient.Abstractions.Handling;
+﻿using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.OptionalNClientBuilders;
+using NClient.Customizers;
 
 namespace NClient
 {
@@ -16,7 +10,7 @@ namespace NClient
     /// </summary>
     public class NClientStandaloneFactoryBuilder : INClientFactoryBuilder
     {
-        private readonly OptionalNClientFactoryBuilder _optionalNClientFactoryBuilder;
+        private readonly FactoryCustomizer _optionalFactoryBuilder;
 
         /// <summary>
         /// Creates the client factory with custom providers.
@@ -27,51 +21,12 @@ namespace NClient
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
         {
-            _optionalNClientFactoryBuilder = new OptionalNClientFactoryBuilder(httpClientProvider, serializerProvider);
+            _optionalFactoryBuilder = new FactoryCustomizer(httpClientProvider, serializerProvider);
         }
-
-        public IOptionalNClientFactoryBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        
+        public INClientFactoryCustomizer Use(string name)
         {
-            return _optionalNClientFactoryBuilder.WithCustomHttpClient(httpClientProvider);
-        }
-
-        public IOptionalNClientFactoryBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
-        {
-            return _optionalNClientFactoryBuilder.WithCustomSerializer(serializerProvider);
-        }
-
-        public IOptionalNClientFactoryBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
-        {
-            return _optionalNClientFactoryBuilder.WithCustomHandlers(handlers);
-        }
-
-        public IOptionalNClientFactoryBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
-        {
-            return _optionalNClientFactoryBuilder.WithResiliencePolicy(resiliencePolicyProvider);
-        }
-
-        public IOptionalNClientFactoryBuilder WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
-        {
-            return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodResiliencePolicyProvider);
-        }
-
-        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
-        {
-            return _optionalNClientFactoryBuilder.WithResiliencePolicy(methodSelector, resiliencePolicyProvider);
-        }
-
-        public IOptionalNClientFactoryBuilder WithLogging(ILoggerFactory loggerFactory)
-        {
-            return _optionalNClientFactoryBuilder.WithLogging(loggerFactory);
-        }
-
-        /// <summary>
-        /// Creates client factory.
-        /// </summary>
-        public INClientFactory Build()
-        {
-            return _optionalNClientFactoryBuilder.Build();
+            return _optionalFactoryBuilder;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Annotations;
@@ -20,38 +19,6 @@ namespace NClient.Packages.Tests
     [Category("Packages")]
     public class ClientTest
     {
-        public interface ITestController : INClient
-        {
-            Task<string> GetAsync(int id);
-        }
-
-        [ApiController]
-        [Route("api/[controller]")]
-        public class TestController : ControllerBase, ITestController
-        {
-            [HttpGet("[action]")]
-            public Task<string> GetAsync(int id) => Task.FromResult("result");
-        }
-
-        [Test]
-        public async Task ControllerBasedClient()
-        {
-            const int id = 1;
-            const string host = "http://localhost:5001";
-            var client = new ServiceCollection()
-                .AddHttpClient()
-                .AddNClient<ITestController, TestController>(host, builder => builder.WithResiliencePolicy())
-                .AddLogging()
-                .BuildServiceProvider()
-                .GetRequiredService<ITestController>();
-            using var server = RunMockServer(host, id);
-
-            var result = await client.GetAsync(id);
-
-            PackagesVersionProvider.GetCurrent<NClientBuilder>().Should().Be(PackagesVersionProvider.GetNew());
-            result.Should().Be("result");
-        }
-
         [Path("api/[controller]")]
         public interface ITest : INClient
         {
@@ -60,7 +27,7 @@ namespace NClient.Packages.Tests
         }
 
         [Test]
-        public async Task InterfaceBasedClient()
+        public async Task TestClient()
         {
             const int id = 1;
             const string host = "http://localhost:5002";
