@@ -4,14 +4,15 @@ using System.Threading.Tasks;
 using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Providers.HttpClient.RestSharp.Builders;
 using NClient.Providers.HttpClient.RestSharp.Helpers;
 using RestSharp;
 using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
 using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
 
-namespace NClient.Providers.HttpClient.RestSharp.Builders
+namespace NClient.Providers.HttpClient.RestSharp
 {
-    internal class HttpMessageBuilder : IHttpMessageBuilder<IRestRequest, IRestResponse>
+    internal class RestSharpHttpMessageBuilder : IHttpMessageBuilder<IRestRequest, IRestResponse>
     {
         private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
 
@@ -20,7 +21,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
         private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
 
-        public HttpMessageBuilder(
+        public RestSharpHttpMessageBuilder(
             ISerializer serializer,
             IRestSharpMethodMapper restSharpMethodMapper,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
@@ -32,7 +33,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
 
-        public Task<IRestRequest> BuildAsync(HttpRequest request)
+        public Task<IRestRequest> BuildRequestAsync(HttpRequest request)
         {
             var method = _restSharpMethodMapper.Map(request.Method);
             var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
@@ -56,7 +57,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<HttpResponse> BuildAsync(HttpRequest request, IRestResponse restResponse)
+        public Task<HttpResponse> BuildResponseAsync(HttpRequest request, IRestResponse restResponse)
         {
             var finalRequest = _finalHttpRequestBuilder.Build(request, restResponse.Request);
             

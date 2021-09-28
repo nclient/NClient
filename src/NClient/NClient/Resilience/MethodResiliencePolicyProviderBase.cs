@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
@@ -11,21 +12,21 @@ using Polly.Wrap;
 
 namespace NClient.Resilience
 {
-    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider<HttpResponse>
+    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider<HttpResponseMessage>
     {
         private readonly AttributeMapper _attributeMapper;
         
-        protected readonly AsyncPolicyWrap<ResponseContext<HttpResponse>> Policy;
+        protected readonly AsyncPolicyWrap<ResponseContext<HttpResponseMessage>> Policy;
 
         protected MethodResiliencePolicyProviderBase(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponse>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
         {
             // TODO: It is better to pass it through the constructor, but how?
             _attributeMapper = new AttributeMapper();
             
-            var basePolicy = Policy<ResponseContext<HttpResponse>>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessful)).Or<Exception>();
+            var basePolicy = Policy<ResponseContext<HttpResponseMessage>>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessStatusCode)).Or<Exception>();
 
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount,
@@ -36,9 +37,12 @@ namespace NClient.Resilience
                 {
                     if (delegateResult.Exception is not null)
                         throw delegateResult.Exception;
+                    if (delegateResult.Result.MethodInvocation.ResultType == typeof(HttpResponseMessage))
+                        return Task.CompletedTask;
                     if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
-                    throw delegateResult.Result.Response.ErrorException!;
+                    delegateResult.Result.Response.EnsureSuccessStatusCode();
+                    return Task.CompletedTask;
                 });
 
             Policy = fallbackPolicy.WrapAsync(retryPolicy);
@@ -51,6 +55,6 @@ namespace NClient.Resilience
                 .Single(x => x is MethodAttribute)!;
         }
 
-        public abstract IResiliencePolicy<HttpResponse> Create(MethodInfo methodInfo);
+        public abstract IResiliencePolicy<HttpResponseMessage> Create(MethodInfo methodInfo);
     }
 }

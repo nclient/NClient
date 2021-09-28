@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,11 +43,11 @@ namespace NClient.Sandbox.Client
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
 
-            var basePolicy = Policy<ResponseContext>.HandleResult(x =>
+            var basePolicy = Policy<ResponseContext<HttpResponseMessage>>.HandleResult(x =>
             {
                 if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
                     return false;
-                return !x.Response.IsSuccessful;
+                return !x.Response.IsSuccessStatusCode;
             }).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount: 2,
@@ -59,7 +60,8 @@ namespace NClient.Sandbox.Client
                         throw delegateResult.Exception;
                     if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
-                    throw delegateResult.Result.Response.ErrorException!;
+                    delegateResult.Result.Response.EnsureSuccessStatusCode();
+                    return Task.CompletedTask;
                 });
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
@@ -69,7 +71,7 @@ namespace NClient.Sandbox.Client
 
             _weatherForecastClient = NClientProvider
                 .Use<IWeatherForecastClient>(host: "http://localhost:5000")
-                .WithCustomHandlers(new IClientHandler[]
+                .WithCustomHandlers(new IClientHandler<HttpRequestMessage, HttpResponseMessage>[]
                 {
                     new LoggingClientHandler(handlerLogger)
                 })
@@ -82,7 +84,7 @@ namespace NClient.Sandbox.Client
 
             _fileClient = NClientProvider
                 .Use<IFileClient>(host: "http://localhost:5002")
-                .WithCustomHandlers(new IClientHandler[]
+                .WithCustomHandlers(new IClientHandler<HttpRequestMessage, HttpResponseMessage>[]
                 {
                     new LoggingClientHandler(handlerLogger)
                 })

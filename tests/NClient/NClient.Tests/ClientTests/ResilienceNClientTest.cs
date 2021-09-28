@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using NClient.Abstractions.Resilience;
@@ -40,7 +41,7 @@ namespace NClient.Tests.ClientTests
         public void AsResilientInvoke_InternalServerError_NotThrow()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
-            var noOpPolicy = new PollyResiliencePolicyProvider(Policy.NoOpAsync<ResponseContext>());
+            var noOpPolicy = new PollyResiliencePolicyProvider<HttpResponseMessage>(Policy.NoOpAsync<ResponseContext<HttpResponseMessage>>());
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
@@ -102,7 +103,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext>())
+                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext<HttpResponseMessage>>())
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -117,7 +118,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext>())
+                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext<HttpResponseMessage>>())
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))

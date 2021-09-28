@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Common.Helpers;
@@ -38,7 +39,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<INClientBuilderCustomizer<TInterface>, INClientBuilderCustomizer<TInterface>> configure,
+            string host, Func<INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -62,7 +63,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientBuilderCustomizer<TInterface>, INClientBuilderCustomizer<TInterface>> configure,
+            string host, Func<IServiceProvider, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -77,7 +78,7 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
-        private static INClientBuilderCustomizer<TInterface> CreateCustomizer<TInterface>(
+        private static INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> CreateCustomizer<TInterface>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TInterface : class
         {

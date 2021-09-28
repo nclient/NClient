@@ -20,7 +20,7 @@ namespace NClient.Core.Interceptors
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
         private readonly Uri _host;
-        private readonly IResilienceHttpClientProvider<TRequest, TResponse> _resilienceHttpClientProvider;
+        private readonly IResilienceHttpClientProvider<TResponse> _resilienceHttpClientProvider;
         private readonly IFullMethodInvocationProvider<TResponse> _fullMethodInvocationProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IHttpResponsePopulater _httpResponsePopulater;
@@ -32,7 +32,7 @@ namespace NClient.Core.Interceptors
 
         public ClientInterceptor(
             Uri host,
-            IResilienceHttpClientProvider<TRequest, TResponse> resilienceHttpClientProvider,
+            IResilienceHttpClientProvider<TResponse> resilienceHttpClientProvider,
             IFullMethodInvocationProvider<TResponse> fullMethodInvocationProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IHttpResponsePopulater httpResponsePopulater,
@@ -82,16 +82,14 @@ namespace NClient.Core.Interceptors
                     .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
                 var httpRequest = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
-                _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", httpRequest.Method, httpRequest.Resource, httpRequest.Id);
-
-                var request = await _httpMessageBuilder.BuildAsync(httpRequest).ConfigureAwait(false);
+                
                 var response = await _resilienceHttpClientProvider
                     .Create(fullMethodInvocation.ResiliencePolicyProvider)
-                    .ExecuteAsync(requestId, request, fullMethodInvocation)
+                    .ExecuteAsync(httpRequest, fullMethodInvocation)
                     .ConfigureAwait(false);
 
                 httpResponse = await _httpMessageBuilder
-                    .BuildAsync(httpRequest, response)
+                    .BuildResponseAsync(httpRequest, response)
                     .ConfigureAwait(false);
                 var populatedHttpResponse = _httpResponsePopulater.Populate(httpResponse, resultType);
 
@@ -103,7 +101,10 @@ namespace NClient.Core.Interceptors
                 if (typeof(HttpResponse).IsAssignableFrom(resultType))
                     return populatedHttpResponse;
 
-                return populatedHttpResponse.GetType().GetProperty("Value")?.GetValue(response)!;
+                return populatedHttpResponse
+                    .GetType()
+                    .GetProperty(nameof(HttpResponse<object>.Value))?
+                    .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)
             {

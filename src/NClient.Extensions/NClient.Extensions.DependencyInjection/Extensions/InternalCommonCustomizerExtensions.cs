@@ -9,9 +9,9 @@ namespace NClient.Extensions.DependencyInjection.Extensions
     internal static class InternalCommonCustomizerExtensions
     {
         public static TCustomizer WithRegisteredProviders<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IServiceProvider serviceProvider, string? httpClientName)
-            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TInterface>
+            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();

@@ -7,28 +7,31 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Customizers
 {
-    internal class FactoryCustomizer :
-        CommonCustomizer<INClientFactoryCustomizer, INClientFactory>,
-        INClientFactoryCustomizer
+    internal class FactoryCustomizer<TRequest, TResponse> :
+        CommonCustomizer<INClientFactoryCustomizer<TRequest, TResponse>, INClientFactory, TRequest, TResponse>,
+        INClientFactoryCustomizer<TRequest, TResponse>
     {
         public FactoryCustomizer(
-            IHttpClientProvider httpClientProvider,
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
-            : base(httpClientProvider, serializerProvider)
+            : base(httpClientProvider, httpMessageBuilderProvider, methodResiliencePolicyProvider, serializerProvider)
         {
         }
 
         public override INClientFactory Build()
         {
-            return new NClientStandaloneFactory(
+            return new NClientStandaloneFactory<TRequest, TResponse>(
                 HttpClientProvider,
+                HttpMessageBuilderProvider,
                 SerializerProvider,
-                GetOrCreateMethodResiliencePolicyProvider(),
+                CreateMethodResiliencePolicyProvider(),
                 LoggerFactory);
         }
 
-        public INClientFactoryCustomizer WithResiliencePolicy<TInterface>(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        public INClientFactoryCustomizer<TRequest, TResponse> WithResiliencePolicy<TInterface>(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider)
         {
             AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
             return this;

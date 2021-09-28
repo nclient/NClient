@@ -8,16 +8,17 @@ using Microsoft.AspNetCore.WebUtilities;
 using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Providers.HttpClient.System.Builders;
 
-namespace NClient.Providers.HttpClient.System.Builders
+namespace NClient.Providers.HttpClient.System
 {
-    internal class HttpMessageBuilder : IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemHttpMessageBuilder : IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly ISerializer _serializer;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
         private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
 
-        public HttpMessageBuilder(
+        public SystemHttpMessageBuilder(
             ISerializer serializer,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
             IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
@@ -27,7 +28,7 @@ namespace NClient.Providers.HttpClient.System.Builders
             _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
         }
         
-        public Task<HttpRequestMessage> BuildAsync(HttpRequest request)
+        public Task<HttpRequestMessage> BuildRequestAsync(HttpRequest request)
         {
             var parameters = request.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
@@ -51,7 +52,7 @@ namespace NClient.Providers.HttpClient.System.Builders
             return Task.FromResult(httpRequestMessage);
         }
 
-        public async Task<HttpResponse> BuildAsync(HttpRequest request, HttpResponseMessage httpResponseMessage)
+        public async Task<HttpResponse> BuildResponseAsync(HttpRequest request, HttpResponseMessage httpResponseMessage)
         {
             var exception = TryGetException(httpResponseMessage);
             

@@ -37,10 +37,11 @@ namespace NClient.Core.Validation
                 .Create<TInterface, HttpRequest, HttpResponse>(
                     FakeHost,
                     new StubHttpClientProvider(),
-                    new StupHttpMessageBuilder(),
+                    new StubHttpMessageBuilderProvider(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
-                    new DefaultMethodResiliencePolicyProvider<HttpResponse>(new DefaultResiliencePolicyProvider()));
+                    new DefaultMethodResiliencePolicyProvider<HttpResponse>(
+                        new DefaultResiliencePolicyProvider<HttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

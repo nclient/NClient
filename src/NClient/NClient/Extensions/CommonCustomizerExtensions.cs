@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Text.Json;
 using NClient.Abstractions;
-using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
@@ -24,15 +23,17 @@ namespace NClient
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="System.Net.Http.HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="System.Net.Http.HttpClient"/> to create.</param>
         public static TCustomizer WithCustomHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
-            return commonCustomizer.WithCustomHttpClient(new SystemHttpClientProvider(httpClientFactory, httpClientName));
+            return commonCustomizer.WithCustomHttpClient(
+                new SystemHttpClientProvider(httpClientFactory, httpClientName), 
+                new SystemHttpMessageBuilderProvider());
         }
 
         /// <summary>
@@ -41,15 +42,17 @@ namespace NClient
         /// <param name="commonCustomizer"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
         public static TCustomizer WithCustomHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             HttpMessageHandler httpMessageHandler)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
 
-            return commonCustomizer.WithCustomHttpClient(new SystemHttpClientProvider(httpMessageHandler));
+            return commonCustomizer.WithCustomHttpClient(
+                new SystemHttpClientProvider(httpMessageHandler), 
+                new SystemHttpMessageBuilderProvider());
         }
 
         /// <summary>
@@ -58,15 +61,16 @@ namespace NClient
         /// <param name="commonCustomizer"></param>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
         public static TCustomizer WithCustomSerializer<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             JsonSerializerOptions jsonSerializerOptions)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
-            return commonCustomizer.WithCustomSerializer(new SystemSerializerProvider(jsonSerializerOptions));
+            return commonCustomizer.WithCustomSerializer(
+                new SystemSerializerProvider(jsonSerializerOptions));
         }
 
         /// <summary>
@@ -75,15 +79,16 @@ namespace NClient
         /// <param name="commonCustomizer"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static TCustomizer WithResiliencePolicy<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
-            IAsyncPolicy<ResponseContext> asyncPolicy)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+            IAsyncPolicy<ResponseContext<HttpResponseMessage>> asyncPolicy)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
-            return commonCustomizer.WithResiliencePolicy(new PollyResiliencePolicyProvider(asyncPolicy));
+            return commonCustomizer.WithResiliencePolicy(
+                new PollyResiliencePolicyProvider<HttpResponseMessage>(asyncPolicy));
         }
 
         /// <summary>
@@ -94,16 +99,17 @@ namespace NClient
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         public static TCustomizer WithResiliencePolicy<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext, bool>? resultPredicate = null)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
-            return commonCustomizer.WithResiliencePolicy(new AnyMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+            return commonCustomizer.WithResiliencePolicy(
+                new AnyMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
         }
 
         /// <summary>
@@ -114,16 +120,17 @@ namespace NClient
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         public static TCustomizer WithResiliencePolicyForSafeMethods<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext, bool>? resultPredicate = null)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
-            return commonCustomizer.WithResiliencePolicy(new SafeMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+            return commonCustomizer.WithResiliencePolicy(
+                new SafeMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
         }
 
         /// <summary>
@@ -134,16 +141,17 @@ namespace NClient
         /// <param name="sleepDurationProvider">The function that provides the duration to wait for for a particular retry attempt.</param>
         /// <param name="resultPredicate">The predicate to filter the results this policy will handle.</param>
         public static TCustomizer WithResiliencePolicyForIdempotentMethods<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
+            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext, bool>? resultPredicate = null)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface>
+            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
-            return commonCustomizer.WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
+            return commonCustomizer.WithResiliencePolicy(
+                new IdempotentMethodResiliencePolicyProvider(retryCount, sleepDurationProvider, resultPredicate));
         }
     }
 }

@@ -9,16 +9,17 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
-    internal interface IResilienceHttpClient<TRequest, TResponse>
+    internal interface IResilienceHttpClient<TResponse>
     {
-        Task<TResponse> ExecuteAsync(Guid requestId, TRequest request, MethodInvocation methodInvocation);
+        Task<TResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation);
     }
 
-    internal class ResilienceHttpClient<TRequest, TResponse> : IResilienceHttpClient<TRequest, TResponse>
+    internal class ResilienceHttpClient<TRequest, TResponse> : IResilienceHttpClient<TResponse>
     {
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -26,50 +27,60 @@ namespace NClient.Core.Interceptors.HttpClients
             ISerializerProvider serializerProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ILogger? logger)
         {
             _serializerProvider = serializerProvider;
             _clientHandler = clientHandler;
             _httpClientProvider = httpClientProvider;
+            _httpMessageBuilder = httpMessageBuilder;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
 
-        public async Task<TResponse> ExecuteAsync(Guid requestId, TRequest request, MethodInvocation methodInvocation)
+        public async Task<TResponse> ExecuteAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
-            await _clientHandler
-                .HandleRequestAsync(request, methodInvocation)
-                .ConfigureAwait(false);
-            
-            var response = await _methodResiliencePolicyProvider
+            return await _methodResiliencePolicyProvider
                 .Create(methodInvocation.MethodInfo)
-                .ExecuteAsync(() => ExecuteAttemptAsync(requestId, request, methodInvocation))
-                .ConfigureAwait(false);
-            
-            return await _clientHandler
-                .HandleResponseAsync(response, methodInvocation)
+                .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest, methodInvocation))
                 .ConfigureAwait(false);
         }
 
-        private async Task<ResponseContext<TResponse>> ExecuteAttemptAsync(Guid requestId, TRequest request, MethodInvocation methodInvocation)
+        private async Task<ResponseContext<TResponse>> ExecuteAttemptAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
+            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", httpRequest.Method, httpRequest.Resource, httpRequest.Id);
+
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
+            
             TResponse response;
             try
             {
-                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", requestId);
+                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", httpRequest.Id);
+                var request = await _httpMessageBuilder
+                    .BuildRequestAsync(httpRequest)
+                    .ConfigureAwait(false);
+                
+                await _clientHandler
+                    .HandleRequestAsync(request, methodInvocation)
+                    .ConfigureAwait(false);
+                
                 response = await client.ExecuteAsync(request).ConfigureAwait(false);
-                _logger?.LogDebug("Request attempt finished. Request id: '{requestId}'.", requestId);
+                
+                response = await _clientHandler
+                    .HandleResponseAsync(response, methodInvocation)
+                    .ConfigureAwait(false);
+                
+                _logger?.LogDebug("Request attempt finished. Request id: '{requestId}'.", httpRequest.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", requestId);
+                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", httpRequest.Id);
                 throw;
             }
             
-            _logger?.LogDebug("Response received. Request id: '{requestId}'.", requestId);
+            _logger?.LogDebug("Response received. Request id: '{requestId}'.", httpRequest.Id);
             return new ResponseContext<TResponse>(response, methodInvocation);
         }
     }
