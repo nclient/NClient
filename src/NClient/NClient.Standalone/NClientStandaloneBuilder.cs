@@ -8,8 +8,7 @@ using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.Validation;
-using NClient.Mappers;
-using NClient.OptionalNClientBuilders;
+using NClient.Customizers;
 
 namespace NClient
 {
@@ -24,7 +23,6 @@ namespace NClient
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientValidator _clientValidator;
         private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
-        private readonly IClientInterceptorFactory _controllerClientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
         /// <summary>
@@ -44,10 +42,9 @@ namespace NClient
             _clientValidator = new ClientValidator(ProxyGenerator);
             _clientGenerator = new ClientGenerator(ProxyGenerator);
             _interfaceClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AttributeMapper());
-            _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
 
-        public IOptionalNClientBuilder<TInterface> Use<TInterface>(string host)
+        public INClientBuilderCustomizer<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
@@ -56,29 +53,10 @@ namespace NClient
                 .GetAwaiter()
                 .GetResult();
 
-            return new OptionalInterfaceNClientBuilder<TInterface>(
+            return new BuilderCustomizer<TInterface>(
                 host: new Uri(host),
                 _clientGenerator,
                 _interfaceClientInterceptorFactory,
-                _httpClientProvider,
-                _serializerProvider);
-        }
-
-        [Obsolete("The right way is to add NClient controllers (see AddNClientControllers) and use Use<T> method.")]
-        public IOptionalNClientBuilder<TInterface> Use<TInterface, TController>(string host)
-            where TInterface : class
-            where TController : TInterface
-        {
-            Ensure.IsNotNull(host, nameof(host));
-            _clientValidator
-                .EnsureAsync<TInterface, TController>(_controllerClientInterceptorFactory)
-                .GetAwaiter()
-                .GetResult();
-
-            return new OptionalControllerNClientBuilder<TInterface, TController>(
-                host: new Uri(host),
-                _clientGenerator,
-                _controllerClientInterceptorFactory,
                 _httpClientProvider,
                 _serializerProvider);
         }

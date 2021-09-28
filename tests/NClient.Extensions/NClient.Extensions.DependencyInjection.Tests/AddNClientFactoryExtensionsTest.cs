@@ -15,7 +15,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddNClientFactory();
+            serviceCollection.AddNClientFactory(name: "factoryName");
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -26,7 +26,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClientFactory();
+            serviceCollection.AddNClientFactory(name: "factoryName");
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -38,7 +38,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
             serviceCollection.AddHttpClient("TestClient");
 
-            serviceCollection.AddNClientFactory(httpClientName: "TestClient");
+            serviceCollection.AddNClientFactory(name: "factoryName", httpClientName: "TestClient");
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder);
+            serviceCollection.AddNClientFactory(name: "factoryName", builder => builder);
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -60,7 +60,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder
+            serviceCollection.AddNClientFactory(name: "factoryName", builder => builder
                 .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

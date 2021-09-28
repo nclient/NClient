@@ -31,15 +31,6 @@ namespace NClient.Core.Interceptors
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ILogger<TInterface>? logger = null);
-
-        IAsyncInterceptor Create<TInterface, TController, TRequest, TResponse>(
-            Uri host,
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
-            ISerializerProvider serializerProvider,
-            IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null);
     }
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
@@ -102,38 +93,9 @@ namespace NClient.Core.Interceptors
                 _clientMethodBuilder,
                 _requestBuilder,
                 _guidProvider,
-                controllerType: null,
                 logger);
         }
-
-        public IAsyncInterceptor Create<TInterface, TController, TRequest, TResponse>(
-            Uri host,
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
-            ISerializerProvider serializerProvider,
-            IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null)
-        {
-            return new ClientInterceptor<TInterface, TRequest, TResponse>(
-                host,
-                CreateResilienceHttpClientProvider(
-                    serializerProvider,
-                    clientHandlers,
-                    httpClientProvider,
-                    methodResiliencePolicyProvider,
-                    logger),
-                new FullMethodInvocationProvider<TResponse>(_proxyGenerator),
-                httpMessageBuilder,
-                new HttpResponsePopulater(serializerProvider.Create()),
-                _clientRequestExceptionFactory,
-                _clientMethodBuilder,
-                _requestBuilder,
-                _guidProvider,
-                controllerType: typeof(TController),
-                logger);
-        }
-
+        
         private static IResilienceHttpClientProvider<TRequest, TResponse> CreateResilienceHttpClientProvider<TInterface, TRequest, TResponse>(
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,

@@ -7,9 +7,9 @@ namespace NClient.Extensions
     internal static class InternalOptionalBuilderBaseExtensions
     {
         public static TBuilder TrySetResiliencePolicy<TBuilder, TResult>(
-            this IOptionalBuilderBase<TBuilder, TResult> clientBuilder,
+            this INClientCommonCustomizer<TBuilder, TResult> clientBuilder,
             IMethodResiliencePolicyProvider? methodResiliencePolicyProvider)
-            where TBuilder : class, IOptionalBuilderBase<TBuilder, TResult>
+            where TBuilder : class, INClientCommonCustomizer<TBuilder, TResult>
         {
             if (methodResiliencePolicyProvider is not null)
                 return clientBuilder.WithResiliencePolicy(methodResiliencePolicyProvider);
@@ -17,9 +17,9 @@ namespace NClient.Extensions
         }
 
         public static TBuilder TrySetLogging<TBuilder, TResult>(
-            this IOptionalBuilderBase<TBuilder, TResult> clientBuilder,
+            this INClientCommonCustomizer<TBuilder, TResult> clientBuilder,
             ILoggerFactory? loggerFactory)
-            where TBuilder : class, IOptionalBuilderBase<TBuilder, TResult>
+            where TBuilder : class, INClientCommonCustomizer<TBuilder, TResult>
         {
             if (loggerFactory is not null)
                 return clientBuilder.WithLogging(loggerFactory);

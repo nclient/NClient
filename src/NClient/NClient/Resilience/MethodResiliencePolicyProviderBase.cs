@@ -6,22 +6,27 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Annotations.Methods;
 using NClient.Core.Mappers;
-using NClient.Mappers;
 using Polly;
 using Polly.Wrap;
 
 namespace NClient.Resilience
 {
-    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider
+    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider<HttpResponse>
     {
-        protected readonly AsyncPolicyWrap<ResponseContext> Policy;
+        private readonly AttributeMapper _attributeMapper;
+        
+        protected readonly AsyncPolicyWrap<ResponseContext<HttpResponse>> Policy;
 
         protected MethodResiliencePolicyProviderBase(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpResponse>, bool>? resultPredicate = null)
         {
-            var basePolicy = Policy<ResponseContext>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessful)).Or<Exception>();
+            // TODO: It is better to pass it through the constructor, but how?
+            _attributeMapper = new AttributeMapper();
+            
+            var basePolicy = Policy<ResponseContext<HttpResponse>>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessful)).Or<Exception>();
+
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount,
                 sleepDurationProvider ?? (retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
@@ -39,18 +44,13 @@ namespace NClient.Resilience
             Policy = fallbackPolicy.WrapAsync(retryPolicy);
         }
 
-        protected static MethodAttribute GetMethodAttributeFor(MethodInfo methodInfo)
+        protected MethodAttribute GetMethodAttributeFor(MethodInfo methodInfo)
         {
-            // TODO: It is better to pass it through the constructor, but how?
-            IAttributeMapper attributeMapper = methodInfo.DeclaringType!.IsClass
-                ? new AspNetAttributeMapper()
-                : new AttributeMapper();
-
             return (MethodAttribute)methodInfo.GetCustomAttributes()
-                .Select(x => attributeMapper.TryMap(x))
+                .Select(x => _attributeMapper.TryMap(x))
                 .Single(x => x is MethodAttribute)!;
         }
 
-        public abstract IResiliencePolicy Create(MethodInfo methodInfo);
+        public abstract IResiliencePolicy<HttpResponse> Create(MethodInfo methodInfo);
     }
 }

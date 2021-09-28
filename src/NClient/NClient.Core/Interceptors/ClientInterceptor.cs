@@ -28,7 +28,6 @@ namespace NClient.Core.Interceptors
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
         private readonly IGuidProvider _guidProvider;
-        private readonly Type? _controllerType;
         private readonly ILogger<TClient>? _logger;
 
         public ClientInterceptor(
@@ -41,7 +40,6 @@ namespace NClient.Core.Interceptors
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
             IGuidProvider guidProvider,
-            Type? controllerType = null,
             ILogger<TClient>? logger = null)
         {
             _host = host;
@@ -53,7 +51,6 @@ namespace NClient.Core.Interceptors
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
             _guidProvider = guidProvider;
-            _controllerType = controllerType;
             _logger = logger;
         }
 
@@ -80,7 +77,7 @@ namespace NClient.Core.Interceptors
             try
             {
                 var fullMethodInvocation = _fullMethodInvocationProvider
-                    .Get(interfaceType: typeof(TClient), _controllerType, resultType, invocation);
+                    .Get(interfaceType: typeof(TClient), resultType, invocation);
                 var clientMethod = _methodBuilder
                     .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
