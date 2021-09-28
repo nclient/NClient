@@ -10,7 +10,7 @@ using NClient.Tests.Clients;
 using NUnit.Framework;
 using Polly;
 
-namespace NClient.Tests.InterfaceBasedClientTests
+namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
     public class ResilienceNClientTest

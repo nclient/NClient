@@ -8,8 +8,8 @@ using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Mappers;
 using NClient.Core.Validation;
+using NClient.Customizers;
 using NClient.Mappers;
-using NClient.OptionalNClientBuilders;
 
 namespace NClient
 {
@@ -47,7 +47,7 @@ namespace NClient
             _controllerClientInterceptorFactory = new ClientInterceptorFactory(ProxyGenerator, new AspNetAttributeMapper());
         }
 
-        public IOptionalNClientBuilder<TInterface> Use<TInterface>(string host)
+        public INClientBuilderCustomizer<TInterface> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
@@ -56,7 +56,7 @@ namespace NClient
                 .GetAwaiter()
                 .GetResult();
 
-            return new OptionalNClientBuilder<TInterface>(
+            return new BuilderCustomizer<TInterface>(
                 host: new Uri(host),
                 _clientGenerator,
                 _interfaceClientInterceptorFactory,

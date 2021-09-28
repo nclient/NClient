@@ -6,18 +6,18 @@ using NClient.Abstractions;
 
 namespace NClient.Extensions.DependencyInjection.Extensions
 {
-    internal static class InternalOptionalBuilderBaseExtensions
+    internal static class InternalCommonCustomizerExtensions
     {
-        public static TBuilder WithRegisteredProviders<TBuilder, TInterface>(
-            this IOptionalBuilderBase<TBuilder, TInterface> optionalNClientBuilder,
+        public static TCustomizer WithRegisteredProviders<TCustomizer, TInterface>(
+            this INClientCommonCustomizer<TCustomizer, TInterface> commonCustomizer,
             IServiceProvider serviceProvider, string? httpClientName)
-            where TBuilder : class, IOptionalBuilderBase<TBuilder, TInterface>
+            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TInterface>
             where TInterface : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-            return optionalNClientBuilder
+            return commonCustomizer
                 .TrySetCustomHttpClient(httpClientFactory, httpClientName)
                 .TrySetLogging(loggerFactory);
         }

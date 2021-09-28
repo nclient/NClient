@@ -8,7 +8,7 @@ using Polly;
 namespace NClient.Extensions.DependencyInjection.Tests
 {
     [Parallelizable]
-    public class AddInterfaceBasedNClientExtensionsTest
+    public class AddNClientExtensionsTest
     {
         [Test]
         public void AddNClient_WithoutHttpClientAndLogging_NotBeNull()

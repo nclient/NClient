@@ -4,15 +4,14 @@ using NClient.Abstractions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.OptionalNClientBuilders.Bases;
 
-namespace NClient.OptionalNClientBuilders
+namespace NClient.Customizers
 {
-    internal class OptionalNClientFactoryBuilder :
-        OptionalNClientBuilderBase<IOptionalNClientFactoryBuilder, INClientFactory>,
-        IOptionalNClientFactoryBuilder
+    internal class FactoryCustomizer :
+        CommonCustomizer<INClientFactoryCustomizer, INClientFactory>,
+        INClientFactoryCustomizer
     {
-        public OptionalNClientFactoryBuilder(
+        public FactoryCustomizer(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
             : base(httpClientProvider, serializerProvider)
@@ -28,7 +27,7 @@ namespace NClient.OptionalNClientBuilders
                 LoggerFactory);
         }
 
-        public IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(
+        public INClientFactoryCustomizer WithResiliencePolicy<TInterface>(
             Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
         {
             AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);

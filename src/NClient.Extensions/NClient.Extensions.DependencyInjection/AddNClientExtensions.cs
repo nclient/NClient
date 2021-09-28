@@ -24,8 +24,8 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
-                return nclientBuilder.Build();
+                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                return builderCustomizer.Build();
             });
         }
 
@@ -38,7 +38,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
+            string host, Func<INClientBuilderCustomizer<TInterface>, INClientBuilderCustomizer<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -48,8 +48,8 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
-                return configure(nclientBuilder).Build();
+                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                return configure(builderCustomizer).Build();
             });
         }
 
@@ -62,7 +62,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, IOptionalNClientBuilder<TInterface>, IOptionalNClientBuilder<TInterface>> configure,
+            string host, Func<IServiceProvider, INClientBuilderCustomizer<TInterface>, INClientBuilderCustomizer<TInterface>> configure,
             string? httpClientName = null)
             where TInterface : class
         {
@@ -72,12 +72,12 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var nclientBuilder = PreBuild<TInterface>(serviceProvider, host, httpClientName);
-                return configure(serviceProvider, nclientBuilder).Build();
+                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                return configure(serviceProvider, builderCustomizer).Build();
             });
         }
 
-        private static IOptionalNClientBuilder<TInterface> PreBuild<TInterface>(
+        private static INClientBuilderCustomizer<TInterface> CreateCustomizer<TInterface>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TInterface : class
         {

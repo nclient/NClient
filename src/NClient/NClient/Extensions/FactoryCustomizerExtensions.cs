@@ -9,7 +9,7 @@ using Polly;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class OptionalNClientBuilderExtensions
+    public static class FactoryCustomizerExtensions
     {
         /// <summary>
         /// Sets Polly based <see cref="IResiliencePolicyProvider"/> used to create instance of <see cref="IResiliencePolicy"/>.
@@ -17,8 +17,8 @@ namespace NClient
         /// <param name="clientBuilder"></param>
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
-        public static IOptionalNClientBuilder<TInterface> WithResiliencePolicy<TInterface>(
-            this IOptionalNClientBuilder<TInterface> clientBuilder,
+        public static INClientFactoryCustomizer WithResiliencePolicy<TInterface>(
+            this INClientFactoryCustomizer clientBuilder,
             Expression<Func<TInterface, Delegate>> methodSelector, IAsyncPolicy<ResponseContext> asyncPolicy)
             where TInterface : class
         {

@@ -5,8 +5,8 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions
 {
-    public interface IOptionalNClientBuilder<TInterface>
-        : IOptionalBuilderBase<IOptionalNClientBuilder<TInterface>, TInterface>
+    public interface INClientBuilderCustomizer<TInterface>
+        : INClientCommonCustomizer<INClientBuilderCustomizer<TInterface>, TInterface>
         where TInterface : class
     {
         /// <summary>
@@ -14,12 +14,12 @@ namespace NClient.Abstractions
         /// </summary>
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
-        IOptionalNClientBuilder<TInterface> WithResiliencePolicy(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
+        INClientBuilderCustomizer<TInterface> WithResiliencePolicy(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
-        IOptionalNClientBuilder<TInterface> WithLogging(ILogger<TInterface> logger);
+        INClientBuilderCustomizer<TInterface> WithLogging(ILogger<TInterface> logger);
     }
 }

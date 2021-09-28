@@ -6,7 +6,7 @@ using NClient.Testing.Common.Entities;
 using NClient.Tests.Clients;
 using NUnit.Framework;
 
-namespace NClient.Tests.InterfaceBasedClientTests
+namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
     public class OverrideClientTest

@@ -4,8 +4,8 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions
 {
-    public interface IOptionalNClientFactoryBuilder
-        : IOptionalBuilderBase<IOptionalNClientFactoryBuilder, INClientFactory>
+    public interface INClientFactoryCustomizer
+        : INClientCommonCustomizer<INClientFactoryCustomizer, INClientFactory>
     {
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
@@ -13,6 +13,6 @@ namespace NClient.Abstractions
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
         /// <typeparam name="TInterface">The type of client interface.</typeparam>
-        IOptionalNClientFactoryBuilder WithResiliencePolicy<TInterface>(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
+        INClientFactoryCustomizer WithResiliencePolicy<TInterface>(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider);
     }
 }

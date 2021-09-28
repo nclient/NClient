@@ -4,7 +4,7 @@ using NClient.Testing.Common.Apis;
 using NClient.Tests.Clients;
 using NUnit.Framework;
 
-namespace NClient.Tests.InterfaceBasedClientTests
+namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
     public class HeaderClientTest

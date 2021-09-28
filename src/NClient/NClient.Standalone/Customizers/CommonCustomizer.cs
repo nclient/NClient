@@ -13,11 +13,11 @@ using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Core.Resilience;
 
-namespace NClient.OptionalNClientBuilders.Bases
+namespace NClient.Customizers
 {
-    internal abstract class OptionalNClientBuilderBase<TBuilder, TResult>
-        : IOptionalBuilderBase<TBuilder, TResult>
-        where TBuilder : class, IOptionalBuilderBase<TBuilder, TResult>
+    internal abstract class CommonCustomizer<TSpecificCustomizer, TResult>
+        : INClientCommonCustomizer<TSpecificCustomizer, TResult>
+        where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TResult>
     {
         private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider> _specificResiliencePolicyProviders;
         private IMethodResiliencePolicyProvider? _methodResiliencePolicyProvider;
@@ -28,7 +28,7 @@ namespace NClient.OptionalNClientBuilders.Bases
         protected ILoggerFactory? LoggerFactory;
         protected ILogger<TResult>? Logger;
 
-        protected OptionalNClientBuilderBase(
+        protected CommonCustomizer(
             IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider)
         {
@@ -39,61 +39,53 @@ namespace NClient.OptionalNClientBuilders.Bases
             ClientHandlers = CreateClientHandlerCollection();
         }
 
-        public TBuilder WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        public TSpecificCustomizer WithCustomHttpClient(IHttpClientProvider httpClientProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
 
             Interlocked.Exchange(ref HttpClientProvider, httpClientProvider);
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
-        public TBuilder WithCustomSerializer(ISerializerProvider serializerProvider)
+        public TSpecificCustomizer WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
             Interlocked.Exchange(ref SerializerProvider, serializerProvider);
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
-        public TBuilder WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
+        public TSpecificCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
 
             Interlocked.Exchange(ref ClientHandlers, CreateClientHandlerCollection(handlers));
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
-        public TBuilder WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
 
             Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider(resiliencePolicyProvider));
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
-        public TBuilder WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
 
             Interlocked.Exchange(ref _methodResiliencePolicyProvider, methodResiliencePolicyProvider);
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
-        public TBuilder WithLogging(ILoggerFactory loggerFactory)
+        public TSpecificCustomizer WithLogging(ILoggerFactory loggerFactory)
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
 
             Interlocked.Exchange(ref LoggerFactory, loggerFactory);
             Interlocked.Exchange(ref Logger, loggerFactory.CreateLogger<TResult>());
-            return (this as TBuilder)!;
-        }
-
-        public TBuilder WithLogging(ILogger<TResult> logger)
-        {
-            Ensure.IsNotNull(logger, nameof(logger));
-
-            Interlocked.Exchange(ref Logger, logger);
-            return (this as TBuilder)!;
+            return (this as TSpecificCustomizer)!;
         }
 
         public abstract TResult Build();
