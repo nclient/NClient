@@ -7,7 +7,7 @@ namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> _httpClientExceptionFactory;
+        private readonly ISystemHttpClientExceptionFactory _httpClientExceptionFactory;
         public SystemHttpMessageBuilderProvider()
         {
             _httpClientExceptionFactory = new SystemHttpClientExceptionFactory();

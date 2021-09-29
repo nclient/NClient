@@ -13,16 +13,18 @@ namespace NClient.Abstractions
         /// <summary>
         /// Sets custom <see cref="IHttpClientProvider"/> used to create instances of <see cref="IHttpClient"/>.
         /// </summary>
-        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
-        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/> instances.</param>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/>.</param>
+        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
+        /// <param name="httpClientExceptionFactory">The factory that can create instances of <see cref="HttpClientException"/>.</param>
         TCustomizer WithCustomHttpClient(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider);
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider, 
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory);
 
         /// <summary>
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         TCustomizer WithCustomSerializer(ISerializerProvider serializerProvider);
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace NClient.Abstractions
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/>.
         /// </summary>
-        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> instances.</param>
+        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
         TCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
 
         /// <summary>

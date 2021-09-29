@@ -27,9 +27,10 @@ namespace NClient.Customizers
             IClientInterceptorFactory clientInterceptorFactory,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
-            : base(httpClientProvider, httpMessageBuilderProvider, methodResiliencePolicyProvider, serializerProvider)
+            : base(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, methodResiliencePolicyProvider, serializerProvider)
         {
             _host = host;
             _clientGenerator = clientGenerator;
@@ -57,6 +58,7 @@ namespace NClient.Customizers
                 _host,
                 HttpClientProvider,
                 HttpMessageBuilderProvider,
+                HttpClientExceptionFactory,
                 SerializerProvider,
                 ClientHandlers,
                 CreateMethodResiliencePolicyProvider(),

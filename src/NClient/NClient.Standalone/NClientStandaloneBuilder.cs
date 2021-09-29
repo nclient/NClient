@@ -23,6 +23,7 @@ namespace NClient
 
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
+        private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
         private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientValidator _clientValidator;
@@ -32,16 +33,19 @@ namespace NClient
         /// <summary>
         /// Creates the builder with custom providers.
         /// </summary>
-        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
-        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="httpMessageBuilder"/> instances.</param>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/>.</param>
+        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
+        /// <param name="httpClientExceptionFactory">The factory that can create instances of <see cref="HttpClientException"/>.</param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         public NClientStandaloneBuilder(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider) 
             : this(
                 httpClientProvider,
                 httpMessageBuilderProvider,
+                httpClientExceptionFactory,
                 new DefaultMethodResiliencePolicyProvider<TResponse>(
                     new DefaultResiliencePolicyProvider<TResponse>()),
                 serializerProvider)
@@ -51,16 +55,19 @@ namespace NClient
         internal NClientStandaloneBuilder(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
+            Ensure.IsNotNull(httpClientExceptionFactory, nameof(httpClientExceptionFactory));
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _serializerProvider = serializerProvider;
             _clientValidator = new ClientValidator(ProxyGenerator);
@@ -83,6 +90,7 @@ namespace NClient
                 _interfaceClientInterceptorFactory,
                 _httpClientProvider,
                 _httpMessageBuilderProvider,
+                _httpClientExceptionFactory,
                 _methodResiliencePolicyProvider,
                 _serializerProvider);
         }

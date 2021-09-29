@@ -2,8 +2,14 @@
 
 namespace NClient.Abstractions.HttpClients
 {
-    internal interface IHttpClientExceptionFactory<TRequest, TResponse>
+    public interface IHttpClientExceptionFactory<TRequest, TResponse, TException> : IHttpClientExceptionFactory<TRequest, TResponse> 
+        where TException : Exception
     {
-        HttpClientException<TRequest, TResponse> HttpRequestFailed(TRequest request, TResponse response, Exception innerException);
+        HttpClientException<TRequest, TResponse> Create(TRequest request, TResponse response, TException innerException);
+    }
+    
+    public interface IHttpClientExceptionFactory<TRequest, TResponse>
+    {
+        HttpClientException<TRequest, TResponse>? TryCreate(TRequest? request, TResponse? response, Exception? innerException);
     }
 }

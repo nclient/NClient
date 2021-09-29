@@ -38,6 +38,7 @@ namespace NClient.Core.Validation
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
+                    new StubHttpClientExceptionFactory(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
                     new DefaultMethodResiliencePolicyProvider<HttpResponse>(

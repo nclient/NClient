@@ -27,6 +27,7 @@ namespace NClient.Core.Interceptors
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
@@ -73,6 +74,7 @@ namespace NClient.Core.Interceptors
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
@@ -88,6 +90,7 @@ namespace NClient.Core.Interceptors
                     clientHandlers,
                     httpClientProvider,
                     httpMessageBuilder,
+                    httpClientExceptionFactory,
                     methodResiliencePolicyProvider,
                     logger),
                 new FullMethodInvocationProvider<TResponse>(_proxyGenerator),
@@ -105,6 +108,7 @@ namespace NClient.Core.Interceptors
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ILogger<TInterface>? logger)
         {
@@ -113,6 +117,7 @@ namespace NClient.Core.Interceptors
                 new ClientHandlerDecorator<TInterface, TRequest, TResponse>(clientHandlers, logger),
                 httpClientProvider,
                 httpMessageBuilder,
+                httpClientExceptionFactory,
                 methodResiliencePolicyProvider,
                 logger);
         }

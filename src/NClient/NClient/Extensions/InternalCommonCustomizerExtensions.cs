@@ -15,7 +15,8 @@ namespace NClient.Extensions
             if (httpClientFactory is not null)
                 return commonCustomizer.WithCustomHttpClient(
                     new SystemHttpClientProvider(httpClientFactory, httpClientName), 
-                    new SystemHttpMessageBuilderProvider());
+                    new SystemHttpMessageBuilderProvider(),
+                    new SystemHttpClientExceptionFactory());
             return (commonCustomizer as TCustomizer)!;
         }
     }

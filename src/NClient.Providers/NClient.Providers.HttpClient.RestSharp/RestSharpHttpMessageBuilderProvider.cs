@@ -8,7 +8,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 {
     public class RestSharpHttpMessageBuilderProvider : IHttpMessageBuilderProvider<IRestRequest, IRestResponse>
     {
-        private readonly IHttpClientExceptionFactory<IRestRequest, IRestResponse> _httpClientExceptionFactory;
+        private readonly IRestSharpHttpClientExceptionFactory _httpClientExceptionFactory;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
 
         public RestSharpHttpMessageBuilderProvider()

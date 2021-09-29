@@ -20,6 +20,7 @@ namespace NClient.Core.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
         private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -28,6 +29,7 @@ namespace NClient.Core.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ILogger? logger)
         {
@@ -35,6 +37,7 @@ namespace NClient.Core.Interceptors.HttpClients
             _clientHandler = clientHandler;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
@@ -54,11 +57,12 @@ namespace NClient.Core.Interceptors.HttpClients
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
             
-            TResponse response;
+            TRequest? request = default;
+            TResponse? response = default;
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", httpRequest.Id);
-                var request = await _httpMessageBuilder
+                request = await _httpMessageBuilder
                     .BuildRequestAsync(httpRequest)
                     .ConfigureAwait(false);
                 
@@ -77,6 +81,8 @@ namespace NClient.Core.Interceptors.HttpClients
             catch (Exception e)
             {
                 _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", httpRequest.Id);
+                if (_httpClientExceptionFactory.TryCreate(request, response, e) is Exception httpClientException)
+                    throw httpClientException;
                 throw;
             }
             

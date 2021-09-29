@@ -22,6 +22,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(),
                 new SystemHttpMessageBuilderProvider(),
+                new SystemHttpClientExceptionFactory(),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
                 methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
@@ -37,6 +38,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(httpClientFactory, httpClientName),
                 new SystemHttpMessageBuilderProvider(),
+                new SystemHttpClientExceptionFactory(),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
                 methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)
@@ -51,6 +53,7 @@ namespace NClient
             : base(
                 new SystemHttpClientProvider(httpClient),
                 new SystemHttpMessageBuilderProvider(),
+                new SystemHttpClientExceptionFactory(),
                 serializerProvider: GetOrDefault(jsonSerializerOptions),
                 methodResiliencePolicyProvider: GetOrDefault(resiliencePolicy),
                 loggerFactory)

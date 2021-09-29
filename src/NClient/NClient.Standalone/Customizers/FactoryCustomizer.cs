@@ -14,9 +14,10 @@ namespace NClient.Customizers
         public FactoryCustomizer(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
-            : base(httpClientProvider, httpMessageBuilderProvider, methodResiliencePolicyProvider, serializerProvider)
+            : base(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, methodResiliencePolicyProvider, serializerProvider)
         {
         }
 
@@ -25,6 +26,7 @@ namespace NClient.Customizers
             return new NClientStandaloneFactory<TRequest, TResponse>(
                 HttpClientProvider,
                 HttpMessageBuilderProvider,
+                HttpClientExceptionFactory,
                 SerializerProvider,
                 CreateMethodResiliencePolicyProvider(),
                 LoggerFactory);

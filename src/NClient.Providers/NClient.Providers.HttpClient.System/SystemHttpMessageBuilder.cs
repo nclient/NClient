@@ -15,12 +15,12 @@ namespace NClient.Providers.HttpClient.System
     {
         private readonly ISerializer _serializer;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> _httpClientExceptionFactory;
+        private readonly ISystemHttpClientExceptionFactory _httpClientExceptionFactory;
 
         public SystemHttpMessageBuilder(
             ISerializer serializer,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> httpClientExceptionFactory)
+            ISystemHttpClientExceptionFactory httpClientExceptionFactory)
         {
             _serializer = serializer;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
@@ -77,13 +77,13 @@ namespace NClient.Providers.HttpClient.System
             };
 
             httpResponse.ErrorException = exception is not null
-                ? _httpClientExceptionFactory.HttpRequestFailed(response.RequestMessage, response, exception)
+                ? _httpClientExceptionFactory.Create(response.RequestMessage, response, exception)
                 : null;
 
             return httpResponse;
         }
         
-        private static Exception? TryGetException(HttpResponseMessage httpResponseMessage)
+        private static HttpRequestException? TryGetException(HttpResponseMessage httpResponseMessage)
         {
             try
             {

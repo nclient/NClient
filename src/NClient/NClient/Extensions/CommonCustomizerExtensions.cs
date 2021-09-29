@@ -33,7 +33,8 @@ namespace NClient
 
             return commonCustomizer.WithCustomHttpClient(
                 new SystemHttpClientProvider(httpClientFactory, httpClientName), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpMessageBuilderProvider(),
+                new SystemHttpClientExceptionFactory());
         }
 
         /// <summary>
@@ -52,7 +53,8 @@ namespace NClient
 
             return commonCustomizer.WithCustomHttpClient(
                 new SystemHttpClientProvider(httpMessageHandler), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpMessageBuilderProvider(),
+                new SystemHttpClientExceptionFactory());
         }
 
         /// <summary>

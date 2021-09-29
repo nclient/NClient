@@ -16,6 +16,7 @@ namespace NClient
     {
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
+        private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
         private readonly ISerializerProvider _serializerProvider;
         private readonly IMethodResiliencePolicyProvider<TResponse>? _methodResiliencePolicyProvider;
         private readonly ILoggerFactory? _loggerFactory;
@@ -23,42 +24,48 @@ namespace NClient
         /// <summary>
         /// Creates the client factory with custom providers.
         /// </summary>
-        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
-        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="httpMessageBuilder"/> instances.</param>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/>.</param>
+        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
+        /// <param name="httpClientExceptionFactory">The factory that can create instances of <see cref="HttpClientException"/></param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         public NClientStandaloneFactory(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IResiliencePolicyProvider<TResponse>? resiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
-            : this(httpClientProvider, httpMessageBuilderProvider, serializerProvider, methodResiliencePolicyProvider: GetOrDefault(resiliencePolicyProvider), loggerFactory)
+            : this(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, serializerProvider, methodResiliencePolicyProvider: GetOrDefault(resiliencePolicyProvider), loggerFactory)
         {
         }
 
         /// <summary>
         /// Creates the client factory with custom providers.
         /// </summary>
-        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/> instances.</param>
-        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="httpMessageBuilder"/> instances.</param>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/> instances.</param>
+        /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/>.</param>
+        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
+        /// <param name="httpClientExceptionFactory">The factory that can create instances of <see cref="HttpClientException"/></param>
+        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         public NClientStandaloneFactory(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IMethodResiliencePolicyProvider<TResponse>? methodResiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
+            Ensure.IsNotNull(httpClientExceptionFactory, nameof(httpClientExceptionFactory));
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
 
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
             _serializerProvider = serializerProvider;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _loggerFactory = loggerFactory;
@@ -68,7 +75,11 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            return new NClientStandaloneBuilder<TRequest, TResponse>(_httpClientProvider, _httpMessageBuilderProvider, _serializerProvider)
+            return new NClientStandaloneBuilder<TRequest, TResponse>(
+                    _httpClientProvider, 
+                    _httpMessageBuilderProvider, 
+                    _httpClientExceptionFactory, 
+                    _serializerProvider)
                 .Use<TInterface>(host)
                 .TrySetResiliencePolicy(_methodResiliencePolicyProvider)
                 .TrySetLogging(_loggerFactory)

@@ -24,6 +24,7 @@ namespace NClient.Customizers
 
         protected IHttpClientProvider<TRequest, TResponse> HttpClientProvider;
         protected IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider;
+        protected IHttpClientExceptionFactory<TRequest, TResponse> HttpClientExceptionFactory;
         protected ISerializerProvider SerializerProvider;
         protected IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers;
         protected ILoggerFactory? LoggerFactory;
@@ -32,6 +33,7 @@ namespace NClient.Customizers
         protected CommonCustomizer(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
@@ -40,18 +42,23 @@ namespace NClient.Customizers
             
             HttpClientProvider = httpClientProvider;
             HttpMessageBuilderProvider = httpMessageBuilderProvider;
+            HttpClientExceptionFactory = httpClientExceptionFactory;
             SerializerProvider = serializerProvider;
             ClientHandlers = CreateClientHandlerCollection();
         }
 
         public TSpecificCustomizer WithCustomHttpClient(
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider, IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider, 
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
+            Ensure.IsNotNull(httpClientExceptionFactory, nameof(httpClientExceptionFactory));
 
             Interlocked.Exchange(ref HttpClientProvider, httpClientProvider);
             Interlocked.Exchange(ref HttpMessageBuilderProvider, httpMessageBuilderProvider);
+            Interlocked.Exchange(ref HttpClientExceptionFactory, httpClientExceptionFactory);
             return (this as TSpecificCustomizer)!;
         }
         

@@ -18,13 +18,13 @@ namespace NClient.Providers.HttpClient.RestSharp
         private readonly ISerializer _serializer;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly IHttpClientExceptionFactory<IRestRequest, IRestResponse> _httpClientExceptionFactory;
+        private readonly IRestSharpHttpClientExceptionFactory _httpClientExceptionFactory;
 
         public RestSharpHttpMessageBuilder(
             ISerializer serializer,
             IRestSharpMethodMapper restSharpMethodMapper,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            IHttpClientExceptionFactory<IRestRequest, IRestResponse> httpClientExceptionFactory)
+            IRestSharpHttpClientExceptionFactory httpClientExceptionFactory)
         {
             _serializer = serializer;
             _restSharpMethodMapper = restSharpMethodMapper;
@@ -82,7 +82,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             };
 
             httpResponse.ErrorException = response.ErrorException is not null
-                ? _httpClientExceptionFactory.HttpRequestFailed(response.Request, response, response.ErrorException)
+                ? _httpClientExceptionFactory.Create(response.Request, response, response.ErrorException)
                 : null;
 
             return Task.FromResult(httpResponse);

@@ -18,6 +18,7 @@ namespace NClient.Core.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
         private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -26,6 +27,7 @@ namespace NClient.Core.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
             ILogger? logger = null)
         {
@@ -33,6 +35,7 @@ namespace NClient.Core.Interceptors.HttpClients
             _clientHandler = clientHandler;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
@@ -44,6 +47,7 @@ namespace NClient.Core.Interceptors.HttpClients
                 _clientHandler,
                 _httpClientProvider,
                 _httpMessageBuilder,
+                _httpClientExceptionFactory,
                 resiliencePolicyProvider == null
                     ? _methodResiliencePolicyProvider
                     : new DefaultMethodResiliencePolicyProvider<TResponse>(resiliencePolicyProvider),
