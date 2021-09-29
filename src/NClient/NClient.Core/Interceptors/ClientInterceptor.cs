@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
@@ -120,10 +119,10 @@ namespace NClient.Core.Interceptors
                 e.MethodInfo = invocation.Method;
                 throw;
             }
-            catch (ClientHttpRequestException e)
+            catch (HttpClientException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(TClient), invocation.Method, e);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(TClient), invocation.Method, httpResponse, e);
             }
             catch (Exception e)
             {

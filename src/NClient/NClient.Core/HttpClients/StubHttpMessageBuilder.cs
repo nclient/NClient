@@ -5,13 +5,13 @@ namespace NClient.Core.HttpClients
 {
     public class StubHttpMessageBuilder : IHttpMessageBuilder<HttpRequest, HttpResponse>
     {
-        public Task<HttpRequest> BuildRequestAsync(HttpRequest request)
+        public Task<HttpRequest> BuildRequestAsync(HttpRequest httpRequest)
         {
-            return Task.FromResult(request);
+            return Task.FromResult(httpRequest);
         }
-        public Task<HttpResponse> BuildResponseAsync(HttpRequest request, HttpResponse customResponse)
+        public Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, HttpResponse response)
         {
-            return Task.FromResult(customResponse);
+            return Task.FromResult(response);
         }
     }
 }

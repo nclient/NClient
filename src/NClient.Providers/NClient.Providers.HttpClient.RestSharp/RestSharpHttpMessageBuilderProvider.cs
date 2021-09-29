@@ -1,5 +1,4 @@
-﻿using NClient.Abstractions.Exceptions.Factories;
-using NClient.Abstractions.HttpClients;
+﻿using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.RestSharp.Builders;
 using NClient.Providers.HttpClient.RestSharp.Helpers;
@@ -9,13 +8,13 @@ namespace NClient.Providers.HttpClient.RestSharp
 {
     public class RestSharpHttpMessageBuilderProvider : IHttpMessageBuilderProvider<IRestRequest, IRestResponse>
     {
-        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+        private readonly IHttpClientExceptionFactory<IRestRequest, IRestResponse> _httpClientExceptionFactory;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
 
         public RestSharpHttpMessageBuilderProvider()
         {
             _restSharpMethodMapper = new RestSharpMethodMapper();
-            _clientHttpRequestExceptionFactory = new ClientHttpRequestExceptionFactory();
+            _httpClientExceptionFactory = new RestSharpHttpClientExceptionFactory();
         }
         
         public IHttpMessageBuilder<IRestRequest, IRestResponse> Create(ISerializer serializer)
@@ -24,7 +23,7 @@ namespace NClient.Providers.HttpClient.RestSharp
                 serializer,
                 _restSharpMethodMapper,
                 new FinalHttpRequestBuilder(serializer, _restSharpMethodMapper),
-                _clientHttpRequestExceptionFactory);
+                _httpClientExceptionFactory);
         }
     }
 }

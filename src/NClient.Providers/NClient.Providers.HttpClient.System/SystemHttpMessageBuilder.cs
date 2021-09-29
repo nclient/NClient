@@ -5,7 +5,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.System.Builders;
@@ -16,35 +15,35 @@ namespace NClient.Providers.HttpClient.System
     {
         private readonly ISerializer _serializer;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+        private readonly IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> _httpClientExceptionFactory;
 
         public SystemHttpMessageBuilder(
             ISerializer serializer,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+            IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> httpClientExceptionFactory)
         {
             _serializer = serializer;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
-            _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
         }
         
-        public Task<HttpRequestMessage> BuildRequestAsync(HttpRequest request)
+        public Task<HttpRequestMessage> BuildRequestAsync(HttpRequest httpRequest)
         {
-            var parameters = request.Parameters
+            var parameters = httpRequest.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
-            var uri = new Uri(QueryHelpers.AddQueryString(request.Resource.ToString(), parameters));
+            var uri = new Uri(QueryHelpers.AddQueryString(httpRequest.Resource.ToString(), parameters));
 
-            var httpRequestMessage = new HttpRequestMessage { Method = request.Method, RequestUri = uri };
+            var httpRequestMessage = new HttpRequestMessage { Method = httpRequest.Method, RequestUri = uri };
 
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType));
 
-            if (request.Body != null)
+            if (httpRequest.Body != null)
             {
-                var body = _serializer.Serialize(request.Body);
+                var body = _serializer.Serialize(httpRequest.Body);
                 httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, _serializer.ContentType);
             }
 
-            foreach (var header in request.Headers)
+            foreach (var header in httpRequest.Headers)
             {
                 httpRequestMessage.Headers.Add(header.Name, header.Value);
             }
@@ -52,33 +51,33 @@ namespace NClient.Providers.HttpClient.System
             return Task.FromResult(httpRequestMessage);
         }
 
-        public async Task<HttpResponse> BuildResponseAsync(HttpRequest request, HttpResponseMessage httpResponseMessage)
+        public async Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, HttpResponseMessage response)
         {
-            var exception = TryGetException(httpResponseMessage);
+            var exception = TryGetException(response);
             
-            var finalRequest = await _finalHttpRequestBuilder
-                .BuildAsync(request, httpResponseMessage.RequestMessage)
+            var finalHttpRequest = await _finalHttpRequestBuilder
+                .BuildAsync(httpRequest, response.RequestMessage)
                 .ConfigureAwait(false);
 
-            var content = httpResponseMessage.Content is null 
+            var content = response.Content is null 
                 ? new HttpResponseContent() 
                 : new HttpResponseContent(
-                    await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
-                    new HttpResponseContentHeaderContainer(httpResponseMessage.Content.Headers));
+                    await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
+                    new HttpResponseContentHeaderContainer(response.Content.Headers));
 
-            var httpResponse = new HttpResponse(finalRequest)
+            var httpResponse = new HttpResponse(finalHttpRequest)
             {
-                Headers = new HttpResponseHeaderContainer(httpResponseMessage.Headers),
+                Headers = new HttpResponseHeaderContainer(response.Headers),
                 Content = content,
-                StatusCode = httpResponseMessage.StatusCode,
-                StatusDescription = httpResponseMessage.StatusCode.ToString(),
-                ResponseUri = httpResponseMessage.RequestMessage.RequestUri,
+                StatusCode = response.StatusCode,
+                StatusDescription = response.StatusCode.ToString(),
+                ResponseUri = response.RequestMessage.RequestUri,
                 ErrorMessage = exception?.Message,
-                ProtocolVersion = httpResponseMessage.Version
+                ProtocolVersion = response.Version
             };
 
             httpResponse.ErrorException = exception is not null
-                ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+                ? _httpClientExceptionFactory.HttpRequestFailed(response.RequestMessage, response, exception)
                 : null;
 
             return httpResponse;

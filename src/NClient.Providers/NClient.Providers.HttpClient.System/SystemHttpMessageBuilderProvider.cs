@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.System.Builders;
@@ -8,11 +7,10 @@ namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
-        
+        private readonly IHttpClientExceptionFactory<HttpRequestMessage, HttpResponseMessage> _httpClientExceptionFactory;
         public SystemHttpMessageBuilderProvider()
         {
-            _clientHttpRequestExceptionFactory = new ClientHttpRequestExceptionFactory();
+            _httpClientExceptionFactory = new SystemHttpClientExceptionFactory();
         }
         
         public IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
@@ -20,7 +18,7 @@ namespace NClient.Providers.HttpClient.System
             return new SystemHttpMessageBuilder(
                 serializer,
                 new FinalHttpRequestBuilder(serializer),
-                _clientHttpRequestExceptionFactory);
+                _httpClientExceptionFactory);
         }
     }
 }

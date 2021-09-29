@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.RestSharp.Builders;
@@ -19,49 +18,49 @@ namespace NClient.Providers.HttpClient.RestSharp
         private readonly ISerializer _serializer;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly IClientHttpRequestExceptionFactory _clientHttpRequestExceptionFactory;
+        private readonly IHttpClientExceptionFactory<IRestRequest, IRestResponse> _httpClientExceptionFactory;
 
         public RestSharpHttpMessageBuilder(
             ISerializer serializer,
             IRestSharpMethodMapper restSharpMethodMapper,
             IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            IClientHttpRequestExceptionFactory clientHttpRequestExceptionFactory)
+            IHttpClientExceptionFactory<IRestRequest, IRestResponse> httpClientExceptionFactory)
         {
             _serializer = serializer;
             _restSharpMethodMapper = restSharpMethodMapper;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
-            _clientHttpRequestExceptionFactory = clientHttpRequestExceptionFactory;
+            _httpClientExceptionFactory = httpClientExceptionFactory;
         }
 
-        public Task<IRestRequest> BuildRequestAsync(HttpRequest request)
+        public Task<IRestRequest> BuildRequestAsync(HttpRequest httpRequest)
         {
-            var method = _restSharpMethodMapper.Map(request.Method);
-            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
+            var method = _restSharpMethodMapper.Map(httpRequest.Method);
+            var restRequest = new RestRequest(httpRequest.Resource, method, DataFormat.Json);
 
-            foreach (var param in request.Parameters)
+            foreach (var param in httpRequest.Parameters)
             {
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
-            foreach (var header in request.Headers)
+            foreach (var header in httpRequest.Headers)
             {
                 restRequest.AddHeader(header.Name, header.Value);
             }
 
-            if (request.Body is not null)
+            if (httpRequest.Body is not null)
             {
-                var body = _serializer.Serialize(request.Body);
+                var body = _serializer.Serialize(httpRequest.Body);
                 restRequest.AddParameter(_serializer.ContentType, body, ParameterType.RequestBody);
             }
 
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<HttpResponse> BuildResponseAsync(HttpRequest request, IRestResponse restResponse)
+        public Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, IRestResponse response)
         {
-            var finalRequest = _finalHttpRequestBuilder.Build(request, restResponse.Request);
+            var finalRequest = _finalHttpRequestBuilder.Build(httpRequest, response.Request);
             
-            var allHeaders = restResponse.Headers
+            var allHeaders = response.Headers
                 .Where(x => x.Name != null)
                 .Select(x => new HttpHeader(x.Name!, x.Value?.ToString() ?? ""))
                 .ToArray();
@@ -74,16 +73,16 @@ namespace NClient.Providers.HttpClient.RestSharp
             
             var httpResponse = new HttpResponse(finalRequest)
             {
-                Content = new HttpResponseContent(restResponse.RawBytes, new HttpResponseContentHeaderContainer(contentHeaders)),
-                StatusCode = restResponse.StatusCode,
-                ResponseUri = restResponse.ResponseUri,
+                Content = new HttpResponseContent(response.RawBytes, new HttpResponseContentHeaderContainer(contentHeaders)),
+                StatusCode = response.StatusCode,
+                ResponseUri = response.ResponseUri,
                 Headers = new HttpResponseHeaderContainer(responseHeaders),
-                ErrorMessage = restResponse.ErrorMessage,
-                ProtocolVersion = restResponse.ProtocolVersion
+                ErrorMessage = response.ErrorMessage,
+                ProtocolVersion = response.ProtocolVersion
             };
 
-            httpResponse.ErrorException = restResponse.ErrorException is not null
-                ? _clientHttpRequestExceptionFactory.HttpRequestFailed(httpResponse)
+            httpResponse.ErrorException = response.ErrorException is not null
+                ? _httpClientExceptionFactory.HttpRequestFailed(response.Request, response, response.ErrorException)
                 : null;
 
             return Task.FromResult(httpResponse);
