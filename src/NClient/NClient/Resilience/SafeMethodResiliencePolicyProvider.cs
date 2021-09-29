@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Net.Http;
 using System.Reflection;
 using NClient.Abstractions.Resilience;
 using NClient.Annotations.Methods;
-using NClient.Core.Resilience;
 using NClient.Providers.Resilience.Polly;
 
 namespace NClient.Resilience
@@ -12,12 +12,12 @@ namespace NClient.Resilience
         public SafeMethodResiliencePolicyProvider(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             : base(retryCount, sleepDurationProvider, resultPredicate)
         {
         }
 
-        public override IResiliencePolicy Create(MethodInfo methodInfo)
+        public override IResiliencePolicy<HttpRequestMessage, HttpResponseMessage> Create(MethodInfo methodInfo)
         {
             var isSafeMethod = GetMethodAttributeFor(methodInfo) switch
             {
@@ -28,7 +28,7 @@ namespace NClient.Resilience
             };
 
             return isSafeMethod
-                ? new PollyResiliencePolicy(Policy)
+                ? new PollyResiliencePolicy<HttpRequestMessage, HttpResponseMessage>(Policy)
                 : new DefaultResiliencePolicy();
         }
     }

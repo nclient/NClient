@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Net.Http;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
@@ -61,7 +62,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClientFactory(name: "factoryName", builder => builder
-                .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext>()));
+                .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();

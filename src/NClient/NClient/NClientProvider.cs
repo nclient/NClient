@@ -1,4 +1,5 @@
-﻿using NClient.Abstractions;
+﻿using System.Net.Http;
+using NClient.Abstractions;
 using NClient.Common.Helpers;
 
 namespace NClient
@@ -13,7 +14,7 @@ namespace NClient
         /// </summary>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
-        public static INClientBuilderCustomizer<TInterface> Use<TInterface>(string host)
+        public static INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> Use<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));

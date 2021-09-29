@@ -4,7 +4,7 @@ using NClient.Abstractions.HttpClients;
 
 namespace NClient.Core.HttpClients
 {
-    internal class StubHttpClient : IHttpClient
+    internal class StubHttpClient : IHttpClient<HttpRequest, HttpResponse>
     {
         public Task<HttpResponse> ExecuteAsync(HttpRequest request)
         {

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Resilience
 {
-    internal class DefaultResiliencePolicy : IResiliencePolicy
+    internal class DefaultResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {
-        public async Task<HttpResponse> ExecuteAsync(Func<Task<ResponseContext>> action)
+        public async Task<TResponse> ExecuteAsync(Func<Task<ResponseContext<TRequest, TResponse>>> action)
         {
             var executionResult = await action.Invoke().ConfigureAwait(false);
-            if (typeof(HttpResponse).IsAssignableFrom(executionResult.MethodInvocation.ResultType))
-                return executionResult.HttpResponse;
-            return executionResult.HttpResponse.EnsureSuccess();
+            return executionResult.Response;
         }
     }
 }

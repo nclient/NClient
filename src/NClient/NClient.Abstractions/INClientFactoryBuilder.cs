@@ -3,8 +3,8 @@
     /// <summary>
     /// A builder abstraction used to create the client factory with custom providers.
     /// </summary>
-    public interface INClientFactoryBuilder
+    public interface INClientFactoryBuilder<TRequest, TResponse>
     {
-        INClientFactoryCustomizer Use(string name);
+        INClientFactoryCustomizer<TRequest, TResponse> Use(string name);
     }
 }

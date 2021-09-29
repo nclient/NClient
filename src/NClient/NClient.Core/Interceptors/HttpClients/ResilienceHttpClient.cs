@@ -1,71 +1,88 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Interceptors.HttpResponsePopulation;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
-    internal interface IResilienceHttpClient
+    internal interface IResilienceHttpClient<TResponse>
     {
-        Task<HttpResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation);
+        Task<TResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation);
     }
 
-    internal class ResilienceHttpClient : IResilienceHttpClient
+    internal class ResilienceHttpClient<TRequest, TResponse> : IResilienceHttpClient<TResponse>
     {
-        private readonly IHttpClientProvider _httpClientProvider;
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IHttpResponsePopulater _httpResponsePopulater;
-        private readonly IMethodResiliencePolicyProvider _methodResiliencePolicyProvider;
+        private readonly IClientHandler<TRequest, TResponse> _clientHandler;
+        private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClient(
-            IHttpClientProvider httpClientProvider,
             ISerializerProvider serializerProvider,
-            IHttpResponsePopulater httpResponsePopulater,
-            IMethodResiliencePolicyProvider methodResiliencePolicyProvider,
+            IClientHandler<TRequest, TResponse> clientHandler,
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger? logger)
         {
-            _httpClientProvider = httpClientProvider;
             _serializerProvider = serializerProvider;
-            _httpResponsePopulater = httpResponsePopulater;
+            _clientHandler = clientHandler;
+            _httpClientProvider = httpClientProvider;
+            _httpMessageBuilder = httpMessageBuilder;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
 
-        public async Task<HttpResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation)
+        public async Task<TResponse> ExecuteAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
-            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Resource, request.Id);
-
             return await _methodResiliencePolicyProvider
                 .Create(methodInvocation.MethodInfo)
-                .ExecuteAsync(() => ExecuteAttemptAsync(request, methodInvocation))
+                .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest, methodInvocation))
                 .ConfigureAwait(false);
         }
 
-        private async Task<ResponseContext> ExecuteAttemptAsync(HttpRequest request, MethodInvocation methodInvocation)
+        private async Task<ResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
+            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", httpRequest.Method, httpRequest.Resource, httpRequest.Id);
+
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
-            HttpResponse response;
+            
+            TRequest? request;
+            TResponse? response;
             try
             {
-                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
+                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", httpRequest.Id);
+                request = await _httpMessageBuilder
+                    .BuildRequestAsync(httpRequest)
+                    .ConfigureAwait(false);
+                
+                await _clientHandler
+                    .HandleRequestAsync(request, methodInvocation)
+                    .ConfigureAwait(false);
+                
                 response = await client.ExecuteAsync(request).ConfigureAwait(false);
-                _logger?.LogDebug("Request attempt finished with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, request.Id);
+                
+                response = await _clientHandler
+                    .HandleResponseAsync(response, methodInvocation)
+                    .ConfigureAwait(false);
+                
+                _logger?.LogDebug("Request attempt finished. Request id: '{requestId}'.", httpRequest.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", request.Id);
+                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", httpRequest.Id);
                 throw;
             }
-
-            var populatedResponse = _httpResponsePopulater.Populate(response, methodInvocation.ResultType);
-            _logger?.LogDebug("Response with code {responseStatusCode} received. Request id: '{requestId}'.", response.StatusCode, response.Request.Id);
-            return new ResponseContext(populatedResponse, methodInvocation);
+            
+            _logger?.LogDebug("Response received. Request id: '{requestId}'.", httpRequest.Id);
+            return new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
         }
     }
 }

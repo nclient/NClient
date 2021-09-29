@@ -12,9 +12,9 @@ using NClient.Core.Interceptors;
 
 namespace NClient.Customizers
 {
-    internal class BuilderCustomizer<TInterface> :
-        CommonCustomizer<INClientBuilderCustomizer<TInterface>, TInterface>,
-        INClientBuilderCustomizer<TInterface>
+    internal class BuilderCustomizer<TInterface, TRequest, TResponse> :
+        CommonCustomizer<INClientBuilderCustomizer<TInterface, TRequest, TResponse>, TInterface, TRequest, TResponse>,
+        INClientBuilderCustomizer<TInterface, TRequest, TResponse>
         where TInterface : class
     {
         private readonly Uri _host;
@@ -25,23 +25,26 @@ namespace NClient.Customizers
             Uri host,
             IClientGenerator clientGenerator,
             IClientInterceptorFactory clientInterceptorFactory,
-            IHttpClientProvider httpClientProvider,
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
-            : base(httpClientProvider, serializerProvider)
+            : base(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, methodResiliencePolicyProvider, serializerProvider)
         {
             _host = host;
             _clientGenerator = clientGenerator;
             _clientInterceptorFactory = clientInterceptorFactory;
         }
 
-        public INClientBuilderCustomizer<TInterface> WithResiliencePolicy(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+        public INClientBuilderCustomizer<TInterface, TRequest, TResponse> WithResiliencePolicy(
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
             return this;
         }
         
-        public INClientBuilderCustomizer<TInterface> WithLogging(ILogger<TInterface> logger)
+        public INClientBuilderCustomizer<TInterface, TRequest, TResponse> WithLogging(ILogger<TInterface> logger)
         {
             Ensure.IsNotNull(logger, nameof(logger));
 
@@ -54,9 +57,11 @@ namespace NClient.Customizers
             var interceptor = _clientInterceptorFactory.Create(
                 _host,
                 HttpClientProvider,
+                HttpMessageBuilderProvider,
+                HttpClientExceptionFactory,
                 SerializerProvider,
                 ClientHandlers,
-                GetOrCreateMethodResiliencePolicyProvider(),
+                CreateMethodResiliencePolicyProvider(),
                 Logger);
 
             return _clientGenerator.CreateClient<TInterface>(interceptor);

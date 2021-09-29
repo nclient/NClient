@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Common.Helpers;
@@ -34,7 +35,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string name, Func<INClientFactoryCustomizer, INClientFactoryCustomizer> configure, string? httpClientName = null)
+            string name, Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
@@ -54,7 +55,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string name, Func<IServiceProvider, INClientFactoryCustomizer, INClientFactoryCustomizer> configure, string? httpClientName = null)
+            string name, Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
@@ -66,7 +67,7 @@ namespace NClient.Extensions.DependencyInjection
             });
         }
 
-        private static INClientFactoryCustomizer CreateCustomizer(
+        private static INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> CreateCustomizer(
             string name, IServiceProvider serviceProvider, string? httpClientName)
         {
             return new NClientFactoryBuilder()

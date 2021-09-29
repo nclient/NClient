@@ -15,38 +15,53 @@ using NClient.Core.Resilience;
 
 namespace NClient.Customizers
 {
-    internal abstract class CommonCustomizer<TSpecificCustomizer, TResult>
-        : INClientCommonCustomizer<TSpecificCustomizer, TResult>
-        where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TResult>
+    internal abstract class CommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
+        : INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
+        where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
     {
-        private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider> _specificResiliencePolicyProviders;
-        private IMethodResiliencePolicyProvider? _methodResiliencePolicyProvider;
+        private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> _specificResiliencePolicyProviders;
+        private IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
 
-        protected IHttpClientProvider HttpClientProvider;
+        protected IHttpClientProvider<TRequest, TResponse> HttpClientProvider;
+        protected IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider;
+        protected IHttpClientExceptionFactory<TRequest, TResponse> HttpClientExceptionFactory;
         protected ISerializerProvider SerializerProvider;
-        protected IReadOnlyCollection<IClientHandler> ClientHandlers;
+        protected IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers;
         protected ILoggerFactory? LoggerFactory;
         protected ILogger<TResult>? Logger;
 
         protected CommonCustomizer(
-            IHttpClientProvider httpClientProvider,
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
-            _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider>();
-
+            _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
+            _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>();
+            
             HttpClientProvider = httpClientProvider;
+            HttpMessageBuilderProvider = httpMessageBuilderProvider;
+            HttpClientExceptionFactory = httpClientExceptionFactory;
             SerializerProvider = serializerProvider;
             ClientHandlers = CreateClientHandlerCollection();
         }
 
-        public TSpecificCustomizer WithCustomHttpClient(IHttpClientProvider httpClientProvider)
+        public TSpecificCustomizer WithCustomHttpClient(
+            IHttpClientProvider<TRequest, TResponse> httpClientProvider, 
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
+            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+            Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
+            Ensure.IsNotNull(httpClientExceptionFactory, nameof(httpClientExceptionFactory));
 
             Interlocked.Exchange(ref HttpClientProvider, httpClientProvider);
+            Interlocked.Exchange(ref HttpMessageBuilderProvider, httpMessageBuilderProvider);
+            Interlocked.Exchange(ref HttpClientExceptionFactory, httpClientExceptionFactory);
             return (this as TSpecificCustomizer)!;
         }
-
+        
         public TSpecificCustomizer WithCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
@@ -55,7 +70,7 @@ namespace NClient.Customizers
             return (this as TSpecificCustomizer)!;
         }
 
-        public TSpecificCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler> handlers)
+        public TSpecificCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
 
@@ -63,15 +78,15 @@ namespace NClient.Customizers
             return (this as TSpecificCustomizer)!;
         }
 
-        public TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider resiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
 
-            Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider(resiliencePolicyProvider));
+            Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(resiliencePolicyProvider));
             return (this as TSpecificCustomizer)!;
         }
 
-        public TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider methodResiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
 
@@ -90,29 +105,25 @@ namespace NClient.Customizers
 
         public abstract TResult Build();
 
-        protected IMethodResiliencePolicyProvider GetOrCreateMethodResiliencePolicyProvider()
+        protected IMethodResiliencePolicyProvider<TRequest, TResponse> CreateMethodResiliencePolicyProvider()
         {
-            return _methodResiliencePolicyProvider is not null
-                ? new DefaultMethodResiliencePolicyProvider(
-                    _methodResiliencePolicyProvider,
-                    _specificResiliencePolicyProviders)
-                : new DefaultMethodResiliencePolicyProvider(
-                    new DefaultResiliencePolicyProvider(),
-                    _specificResiliencePolicyProviders);
+            return new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(
+                _methodResiliencePolicyProvider,
+                _specificResiliencePolicyProviders);
         }
 
         protected void AddSpecificResiliencePolicyProvider<TInterface>(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider resiliencePolicyProvider)
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             var func = methodSelector.Compile();
             var methodInfo = func.Invoke(default!).Method;
             _specificResiliencePolicyProviders[methodInfo] = resiliencePolicyProvider;
         }
 
-        private static IReadOnlyCollection<IClientHandler> CreateClientHandlerCollection(
-            IReadOnlyCollection<IClientHandler>? customClientHandlers = null)
+        private static IReadOnlyCollection<IClientHandler<TRequest, TResponse>> CreateClientHandlerCollection(
+            IReadOnlyCollection<IClientHandler<TRequest, TResponse>>? customClientHandlers = null)
         {
-            var clientHandlerCollection = new List<IClientHandler>(customClientHandlers ?? Array.Empty<IClientHandler>());
+            var clientHandlerCollection = new List<IClientHandler<TRequest, TResponse>>(customClientHandlers ?? Array.Empty<IClientHandler<TRequest, TResponse>>());
             return clientHandlerCollection;
         }
     }

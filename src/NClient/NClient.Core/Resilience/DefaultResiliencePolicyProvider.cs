@@ -2,11 +2,11 @@
 
 namespace NClient.Core.Resilience
 {
-    internal class DefaultResiliencePolicyProvider : IResiliencePolicyProvider
+    internal class DefaultResiliencePolicyProvider<TRequest, TResponse> : IResiliencePolicyProvider<TRequest, TResponse>
     {
-        public IResiliencePolicy Create()
+        public IResiliencePolicy<TRequest, TResponse> Create()
         {
-            return new DefaultResiliencePolicy();
+            return new DefaultResiliencePolicy<TRequest, TResponse>();
         }
     }
 }
