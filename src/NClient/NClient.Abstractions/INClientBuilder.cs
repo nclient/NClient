@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions
+﻿using NClient.Abstractions.Customization;
+
+namespace NClient.Abstractions
 {
     /// <summary>
     /// An builder abstraction used to create the client.

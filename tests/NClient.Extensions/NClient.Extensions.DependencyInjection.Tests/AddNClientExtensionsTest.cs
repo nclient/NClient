@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
 
@@ -53,7 +54,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
-                host: "http://localhost:5000", builder => builder.WithResiliencePolicy());
+                host: "http://localhost:5000", builder => builder.WithForceResilience());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
@@ -66,7 +67,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
-                    .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
+                    .WithPollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

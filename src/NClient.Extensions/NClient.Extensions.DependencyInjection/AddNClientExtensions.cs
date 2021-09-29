@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
+using NClient.Abstractions.Customization;
 using NClient.Common.Helpers;
 using NClient.Extensions.DependencyInjection.Extensions;
 

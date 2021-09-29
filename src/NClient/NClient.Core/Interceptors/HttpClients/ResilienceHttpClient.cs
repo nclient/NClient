@@ -42,7 +42,7 @@ namespace NClient.Core.Interceptors.HttpClients
         public async Task<TResponse> ExecuteAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
             return await _methodResiliencePolicyProvider
-                .Create(methodInvocation.MethodInfo)
+                .Create(methodInvocation.MethodInfo, httpRequest)
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest, methodInvocation))
                 .ConfigureAwait(false);
         }

@@ -1,7 +1,8 @@
 ﻿using System.Net.Http;
-using NClient.Core.Resilience;
-using NClient.Providers.HttpClient.System;
-using NClient.Providers.Serialization.System;
+using NClient.Abstractions;
+using NClient.Abstractions.Customization;
+using NClient.Customization.Context;
+using NClient.Providers.Resilience.Polly;
 using NClient.Resilience;
 
 namespace NClient
@@ -9,16 +10,19 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client.
     /// </summary>
-    public class NClientBuilder : NClientStandaloneBuilder<HttpRequestMessage, HttpResponseMessage>
+    public class NClientBuilder : INClientBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        public NClientBuilder() : base(
-            new SystemHttpClientProvider(), 
-            new SystemHttpMessageBuilderProvider(), 
-            new SystemHttpClientExceptionFactory(), 
-            new DefaultMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(
-                new DefaultResiliencePolicyProvider()),
-            new SystemSerializerProvider())
+        public INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> Use<TInterface>(string host) where TInterface : class
         {
+            return new NClientStandaloneBuilder<HttpRequestMessage, HttpResponseMessage>(
+                    customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
+                    defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
+                .Use<TInterface>(host)
+                .UsingHttpClient()
+                .UsingSerializer()
+                .WithoutHandling()
+                .WithoutResilience()
+                .WithoutLogging();
         }
     }
 }

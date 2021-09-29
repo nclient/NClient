@@ -1,5 +1,5 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions;
+using NClient.Abstractions.Customization;
 using NClient.Common.Helpers;
 
 namespace NClient

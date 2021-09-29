@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
+using NClient.Abstractions.Customization;
 using NClient.Common.Helpers;
 using NClient.Extensions.DependencyInjection.Extensions;
 
@@ -16,13 +16,13 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="name">The name of the factory.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string name, string? httpClientName = null)
+            string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreateCustomizer(name, serviceProvider, httpClientName);
+                var factoryCustomizer = CreateCustomizer(serviceProvider, httpClientName);
                 return factoryCustomizer.Build();
             });
         }
@@ -35,14 +35,14 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string name, Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
+            Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreateCustomizer(name, serviceProvider, httpClientName);
+                var factoryCustomizer = CreateCustomizer(serviceProvider, httpClientName);
                 return configure(factoryCustomizer).Build();
             });
         }
@@ -55,23 +55,22 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string name, Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
+            Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreateCustomizer(name, serviceProvider, httpClientName);
+                var factoryCustomizer = CreateCustomizer(serviceProvider, httpClientName);
                 return configure(serviceProvider, factoryCustomizer).Build();
             });
         }
 
-        private static INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> CreateCustomizer(
-            string name, IServiceProvider serviceProvider, string? httpClientName)
+        private static INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> CreateCustomizer(IServiceProvider serviceProvider, string? httpClientName)
         {
             return new NClientFactoryBuilder()
-                .Use(name)
+                .Use()
                 .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }

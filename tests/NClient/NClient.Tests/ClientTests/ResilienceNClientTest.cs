@@ -5,6 +5,7 @@ using FluentAssertions.Extensions;
 using NClient.Abstractions.Resilience;
 using NClient.Exceptions;
 using NClient.Providers.Resilience.Polly;
+using NClient.Resilience;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
 using NClient.Tests.Clients;
@@ -58,7 +59,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy()
+                .WithForceResilience()
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -74,7 +75,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy()
+                .WithForceResilience()
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -89,7 +90,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy()
+                .WithForceResilience()
                 .Build();
 
             returnClient.Invoking(x => x.GetHttpResponse(id))
@@ -103,7 +104,9 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .WithCustomResilience(customizer => customizer
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -118,7 +121,9 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicy(x => (Func<int, BasicEntity>)x.Get, Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .WithCustomResilience(customizer => customizer
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -134,7 +139,10 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicyForSafeMethods(sleepDurationProvider: _ => 0.Seconds())
+                .WithSafePollyResilience(new DefaultResiliencePolicySettings
+                {
+                    SleepDuration = _ => 0.Seconds()
+                })
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -150,7 +158,10 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicyForSafeMethods(sleepDurationProvider: _ => 0.Seconds())
+                .WithSafePollyResilience(new DefaultResiliencePolicySettings
+                {
+                    SleepDuration = _ => 0.Seconds()
+                })
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -166,7 +177,10 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicyForIdempotentMethods(sleepDurationProvider: _ => 0.Seconds())
+                .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
+                {
+                    SleepDuration = _ => 0.Seconds()
+                })
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -182,7 +196,10 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithResiliencePolicyForIdempotentMethods(sleepDurationProvider: _ => 0.Seconds())
+                .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
+                {
+                    SleepDuration = _ => 0.Seconds()
+                })
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))

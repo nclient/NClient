@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions;
+using NClient.Abstractions.Customization;
 
 namespace NClient.Extensions.DependencyInjection.Extensions
 {
@@ -18,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection.Extensions
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
             return commonCustomizer
-                .TrySetCustomHttpClient(httpClientFactory, httpClientName)
+                .TrySetSystemHttpClient(httpClientFactory, httpClientName)
                 .TrySetLogging(loggerFactory);
         }
     }

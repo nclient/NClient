@@ -1,7 +1,8 @@
 ﻿using System.Net.Http;
-using NClient.Core.Resilience;
-using NClient.Providers.HttpClient.System;
-using NClient.Providers.Serialization.System;
+using NClient.Abstractions;
+using NClient.Abstractions.Customization;
+using NClient.Customization.Context;
+using NClient.Providers.Resilience.Polly;
 using NClient.Resilience;
 
 namespace NClient
@@ -9,16 +10,19 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client factory.
     /// </summary>
-    public class NClientFactoryBuilder : NClientStandaloneFactoryBuilder<HttpRequestMessage, HttpResponseMessage>
+    public class NClientFactoryBuilder : INClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        public NClientFactoryBuilder() : base(
-            new SystemHttpClientProvider(), 
-            new SystemHttpMessageBuilderProvider(),
-            new SystemHttpClientExceptionFactory(),
-            new DefaultMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(
-                new DefaultResiliencePolicyProvider()),
-            new SystemSerializerProvider())
+        public INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> Use()
         {
+            return new NClientStandaloneFactoryBuilder<HttpRequestMessage, HttpResponseMessage>(
+                    customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
+                    defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
+                .Use()
+                .UsingHttpClient()
+                .UsingSerializer()
+                .WithoutHandling()
+                .WithoutResilience()
+                .WithoutLogging();
         }
     }
 }

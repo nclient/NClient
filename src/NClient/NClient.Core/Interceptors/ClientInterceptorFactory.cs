@@ -42,9 +42,7 @@ namespace NClient.Core.Interceptors
         private readonly IRequestBuilder _requestBuilder;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
 
-        public ClientInterceptorFactory(
-            IProxyGenerator proxyGenerator,
-            IAttributeMapper attributeMapper)
+        public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
             _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
@@ -53,6 +51,7 @@ namespace NClient.Core.Interceptors
             var clientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
             var clientObjectMemberManagerExceptionFactory = new ClientObjectMemberManagerExceptionFactory();
+            var attributeMapper = new AttributeMapper();
 
             _clientMethodBuilder = new MethodBuilder(
                 new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),

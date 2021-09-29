@@ -122,6 +122,8 @@ namespace NClient.Core.Interceptors
             catch (HttpClientException e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
+                if (httpResponse is null)
+                    throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, e);
                 throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(TClient), invocation.Method, httpResponse, e);
             }
             catch (Exception e)

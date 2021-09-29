@@ -2,8 +2,8 @@
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Resilience;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -46,7 +46,7 @@ namespace NClient.Core.Interceptors.HttpClients
                 _httpMessageBuilder,
                 resiliencePolicyProvider == null
                     ? _methodResiliencePolicyProvider
-                    : new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(resiliencePolicyProvider),
+                    : new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(resiliencePolicyProvider),
                 _logger);
         }
     }
