@@ -17,7 +17,7 @@ namespace NClient
     {
         public NClientFactory(
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<ResponseContext<HttpResponseMessage>>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(),
@@ -33,7 +33,7 @@ namespace NClient
             IHttpClientFactory httpClientFactory,
             string? httpClientName = null,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<ResponseContext<HttpResponseMessage>>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClientFactory, httpClientName),
@@ -48,7 +48,7 @@ namespace NClient
         public NClientFactory(
             HttpClient httpClient,
             JsonSerializerOptions? jsonSerializerOptions = null,
-            IAsyncPolicy<ResponseContext<HttpResponseMessage>>? resiliencePolicy = null,
+            IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>? resiliencePolicy = null,
             ILoggerFactory? loggerFactory = null)
             : base(
                 new SystemHttpClientProvider(httpClient),
@@ -67,10 +67,10 @@ namespace NClient
                 : new SystemSerializerProvider();
         }
 
-        private static DefaultMethodResiliencePolicyProvider<HttpResponseMessage>? GetOrDefault(IAsyncPolicy<ResponseContext<HttpResponseMessage>>? resiliencePolicy)
+        private static DefaultMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>? GetOrDefault(IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>? resiliencePolicy)
         {
             return resiliencePolicy is not null
-                ? new DefaultMethodResiliencePolicyProvider<HttpResponseMessage>(new PollyResiliencePolicyProvider<HttpResponseMessage>(resiliencePolicy))
+                ? new DefaultMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(resiliencePolicy))
                 : null;
         }
     }

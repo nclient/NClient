@@ -82,7 +82,7 @@ namespace NClient
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static TCustomizer WithResiliencePolicy<TCustomizer, TInterface>(
             this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
-            IAsyncPolicy<ResponseContext<HttpResponseMessage>> asyncPolicy)
+            IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>> asyncPolicy)
             where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
@@ -90,7 +90,7 @@ namespace NClient
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
             return commonCustomizer.WithResiliencePolicy(
-                new PollyResiliencePolicyProvider<HttpResponseMessage>(asyncPolicy));
+                new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(asyncPolicy));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace NClient
             this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
@@ -125,7 +125,7 @@ namespace NClient
             this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {
@@ -146,7 +146,7 @@ namespace NClient
             this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
             where TInterface : class
         {

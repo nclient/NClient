@@ -8,7 +8,7 @@ namespace NClient.Extensions
     {
         public static TBuilder TrySetResiliencePolicy<TBuilder, TResult, TRequest, TResponse>(
             this INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse> clientBuilder,
-            IMethodResiliencePolicyProvider<TResponse>? methodResiliencePolicyProvider)
+            IMethodResiliencePolicyProvider<TRequest, TResponse>? methodResiliencePolicyProvider)
             where TBuilder : class, INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse>
         {
             if (methodResiliencePolicyProvider is not null)

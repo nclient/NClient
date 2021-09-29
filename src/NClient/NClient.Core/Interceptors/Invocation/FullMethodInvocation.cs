@@ -5,9 +5,9 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Interceptors.Invocation
 {
-    internal class FullMethodInvocation<TResponse> : MethodInvocation
+    internal class FullMethodInvocation<TRequest, TResponse> : MethodInvocation
     {
-        public IResiliencePolicyProvider<TResponse>? ResiliencePolicyProvider { get; set; }
+        public IResiliencePolicyProvider<TRequest, TResponse>? ResiliencePolicyProvider { get; set; }
 
         public FullMethodInvocation(Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType)
             : base(clientType, methodInfo, methodArguments, resultType)

@@ -28,7 +28,7 @@ namespace NClient.Customizers
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
             : base(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, methodResiliencePolicyProvider, serializerProvider)
         {
@@ -38,7 +38,7 @@ namespace NClient.Customizers
         }
 
         public INClientBuilderCustomizer<TInterface, TRequest, TResponse> WithResiliencePolicy(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider)
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             AddSpecificResiliencePolicyProvider(methodSelector, resiliencePolicyProvider);
             return this;

@@ -20,8 +20,7 @@ namespace NClient.Core.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
-        private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
-        private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
         public ResilienceHttpClient(
@@ -29,15 +28,13 @@ namespace NClient.Core.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
-            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger? logger)
         {
             _serializerProvider = serializerProvider;
             _clientHandler = clientHandler;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
-            _httpClientExceptionFactory = httpClientExceptionFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
@@ -50,15 +47,15 @@ namespace NClient.Core.Interceptors.HttpClients
                 .ConfigureAwait(false);
         }
 
-        private async Task<ResponseContext<TResponse>> ExecuteAttemptAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
+        private async Task<ResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", httpRequest.Method, httpRequest.Resource, httpRequest.Id);
 
             var serializer = _serializerProvider.Create();
             var client = _httpClientProvider.Create(serializer);
             
-            TRequest? request = default;
-            TResponse? response = default;
+            TRequest? request;
+            TResponse? response;
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", httpRequest.Id);
@@ -81,13 +78,11 @@ namespace NClient.Core.Interceptors.HttpClients
             catch (Exception e)
             {
                 _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", httpRequest.Id);
-                if (_httpClientExceptionFactory.TryCreate(request, response, e) is Exception httpClientException)
-                    throw httpClientException;
                 throw;
             }
             
             _logger?.LogDebug("Response received. Request id: '{requestId}'.", httpRequest.Id);
-            return new ResponseContext<TResponse>(response, methodInvocation);
+            return new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
         }
     }
 }

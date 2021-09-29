@@ -6,9 +6,9 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Resilience
 {
-    internal class DefaultResiliencePolicy : IResiliencePolicy<HttpResponseMessage>
+    internal class DefaultResiliencePolicy : IResiliencePolicy<HttpRequestMessage, HttpResponseMessage>
     {
-        public async Task<HttpResponseMessage> ExecuteAsync(Func<Task<ResponseContext<HttpResponseMessage>>> action)
+        public async Task<HttpResponseMessage> ExecuteAsync(Func<Task<ResponseContext<HttpRequestMessage, HttpResponseMessage>>> action)
         {
             var executionResult = await action.Invoke().ConfigureAwait(false);
             if (executionResult.MethodInvocation.ResultType == typeof(HttpResponseMessage))

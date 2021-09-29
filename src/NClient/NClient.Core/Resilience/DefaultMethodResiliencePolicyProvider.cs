@@ -6,34 +6,34 @@ using NClient.Core.Helpers;
 
 namespace NClient.Core.Resilience
 {
-    public class DefaultMethodResiliencePolicyProvider<TResponse> : IMethodResiliencePolicyProvider<TResponse>
+    public class DefaultMethodResiliencePolicyProvider<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
     {
-        private readonly IResiliencePolicyProvider<TResponse>? _defaultResiliencePolicyProvider;
-        private readonly IMethodResiliencePolicyProvider<TResponse>? _defaultMethodResiliencePolicyProvider;
-        private readonly IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TResponse>> _resiliencePolicyProviders;
+        private readonly IResiliencePolicyProvider<TRequest, TResponse>? _defaultResiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider<TRequest, TResponse>? _defaultMethodResiliencePolicyProvider;
+        private readonly IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> _resiliencePolicyProviders;
 
         public DefaultMethodResiliencePolicyProvider(
-            IMethodResiliencePolicyProvider<TResponse> defaultMethodResiliencePolicyProvider,
-            IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>? specificResiliencePolicyProviders = null)
+            IMethodResiliencePolicyProvider<TRequest, TResponse> defaultMethodResiliencePolicyProvider,
+            IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>? specificResiliencePolicyProviders = null)
         {
             _defaultMethodResiliencePolicyProvider = defaultMethodResiliencePolicyProvider;
-            _resiliencePolicyProviders = specificResiliencePolicyProviders ?? new Dictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>();
+            _resiliencePolicyProviders = specificResiliencePolicyProviders ?? new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>();
         }
 
         public DefaultMethodResiliencePolicyProvider(
-            IResiliencePolicyProvider<TResponse> defaultResiliencePolicyProvider,
-            IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>? specificResiliencePolicyProviders = null)
+            IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider,
+            IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>? specificResiliencePolicyProviders = null)
         {
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
             _resiliencePolicyProviders = specificResiliencePolicyProviders is null
-                ? new Dictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>(
+                ? new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(
                     new MethodInfoEqualityComparer())
-                : new Dictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>(
+                : new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(
                     specificResiliencePolicyProviders.ToDictionary(x => x.Key, x => x.Value),
                     new MethodInfoEqualityComparer());
         }
 
-        public IResiliencePolicy<TResponse> Create(MethodInfo methodInfo)
+        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo)
         {
             _resiliencePolicyProviders.TryGetValue(methodInfo, out var provider);
             return provider?.Create()

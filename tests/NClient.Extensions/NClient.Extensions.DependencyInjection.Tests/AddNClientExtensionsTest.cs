@@ -66,7 +66,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
-                    .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpResponseMessage>>()));
+                    .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

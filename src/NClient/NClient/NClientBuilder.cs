@@ -15,7 +15,7 @@ namespace NClient
             new SystemHttpClientProvider(), 
             new SystemHttpMessageBuilderProvider(), 
             new SystemHttpClientExceptionFactory(), 
-            new DefaultMethodResiliencePolicyProvider<HttpResponseMessage>(
+            new DefaultMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(
                 new DefaultResiliencePolicyProvider()),
             new SystemSerializerProvider())
         {

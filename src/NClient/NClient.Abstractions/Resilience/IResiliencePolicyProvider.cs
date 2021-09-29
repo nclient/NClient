@@ -3,11 +3,11 @@
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="IResiliencePolicy"/> instances.
     /// </summary>
-    public interface IResiliencePolicyProvider<TResponse>
+    public interface IResiliencePolicyProvider<TRequest, TResponse>
     {
         /// <summary>
         /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
         /// </summary>
-        IResiliencePolicy<TResponse> Create();
+        IResiliencePolicy<TRequest, TResponse> Create();
     }
 }

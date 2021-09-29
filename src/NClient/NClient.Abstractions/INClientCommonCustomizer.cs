@@ -31,20 +31,19 @@ namespace NClient.Abstractions
         /// Sets collection of <see cref="IClientHandler"/> used to handle HTTP requests and responses />.
         /// </summary>
         /// <param name="handlers">The collection of handlers.</param>
-        /// <param name="useDefaults">The flag for using default handlers. If you use false, the exception will not be thrown in case of failed HTTP status code.</param>
         TCustomizer WithCustomHandlers(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers);
 
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/>.
         /// </summary>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
-        TCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        TCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
         /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
-        TCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider);
+        TCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.

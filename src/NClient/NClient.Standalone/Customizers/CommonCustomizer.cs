@@ -19,8 +19,8 @@ namespace NClient.Customizers
         : INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
         where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
     {
-        private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TResponse>> _specificResiliencePolicyProviders;
-        private IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
+        private readonly ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> _specificResiliencePolicyProviders;
+        private IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
 
         protected IHttpClientProvider<TRequest, TResponse> HttpClientProvider;
         protected IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider;
@@ -34,11 +34,11 @@ namespace NClient.Customizers
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
-            _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TResponse>>();
+            _specificResiliencePolicyProviders = new ConcurrentDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>();
             
             HttpClientProvider = httpClientProvider;
             HttpMessageBuilderProvider = httpMessageBuilderProvider;
@@ -78,15 +78,15 @@ namespace NClient.Customizers
             return (this as TSpecificCustomizer)!;
         }
 
-        public TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TResponse> resiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             Ensure.IsNotNull(resiliencePolicyProvider, nameof(resiliencePolicyProvider));
 
-            Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider<TResponse>(resiliencePolicyProvider));
+            Interlocked.Exchange(ref _methodResiliencePolicyProvider, new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(resiliencePolicyProvider));
             return (this as TSpecificCustomizer)!;
         }
 
-        public TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider)
+        public TSpecificCustomizer WithResiliencePolicy(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
 
@@ -105,15 +105,15 @@ namespace NClient.Customizers
 
         public abstract TResult Build();
 
-        protected IMethodResiliencePolicyProvider<TResponse> CreateMethodResiliencePolicyProvider()
+        protected IMethodResiliencePolicyProvider<TRequest, TResponse> CreateMethodResiliencePolicyProvider()
         {
-            return new DefaultMethodResiliencePolicyProvider<TResponse>(
+            return new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(
                 _methodResiliencePolicyProvider,
                 _specificResiliencePolicyProviders);
         }
 
         protected void AddSpecificResiliencePolicyProvider<TInterface>(
-            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider)
+            Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             var func = methodSelector.Compile();
             var methodInfo = func.Invoke(default!).Method;

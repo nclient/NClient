@@ -11,14 +11,14 @@ namespace NClient.Resilience
         public AnyMethodResiliencePolicyProvider(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             : base(retryCount, sleepDurationProvider, resultPredicate)
         {
         }
 
-        public override IResiliencePolicy<HttpResponseMessage> Create(MethodInfo methodInfo)
+        public override IResiliencePolicy<HttpRequestMessage, HttpResponseMessage> Create(MethodInfo methodInfo)
         {
-            return new PollyResiliencePolicy<HttpResponseMessage>(Policy);
+            return new PollyResiliencePolicy<HttpRequestMessage, HttpResponseMessage>(Policy);
         }
     }
 }

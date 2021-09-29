@@ -19,8 +19,8 @@ namespace NClient.Core.Interceptors
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
         private readonly Uri _host;
-        private readonly IResilienceHttpClientProvider<TResponse> _resilienceHttpClientProvider;
-        private readonly IFullMethodInvocationProvider<TResponse> _fullMethodInvocationProvider;
+        private readonly IResilienceHttpClientProvider<TRequest, TResponse> _resilienceHttpClientProvider;
+        private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
@@ -31,8 +31,8 @@ namespace NClient.Core.Interceptors
 
         public ClientInterceptor(
             Uri host,
-            IResilienceHttpClientProvider<TResponse> resilienceHttpClientProvider,
-            IFullMethodInvocationProvider<TResponse> fullMethodInvocationProvider,
+            IResilienceHttpClientProvider<TRequest, TResponse> resilienceHttpClientProvider,
+            IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IHttpResponsePopulater httpResponsePopulater,
             IClientRequestExceptionFactory clientRequestExceptionFactory,

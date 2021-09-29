@@ -62,7 +62,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddNClientFactory(name: "factoryName", builder => builder
-                .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpResponseMessage>>()));
+                .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();

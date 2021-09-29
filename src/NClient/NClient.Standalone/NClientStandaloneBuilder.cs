@@ -24,7 +24,7 @@ namespace NClient
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
-        private readonly IMethodResiliencePolicyProvider<TResponse> _methodResiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientValidator _clientValidator;
         private readonly IClientInterceptorFactory _interfaceClientInterceptorFactory;
@@ -46,8 +46,8 @@ namespace NClient
                 httpClientProvider,
                 httpMessageBuilderProvider,
                 httpClientExceptionFactory,
-                new DefaultMethodResiliencePolicyProvider<TResponse>(
-                    new DefaultResiliencePolicyProvider<TResponse>()),
+                new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(
+                    new DefaultResiliencePolicyProvider<TRequest, TResponse>()),
                 serializerProvider)
         {
         }
@@ -56,7 +56,7 @@ namespace NClient
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));

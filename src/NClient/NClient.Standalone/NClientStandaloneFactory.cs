@@ -18,7 +18,7 @@ namespace NClient
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IHttpClientExceptionFactory<TRequest, TResponse> _httpClientExceptionFactory;
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IMethodResiliencePolicyProvider<TResponse>? _methodResiliencePolicyProvider;
+        private readonly IMethodResiliencePolicyProvider<TRequest, TResponse>? _methodResiliencePolicyProvider;
         private readonly ILoggerFactory? _loggerFactory;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace NClient
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
-            IResiliencePolicyProvider<TResponse>? resiliencePolicyProvider = null,
+            IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
             : this(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory, serializerProvider, methodResiliencePolicyProvider: GetOrDefault(resiliencePolicyProvider), loggerFactory)
         {
@@ -55,7 +55,7 @@ namespace NClient
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
-            IMethodResiliencePolicyProvider<TResponse>? methodResiliencePolicyProvider = null,
+            IMethodResiliencePolicyProvider<TRequest, TResponse>? methodResiliencePolicyProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
@@ -86,10 +86,10 @@ namespace NClient
                 .Build();
         }
 
-        private static DefaultMethodResiliencePolicyProvider<TResponse>? GetOrDefault(IResiliencePolicyProvider<TResponse>? resiliencePolicyProvider)
+        private static DefaultMethodResiliencePolicyProvider<TRequest, TResponse>? GetOrDefault(IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider)
         {
             return resiliencePolicyProvider is not null
-                ? new DefaultMethodResiliencePolicyProvider<TResponse>(resiliencePolicyProvider)
+                ? new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(resiliencePolicyProvider)
                 : null;
         }
     }

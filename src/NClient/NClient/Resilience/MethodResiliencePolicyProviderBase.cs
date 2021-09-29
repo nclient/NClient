@@ -12,21 +12,21 @@ using Polly.Wrap;
 
 namespace NClient.Resilience
 {
-    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider<HttpResponseMessage>
+    internal abstract class MethodResiliencePolicyProviderBase : IMethodResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly AttributeMapper _attributeMapper;
         
-        protected readonly AsyncPolicyWrap<ResponseContext<HttpResponseMessage>> Policy;
+        protected readonly AsyncPolicyWrap<ResponseContext<HttpRequestMessage, HttpResponseMessage>> Policy;
 
         protected MethodResiliencePolicyProviderBase(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
         {
             // TODO: It is better to pass it through the constructor, but how?
             _attributeMapper = new AttributeMapper();
             
-            var basePolicy = Policy<ResponseContext<HttpResponseMessage>>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessStatusCode)).Or<Exception>();
+            var basePolicy = Policy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(resultPredicate ?? (x => !x.Response.IsSuccessStatusCode)).Or<Exception>();
 
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount,
@@ -55,6 +55,6 @@ namespace NClient.Resilience
                 .Single(x => x is MethodAttribute)!;
         }
 
-        public abstract IResiliencePolicy<HttpResponseMessage> Create(MethodInfo methodInfo);
+        public abstract IResiliencePolicy<HttpRequestMessage, HttpResponseMessage> Create(MethodInfo methodInfo);
     }
 }

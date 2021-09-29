@@ -41,8 +41,8 @@ namespace NClient.Core.Validation
                     new StubHttpClientExceptionFactory(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
-                    new DefaultMethodResiliencePolicyProvider<HttpResponse>(
-                        new DefaultResiliencePolicyProvider<HttpResponse>()));
+                    new DefaultMethodResiliencePolicyProvider<HttpRequest, HttpResponse>(
+                        new DefaultResiliencePolicyProvider<HttpRequest, HttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

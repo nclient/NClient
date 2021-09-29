@@ -20,13 +20,13 @@ namespace NClient
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> WithResiliencePolicy<TInterface>(
             this INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> clientBuilderCustomizer,
-            Expression<Func<TInterface, Delegate>> methodSelector, IAsyncPolicy<ResponseContext<HttpResponseMessage>> asyncPolicy)
+            Expression<Func<TInterface, Delegate>> methodSelector, IAsyncPolicy<ResponseContext<HttpRequestMessage, HttpResponseMessage>> asyncPolicy)
             where TInterface : class
         {
             Ensure.IsNotNull(clientBuilderCustomizer, nameof(clientBuilderCustomizer));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
 
-            return clientBuilderCustomizer.WithResiliencePolicy(methodSelector, new PollyResiliencePolicyProvider<HttpResponseMessage>(asyncPolicy));
+            return clientBuilderCustomizer.WithResiliencePolicy(methodSelector, new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(asyncPolicy));
         }
     }
 }

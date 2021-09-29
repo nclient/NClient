@@ -4,9 +4,9 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Resilience
 {
-    internal class DefaultResiliencePolicy<TResponse> : IResiliencePolicy<TResponse>
+    internal class DefaultResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {
-        public async Task<TResponse> ExecuteAsync(Func<Task<ResponseContext<TResponse>>> action)
+        public async Task<TResponse> ExecuteAsync(Func<Task<ResponseContext<TRequest, TResponse>>> action)
         {
             var executionResult = await action.Invoke().ConfigureAwait(false);
             return executionResult.Response;

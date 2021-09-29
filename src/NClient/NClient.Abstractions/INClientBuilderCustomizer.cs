@@ -14,7 +14,7 @@ namespace NClient.Abstractions
         /// </summary>
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
-        INClientBuilderCustomizer<TInterface, TRequest, TResponse> WithResiliencePolicy(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        INClientBuilderCustomizer<TInterface, TRequest, TResponse> WithResiliencePolicy(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.

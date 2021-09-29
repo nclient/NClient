@@ -31,8 +31,8 @@ namespace NClient
                 httpClientProvider,
                 httpMessageBuilderProvider,
                 httpClientExceptionFactory,
-                new DefaultMethodResiliencePolicyProvider<TResponse>(
-                    new DefaultResiliencePolicyProvider<TResponse>()),
+                new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(
+                    new DefaultResiliencePolicyProvider<TRequest, TResponse>()),
                 serializerProvider)
         {
         }
@@ -41,7 +41,7 @@ namespace NClient
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
-            IMethodResiliencePolicyProvider<TResponse> methodResiliencePolicyProvider,
+            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));

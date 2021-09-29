@@ -20,7 +20,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="methodCall">The client method call.</param>
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        HttpResponse GetHttpResponse<TResponse>(Expression<Action<T>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        HttpResponse GetHttpResponse<TRequest, TResponse>(Expression<Action<T>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
         
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -35,7 +35,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TError">The type to deserialize the response content used when returning a failed HTTP status code.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        HttpResponseWithError<TError> GetHttpResponse<TError, TResponse>(Expression<Action<T>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        HttpResponseWithError<TError> GetHttpResponse<TError, TRequest, TResponse>(Expression<Action<T>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -51,7 +51,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TResult">The type to deserialize the response content.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        HttpResponse<TResult> GetHttpResponse<TResult, TResponse>(Expression<Func<T, TResult>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        HttpResponse<TResult> GetHttpResponse<TResult, TRequest, TResponse>(Expression<Func<T, TResult>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
         
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -69,7 +69,7 @@ namespace NClient.Abstractions.Clients
         /// <typeparam name="TResult">The type to deserialize the response content.</typeparam>
         /// <typeparam name="TError">The type to deserialize the response content used when returning a failed HTTP status code.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        HttpResponseWithError<TResult, TError> GetHttpResponse<TResult, TError, TResponse>(Expression<Func<T, TResult>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        HttpResponseWithError<TResult, TError> GetHttpResponse<TResult, TError, TRequest, TResponse>(Expression<Func<T, TResult>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -83,7 +83,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="methodCall">The client method to call.</param>
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        Task<HttpResponse> GetHttpResponse<TResponse>(Expression<Func<T, Task>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        Task<HttpResponse> GetHttpResponse<TRequest, TResponse>(Expression<Func<T, Task>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -99,7 +99,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TError">The type to deserialize the response content used when returning a failed HTTP status code.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        Task<HttpResponseWithError<TError>> GetHttpResponse<TError, TResponse>(Expression<Func<T, Task>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        Task<HttpResponseWithError<TError>> GetHttpResponse<TError, TRequest, TResponse>(Expression<Func<T, Task>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -115,7 +115,7 @@ namespace NClient.Abstractions.Clients
         /// <param name="resiliencePolicyProvider">The specific resilience policy provider for calling the method.</param>
         /// <typeparam name="TResult">The type to deserialize the response content.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        Task<HttpResponse<TResult>> GetHttpResponse<TResult, TResponse>(Expression<Func<T, Task<TResult>>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        Task<HttpResponse<TResult>> GetHttpResponse<TResult, TRequest, TResponse>(Expression<Func<T, Task<TResult>>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
 
         /// <summary>
         /// Returns HTTP response of the server. 
@@ -133,6 +133,6 @@ namespace NClient.Abstractions.Clients
         /// <typeparam name="TResult">The type to deserialize the response content.</typeparam>
         /// <typeparam name="TError">The type to deserialize the response content used when returning a failed HTTP status code.</typeparam>
         /// <typeparam name="TResponse">The type of response that is used in the HTTP client implementation.</typeparam>
-        Task<HttpResponseWithError<TResult, TError>> GetHttpResponse<TResult, TError, TResponse>(Expression<Func<T, Task<TResult>>> methodCall, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        Task<HttpResponseWithError<TResult, TError>> GetHttpResponse<TResult, TError, TRequest, TResponse>(Expression<Func<T, Task<TResult>>> methodCall, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
     }
 }

@@ -13,6 +13,6 @@ namespace NClient.Abstractions
         /// <param name="methodSelector">The method to apply the policy to.</param>
         /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
         /// <typeparam name="TInterface">The type of client interface.</typeparam>
-        INClientFactoryCustomizer<TRequest, TResponse> WithResiliencePolicy<TInterface>(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TResponse> resiliencePolicyProvider);
+        INClientFactoryCustomizer<TRequest, TResponse> WithResiliencePolicy<TInterface>(Expression<Func<TInterface, Delegate>> methodSelector, IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
     }
 }

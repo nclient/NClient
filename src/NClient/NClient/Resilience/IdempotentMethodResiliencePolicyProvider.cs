@@ -12,12 +12,12 @@ namespace NClient.Resilience
         public IdempotentMethodResiliencePolicyProvider(
             int retryCount = 2,
             Func<int, TimeSpan>? sleepDurationProvider = null,
-            Func<ResponseContext<HttpResponseMessage>, bool>? resultPredicate = null)
+            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? resultPredicate = null)
             : base(retryCount, sleepDurationProvider, resultPredicate)
         {
         }
 
-        public override IResiliencePolicy<HttpResponseMessage> Create(MethodInfo methodInfo)
+        public override IResiliencePolicy<HttpRequestMessage, HttpResponseMessage> Create(MethodInfo methodInfo)
         {
             var isIdempotentMethod = GetMethodAttributeFor(methodInfo) switch
             {
@@ -26,7 +26,7 @@ namespace NClient.Resilience
             };
 
             return isIdempotentMethod
-                ? new PollyResiliencePolicy<HttpResponseMessage>(Policy)
+                ? new PollyResiliencePolicy<HttpRequestMessage, HttpResponseMessage>(Policy)
                 : new DefaultResiliencePolicy();
         }
     }
