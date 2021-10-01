@@ -11,23 +11,6 @@ namespace NClient.Providers.Resilience.Polly
     public static class CommonCustomizerExtensions
     {
         /// <summary>
-        /// Sets Polly based <see cref="IResiliencePolicyProvider"/> used to create instance of <see cref="IResiliencePolicy"/>.
-        /// </summary>
-        /// <param name="commonCustomizer"></param>
-        /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
-        public static TCustomizer WithPollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
-            IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
-        {
-            Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
-            Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
-
-            return commonCustomizer.WithForceResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
-        }
-
-        /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
         /// <param name="commonCustomizer"></param>
@@ -41,6 +24,22 @@ namespace NClient.Providers.Resilience.Polly
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
             return commonCustomizer.WithForceResilience(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+        }
+
+        /// <summary>
+        /// Sets resilience policy provider for all HTTP methods.
+        /// </summary>
+        /// <param name="commonCustomizer"></param>
+        /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
+        public static TCustomizer WithForcePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+            IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
+            
+            return commonCustomizer.WithForceResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
         }
 
         /// <summary>
@@ -66,6 +65,25 @@ namespace NClient.Providers.Resilience.Polly
                     onFallbackAsync: settings.OnFallbackAsync
                 )));
         }
+        
+        /// <summary>
+        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// </summary>
+        /// <param name="commonCustomizer"></param>
+        /// <param name="safeMethodPolicy">The settings for resilience policy provider for safe methods.</param>
+        /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
+        public static TCustomizer WithSafePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+            IAsyncPolicy<ResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
+            
+            return commonCustomizer.WithSafeResilience(
+                safeMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy), 
+                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
+        }
 
         /// <summary>
         /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
@@ -89,6 +107,25 @@ namespace NClient.Providers.Resilience.Polly
                     resultPredicate: settings.ResultPredicate,
                     onFallbackAsync: settings.OnFallbackAsync
                 )));
+        }        
+        
+        /// <summary>
+        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
+        /// </summary>
+        /// <param name="commonCustomizer"></param>
+        /// <param name="idempotentMethodPolicy">The settings for resilience policy provider for idempotent methods.</param>
+        /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
+        public static TCustomizer WithIdempotentPollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+            IAsyncPolicy<ResponseContext<TRequest, TResponse>> idempotentMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
+            where TInterface : class
+        {
+            Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
+            
+            return commonCustomizer.WithIdempotentResilience(
+                idempotentMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy), 
+                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
         }
     }
 }
