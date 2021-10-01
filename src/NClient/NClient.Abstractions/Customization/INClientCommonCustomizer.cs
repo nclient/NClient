@@ -7,8 +7,8 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Abstractions.Customization
 {
-    public interface INClientCommonCustomizer<TConcreateCustomizer, TResult, TRequest, TResponse>
-        where TConcreateCustomizer : INClientCommonCustomizer<TConcreateCustomizer, TResult, TRequest, TResponse>
+    public interface INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
+        where TSpecificCustomizer : INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
     {
         /// <summary>
         /// Sets custom <see cref="IHttpClientProvider"/> used to create instances of <see cref="IHttpClient"/>.
@@ -16,7 +16,7 @@ namespace NClient.Abstractions.Customization
         /// <param name="httpClientProvider">The provider that can create instances of <see cref="IHttpClient"/>.</param>
         /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
         /// <param name="httpClientExceptionFactory">The factory that can create instances of <see cref="HttpClientException"/>.</param>
-        TConcreateCustomizer UsingCustomHttpClient(
+        TSpecificCustomizer UsingCustomHttpClient(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider, 
             IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory);
@@ -25,45 +25,45 @@ namespace NClient.Abstractions.Customization
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
-        TConcreateCustomizer UsingCustomSerializer(ISerializerProvider serializerProvider);
+        TSpecificCustomizer UsingCustomSerializer(ISerializerProvider serializerProvider);
 
         /// <summary>
         /// Sets collection of <see cref="IClientHandler"/> used to handle HTTP requests and responses />.
         /// </summary>
         /// <param name="handlers">The collection of handlers.</param>
-        TConcreateCustomizer WithCustomHandling(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers);
+        TSpecificCustomizer WithCustomHandling(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers);
         
         // TODO: doc
-        TConcreateCustomizer WithoutHandling();
+        TSpecificCustomizer WithoutHandling();
         
         // TODO: doc
-        TConcreateCustomizer WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
-        TConcreateCustomizer WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-        TConcreateCustomizer WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
+        TSpecificCustomizer WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
+        TSpecificCustomizer WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
+        TSpecificCustomizer WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
 
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
         /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
-        TConcreateCustomizer WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
+        TSpecificCustomizer WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         // TODO: doc
-        TConcreateCustomizer WithoutResilience();
+        TSpecificCustomizer WithoutResilience();
         
         /// <summary>
         /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
-        TConcreateCustomizer WithLogging(ILoggerFactory loggerFactory);
+        TSpecificCustomizer WithLogging(ILoggerFactory loggerFactory);
         
         /// <summary>
         /// Sets instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
-        TConcreateCustomizer WithLogging(ILogger logger);
+        TSpecificCustomizer WithLogging(ILogger logger);
         
         // TODO: doc
-        TConcreateCustomizer WithoutLogging();
+        TSpecificCustomizer WithoutLogging();
 
         /// <summary>
         /// Creates <see cref="TResult"/>.
