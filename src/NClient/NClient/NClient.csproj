@@ -25,7 +25,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj" />
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj" />
         <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
         <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
         <ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
-using NClient.Providers.Serialization.System;
+using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 using WireMock.Matchers;
@@ -24,7 +24,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Body = new() { Id = 1, Value = 2 };
-        private static readonly ISerializer Serializer = new SystemSerializerProvider().Create();
+        private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create();
         private static readonly HttpHeader AcceptHeader = new("Accept", "application/json");
         private static readonly HttpHeader ServerHeader = new("Server", "Kestrel");
         private static readonly HttpHeader EmptyContentLengthHeader = new("Content-Length", "0");

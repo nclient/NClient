@@ -2,19 +2,19 @@
 using NClient.Common.Helpers;
 using Newtonsoft.Json;
 
-namespace NClient.Providers.Serialization.Newtonsoft
+namespace NClient.Providers.Serialization.Json.Newtonsoft
 {
     /// <summary>
     /// The Newtonsoft.Json based provider for a component that can create <see cref="ISerializer"/> instances.
     /// </summary>
-    public class NewtonsoftSerializerProvider : ISerializerProvider
+    public class NewtonsoftJsonSerializerProvider : ISerializerProvider
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         /// <summary>
         /// Creates the Newtonsoft.Json based serializer provider.
         /// </summary>
-        public NewtonsoftSerializerProvider()
+        public NewtonsoftJsonSerializerProvider()
         {
             _jsonSerializerSettings = new JsonSerializerSettings();
         }
@@ -23,7 +23,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
         /// Creates the Newtonsoft.Json based serializer provider.
         /// </summary>
         /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
-        public NewtonsoftSerializerProvider(JsonSerializerSettings jsonSerializerSettings)
+        public NewtonsoftJsonSerializerProvider(JsonSerializerSettings jsonSerializerSettings)
         {
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
 
@@ -32,7 +32,7 @@ namespace NClient.Providers.Serialization.Newtonsoft
 
         public ISerializer Create()
         {
-            return new NewtonsoftSerializer(_jsonSerializerSettings);
+            return new NewtonsoftJsonSerializer(_jsonSerializerSettings);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace NClient
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
-            return commonCustomizer.UsingSystemSerializer();
+            return commonCustomizer.UsingSystemJsonSerializer();
         }
         
         /// <summary>

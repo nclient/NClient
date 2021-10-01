@@ -3,15 +3,15 @@ using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using Newtonsoft.Json;
 
-namespace NClient.Providers.Serialization.Newtonsoft
+namespace NClient.Providers.Serialization.Json.Newtonsoft
 {
-    internal class NewtonsoftSerializer : ISerializer
+    internal class NewtonsoftJsonSerializer : ISerializer
     {
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         public string ContentType { get; } = "application/json";
 
-        public NewtonsoftSerializer(JsonSerializerSettings jsonSerializerSettings)
+        public NewtonsoftJsonSerializer(JsonSerializerSettings jsonSerializerSettings)
         {
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
 

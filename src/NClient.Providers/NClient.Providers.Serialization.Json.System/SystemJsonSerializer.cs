@@ -3,15 +3,15 @@ using System.Text.Json;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.System
+namespace NClient.Providers.Serialization.Json.System
 {
-    internal class SystemSerializer : ISerializer
+    internal class SystemJsonSerializer : ISerializer
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public string ContentType { get; } = "application/json";
 
-        public SystemSerializer(JsonSerializerOptions jsonSerializerOptions)
+        public SystemJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 

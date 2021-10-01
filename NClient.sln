@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Sandbox.ThirdPartyS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.HttpClient.System", "src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj", "{47A43396-24E7-41E3-BA94-041EC1F82494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.System", "src\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj", "{66DF531E-A4A7-4645-A99E-3C9BC78F6000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Json.System", "src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj", "{66DF531E-A4A7-4645-A99E-3C9BC78F6000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Newtonsoft", "src\NClient.Providers\NClient.Providers.Serialization.Newtonsoft\NClient.Providers.Serialization.Newtonsoft.csproj", "{094AD70B-2B16-49FA-B510-608BA26DAE2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Json.Newtonsoft", "src\NClient.Providers\NClient.Providers.Serialization.Json.Newtonsoft\NClient.Providers.Serialization.Json.Newtonsoft.csproj", "{094AD70B-2B16-49FA-B510-608BA26DAE2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Common", "src\NClient\NClient.Common\NClient.Common.csproj", "{BD55F8A3-3155-44F2-A31A-3311CFB6733F}"
 EndProject

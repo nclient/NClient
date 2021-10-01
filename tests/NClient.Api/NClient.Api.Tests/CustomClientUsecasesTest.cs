@@ -18,7 +18,7 @@ namespace NClient.Api.Tests
             var client = new NClientStandaloneBuilder<IRestRequest, IRestResponse>()
                 .Use<IBasicClient>(host: "")
                 .UsingRestSharpHttpClient()
-                .UsingNewtonsoftSerializer()
+                .UsingNewtonsoftJsonSerializer()
                 .WithoutHandling()
                 .WithCustomResilience(customizer => customizer
                     .ForMethod(x => (Func<int, Task<int>>)x.GetAsync)

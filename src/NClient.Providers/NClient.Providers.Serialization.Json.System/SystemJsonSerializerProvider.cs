@@ -2,19 +2,19 @@
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.System
+namespace NClient.Providers.Serialization.Json.System
 {
     /// <summary>
     /// The System.Text.Json based provider for a component that can create <see cref="ISerializer"/> instances.
     /// </summary>
-    public class SystemSerializerProvider : ISerializerProvider
+    public class SystemJsonSerializerProvider : ISerializerProvider
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         /// <summary>
         /// Creates the System.Text.Json based serializer provider.
         /// </summary>
-        public SystemSerializerProvider()
+        public SystemJsonSerializerProvider()
         {
             _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
@@ -23,7 +23,7 @@ namespace NClient.Providers.Serialization.System
         /// Creates the System.Text.Json based serializer provider.
         /// </summary>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
-        public SystemSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
+        public SystemJsonSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
@@ -32,7 +32,7 @@ namespace NClient.Providers.Serialization.System
 
         public ISerializer Create()
         {
-            return new SystemSerializer(_jsonSerializerOptions);
+            return new SystemJsonSerializer(_jsonSerializerOptions);
         }
     }
 }
