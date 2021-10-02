@@ -10,18 +10,18 @@ namespace NClient.AspNetCore.Controllers
 {
     internal interface IVirtualControllerAttributeBuilder
     {
-        CustomAttributeBuilder Build(Attribute attribute);
+        CustomAttributeBuilder? TryBuild(Attribute attribute);
     }
 
     internal class VirtualControllerAttributeBuilder : IVirtualControllerAttributeBuilder
     {
-        public CustomAttributeBuilder Build(Attribute attribute)
+        public CustomAttributeBuilder? TryBuild(Attribute attribute)
         {
             return attribute switch
             {
                 IRouteTemplateProvider x => BuildRouteTemplateProviderAttribute(x),
                 ApiVersionsBaseAttribute x => BuildApiVersionsBaseAttribute(x),
-                _ => BuildCustomAttribute(attribute)
+                _ => TryBuildCustomAttribute(attribute)
             };
         }
 
@@ -42,14 +42,28 @@ namespace NClient.AspNetCore.Controllers
             return BuildAttribute(attributeCtor, attributeCtorParamValues, attribute);
         }
 
+        private static CustomAttributeBuilder? TryBuildCustomAttribute(Attribute attribute)
+        {
+            try
+            {
+                return BuildCustomAttribute(attribute);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
         {
             var attributeCtor = attribute.GetType().GetConstructors().Last();
             var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name!));
-            var attributeCtorParamValues = attribute.GetType()
-                .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
+            var attributeCtorParamValues = GetProperties(attribute)
                 .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
                 .Select(x => x.GetValue(attribute))
+                .Concat(GetFields(attribute)
+                    .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
+                    .Select(x => x.GetValue(attribute)))
                 .ToArray();
 
             return BuildAttribute(attributeCtor, attributeCtorParamValues!, attribute);
@@ -58,7 +72,7 @@ namespace NClient.AspNetCore.Controllers
         private static CustomAttributeBuilder BuildAttribute(
             ConstructorInfo attributeCtor, object[] attributeCtorParamValues, Attribute attribute)
         {
-            var attributeProps = GetProperties(attribute);
+            var attributeProps = GetCanWriteProperties(attribute);
             var attributePropValues = attributeProps.Select(x => x.GetValue(attribute)).ToArray();
             var attributeFields = GetFields(attribute);
             var attributeFieldValues = attributeFields.Select(x => x.GetValue(attribute)).ToArray();
@@ -71,12 +85,18 @@ namespace NClient.AspNetCore.Controllers
                 attributeFields,
                 attributeFieldValues);
         }
+        
+        private static PropertyInfo[] GetCanWriteProperties(object obj)
+        {
+            return GetProperties(obj)
+                .Where(x => x.CanWrite)
+                .ToArray();
+        }
 
         private static PropertyInfo[] GetProperties(object obj)
         {
             return obj.GetType()
                 .GetProperties(bindingAttr: BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.CanWrite)
                 .ToArray();
         }
 

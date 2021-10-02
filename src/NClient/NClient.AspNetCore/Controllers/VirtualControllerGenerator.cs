@@ -69,57 +69,78 @@ namespace NClient.AspNetCore.Controllers
 
             typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
 
-            var interfaceAttributes = GetAttributes(nclientController.InterfaceType);
-            foreach (var interfaceAttribute in interfaceAttributes)
+            var interfaceAttributes = GetInterfaceAttributes(nclientController.InterfaceType);
+            var controllerAttributes = GetControllerAttributes(nclientController.ControllerType);
+            foreach (var virtualControllerAttribute in interfaceAttributes.Concat(controllerAttributes))
             {
-                typeBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceAttribute));
+                if (_virtualControllerAttributeBuilder.TryBuild(virtualControllerAttribute) is { } attributeBuilder)
+                    typeBuilder.SetCustomAttribute(attributeBuilder);
             }
 
+            var methodEqualityComparer = new MethodInfoEqualityComparer();
             var interfaceMethods = nclientController.InterfaceType.GetMethods();
-            foreach (var interfaceMethod in interfaceMethods)
+            var controllerMethods = nclientController.ControllerType.GetMethods();
+            var virtualControllerMethods = interfaceMethods
+                .Select(im => (MethodFromInterface: im, MethodFromController: controllerMethods.Single(cm => methodEqualityComparer.Equals(im, cm))))
+                .ToArray();
+            foreach (var (interfaceMethod, controllerMethod) in virtualControllerMethods)
             {
-                var methodBuilder = DefineMethod(typeBuilder, interfaceMethod);
+                var methodBuilder = DefineMethod(typeBuilder, interfaceMethod, controllerMethod);
 
-                var interfaceMethodAttributes = GetAttributes(interfaceMethod);
-                foreach (var interfaceMethodAttribute in interfaceMethodAttributes)
+                var interfaceMethodAttributes = GetInterfaceAttributes(interfaceMethod);
+                var controllerMethodAttributes = GetControllerAttributes(controllerMethod);
+                foreach (var virtualControllerMethodAttribute in interfaceMethodAttributes.Concat(controllerMethodAttributes))
                 {
-                    methodBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(interfaceMethodAttribute));
+                    if (_virtualControllerAttributeBuilder.TryBuild(virtualControllerMethodAttribute) is { } attributeBuilder)
+                        methodBuilder.SetCustomAttribute(attributeBuilder);
                 }
             }
 
             return new VirtualControllerInfo(typeBuilder.CreateTypeInfo()!, nclientController.ControllerType);
         }
 
-        private Attribute[] GetAttributes(ICustomAttributeProvider attributeProvider)
+        private Attribute[] GetInterfaceAttributes(ICustomAttributeProvider attributeProvider)
         {
-            var attributes = attributeProvider.GetCustomAttributes(inherit: false).Cast<Attribute>();
+            var attributes = attributeProvider.GetCustomAttributes(inherit: true).Cast<Attribute>();
             return attributes
-                .Select(x =>
-                {
-                    if (x.GetType().Assembly.FullName!.StartsWith("Microsoft.AspNetCore"))
-                        throw _controllerValidationExceptionFactory.UsedAspNetCoreAttributeInControllerInterface(x.GetType().FullName!);
-                    return _attributeMapper.TryMap(x);
-                })
-                .Where(x => x is not null)
+                .Select(x => _attributeMapper.TryMap(x))
+                .ToArray()!;
+        }
+        
+        private Attribute[] GetControllerAttributes(ICustomAttributeProvider attributeProvider)
+        {
+            var attributes = attributeProvider.GetCustomAttributes(inherit: true).Cast<Attribute>();
+            return attributes
+                .Where(x => x?.GetType() != typeof(ControllerAttribute))
                 .ToArray()!;
         }
 
-        private MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo methodInfo)
+        private MethodBuilder DefineMethod(TypeBuilder typeBuilder, MethodInfo interfaceMethod, MethodInfo controllerMethod)
         {
-            var methodParams = methodInfo.GetParameters();
+            var interfaceMethodParams = interfaceMethod.GetParameters();
+            var controllerMethodParams = controllerMethod.GetParameters();
             var methodBuilder = typeBuilder.DefineMethod(
-                methodInfo.Name,
+                interfaceMethod.Name,
                 attributes: MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual,
-                methodInfo.ReturnType,
-                methodParams.Select(x => x.ParameterType).ToArray());
+                interfaceMethod.ReturnType,
+                interfaceMethodParams.Select(x => x.ParameterType).ToArray());
 
-            foreach (var (param, index) in methodParams.Select((x, i) => (Param: x, Index: i)))
+            var virtualControllerMethodParams = interfaceMethodParams
+                .Zip(controllerMethodParams, (x, y) => (InterfaceMethodParams: x, ControllerMethodParams: y))
+                .Select((x, i) => (Param: x, Index: i))
+                .ToArray();
+            
+            foreach (var (paramPair, index) in virtualControllerMethodParams)
             {
-                var paramBuilder = methodBuilder.DefineParameter(index + 1, param.Attributes, param.Name);
-                var paramAttributes = GetAttributes(param);
-                foreach (var paramAttribute in paramAttributes)
+                var (interfaceMethodParam, controllerMethodParam) = paramPair;
+                var paramBuilder = methodBuilder.DefineParameter(index + 1, interfaceMethodParam.Attributes, interfaceMethodParam.Name);
+                
+                var interfaceMethodParamAttributes = GetInterfaceAttributes(interfaceMethodParam);
+                var controllerMethodParamAttributes = GetControllerAttributes(controllerMethodParam);
+                foreach (var virtualControllerParamAttribute in interfaceMethodParamAttributes.Concat(controllerMethodParamAttributes))
                 {
-                    paramBuilder.SetCustomAttribute(_virtualControllerAttributeBuilder.Build(paramAttribute));
+                    if (_virtualControllerAttributeBuilder.TryBuild(virtualControllerParamAttribute) is { } attributeBuilder)
+                        paramBuilder.SetCustomAttribute(attributeBuilder);
                 }
             }
 
