@@ -4,6 +4,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions.Clients
 {
+    // TODO: doc
     public interface IResilienceNClient<T>
     {
         /// <summary>

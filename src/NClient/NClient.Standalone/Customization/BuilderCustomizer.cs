@@ -44,6 +44,8 @@ namespace NClient.Customization
 
         public override TClient Build()
         {
+            Context.EnsureComplete();
+            
             var interceptor = _clientInterceptorFactory.Create(
                 new Uri(Context.Host),
                 Context.HttpClientProvider,

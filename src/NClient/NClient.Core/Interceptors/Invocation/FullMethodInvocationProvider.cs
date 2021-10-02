@@ -36,9 +36,13 @@ namespace NClient.Core.Interceptors.Invocation
             ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
 
             var innerInvocation = keepDataInterceptor.Invocation!;
-            // TODO: Magic
-            var resiliencePolicyProvider = invocation.Arguments.Length == 2 
-                ? (IResiliencePolicyProvider<TRequest, TResponse>?)invocation.Arguments[1]
+
+            var resiliencePolicyArgumentIndex = invocation.Method.GetParameters()
+                .Select((param, index) => new { Param = param, Index = index })
+                .SingleOrDefault(x => x.Param.ParameterType == typeof(IResiliencePolicyProvider<TRequest, TResponse>))?
+                .Index;
+            var resiliencePolicyProvider = resiliencePolicyArgumentIndex.HasValue
+                ? (IResiliencePolicyProvider<TRequest, TResponse>?)invocation.Arguments[resiliencePolicyArgumentIndex.Value]
                 : null;
 
             return BuildInvocation(interfaceType, resultType, innerInvocation, resiliencePolicyProvider);

@@ -6,11 +6,14 @@ using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Exceptions.Factories;
 
 namespace NClient.Customization.Context
 {
     public class CustomizerContext<TRequest, TResponse>
     {
+        private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
+        
         public string Host { get; private set; } = null!;
 
         public IHttpClientProvider<TRequest, TResponse> HttpClientProvider { get; private set; } = null!;
@@ -32,6 +35,7 @@ namespace NClient.Customization.Context
         {
             ClientHandlers = new List<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
+            _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
         public void SetHost(string host)
@@ -115,7 +119,13 @@ namespace NClient.Customization.Context
 
         public CustomizerContext<TRequest, TResponse> EnsureComplete()
         {
-            // TODO: props validation
+            if (Host is null) 
+                throw _clientBuildExceptionFactory.HostIsNotSet();
+            if (HttpClientProvider is null || HttpMessageBuilderProvider is null || HttpClientExceptionFactory is null)
+                throw _clientBuildExceptionFactory.HttpClientIsNotSet();
+            if (SerializerProvider is null)
+                throw _clientBuildExceptionFactory.SerializerIsNotSet();
+            
             return this;
         }
     }
