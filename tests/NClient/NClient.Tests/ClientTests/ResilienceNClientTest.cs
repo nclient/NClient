@@ -30,7 +30,7 @@ namespace NClient.Tests.ClientTests
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -44,7 +44,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var noOpPolicy = new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>());
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
 
             returnClient.Invoking(x => x.AsResilient().Invoke(client => client.Get(1), noOpPolicy))
@@ -58,7 +58,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithForceResilience()
                 .Build();
 
@@ -74,7 +74,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithForceResilience()
                 .Build();
 
@@ -89,7 +89,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithForceResilience()
                 .Build();
 
@@ -103,7 +103,7 @@ namespace NClient.Tests.ClientTests
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(customizer => customizer
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
@@ -120,7 +120,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1 };
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(customizer => customizer
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
@@ -138,7 +138,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithSafePollyResilience(new DefaultResiliencePolicySettings
                 {
                     SleepDuration = _ => 0.Seconds()
@@ -157,7 +157,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithSafePollyResilience(new DefaultResiliencePolicySettings
                 {
                     SleepDuration = _ => 0.Seconds()
@@ -176,7 +176,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
                 {
                     SleepDuration = _ => 0.Seconds()
@@ -195,7 +195,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
-                .Use<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
                 {
                     SleepDuration = _ => 0.Seconds()

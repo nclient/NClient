@@ -12,12 +12,12 @@ namespace NClient
     /// </summary>
     public class NClientBuilder : INClientBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        public INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> Use<TInterface>(string host) where TInterface : class
+        public INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> For<TInterface>(string host) where TInterface : class
         {
             return new NClientStandaloneBuilder<HttpRequestMessage, HttpResponseMessage>(
                     customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
                     defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
-                .Use<TInterface>(host)
+                .For<TInterface>(host)
                 .UsingHttpClient()
                 .UsingSerializer()
                 .WithoutHandling()

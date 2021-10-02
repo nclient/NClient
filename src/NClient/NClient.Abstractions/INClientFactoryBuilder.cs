@@ -7,6 +7,6 @@ namespace NClient.Abstractions
     /// </summary>
     public interface INClientFactoryBuilder<TRequest, TResponse>
     {
-        INClientFactoryCustomizer<TRequest, TResponse> Use();
+        INClientFactoryCustomizer<TRequest, TResponse> For();
     }
 }

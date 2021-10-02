@@ -17,7 +17,7 @@ namespace NClient.Tests.ClientTests
         {
             _syncApiMockFactory = new SyncApiMockFactory(port: 5012);
             _syncClient = new NClientBuilder()
-                .Use<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())
+                .For<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

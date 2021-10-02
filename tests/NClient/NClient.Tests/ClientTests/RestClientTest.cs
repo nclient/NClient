@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
         {
             _restApiMockFactory = new RestApiMockFactory(port: 5010);
             _restClient = new NClientBuilder()
-                .Use<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
+                .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 

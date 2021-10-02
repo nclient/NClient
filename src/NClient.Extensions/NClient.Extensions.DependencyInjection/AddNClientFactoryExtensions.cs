@@ -67,7 +67,7 @@ namespace NClient.Extensions.DependencyInjection
         private static INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> CreateCustomizer(IServiceProvider serviceProvider, string? httpClientName)
         {
             return new NClientFactoryBuilder()
-                .Use()
+                .For()
                 .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }

@@ -19,7 +19,7 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            return new NClientBuilder().Use<TInterface>(host);
+            return new NClientBuilder().For<TInterface>(host);
         }
     }
 }

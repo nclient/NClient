@@ -26,7 +26,7 @@ namespace NClient
             Ensure.IsNotNull(host, nameof(host));
 
             return new NClientStandaloneBuilder<TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider)
-                .Use<TInterface>(host)
+                .For<TInterface>(host)
                 .Build();
         }
     }

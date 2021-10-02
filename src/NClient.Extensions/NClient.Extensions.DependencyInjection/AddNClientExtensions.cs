@@ -137,7 +137,7 @@ namespace NClient.Extensions.DependencyInjection
             where TInterface : class
         {
             return new NClientBuilder()
-                .Use<TInterface>(host)
+                .For<TInterface>(host)
                 .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }

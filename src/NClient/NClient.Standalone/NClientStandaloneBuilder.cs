@@ -30,7 +30,7 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
-        public INClientBuilderCustomizer<TInterface, TRequest, TResponse> Use<TInterface>(string host)
+        public INClientBuilderCustomizer<TInterface, TRequest, TResponse> For<TInterface>(string host)
             where TInterface : class
         {
             Ensure.IsNotNull(host, nameof(host));
