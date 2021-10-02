@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Customization;
 using NClient.Common.Helpers;
+using NClient.Core.Helpers;
 using NClient.Extensions.DependencyInjection.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
@@ -13,9 +14,21 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
+        public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+
+            var httpClientName = new GuidProvider().Create().ToString();
+            return serviceCollection.AddNClientFactory(httpClientName).AddHttpClient(httpClientName);
+        }
+        
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            string? httpClientName = null)
+            string httpClientName)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
 
@@ -31,9 +44,24 @@ namespace NClient.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="configure">The action to configure NClient settings.</param>
+        public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
+            Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var httpClientName = new GuidProvider().Create().ToString();
+            return serviceCollection.AddNClientFactory(configure, httpClientName).AddHttpClient(httpClientName);
+        }
+        
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
+            Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string httpClientName)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));
@@ -50,9 +78,24 @@ namespace NClient.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="configure">The action to configure NClient settings.</param>
+        public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
+            Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var httpClientName = new GuidProvider().Create().ToString();
+            return serviceCollection.AddNClientFactory(configure, httpClientName).AddHttpClient(httpClientName);
+        }
+        
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
         public static IServiceCollection AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string? httpClientName = null)
+            Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure, string httpClientName)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(configure, nameof(configure));

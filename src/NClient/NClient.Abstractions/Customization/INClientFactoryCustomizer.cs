@@ -10,9 +10,7 @@ namespace NClient.Abstractions.Customization
         /// <summary>
         /// Sets custom <see cref="IResiliencePolicyProvider{TRequest,TResponse}"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
-        /// <param name="methodSelector">The method to apply the policy to.</param>
-        /// <param name="resiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/>.</param>
-        /// <typeparam name="TInterface">The type of client interface.</typeparam>
+        /// <param name="customizer"></param>
         // TODO: doc
         INClientFactoryCustomizer<TRequest, TResponse> WithCustomResilience(Action<IResiliencePolicyMethodSelector<TRequest, TResponse>> customizer);
     }
