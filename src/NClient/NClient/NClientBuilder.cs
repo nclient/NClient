@@ -19,7 +19,7 @@ namespace NClient
                     defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
                 .For<TClient>(host)
                 .UsingHttpClient()
-                .UsingSerializer()
+                .UsingJsonSerializer()
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithoutLogging();

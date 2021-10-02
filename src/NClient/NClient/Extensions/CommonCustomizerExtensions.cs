@@ -32,7 +32,7 @@ namespace NClient
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="commonCustomizer"></param>
-        public static TCustomizer UsingSerializer<TCustomizer, TClient, TRequest, TResponse>(
+        public static TCustomizer UsingJsonSerializer<TCustomizer, TClient, TRequest, TResponse>(
             this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer)
             where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
             where TClient : class
