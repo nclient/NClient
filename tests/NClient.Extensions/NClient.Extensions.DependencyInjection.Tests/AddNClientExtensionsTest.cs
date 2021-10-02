@@ -26,7 +26,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_OnlyHost_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(host: "http://localhost:5000");
 
@@ -51,7 +51,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_Builder_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder.WithForceResilience());
@@ -63,7 +63,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_BuilderWithCustomSettings_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder

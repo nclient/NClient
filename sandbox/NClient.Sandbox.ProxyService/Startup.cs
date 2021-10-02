@@ -35,12 +35,10 @@ namespace NClient.Sandbox.ProxyService
                 x.SwaggerDoc("v3", new OpenApiInfo { Title = "ProxyApi", Version = "v3" });
             });
 
-            services.AddLogging().AddHttpClient(nameof(IThirdPartyWeatherForecastClient));
-
             services.AddNClientControllers().WithResponseExceptions();
-            services.AddNClient<IThirdPartyWeatherForecastClient>(
-                host: "http://localhost:5001",
-                httpClientName: nameof(IThirdPartyWeatherForecastClient));
+            services.AddNClient<IThirdPartyWeatherForecastClient>(host: "http://localhost:5001");
+            
+            services.AddLogging();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
