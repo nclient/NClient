@@ -2,27 +2,26 @@
 using NClient.Abstractions.Customization;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
-using NClient.Common.Helpers;
 using NClient.Customization;
 using NClient.Customization.Context;
 
 namespace NClient
 {
     /// <summary>
-    /// The builder used to create the client with custom providers.
+    /// The builder used to create the client factory with custom providers.
     /// </summary>
-    public class NClientStandaloneBuilder<TRequest, TResponse> : INClientBuilder<TRequest, TResponse>
+    public class CustomNClientFactoryBuilder<TRequest, TResponse> : INClientFactoryBuilder<TRequest, TResponse>
     {
         private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _defaultResiliencePolicyProvider;
 
-        public NClientStandaloneBuilder() : this(
+        public CustomNClientFactoryBuilder() : this(
             customizerContext: new CustomizerContext<TRequest, TResponse>(),
             defaultResiliencePolicyProvider: new NoResiliencePolicyProvider<TRequest, TResponse>())
         {
         }
         
-        public NClientStandaloneBuilder(
+        public CustomNClientFactoryBuilder(
             CustomizerContext<TRequest, TResponse> customizerContext,
             IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider)
         {
@@ -30,14 +29,9 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
-        public INClientBuilderCustomizer<TClient, TRequest, TResponse> For<TClient>(string host)
-            where TClient : class
+        public INClientFactoryCustomizer<TRequest, TResponse> For(string factoryName)
         {
-            Ensure.IsNotNull(host, nameof(host));
-            
-            _customizerContext.SetHost(host);
-
-            return new BuilderCustomizer<TClient, TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider);
+            return new FactoryCustomizer<TRequest, TResponse>(factoryName, _customizerContext, _defaultResiliencePolicyProvider);
         }
     }
 }

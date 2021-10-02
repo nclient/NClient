@@ -59,7 +59,7 @@ namespace NClient.Extensions.DependencyInjection
 
         private static INClientFactoryCustomizer<TRequest, TResponse> CreatePreConfiguredCustomizer<TRequest, TResponse>(IServiceProvider serviceProvider, string factoryName)
         {
-            return new NClientStandaloneFactoryBuilder<TRequest, TResponse>()
+            return new CustomNClientFactoryBuilder<TRequest, TResponse>()
                 .For(factoryName)
                 .TrySetLogging(serviceProvider);
         }

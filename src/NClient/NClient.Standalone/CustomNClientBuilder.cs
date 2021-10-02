@@ -2,26 +2,27 @@
 using NClient.Abstractions.Customization;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
+using NClient.Common.Helpers;
 using NClient.Customization;
 using NClient.Customization.Context;
 
 namespace NClient
 {
     /// <summary>
-    /// The builder used to create the client factory with custom providers.
+    /// The builder used to create the client with custom providers.
     /// </summary>
-    public class NClientStandaloneFactoryBuilder<TRequest, TResponse> : INClientFactoryBuilder<TRequest, TResponse>
+    public class CustomNClientBuilder<TRequest, TResponse> : INClientBuilder<TRequest, TResponse>
     {
         private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _defaultResiliencePolicyProvider;
 
-        public NClientStandaloneFactoryBuilder() : this(
+        public CustomNClientBuilder() : this(
             customizerContext: new CustomizerContext<TRequest, TResponse>(),
             defaultResiliencePolicyProvider: new NoResiliencePolicyProvider<TRequest, TResponse>())
         {
         }
         
-        public NClientStandaloneFactoryBuilder(
+        public CustomNClientBuilder(
             CustomizerContext<TRequest, TResponse> customizerContext,
             IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider)
         {
@@ -29,9 +30,14 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
-        public INClientFactoryCustomizer<TRequest, TResponse> For(string factoryName)
+        public INClientBuilderCustomizer<TClient, TRequest, TResponse> For<TClient>(string host)
+            where TClient : class
         {
-            return new FactoryCustomizer<TRequest, TResponse>(factoryName, _customizerContext, _defaultResiliencePolicyProvider);
+            Ensure.IsNotNull(host, nameof(host));
+            
+            _customizerContext.SetHost(host);
+
+            return new BuilderCustomizer<TClient, TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider);
         }
     }
 }

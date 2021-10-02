@@ -14,7 +14,7 @@ namespace NClient
     {
         public INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) where TClient : class
         {
-            return new NClientStandaloneBuilder<HttpRequestMessage, HttpResponseMessage>(
+            return new CustomNClientBuilder<HttpRequestMessage, HttpResponseMessage>(
                     customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
                     defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
                 .For<TClient>(host)

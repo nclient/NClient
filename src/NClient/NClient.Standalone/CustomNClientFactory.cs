@@ -8,14 +8,14 @@ namespace NClient
     /// <summary>
     /// The factory used to create the client with custom providers.
     /// </summary>
-    public class NClientStandaloneFactory<TRequest, TResponse> : INClientFactory
+    public class CustomNClientFactory<TRequest, TResponse> : INClientFactory
     {
         private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _defaultResiliencePolicyProvider;
         
         public string Name { get; set; }
         
-        public NClientStandaloneFactory(
+        public CustomNClientFactory(
             string name,
             CustomizerContext<TRequest, TResponse> customizerContext,
             IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider)
@@ -29,7 +29,7 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            return new NClientStandaloneBuilder<TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider)
+            return new CustomNClientBuilder<TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider)
                 .For<TClient>(host)
                 .Build();
         }

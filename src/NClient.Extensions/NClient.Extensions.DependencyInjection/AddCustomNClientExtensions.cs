@@ -58,7 +58,7 @@ namespace NClient.Extensions.DependencyInjection
             IServiceProvider serviceProvider, string host)
             where TClient : class
         {
-            return new NClientStandaloneBuilder<TRequest, TResponse>()
+            return new CustomNClientBuilder<TRequest, TResponse>()
                 .For<TClient>(host)
                 .TrySetLogging(serviceProvider);
         }

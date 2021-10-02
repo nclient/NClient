@@ -36,7 +36,7 @@ namespace NClient.Customization
 
         public override INClientFactory Build()
         {
-            return new NClientStandaloneFactory<TRequest, TResponse>(_name, Context, _defaultResiliencePolicyProvider);
+            return new CustomNClientFactory<TRequest, TResponse>(_name, Context, _defaultResiliencePolicyProvider);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace NClient.Api.Tests
         [Test]
         public void Test()
         {
-            var client = new NClientStandaloneBuilder<IRestRequest, IRestResponse>()
+            var client = new CustomNClientBuilder<IRestRequest, IRestResponse>()
                 .For<IBasicClient>(host: "")
                 .UsingRestSharpHttpClient()
                 .UsingNewtonsoftJsonSerializer()

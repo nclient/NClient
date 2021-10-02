@@ -14,7 +14,7 @@ namespace NClient
     {
         public INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
-            return new NClientStandaloneFactoryBuilder<HttpRequestMessage, HttpResponseMessage>(
+            return new CustomNClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage>(
                     customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
                     defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
                 .For(factoryName)
