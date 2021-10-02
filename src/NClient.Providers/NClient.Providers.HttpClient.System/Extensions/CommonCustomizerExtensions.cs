@@ -11,10 +11,10 @@ namespace NClient.Providers.HttpClient.System
         /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="commonCustomizer"></param>
-        public static TCustomizer UsingSystemHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
-            where TInterface : class
+        public static TCustomizer UsingSystemHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
@@ -30,11 +30,11 @@ namespace NClient.Providers.HttpClient.System
         /// <param name="commonCustomizer"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="System.Net.Http.HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="System.Net.Http.HttpClient"/> to create.</param>
-        public static TCustomizer UsingSystemHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+        public static TCustomizer UsingSystemHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
@@ -50,11 +50,11 @@ namespace NClient.Providers.HttpClient.System
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static TCustomizer UsingCustomHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+        public static TCustomizer UsingCustomHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             HttpMessageHandler httpMessageHandler)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));

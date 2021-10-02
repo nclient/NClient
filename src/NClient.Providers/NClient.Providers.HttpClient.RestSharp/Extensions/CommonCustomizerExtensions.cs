@@ -13,10 +13,10 @@ namespace NClient.Providers.HttpClient.RestSharp
         /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="commonCustomizer"></param>
-        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, IRestRequest, IRestResponse> commonCustomizer)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, IRestRequest, IRestResponse>
-            where TInterface : class
+        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse> commonCustomizer)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
@@ -31,11 +31,11 @@ namespace NClient.Providers.HttpClient.RestSharp
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, IRestRequest, IRestResponse> commonCustomizer,
+        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse> commonCustomizer,
             IAuthenticator authenticator)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, IRestRequest, IRestResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 

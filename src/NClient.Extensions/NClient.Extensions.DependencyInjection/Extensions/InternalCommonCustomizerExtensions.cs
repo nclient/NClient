@@ -9,11 +9,11 @@ namespace NClient.Extensions.DependencyInjection.Extensions
 {
     internal static class InternalCommonCustomizerExtensions
     {
-        public static TCustomizer WithRegisteredProviders<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+        public static TCustomizer WithRegisteredProviders<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IServiceProvider serviceProvider, string? httpClientName)
-            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
-            where TInterface : class
+            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
+            where TClient : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
@@ -23,11 +23,11 @@ namespace NClient.Extensions.DependencyInjection.Extensions
                 .TrySetLogging(loggerFactory);
         }
 
-        private static TCustomizer TrySetSystemHttpClient<TCustomizer, TInterface>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+        private static TCustomizer TrySetSystemHttpClient<TCustomizer, TClient>(
+            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IHttpClientFactory? httpClientFactory, string? httpClientName = null)
-            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TInterface, HttpRequestMessage, HttpResponseMessage>
-            where TInterface : class
+            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
+            where TClient : class
         {
             if (httpClientFactory is not null)
                 return commonCustomizer.UsingSystemHttpClient(httpClientFactory, httpClientName);

@@ -21,12 +21,12 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
 
-        public TInterface Create<TInterface>(string host) where TInterface : class
+        public TClient Create<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
 
             return new NClientStandaloneBuilder<TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider)
-                .For<TInterface>(host)
+                .For<TClient>(host)
                 .Build();
         }
     }

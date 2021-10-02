@@ -15,11 +15,11 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static TCustomizer WithForcePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithForcePollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IResiliencePolicySettings<TRequest, TResponse> settings)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
@@ -31,11 +31,11 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
-        public static TCustomizer WithForcePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithForcePollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
@@ -47,11 +47,11 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static TCustomizer WithSafePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithSafePollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IResiliencePolicySettings<TRequest, TResponse> settings)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
@@ -72,11 +72,11 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="commonCustomizer"></param>
         /// <param name="safeMethodPolicy">The settings for resilience policy provider for safe methods.</param>
         /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
-        public static TCustomizer WithSafePollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithSafePollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IAsyncPolicy<ResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
@@ -90,11 +90,11 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static TCustomizer WithIdempotentPollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithIdempotentPollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IResiliencePolicySettings<TRequest, TResponse> settings)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             
@@ -115,11 +115,11 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="commonCustomizer"></param>
         /// <param name="idempotentMethodPolicy">The settings for resilience policy provider for idempotent methods.</param>
         /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
-        public static TCustomizer WithIdempotentPollyResilience<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer WithIdempotentPollyResilience<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             IAsyncPolicy<ResponseContext<TRequest, TResponse>> idempotentMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             

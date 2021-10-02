@@ -4,17 +4,17 @@ using System.Linq.Expressions;
 namespace NClient.Abstractions.Customization.Resilience
 {
     // TODO: doc
-    public interface IResiliencePolicyMethodSelector<TInterface, TRequest, TResponse>
+    public interface IResiliencePolicyMethodSelector<TClient, TRequest, TResponse>
     {
-        IResiliencePolicyProviderSetter<TInterface, TRequest, TResponse> ForAllMethods();
-        IResiliencePolicyProviderSetter<TInterface, TRequest, TResponse> ForMethod(Expression<Func<TInterface, Delegate>> methodSelector);
+        IResiliencePolicyProviderSetter<TClient, TRequest, TResponse> ForAllMethods();
+        IResiliencePolicyProviderSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> methodSelector);
     }
     
     // TODO: doc
     public interface IResiliencePolicyMethodSelector<TRequest, TResponse>
     {
         IResiliencePolicyProviderSetter<TRequest, TResponse> ForAllMethods();
-        IResiliencePolicyProviderSetter<TRequest, TResponse> ForAllMethodsOf<TInterface>();
-        IResiliencePolicyProviderSetter<TRequest, TResponse> ForMethodOf<TInterface>(Expression<Func<TInterface, Delegate>> methodSelector);
+        IResiliencePolicyProviderSetter<TRequest, TResponse> ForAllMethodsOf<TClient>();
+        IResiliencePolicyProviderSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector);
     }
 }

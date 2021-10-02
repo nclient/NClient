@@ -10,8 +10,8 @@ namespace NClient
     public static class ResiliencePolicyProviderSetterExtensions
     {
         // TODO: doc
-        public static IResiliencePolicyMethodSelector<TInterface, HttpRequestMessage, HttpResponseMessage> Use<TInterface>(
-            this IResiliencePolicyProviderSetter<TInterface, HttpRequestMessage, HttpResponseMessage> resiliencePolicyProviderSetter, 
+        public static IResiliencePolicyMethodSelector<TClient, HttpRequestMessage, HttpResponseMessage> Use<TClient>(
+            this IResiliencePolicyProviderSetter<TClient, HttpRequestMessage, HttpResponseMessage> resiliencePolicyProviderSetter, 
             IResiliencePolicySettings<HttpRequestMessage, HttpResponseMessage>? policySettings = null)
         {
             return resiliencePolicyProviderSetter.UsePolly(policySettings ?? new DefaultResiliencePolicySettings());

@@ -13,13 +13,13 @@ namespace NClient
         /// Sets the main client settings.
         /// </summary>
         /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <typeparam name="TInterface">The type of interface of controller used to create the client.</typeparam>
-        public static INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> Use<TInterface>(string host)
-            where TInterface : class
+        /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
+        public static INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage> Use<TClient>(string host)
+            where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            return new NClientBuilder().For<TInterface>(host);
+            return new NClientBuilder().For<TClient>(host);
         }
     }
 }

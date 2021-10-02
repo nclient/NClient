@@ -3,9 +3,9 @@
 namespace NClient.Abstractions.Customization.Resilience
 {
     // TODO: doc
-    public interface IResiliencePolicyProviderSetter<TInterface, TRequest, TResponse>
+    public interface IResiliencePolicyProviderSetter<TClient, TRequest, TResponse>
     {
-        IResiliencePolicyMethodSelector<TInterface, TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> provider);
+        IResiliencePolicyMethodSelector<TClient, TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> provider);
     }
     
     // TODO: doc

@@ -23,7 +23,7 @@ namespace NClient.Core.Interceptors
 {
     internal interface IClientInterceptorFactory
     {
-        IAsyncInterceptor Create<TInterface, TRequest, TResponse>(
+        IAsyncInterceptor Create<TClient, TRequest, TResponse>(
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
@@ -31,7 +31,7 @@ namespace NClient.Core.Interceptors
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null);
+            ILogger<TClient>? logger = null);
     }
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
@@ -69,7 +69,7 @@ namespace NClient.Core.Interceptors
                 clientValidationExceptionFactory);
         }
 
-        public IAsyncInterceptor Create<TInterface, TRequest, TResponse>(
+        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
@@ -77,12 +77,12 @@ namespace NClient.Core.Interceptors
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger = null)
+            ILogger<TClient>? logger = null)
         {
             var serializer = serializerProvider.Create();
             var httpMessageBuilder = httpMessageBuilderProvider.Create(serializer);
             
-            return new ClientInterceptor<TInterface, TRequest, TResponse>(
+            return new ClientInterceptor<TClient, TRequest, TResponse>(
                 host,
                 CreateResilienceHttpClientProvider(
                     serializerProvider,
@@ -101,17 +101,17 @@ namespace NClient.Core.Interceptors
                 logger);
         }
         
-        private static IResilienceHttpClientProvider<TRequest, TResponse> CreateResilienceHttpClientProvider<TInterface, TRequest, TResponse>(
+        private static IResilienceHttpClientProvider<TRequest, TResponse> CreateResilienceHttpClientProvider<TClient, TRequest, TResponse>(
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            ILogger<TInterface>? logger)
+            ILogger<TClient>? logger)
         {
             return new ResilienceHttpClientProvider<TRequest, TResponse>(
                 serializerProvider,
-                new ClientHandlerDecorator<TInterface, TRequest, TResponse>(clientHandlers, logger),
+                new ClientHandlerDecorator<TClient, TRequest, TResponse>(clientHandlers, logger),
                 httpClientProvider,
                 httpMessageBuilder,
                 methodResiliencePolicyProvider,

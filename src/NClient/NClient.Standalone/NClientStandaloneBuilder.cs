@@ -30,14 +30,14 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
-        public INClientBuilderCustomizer<TInterface, TRequest, TResponse> For<TInterface>(string host)
-            where TInterface : class
+        public INClientBuilderCustomizer<TClient, TRequest, TResponse> For<TClient>(string host)
+            where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
             
             _customizerContext.SetHost(host);
 
-            return new BuilderCustomizer<TInterface, TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider);
+            return new BuilderCustomizer<TClient, TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider);
         }
     }
 }

@@ -8,15 +8,15 @@ namespace NClient.Providers.Resilience.Polly
     public static class ResiliencePolicyProviderSetterExtensions
     {
         // TODO: doc
-        public static IResiliencePolicyMethodSelector<TInterface, TRequest, TResponse> UsePolly<TInterface, TRequest, TResponse>(
-            this IResiliencePolicyProviderSetter<TInterface, TRequest, TResponse> resiliencePolicyProviderSetter, 
+        public static IResiliencePolicyMethodSelector<TClient, TRequest, TResponse> UsePolly<TClient, TRequest, TResponse>(
+            this IResiliencePolicyProviderSetter<TClient, TRequest, TResponse> resiliencePolicyProviderSetter, 
             IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
         {
             return resiliencePolicyProviderSetter.Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
         }
         
-        public static IResiliencePolicyMethodSelector<TInterface, TRequest, TResponse> UsePolly<TInterface, TRequest, TResponse>(
-            this IResiliencePolicyProviderSetter<TInterface, TRequest, TResponse> resiliencePolicyProviderSetter, 
+        public static IResiliencePolicyMethodSelector<TClient, TRequest, TResponse> UsePolly<TClient, TRequest, TResponse>(
+            this IResiliencePolicyProviderSetter<TClient, TRequest, TResponse> resiliencePolicyProviderSetter, 
             IResiliencePolicySettings<TRequest, TResponse> policySettings)
         {
             return resiliencePolicyProviderSetter.Use(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(policySettings));

@@ -15,8 +15,8 @@ namespace NClient.Core.Validation
 {
     internal interface IClientValidator
     {
-        Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class;
+        Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+            where TClient : class;
     }
 
     internal class ClientValidator : IClientValidator
@@ -30,11 +30,11 @@ namespace NClient.Core.Validation
             _proxyGenerator = proxyGenerator;
         }
 
-        public async Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class
+        public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+            where TClient : class
         {
             var interceptor = clientInterceptorFactory
-                .Create<TInterface, HttpRequest, HttpResponse>(
+                .Create<TClient, HttpRequest, HttpResponse>(
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
@@ -43,7 +43,7 @@ namespace NClient.Core.Validation
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
                     new MethodResiliencePolicyProviderAdapter<HttpRequest, HttpResponse>(
                         new NoResiliencePolicyProvider<HttpRequest, HttpResponse>()));
-            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
+            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);
         }

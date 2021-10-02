@@ -13,10 +13,10 @@ namespace NClient.Providers.Serialization.Newtonsoft
         /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="commonCustomizer"></param>
-        public static TCustomizer UsingNewtonsoftJsonSerializer<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+        public static TCustomizer UsingNewtonsoftJsonSerializer<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
@@ -28,11 +28,11 @@ namespace NClient.Providers.Serialization.Newtonsoft
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
-        public static TCustomizer UsingNewtonsoftJsonSerializer<TCustomizer, TInterface, TRequest, TResponse>(
-            this INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse> commonCustomizer,
+        public static TCustomizer UsingNewtonsoftJsonSerializer<TCustomizer, TClient, TRequest, TResponse>(
+            this INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse> commonCustomizer,
             JsonSerializerSettings jsonSerializerSettings)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TInterface, TRequest, TResponse>
-            where TInterface : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, TRequest, TResponse>
+            where TClient : class
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));

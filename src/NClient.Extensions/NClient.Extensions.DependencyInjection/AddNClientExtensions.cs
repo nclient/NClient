@@ -15,16 +15,16 @@ namespace NClient.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IHttpClientBuilder AddNClient<TInterface>(this IServiceCollection serviceCollection,
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
             string host)
-            where TInterface : class
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
 
             var httpClientName = new GuidProvider().Create().ToString();
-            return serviceCollection.AddNClient<TInterface>(host, httpClientName).AddHttpClient(httpClientName);
+            return serviceCollection.AddNClient<TClient>(host, httpClientName).AddHttpClient(httpClientName);
         }
         
         /// <summary>
@@ -33,17 +33,17 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IServiceCollection AddNClient<TClient>(this IServiceCollection serviceCollection,
             string host, string httpClientName)
-            where TInterface : class
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                var builderCustomizer = CreateCustomizer<TClient>(serviceProvider, host, httpClientName);
                 return builderCustomizer.Build();
             });
         }
@@ -54,10 +54,10 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="configure">The action to configure NClient settings.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IHttpClientBuilder AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure)
-            where TInterface : class
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
@@ -74,10 +74,10 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, string httpClientName, Func<INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure)
-            where TInterface : class
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IServiceCollection AddNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, string httpClientName, Func<INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
@@ -85,7 +85,7 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                var builderCustomizer = CreateCustomizer<TClient>(serviceProvider, host, httpClientName);
                 return configure(builderCustomizer).Build();
             });
         }
@@ -96,10 +96,10 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="configure">The action to configure NClient settings.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IHttpClientBuilder AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure)
-            where TInterface : class
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<IServiceProvider, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
@@ -116,10 +116,10 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="httpClientName">The logical name of the HttpClient to create.</param>
-        /// <typeparam name="TInterface">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddNClient<TInterface>(this IServiceCollection serviceCollection,
-            string host, string httpClientName, Func<IServiceProvider, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage>> configure)
-            where TInterface : class
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IServiceCollection AddNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, string httpClientName, Func<IServiceProvider, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
@@ -127,17 +127,17 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreateCustomizer<TInterface>(serviceProvider, host, httpClientName);
+                var builderCustomizer = CreateCustomizer<TClient>(serviceProvider, host, httpClientName);
                 return configure(serviceProvider, builderCustomizer).Build();
             });
         }
 
-        private static INClientBuilderCustomizer<TInterface, HttpRequestMessage, HttpResponseMessage> CreateCustomizer<TInterface>(
+        private static INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage> CreateCustomizer<TClient>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
-            where TInterface : class
+            where TClient : class
         {
             return new NClientBuilder()
-                .For<TInterface>(host)
+                .For<TClient>(host)
                 .WithRegisteredProviders(serviceProvider, httpClientName);
         }
     }
