@@ -9,36 +9,26 @@ namespace NClient.Extensions.DependencyInjection.Extensions
 {
     internal static class InternalCommonCustomizerExtensions
     {
-        public static TCustomizer WithRegisteredProviders<TCustomizer, TClient>(
+        public static TCustomizer TrySetSystemHttpClient<TCustomizer, TClient>(
             this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IServiceProvider serviceProvider, string? httpClientName)
             where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
             where TClient : class
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-            return commonCustomizer
-                .TrySetSystemHttpClient(httpClientFactory, httpClientName)
-                .TrySetLogging(loggerFactory);
-        }
-
-        private static TCustomizer TrySetSystemHttpClient<TCustomizer, TClient>(
-            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
-            IHttpClientFactory? httpClientFactory, string? httpClientName = null)
-            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
-            where TClient : class
-        {
+            
             if (httpClientFactory is not null)
                 return commonCustomizer.UsingSystemHttpClient(httpClientFactory, httpClientName);
             return (commonCustomizer as TCustomizer)!;
         }
 
-        private static TBuilder TrySetLogging<TBuilder, TResult, TRequest, TResponse>(
+        public static TBuilder TrySetLogging<TBuilder, TResult, TRequest, TResponse>(
             this INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse> clientBuilder,
-            ILoggerFactory? loggerFactory)
+            IServiceProvider serviceProvider)
             where TBuilder : class, INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse>
         {
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            
             if (loggerFactory is not null)
                 return clientBuilder.WithLogging(loggerFactory);
             return (clientBuilder as TBuilder)!;

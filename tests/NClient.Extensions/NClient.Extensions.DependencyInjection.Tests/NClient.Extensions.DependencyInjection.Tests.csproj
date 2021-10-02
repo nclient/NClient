@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.Newtonsoft\NClient.Providers.Serialization.Json.Newtonsoft.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
 

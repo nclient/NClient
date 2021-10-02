@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
@@ -24,7 +25,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public void AddNClient_OnlyHost_NotBeNull()
+        public void AddNClient_WithLogging_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
@@ -35,14 +36,15 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public void AddNClient_NamedClient_NotBeNull()
+        public void AddNClient_SingleClient_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
             serviceCollection.AddHttpClient("TestClient");
 
-            serviceCollection.AddNClient<ITestClientWithMetadata>(
-                host: "http://localhost:5000",
-                httpClientName: "TestClient");
+            serviceCollection.AddNClient<ITestClientWithMetadata>(host: "http://localhost:5000", (serviceProvider, configure) => configure
+                .UsingSystemHttpClient(
+                    httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
+                    httpClientName: "TestClient"));
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

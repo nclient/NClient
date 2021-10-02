@@ -12,12 +12,12 @@ namespace NClient
     /// </summary>
     public class NClientFactoryBuilder : INClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        public INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> For()
+        public INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
             return new NClientStandaloneFactoryBuilder<HttpRequestMessage, HttpResponseMessage>(
                     customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
                     defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
-                .For()
+                .For(factoryName)
                 .UsingHttpClient()
                 .UsingSerializer()
                 .WithoutHandling()

@@ -13,13 +13,16 @@ namespace NClient.Customization
         CommonCustomizer<INClientFactoryCustomizer<TRequest, TResponse>, INClientFactory, TRequest, TResponse>,
         INClientFactoryCustomizer<TRequest, TResponse>
     {
+        private readonly string _name;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _defaultResiliencePolicyProvider;
         
         public FactoryCustomizer(
+            string name,
             CustomizerContext<TRequest, TResponse> context,
             IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider) 
             : base(context)
         {
+            _name = name;
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
@@ -33,7 +36,7 @@ namespace NClient.Customization
 
         public override INClientFactory Build()
         {
-            return new NClientStandaloneFactory<TRequest, TResponse>(Context, _defaultResiliencePolicyProvider);
+            return new NClientStandaloneFactory<TRequest, TResponse>(_name, Context, _defaultResiliencePolicyProvider);
         }
     }
 }

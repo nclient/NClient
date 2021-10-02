@@ -29,9 +29,9 @@ namespace NClient
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
         }
         
-        public INClientFactoryCustomizer<TRequest, TResponse> For()
+        public INClientFactoryCustomizer<TRequest, TResponse> For(string factoryName)
         {
-            return new FactoryCustomizer<TRequest, TResponse>(_customizerContext, _defaultResiliencePolicyProvider);
+            return new FactoryCustomizer<TRequest, TResponse>(factoryName, _customizerContext, _defaultResiliencePolicyProvider);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace NClient.Abstractions
     /// </summary>
     public interface INClientFactoryBuilder<TRequest, TResponse>
     {
-        INClientFactoryCustomizer<TRequest, TResponse> For();
+        // TODO: doc
+        INClientFactoryCustomizer<TRequest, TResponse> For(string factoryName);
     }
 }

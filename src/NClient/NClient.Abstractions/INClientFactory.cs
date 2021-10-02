@@ -5,6 +5,9 @@
     /// </summary>
     public interface INClientFactory
     {
+        // TODO: doc
+        public string Name { get; set; }
+        
         /// <summary>
         /// Sets the main client settings.
         /// </summary>
