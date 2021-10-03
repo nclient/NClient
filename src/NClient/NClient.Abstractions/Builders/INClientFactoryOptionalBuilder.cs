@@ -51,7 +51,7 @@ namespace NClient.Abstractions.Builders
         /// </summary>
         /// <param name="customizer"></param>
         // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<IResiliencePolicyMethodSelector<TRequest, TResponse>> customizer);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> customizer);
 
         // TODO: doc
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResilience();

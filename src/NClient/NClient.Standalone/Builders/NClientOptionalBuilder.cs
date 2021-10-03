@@ -8,24 +8,24 @@ using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
+using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Proxy;
 using NClient.Core.Validation;
-using NClient.Customization.Context;
 using NClient.Customization.Resilience;
 
-namespace NClient.Customization
+namespace NClient.Builders
 {
-    internal class ClientOptionalBuilder<TClient, TRequest, TResponse> : INClientOptionalBuilder<TClient, TRequest, TResponse>
+    internal class NClientOptionalBuilder<TClient, TRequest, TResponse> : INClientOptionalBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
         private readonly CustomizerContext<TRequest, TResponse> _context;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
-        public ClientOptionalBuilder(CustomizerContext<TRequest, TResponse> context)
+        public NClientOptionalBuilder(CustomizerContext<TRequest, TResponse> context)
         {
             _context = context;
             var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
@@ -84,10 +84,10 @@ namespace NClient.Customization
             return this;
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<IResiliencePolicyMethodSelector<TClient, TRequest, TResponse>> customizer)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> customizer)
         {
             Ensure.IsNotNull(customizer, nameof(customizer));
-            customizer(new ResiliencePolicyMethodSelector<TClient, TRequest, TResponse>(_context));
+            customizer(new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_context));
             return this;
         }
         

@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions;
+using NClient.Builders;
+using NClient.Builders.Context;
 using NClient.Common.Helpers;
-using NClient.Customization;
-using NClient.Customization.Context;
 
 namespace NClient
 {
@@ -24,7 +24,7 @@ namespace NClient
         {
             Ensure.IsNotNull(host, nameof(host));
 
-            return new ClientOptionalBuilder<TClient, TRequest, TResponse>(_customizerContext).Build();
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_customizerContext).Build();
         }
     }
 }

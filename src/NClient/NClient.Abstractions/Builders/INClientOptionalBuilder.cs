@@ -47,7 +47,7 @@ namespace NClient.Abstractions.Builders
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<IResiliencePolicyMethodSelector<TClient, TRequest, TResponse>> customizer);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> customizer);
 
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();

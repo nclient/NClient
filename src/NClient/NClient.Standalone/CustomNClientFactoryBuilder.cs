@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions;
 using NClient.Abstractions.Builders;
+using NClient.Builders;
 using NClient.Common.Helpers;
-using NClient.Customization;
 
 namespace NClient
 {
@@ -13,7 +13,7 @@ namespace NClient
         public INClientFactoryHttpClientBuilder For(string factoryName)
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
-            return new FactoryHttpClientBuilder(factoryName);
+            return new NClientFactoryHttpClientBuilder(factoryName);
         }
     }
 }

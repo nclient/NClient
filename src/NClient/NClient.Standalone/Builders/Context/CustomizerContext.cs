@@ -8,7 +8,7 @@ using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Exceptions.Factories;
 
-namespace NClient.Customization.Context
+namespace NClient.Builders.Context
 {
     public class CustomizerContext<TRequest, TResponse>
     {

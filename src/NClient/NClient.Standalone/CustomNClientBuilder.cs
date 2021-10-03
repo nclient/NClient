@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions;
 using NClient.Abstractions.Builders;
+using NClient.Builders;
 using NClient.Common.Helpers;
-using NClient.Customization;
 
 namespace NClient
 {
@@ -13,7 +13,7 @@ namespace NClient
         public INClientHttpClientBuilder<TClient> For<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            return new HttpClientBuilder<TClient>(host);
+            return new NClientHttpClientBuilder<TClient>(host);
         }
     }
 }

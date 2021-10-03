@@ -8,23 +8,23 @@ using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
+using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
 using NClient.Core.Proxy;
-using NClient.Customization.Context;
 using NClient.Customization.Resilience;
 
-namespace NClient.Customization
+namespace NClient.Builders
 {
-    internal class FactoryOptionalBuilder<TRequest, TResponse> : INClientFactoryOptionalBuilder<TRequest, TResponse>
+    internal class NClientFactoryOptionalBuilder<TRequest, TResponse> : INClientFactoryOptionalBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
         private readonly CustomizerContext<TRequest, TResponse> _context;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
-        public FactoryOptionalBuilder(string factoryName, CustomizerContext<TRequest, TResponse> context)
+        public NClientFactoryOptionalBuilder(string factoryName, CustomizerContext<TRequest, TResponse> context)
         {
             _factoryName = factoryName;
             _context = context;
@@ -84,11 +84,11 @@ namespace NClient.Customization
             return this;
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<IResiliencePolicyMethodSelector<TRequest, TResponse>> customizer)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> customizer)
         {
             Ensure.IsNotNull(customizer, nameof(customizer));
 
-            customizer(new ResiliencePolicyMethodSelector<TRequest, TResponse>(_context));
+            customizer(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_context));
             return this;
         }
         
