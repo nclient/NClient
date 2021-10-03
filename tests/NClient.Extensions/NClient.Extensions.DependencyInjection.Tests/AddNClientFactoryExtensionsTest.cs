@@ -3,7 +3,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
-using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
@@ -36,26 +35,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public void AddNClientFactory_SingleClient_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddLogging();
-            serviceCollection.AddHttpClient("TestClient");
-
-            serviceCollection.AddNClientFactory((serviceProvider, configure) => configure
-                .UsingSystemHttpClient(
-                    httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                    httpClientName: "TestClient"));
-
-            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
         public void AddNClientFactory_Builder_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder);
+            serviceCollection.AddNClientFactory(builder => builder.WithForceResilience().Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -67,7 +51,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClientFactory(builder => builder
-                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
+                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();

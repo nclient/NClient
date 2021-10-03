@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Customization;
+using NClient.Abstractions;
+using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
-using NClient.Extensions.DependencyInjection.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -18,8 +18,8 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="serviceCollection"></param>
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
-        public static IServiceCollection AddCustomNClientFactory<TRequest, TResponse>(this IServiceCollection serviceCollection,
-            Func<INClientFactoryCustomizer<TRequest, TResponse>, INClientFactoryCustomizer<TRequest, TResponse>> configure,
+        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
+            Func<INClientFactoryHttpClientBuilder, INClientFactory> configure,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -27,11 +27,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
             
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                var factoryCustomizer = CreatePreConfiguredCustomizer<TRequest, TResponse>(serviceProvider, factoryName);
-                return configure(factoryCustomizer).Build();
-            });
+            return serviceCollection.AddSingleton(_ => configure(new CustomNClientFactoryBuilder().For(factoryName)));
         }
 
         // TODO: doc
@@ -41,8 +37,8 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="serviceCollection"></param>
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
-        public static IServiceCollection AddCustomNClientFactory<TRequest, TResponse>(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryCustomizer<TRequest, TResponse>, INClientFactoryCustomizer<TRequest, TResponse>> configure,
+        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
+            Func<IServiceProvider, INClientFactoryHttpClientBuilder, INClientFactory> configure,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -50,18 +46,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
 
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                var factoryCustomizer = CreatePreConfiguredCustomizer<TRequest, TResponse>(serviceProvider, factoryName);
-                return configure(serviceProvider, factoryCustomizer).Build();
-            });
-        }
-
-        private static INClientFactoryCustomizer<TRequest, TResponse> CreatePreConfiguredCustomizer<TRequest, TResponse>(IServiceProvider serviceProvider, string factoryName)
-        {
-            return new CustomNClientFactoryBuilder<TRequest, TResponse>()
-                .For(factoryName)
-                .TrySetLogging(serviceProvider);
+            return serviceCollection.AddSingleton(serviceProvider => configure(serviceProvider, new CustomNClientFactoryBuilder().For(factoryName)));
         }
     }
 }

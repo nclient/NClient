@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Customization;
+using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
-using NClient.Extensions.DependencyInjection.Extensions;
+using NClient.Providers.HttpClient.System;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -41,7 +42,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            string host, Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> configure)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -52,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var builderCustomizer = CreatePreConfiguredCustomizer<TClient>(serviceProvider, host, httpClientName);
-                return configure(builderCustomizer).Build();
+                return configure(builderCustomizer);
             }).AddHttpClient(httpClientName);
         }
 
@@ -64,7 +65,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>, INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage>> configure)
+            string host, Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> configure)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -75,18 +76,22 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var builderCustomizer = CreatePreConfiguredCustomizer<TClient>(serviceProvider, host, httpClientName);
-                return configure(serviceProvider, builderCustomizer).Build();
+                return configure(serviceProvider, builderCustomizer);
             }).AddHttpClient(httpClientName);
         }
 
-        private static INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer<TClient>(
+        private static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer<TClient>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TClient : class
         {
-            return new NClientBuilder()
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            
+            return new CustomNClientBuilder()
                 .For<TClient>(host)
-                .TrySetSystemHttpClient(serviceProvider, httpClientName)
-                .TrySetLogging(serviceProvider);
+                .UsingSystemHttpClient(httpClientFactory, httpClientName)
+                .UsingJsonSerializer()
+                .WithLogging(loggerFactory);
         }
     }
 }

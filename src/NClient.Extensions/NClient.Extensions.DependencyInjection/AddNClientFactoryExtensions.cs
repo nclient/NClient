@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Customization;
+using Microsoft.Extensions.Logging;
+using NClient.Abstractions;
+using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
-using NClient.Extensions.DependencyInjection.Extensions;
+using NClient.Providers.HttpClient.System;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -39,7 +41,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure,
+            Func<INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> configure,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -51,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var factoryCustomizer = CreatePreConfiguredCustomizer(serviceProvider, factoryName, httpClientName);
-                return configure(factoryCustomizer).Build();
+                return configure(factoryCustomizer);
             }).AddHttpClient(httpClientName);
         }
 
@@ -62,7 +64,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="configure">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>, INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage>> configure,
+            Func<IServiceProvider, INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> configure,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -74,16 +76,20 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var factoryCustomizer = CreatePreConfiguredCustomizer(serviceProvider, factoryName, httpClientName);
-                return configure(serviceProvider, factoryCustomizer).Build();
+                return configure(serviceProvider, factoryCustomizer);
             }).AddHttpClient(httpClientName);
         }
 
-        private static INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer(IServiceProvider serviceProvider, string factoryName, string httpClientName)
+        private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer(IServiceProvider serviceProvider, string factoryName, string httpClientName)
         {
-            return new NClientFactoryBuilder()
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            
+            return new CustomNClientFactoryBuilder()
                 .For(factoryName)
-                .TrySetSystemHttpClient(serviceProvider, httpClientName)
-                .TrySetLogging(serviceProvider);
+                .UsingSystemHttpClient(httpClientFactory, httpClientName)
+                .UsingJsonSerializer()
+                .WithLogging(loggerFactory);
         }
     }
 }

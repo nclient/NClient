@@ -1,22 +1,16 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions;
-using NClient.Abstractions.Customization;
-using NClient.Customization.Context;
-using NClient.Providers.Resilience.Polly;
-using NClient.Resilience;
+using NClient.Abstractions.Builders;
 
 namespace NClient
 {
     /// <summary>
     /// The builder used to create the client factory.
     /// </summary>
-    public class NClientFactoryBuilder : INClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage>
+    public class NClientFactoryBuilder
     {
-        public INClientFactoryCustomizer<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
+        public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
-            return new CustomNClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage>(
-                    customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
-                    defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
+            return new CustomNClientFactoryBuilder()
                 .For(factoryName)
                 .UsingHttpClient()
                 .UsingJsonSerializer()

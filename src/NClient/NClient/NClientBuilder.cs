@@ -1,22 +1,17 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions;
-using NClient.Abstractions.Customization;
-using NClient.Customization.Context;
-using NClient.Providers.Resilience.Polly;
-using NClient.Resilience;
+using NClient.Abstractions.Builders;
 
 namespace NClient
 {
     /// <summary>
     /// The builder used to create the client.
     /// </summary>
-    public class NClientBuilder : INClientBuilder<HttpRequestMessage, HttpResponseMessage>
+    public class NClientBuilder
     {
-        public INClientBuilderCustomizer<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) where TClient : class
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
+            where TClient : class
         {
-            return new CustomNClientBuilder<HttpRequestMessage, HttpResponseMessage>(
-                    customizerContext: new CustomizerContext<HttpRequestMessage, HttpResponseMessage>(),
-                    defaultResiliencePolicyProvider: new ConfiguredPollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(new NoResiliencePolicySettings()))
+            return new CustomNClientBuilder()
                 .For<TClient>(host)
                 .UsingHttpClient()
                 .UsingJsonSerializer()

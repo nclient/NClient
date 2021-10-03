@@ -1,37 +1,19 @@
 ﻿using NClient.Abstractions;
-using NClient.Abstractions.Customization;
-using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Resilience.Providers;
+using NClient.Abstractions.Builders;
+using NClient.Common.Helpers;
 using NClient.Customization;
-using NClient.Customization.Context;
 
 namespace NClient
 {
     /// <summary>
     /// The builder used to create the client factory with custom providers.
     /// </summary>
-    public class CustomNClientFactoryBuilder<TRequest, TResponse> : INClientFactoryBuilder<TRequest, TResponse>
+    public class CustomNClientFactoryBuilder : INClientFactoryBuilder
     {
-        private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
-        private readonly IResiliencePolicyProvider<TRequest, TResponse> _defaultResiliencePolicyProvider;
-
-        public CustomNClientFactoryBuilder() : this(
-            customizerContext: new CustomizerContext<TRequest, TResponse>(),
-            defaultResiliencePolicyProvider: new NoResiliencePolicyProvider<TRequest, TResponse>())
+        public INClientFactoryHttpClientBuilder For(string factoryName)
         {
-        }
-        
-        public CustomNClientFactoryBuilder(
-            CustomizerContext<TRequest, TResponse> customizerContext,
-            IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider)
-        {
-            _customizerContext = customizerContext;
-            _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
-        }
-        
-        public INClientFactoryCustomizer<TRequest, TResponse> For(string factoryName)
-        {
-            return new FactoryCustomizer<TRequest, TResponse>(factoryName, _customizerContext, _defaultResiliencePolicyProvider);
+            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
+            return new FactoryHttpClientBuilder(factoryName);
         }
     }
 }

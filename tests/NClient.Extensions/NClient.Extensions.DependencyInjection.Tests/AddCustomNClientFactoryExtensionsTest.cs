@@ -1,8 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Net.Http;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
 using NClient.Providers.HttpClient.RestSharp;
+using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
 using NClient.Providers.Serialization.Newtonsoft;
 using NUnit.Framework;
@@ -19,9 +21,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddCustomNClientFactory<IRestRequest, IRestResponse>(configure => configure
+            serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestSharpHttpClient()
-                .UsingNewtonsoftJsonSerializer());
+                .UsingNewtonsoftJsonSerializer()
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -32,9 +35,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddCustomNClientFactory<IRestRequest, IRestResponse>(configure => configure
+            serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestSharpHttpClient()
-                .UsingNewtonsoftJsonSerializer());
+                .UsingNewtonsoftJsonSerializer()
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -45,10 +49,28 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
-            serviceCollection.AddCustomNClientFactory<IRestRequest, IRestResponse>(configure => configure
+            serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestSharpHttpClient()
                 .UsingNewtonsoftJsonSerializer()
-                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<IRestRequest, IRestResponse>>()));
+                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<IRestRequest, IRestResponse>>())
+                .Build());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            client.Should().NotBeNull();
+        }
+        
+        [Test]
+        public void AddCustomNClientFactory_SingleClient_NotBeNull()
+        {
+            var serviceCollection = new ServiceCollection().AddLogging();
+            serviceCollection.AddHttpClient("TestClient");
+
+            serviceCollection.AddCustomNClientFactory((serviceProvider, configure) => configure
+                .UsingSystemHttpClient(
+                    httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
+                    httpClientName: "TestClient")
+                .UsingJsonSerializer()
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
