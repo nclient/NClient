@@ -13,10 +13,9 @@ namespace NClient.Providers.HttpClient.RestSharp
         /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="commonCustomizer"></param>
-        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TClient>(
-            this INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse> commonCustomizer)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse>
-            where TClient : class
+        public static TCustomizer UsingRestSharpHttpClient<TCustomizer>(
+            this INClientCommonCustomizer<TCustomizer, IRestRequest, IRestResponse> commonCustomizer)
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, IRestRequest, IRestResponse>
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 
@@ -31,11 +30,10 @@ namespace NClient.Providers.HttpClient.RestSharp
         /// </summary>
         /// <param name="commonCustomizer"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static TCustomizer UsingRestSharpHttpClient<TCustomizer, TClient>(
-            this INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse> commonCustomizer,
+        public static TCustomizer UsingRestSharpHttpClient<TCustomizer>(
+            this INClientCommonCustomizer<TCustomizer, IRestRequest, IRestResponse> commonCustomizer,
             IAuthenticator authenticator)
-            where TCustomizer : INClientCommonCustomizer<TCustomizer, TClient, IRestRequest, IRestResponse>
-            where TClient : class
+            where TCustomizer : INClientCommonCustomizer<TCustomizer, IRestRequest, IRestResponse>
         {
             Ensure.IsNotNull(commonCustomizer, nameof(commonCustomizer));
 

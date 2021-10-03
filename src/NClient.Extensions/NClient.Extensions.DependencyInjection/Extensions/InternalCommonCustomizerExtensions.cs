@@ -9,11 +9,10 @@ namespace NClient.Extensions.DependencyInjection.Extensions
 {
     internal static class InternalCommonCustomizerExtensions
     {
-        public static TCustomizer TrySetSystemHttpClient<TCustomizer, TClient>(
-            this INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
+        public static TCustomizer TrySetSystemHttpClient<TCustomizer>(
+            this INClientCommonCustomizer<TCustomizer, HttpRequestMessage, HttpResponseMessage> commonCustomizer,
             IServiceProvider serviceProvider, string? httpClientName)
-            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, TClient, HttpRequestMessage, HttpResponseMessage>
-            where TClient : class
+            where TCustomizer : class, INClientCommonCustomizer<TCustomizer, HttpRequestMessage, HttpResponseMessage>
         {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             
@@ -22,10 +21,10 @@ namespace NClient.Extensions.DependencyInjection.Extensions
             return (commonCustomizer as TCustomizer)!;
         }
 
-        public static TBuilder TrySetLogging<TBuilder, TResult, TRequest, TResponse>(
-            this INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse> clientBuilder,
+        public static TBuilder TrySetLogging<TBuilder, TRequest, TResponse>(
+            this INClientCommonCustomizer<TBuilder, TRequest, TResponse> clientBuilder,
             IServiceProvider serviceProvider)
-            where TBuilder : class, INClientCommonCustomizer<TBuilder, TResult, TRequest, TResponse>
+            where TBuilder : class, INClientCommonCustomizer<TBuilder, TRequest, TResponse>
         {
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             

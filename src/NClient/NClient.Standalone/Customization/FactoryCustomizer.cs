@@ -10,7 +10,7 @@ using NClient.Customization.Resilience;
 namespace NClient.Customization
 {
     internal class FactoryCustomizer<TRequest, TResponse> :
-        CommonCustomizer<INClientFactoryCustomizer<TRequest, TResponse>, INClientFactory, TRequest, TResponse>,
+        CommonCustomizer<INClientFactoryCustomizer<TRequest, TResponse>, TRequest, TResponse>,
         INClientFactoryCustomizer<TRequest, TResponse>
     {
         private readonly string _name;
@@ -34,7 +34,7 @@ namespace NClient.Customization
             return this;
         }
 
-        public override INClientFactory Build()
+        public INClientFactory Build()
         {
             return new CustomNClientFactory<TRequest, TResponse>(_name, Context, _defaultResiliencePolicyProvider);
         }

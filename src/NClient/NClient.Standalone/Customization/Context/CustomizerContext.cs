@@ -105,10 +105,9 @@ namespace NClient.Customization.Context
             Logger = logger;
         }
         
-        public void SetLogging<TResult>(ILoggerFactory loggerFactory)
+        public void SetLogging(ILoggerFactory loggerFactory)
         {
             LoggerFactory = loggerFactory;
-            Logger = loggerFactory.CreateLogger<TResult>();
         }
 
         public void ClearLogging()

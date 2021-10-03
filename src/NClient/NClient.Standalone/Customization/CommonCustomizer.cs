@@ -12,9 +12,9 @@ using NClient.Customization.Context;
 
 namespace NClient.Customization
 {
-    internal abstract class CommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
-        : INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
-        where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
+    internal abstract class CommonCustomizer<TSpecificCustomizer, TRequest, TResponse>
+        : INClientCommonCustomizer<TSpecificCustomizer, TRequest, TResponse>
+        where TSpecificCustomizer : class, INClientCommonCustomizer<TSpecificCustomizer, TRequest, TResponse>
     {
         protected static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
         
@@ -103,7 +103,7 @@ namespace NClient.Customization
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
 
-            Context.SetLogging<TResult>(loggerFactory);
+            Context.SetLogging(loggerFactory);
             return (this as TSpecificCustomizer)!;
         }
         
@@ -117,7 +117,5 @@ namespace NClient.Customization
             Context.ClearLogging();
             return (this as TSpecificCustomizer)!;
         }
-
-        public abstract TResult Build();
     }
 }

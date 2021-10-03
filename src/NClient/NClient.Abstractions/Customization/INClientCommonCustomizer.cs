@@ -7,8 +7,7 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Abstractions.Customization
 {
-    public interface INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
-        where TSpecificCustomizer : INClientCommonCustomizer<TSpecificCustomizer, TResult, TRequest, TResponse>
+    public interface INClientCommonCustomizer<TSpecificCustomizer, TRequest, TResponse>
     {
         /// <summary>
         /// Sets custom <see cref="IHttpClientProvider"/> used to create instances of <see cref="IHttpClient"/>.
@@ -64,10 +63,5 @@ namespace NClient.Abstractions.Customization
         
         // TODO: doc
         TSpecificCustomizer WithoutLogging();
-
-        /// <summary>
-        /// Creates <see cref="TResult"/>.
-        /// </summary>
-        TResult Build();
     }
 }

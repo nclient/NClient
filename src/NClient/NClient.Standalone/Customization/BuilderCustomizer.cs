@@ -15,7 +15,7 @@ using NClient.Customization.Resilience;
 namespace NClient.Customization
 {
     internal class BuilderCustomizer<TClient, TRequest, TResponse> :
-        CommonCustomizer<INClientBuilderCustomizer<TClient, TRequest, TResponse>, TClient, TRequest, TResponse>,
+        CommonCustomizer<INClientBuilderCustomizer<TClient, TRequest, TResponse>, TRequest, TResponse>,
         INClientBuilderCustomizer<TClient, TRequest, TResponse>
         where TClient : class
     {
@@ -42,7 +42,7 @@ namespace NClient.Customization
             return this;
         }
 
-        public override TClient Build()
+        public TClient Build()
         {
             Context.EnsureComplete();
             
