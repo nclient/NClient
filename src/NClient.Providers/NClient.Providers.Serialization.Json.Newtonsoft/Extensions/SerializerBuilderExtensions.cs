@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Serialization.Newtonsoft
 {
-    public static class SerializerCustomizerExtensions
+    public static class SerializerBuilderExtensions
     {
         /// <summary>
         /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.

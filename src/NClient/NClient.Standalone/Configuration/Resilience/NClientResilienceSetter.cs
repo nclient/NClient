@@ -4,15 +4,15 @@ using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
 using NClient.Builders.Context;
 
-namespace NClient.Customization.Resilience
+namespace NClient.Configuration.Resilience
 {
     internal class NClientResilienceSetter<TClient, TRequest, TResponse> : NClientFactoryResilienceSetter<TRequest, TResponse>, INClientResilienceSetter<TClient, TRequest, TResponse>
     {
-        public NClientResilienceSetter(CustomizerContext<TRequest, TResponse> context, MethodInfo? selectedMethod) : base(context, selectedMethod)
+        public NClientResilienceSetter(BuilderContext<TRequest, TResponse> context, MethodInfo? selectedMethod) : base(context, selectedMethod)
         {
         }
         
-        public NClientResilienceSetter(CustomizerContext<TRequest, TResponse> context, IEnumerable<MethodInfo> selectedMethods) : base(context, selectedMethods)
+        public NClientResilienceSetter(BuilderContext<TRequest, TResponse> context, IEnumerable<MethodInfo> selectedMethods) : base(context, selectedMethods)
         {
         }
 

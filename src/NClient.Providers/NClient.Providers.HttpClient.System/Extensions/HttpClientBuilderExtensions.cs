@@ -5,7 +5,7 @@ using NClient.Common.Helpers;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.System
 {
-    public static class HttpClientCustomizerExtensions
+    public static class HttpClientBuilderExtensions
     {
         /// <summary>
         /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.

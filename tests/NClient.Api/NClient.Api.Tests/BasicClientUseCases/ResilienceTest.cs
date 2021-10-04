@@ -87,7 +87,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithCustomResilience(customizer => customizer
+                .WithCustomResilience(selector => selector
                     .ForAllMethods().DoNotUse()
                     .ForMethod(x => (Func<int, Task<int>>)x.GetAsync).Use(
                         maxRetries: 3,

@@ -8,9 +8,9 @@ namespace NClient.Builders
     internal class NClientFactorySerializerBuilder<TRequest, TResponse> : INClientFactorySerializerBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
-        private readonly CustomizerContext<TRequest, TResponse> _context;
+        private readonly BuilderContext<TRequest, TResponse> _context;
         
-        public NClientFactorySerializerBuilder(string factoryName, CustomizerContext<TRequest, TResponse> context)
+        public NClientFactorySerializerBuilder(string factoryName, BuilderContext<TRequest, TResponse> context)
         {
             _factoryName = factoryName;
             _context = context;

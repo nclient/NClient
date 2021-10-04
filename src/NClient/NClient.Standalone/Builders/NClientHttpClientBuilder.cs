@@ -21,7 +21,7 @@ namespace NClient.Builders
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
 
-            var context = new CustomizerContext<TRequest, TResponse>();
+            var context = new BuilderContext<TRequest, TResponse>();
 
             context.SetHost(_host);
             context.SetHttpClientProvider(httpClientProvider, httpMessageBuilderProvider);

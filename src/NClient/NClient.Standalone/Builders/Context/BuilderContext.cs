@@ -13,7 +13,7 @@ using NClient.Exceptions.Factories;
 
 namespace NClient.Builders.Context
 {
-    internal class CustomizerContext<TRequest, TResponse>
+    internal class BuilderContext<TRequest, TResponse>
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
@@ -35,7 +35,7 @@ namespace NClient.Builders.Context
         public ILogger? Logger { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
 
-        public CustomizerContext()
+        public BuilderContext()
         {
             ClientHandlers = new List<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
@@ -155,7 +155,7 @@ namespace NClient.Builders.Context
             LoggerFactory = null;
         }
 
-        public CustomizerContext<TRequest, TResponse> EnsureComplete()
+        public BuilderContext<TRequest, TResponse> EnsureComplete()
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();

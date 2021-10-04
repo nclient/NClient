@@ -4,13 +4,13 @@ using NClient.Abstractions.Configuration.Resilience;
 using NClient.Builders.Context;
 using NClient.Core.Helpers;
 
-namespace NClient.Customization.Resilience
+namespace NClient.Configuration.Resilience
 {
     internal class NClientResilienceMethodSelector<TClient, TRequest, TResponse> : INClientResilienceMethodSelector<TClient, TRequest, TResponse>
     {
-        private readonly CustomizerContext<TRequest, TResponse> _context;
+        private readonly BuilderContext<TRequest, TResponse> _context;
         
-        public NClientResilienceMethodSelector(CustomizerContext<TRequest, TResponse> context)
+        public NClientResilienceMethodSelector(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
         }

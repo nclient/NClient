@@ -28,8 +28,8 @@ namespace NClient.Extensions.DependencyInjection
             
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreatePreConfiguredCustomizer(serviceProvider, factoryName, httpClientName);
-                return factoryCustomizer.Build();
+                var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
+                return preConfiguredBuilder.Build();
             }).AddHttpClient(httpClientName);
         }
 
@@ -51,8 +51,8 @@ namespace NClient.Extensions.DependencyInjection
             
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreatePreConfiguredCustomizer(serviceProvider, factoryName, httpClientName);
-                return configure(factoryCustomizer);
+                var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
+                return configure(preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
@@ -74,12 +74,12 @@ namespace NClient.Extensions.DependencyInjection
 
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var factoryCustomizer = CreatePreConfiguredCustomizer(serviceProvider, factoryName, httpClientName);
-                return configure(serviceProvider, factoryCustomizer);
+                var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
+                return configure(serviceProvider, preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
-        private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer(IServiceProvider serviceProvider, string factoryName, string httpClientName)
+        private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredBuilder(IServiceProvider serviceProvider, string factoryName, string httpClientName)
         {
             return new AspNetNClientFactoryBuilder(httpClientName, serviceProvider).For(factoryName);
         }

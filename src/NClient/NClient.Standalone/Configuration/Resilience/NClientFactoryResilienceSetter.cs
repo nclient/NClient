@@ -4,21 +4,21 @@ using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
 using NClient.Builders.Context;
 
-namespace NClient.Customization.Resilience
+namespace NClient.Configuration.Resilience
 {
     // TODO: Need tests
     internal class NClientFactoryResilienceSetter<TRequest, TResponse> : INClientFactoryResilienceSetter<TRequest, TResponse>
     {
         private readonly IEnumerable<MethodInfo>? _selectedMethods;
         
-        protected readonly CustomizerContext<TRequest, TResponse> Context;
+        protected readonly BuilderContext<TRequest, TResponse> Context;
         
-        public NClientFactoryResilienceSetter(CustomizerContext<TRequest, TResponse> context, MethodInfo? selectedMethod) 
+        public NClientFactoryResilienceSetter(BuilderContext<TRequest, TResponse> context, MethodInfo? selectedMethod) 
             : this(context, selectedMethod is null ? null : new[] { selectedMethod })
         {
         }
         
-        public NClientFactoryResilienceSetter(CustomizerContext<TRequest, TResponse> context, IEnumerable<MethodInfo>? selectedMethods)
+        public NClientFactoryResilienceSetter(BuilderContext<TRequest, TResponse> context, IEnumerable<MethodInfo>? selectedMethods)
         {
             Context = context;
             _selectedMethods = selectedMethods;

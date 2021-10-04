@@ -7,7 +7,7 @@ using NClient.Providers.Serialization.Json.System;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Serialization.System
 {
-    public static class SerializerCustomizerExtensions
+    public static class SerializerBuilderExtensions
     {
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.

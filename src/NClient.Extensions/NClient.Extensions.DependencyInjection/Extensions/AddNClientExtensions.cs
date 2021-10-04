@@ -28,8 +28,8 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientName = GuidProvider.Create().ToString();
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreatePreConfiguredCustomizer<TClient>(serviceProvider, host, httpClientName);
-                return builderCustomizer.Build();
+                var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
+                return preConfiguredBuilder.Build();
             }).AddHttpClient(httpClientName);
         }
 
@@ -51,8 +51,8 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientName = GuidProvider.Create().ToString();
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreatePreConfiguredCustomizer<TClient>(serviceProvider, host, httpClientName);
-                return configure(builderCustomizer);
+                var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
+                return configure(preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
@@ -74,12 +74,12 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientName = GuidProvider.Create().ToString();
             return serviceCollection.AddSingleton(serviceProvider =>
             {
-                var builderCustomizer = CreatePreConfiguredCustomizer<TClient>(serviceProvider, host, httpClientName);
-                return configure(serviceProvider, builderCustomizer);
+                var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
+                return configure(serviceProvider, preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
-        private static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer<TClient>(
+        private static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredBuilder<TClient>(
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TClient : class
         {

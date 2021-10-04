@@ -103,7 +103,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithCustomResilience(customizer => customizer
+                .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();
@@ -120,7 +120,7 @@ namespace NClient.Tests.ClientTests
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithCustomResilience(customizer => customizer
+                .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();

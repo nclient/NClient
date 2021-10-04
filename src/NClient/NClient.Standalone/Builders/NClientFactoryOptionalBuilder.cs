@@ -11,20 +11,20 @@ using NClient.Abstractions.Serialization;
 using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
+using NClient.Configuration.Resilience;
 using NClient.Core.Interceptors;
 using NClient.Core.Proxy;
-using NClient.Customization.Resilience;
 
 namespace NClient.Builders
 {
     internal class NClientFactoryOptionalBuilder<TRequest, TResponse> : INClientFactoryOptionalBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
-        private readonly CustomizerContext<TRequest, TResponse> _context;
+        private readonly BuilderContext<TRequest, TResponse> _context;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
-        public NClientFactoryOptionalBuilder(string factoryName, CustomizerContext<TRequest, TResponse> context)
+        public NClientFactoryOptionalBuilder(string factoryName, BuilderContext<TRequest, TResponse> context)
         {
             _factoryName = factoryName;
             _context = context;
@@ -109,7 +109,6 @@ namespace NClient.Builders
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
-
             configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_context));
             return this;
         }

@@ -7,7 +7,7 @@ using NClient.Providers.HttpClient.System;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class HttpClientCustomizerExtensions
+    public static class HttpClientBuilderExtensions
     {
         /// <summary>
         /// Sets System.Net.Http based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.

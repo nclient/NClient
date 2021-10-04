@@ -7,7 +7,7 @@ using RestSharp.Authenticators;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.RestSharp
 {
-    public static class HttpClientCustomizerExtensions
+    public static class HttpClientBuilderExtensions
     {
         /// <summary>
         /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.

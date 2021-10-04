@@ -11,24 +11,24 @@ using NClient.Abstractions.Serialization;
 using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
+using NClient.Configuration.Resilience;
 using NClient.Core.Ensuring;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.Validation;
 using NClient.Core.Proxy;
 using NClient.Core.Resilience;
 using NClient.Core.Validation;
-using NClient.Customization.Resilience;
 
 namespace NClient.Builders
 {
     internal class NClientOptionalBuilder<TClient, TRequest, TResponse> : INClientOptionalBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
-        private readonly CustomizerContext<TRequest, TResponse> _context;
+        private readonly BuilderContext<TRequest, TResponse> _context;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
-        public NClientOptionalBuilder(CustomizerContext<TRequest, TResponse> context)
+        public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
             var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();

@@ -7,7 +7,7 @@ using Polly;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Resilience.Polly
 {
-    public static class CommonCustomizerExtensions
+    public static class CommonBuilderExtensions
     {
         /// <summary>
         /// Sets resilience policy provider for idempotent HTTP methods (all except POST).

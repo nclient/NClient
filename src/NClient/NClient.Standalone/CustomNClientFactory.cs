@@ -10,20 +10,20 @@ namespace NClient
     /// </summary>
     internal class CustomNClientFactory<TRequest, TResponse> : INClientFactory
     {
-        private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
+        private readonly BuilderContext<TRequest, TResponse> _builderContext;
         
         public string Name { get; set; }
         
-        public CustomNClientFactory(string name, CustomizerContext<TRequest, TResponse> customizerContext)
+        public CustomNClientFactory(string name, BuilderContext<TRequest, TResponse> builderContext)
         {
             Name = name;
-            _customizerContext = customizerContext;
+            _builderContext = builderContext;
         }
         
         public TClient Create<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_customizerContext).Build();
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext).Build();
         }
     }
 }

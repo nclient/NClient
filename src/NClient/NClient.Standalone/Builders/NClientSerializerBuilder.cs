@@ -8,9 +8,9 @@ namespace NClient.Builders
     internal class NClientSerializerBuilder<TClient, TRequest, TResponse> : INClientSerializerBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
-        private readonly CustomizerContext<TRequest, TResponse> _context;
+        private readonly BuilderContext<TRequest, TResponse> _context;
         
-        public NClientSerializerBuilder(CustomizerContext<TRequest, TResponse> context)
+        public NClientSerializerBuilder(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
         }
