@@ -1,6 +1,6 @@
 ﻿using NClient.Abstractions.Resilience;
 
-namespace NClient.Abstractions.Customization.Resilience
+namespace NClient.Abstractions.Configuration.Resilience
 {
     // TODO: doc
     public interface INClientResilienceSetter<TClient, TRequest, TResponse>

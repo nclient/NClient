@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Builders;
-using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
@@ -106,11 +106,11 @@ namespace NClient.Builders
             return this;
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> customizer)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> configure)
         {
-            Ensure.IsNotNull(customizer, nameof(customizer));
+            Ensure.IsNotNull(configure, nameof(configure));
 
-            customizer(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_context));
+            configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_context));
             return this;
         }
         

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
 using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;

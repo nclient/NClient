@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
 using NClient.Builders.Context;
 

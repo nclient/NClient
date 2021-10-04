@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Configuration.Resilience;
 using NClient.Builders.Context;
 using NClient.Core.Helpers;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace NClient.Abstractions.Customization.Resilience
+namespace NClient.Abstractions.Configuration.Resilience
 {
     // TODO: doc
     public interface INClientResilienceMethodSelector<TClient, TRequest, TResponse>
