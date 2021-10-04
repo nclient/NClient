@@ -1,27 +1,28 @@
-﻿using NClient.Abstractions.Resilience;
+﻿using NClient.Abstractions.Ensuring;
+using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Interceptors.Validation
 {
-    public interface IResponseValidator<TRequest, TResponse>
+    internal interface IResponseValidator<TRequest, TResponse>
     {
         ResponseContext<TRequest, TResponse> Ensure(ResponseContext<TRequest, TResponse> responseContext);
     }
     
-    public class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
+    internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
-        private readonly IResponseValidatorSettings<TRequest, TResponse> _settings;
+        private readonly IEnsuringSettings<TRequest, TResponse> _ensuringSettings;
         
-        public ResponseValidator(IResponseValidatorSettings<TRequest, TResponse> settings)
+        public ResponseValidator(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            _settings = settings;
+            _ensuringSettings = ensuringSettings;
         }
 
         public ResponseContext<TRequest, TResponse> Ensure(ResponseContext<TRequest, TResponse> responseContext)
         {
-            if (_settings.SuccessCondition(responseContext))
+            if (_ensuringSettings.SuccessCondition(responseContext))
                 return responseContext;
             
-            _settings.OnFailure(responseContext);
+            _ensuringSettings.OnFailure(responseContext);
             return responseContext;
         }
     }

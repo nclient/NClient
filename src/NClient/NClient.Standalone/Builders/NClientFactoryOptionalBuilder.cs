@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Builders;
 using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
@@ -34,7 +35,14 @@ namespace NClient.Builders
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringSuccess(
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
+            IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+        {
+            _context.SetEnsureSuccess(ensuringSettings);
+            return this;
+        }
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));

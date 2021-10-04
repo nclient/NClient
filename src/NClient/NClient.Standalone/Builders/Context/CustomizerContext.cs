@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
@@ -22,8 +23,7 @@ namespace NClient.Builders.Context
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
-        public Predicate<ResponseContext<TRequest, TResponse>>? SuccessCondition { get; private set; }
-        public Action<ResponseContext<TRequest, TResponse>>? OnFailure { get; private set; }
+        public IEnsuringSettings<TRequest, TResponse>? EnsuringSettings { get; private set; }
 
         public ICollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
@@ -62,8 +62,12 @@ namespace NClient.Builders.Context
         public void SetEnsureSuccess(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
         {
-            SuccessCondition = successCondition;
-            OnFailure = onFailure;
+            SetEnsureSuccess(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
+        }
+        
+        public void SetEnsureSuccess(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+        {
+            EnsuringSettings = ensuringSettings;
         }
 
         public void SetHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)

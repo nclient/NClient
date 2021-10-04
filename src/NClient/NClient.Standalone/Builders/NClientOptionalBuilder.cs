@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Builders;
 using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
@@ -35,19 +36,26 @@ namespace NClient.Builders
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
+            IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            _context.SetSerializer(serializerProvider);
+            _context.SetEnsureSuccess(ensuringSettings);
             return this;
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringSuccess(
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));
             Ensure.IsNotNull(onFailure, nameof(onFailure));
             _context.SetEnsureSuccess(successCondition, onFailure);
+            return this;
+        }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
+        {
+            Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
+            _context.SetSerializer(serializerProvider);
             return this;
         }
 
@@ -143,12 +151,7 @@ namespace NClient.Builders
                 _context.HttpMessageBuilderProvider,
                 _context.SerializerProvider,
                 _context.ClientHandlers.ToArray(),
-                new ResponseValidator<TRequest, TResponse>(
-                    new ResponseValidatorSettings<TRequest, TResponse>(
-                        _context.SuccessCondition ?? (_ => true), 
-                        _context.OnFailure ?? (_ =>
-                        {
-                        }))),
+                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new NoEnsuringSettings<TRequest, TResponse>()),
                 _context.MethodResiliencePolicyProvider
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider ?? new NoResiliencePolicyProvider<TRequest, TResponse>(), 

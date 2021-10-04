@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Customization.Resilience;
+using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
@@ -12,8 +13,11 @@ namespace NClient.Abstractions.Builders
     {
         #region MyRegion
 
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
+            IEnsuringSettings<TRequest, TResponse> ensuringSettings);
+        
         // TODO: doc
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringSuccess(
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition,
             Action<ResponseContext<TRequest, TResponse>> onFailure);
 

@@ -38,8 +38,8 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<ClientRequestException>();
         }
 
-        [Test, Ignore("Why?")]
-        public void AsResilientInvoke_InternalServerError_NotThrow()
+        [Test]
+        public void AsResilientInvoke_InternalServerError_ThrowClientRequestException()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var noOpPolicy = new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>());
@@ -49,7 +49,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.AsResilient().Invoke(client => client.Get(1), noOpPolicy))
                 .Should()
-                .NotThrow();
+                .ThrowExactly<ClientRequestException>();
         }
         
         [Test]
@@ -98,8 +98,8 @@ namespace NClient.Tests.ClientTests
                 .NotThrow();
         }
 
-        [Test, Ignore("Why?")]
-        public void WithResiliencePolicyForGet_GetRequestWithInternalServerError_NotThrow()
+        [Test]
+        public void WithResiliencePolicyForGet_GetRequestWithInternalServerError_NotClientRequestException()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = new NClientBuilder()
@@ -111,7 +111,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.Get(1))
                 .Should()
-                .NotThrow();
+                .ThrowExactly<ClientRequestException>();
         }
         
         [Test]
