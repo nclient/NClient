@@ -56,7 +56,7 @@ namespace NClient.Builders
             return this;
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithSerializerReplacedBy(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
             _context.SetSerializer(serializerProvider);

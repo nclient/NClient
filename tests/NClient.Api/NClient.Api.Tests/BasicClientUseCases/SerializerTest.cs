@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Builders;
-using NClient.Providers.Serialization.Json.Newtonsoft;
+using NClient.Providers.Serialization.Newtonsoft;
 using NClient.Testing.Common.Apis;
 using NClient.Tests.Clients;
 using NUnit.Framework;
@@ -28,7 +28,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithReplacedSerializer(new NewtonsoftJsonSerializerProvider()) // TODO: неудобно
+                .WithSerializerReplacedByNewtonsoftJson()
                 .Build();
             
             var response = await client.GetAsync(id);

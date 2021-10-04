@@ -59,7 +59,7 @@ namespace NClient.Builders
             return this;
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithSerializerReplacedBy(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
             _context.SetSerializer(serializerProvider);
