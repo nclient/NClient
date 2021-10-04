@@ -16,16 +16,14 @@ namespace NClient.Builders
         
         public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider, 
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
-            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory)
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
-            Ensure.IsNotNull(httpClientExceptionFactory, nameof(httpClientExceptionFactory));
 
             var context = new CustomizerContext<TRequest, TResponse>();
             
-            context.SetHttpClientProvider(httpClientProvider, httpMessageBuilderProvider, httpClientExceptionFactory);
+            context.SetHttpClientProvider(httpClientProvider, httpMessageBuilderProvider);
             return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, context);
         }
     }

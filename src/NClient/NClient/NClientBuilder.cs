@@ -1,5 +1,7 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using NClient.Abstractions.Builders;
+using NClient.Abstractions.Exceptions;
 
 namespace NClient
 {
@@ -15,6 +17,20 @@ namespace NClient
                 .For<TClient>(host)
                 .UsingHttpClient()
                 .UsingJsonSerializer()
+                // TODO: to extension or provider
+                .EnsuringSuccess(
+                    successCondition: x => x.Response.IsSuccessStatusCode,
+                    onFailure: x =>
+                    {
+                        try
+                        {
+                            x.Response.EnsureSuccessStatusCode();
+                        }
+                        catch (HttpRequestException e)
+                        {
+                            throw new HttpClientException<HttpRequestMessage, HttpResponseMessage>(x.Request, x.Response, e.Message, e);
+                        }
+                    })
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithoutLogging();

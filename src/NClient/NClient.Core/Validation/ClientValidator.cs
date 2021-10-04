@@ -8,6 +8,7 @@ using NClient.Abstractions.Resilience.Providers;
 using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.Validation;
 using NClient.Core.Serialization;
 using NClient.Exceptions;
 
@@ -38,9 +39,15 @@ namespace NClient.Core.Validation
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
-                    new StubHttpClientExceptionFactory(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
+                    new ResponseValidator<HttpRequest, HttpResponse>(new ResponseValidatorSettings<HttpRequest, HttpResponse>
+                    (
+                        successCondition: _ => true,
+                        onFailure: _ =>
+                        {
+                        }
+                    )),
                     new MethodResiliencePolicyProviderAdapter<HttpRequest, HttpResponse>(
                         new NoResiliencePolicyProvider<HttpRequest, HttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());

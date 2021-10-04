@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace NClient.Abstractions.Resilience
 {
@@ -23,10 +22,5 @@ namespace NClient.Abstractions.Resilience
         /// The predicate to filter the results this policy will handle.
         /// </summary>
         Func<ResponseContext<TRequest, TResponse>, bool> ResultPredicate { get; }
-        
-        /// <summary>
-        /// The function to call asynchronously before invoking the fallback delegate.
-        /// </summary>
-        Func<ResponseContext<TRequest, TResponse>, Task> OnFallbackAsync { get; }
     }
 }

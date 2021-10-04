@@ -15,16 +15,13 @@ namespace NClient.Providers.HttpClient.System
     {
         private readonly ISerializer _serializer;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly ISystemHttpClientExceptionFactory _httpClientExceptionFactory;
 
         public SystemHttpMessageBuilder(
             ISerializer serializer,
-            IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            ISystemHttpClientExceptionFactory httpClientExceptionFactory)
+            IFinalHttpRequestBuilder finalHttpRequestBuilder)
         {
             _serializer = serializer;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
-            _httpClientExceptionFactory = httpClientExceptionFactory;
         }
         
         public Task<HttpRequestMessage> BuildRequestAsync(HttpRequest httpRequest)
@@ -73,12 +70,9 @@ namespace NClient.Providers.HttpClient.System
                 StatusDescription = response.StatusCode.ToString(),
                 ResponseUri = response.RequestMessage.RequestUri,
                 ErrorMessage = exception?.Message,
+                ErrorException = exception,
                 ProtocolVersion = response.Version
             };
-
-            httpResponse.ErrorException = exception is not null
-                ? _httpClientExceptionFactory.Create(response.RequestMessage, response, exception)
-                : null;
 
             return httpResponse;
         }

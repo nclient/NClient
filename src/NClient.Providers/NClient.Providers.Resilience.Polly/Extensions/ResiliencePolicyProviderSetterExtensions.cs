@@ -19,7 +19,7 @@ namespace NClient.Providers.Resilience.Polly
             this INClientResilienceSetter<TClient, TRequest, TResponse> clientResilienceSetter, 
             IResiliencePolicySettings<TRequest, TResponse> policySettings)
         {
-            return clientResilienceSetter.Use(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(policySettings));
+            return clientResilienceSetter.Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(policySettings));
         }
         
         public static INClientFactoryResilienceMethodSelector<TRequest, TResponse> UsePolly<TRequest, TResponse>(
@@ -33,7 +33,7 @@ namespace NClient.Providers.Resilience.Polly
             this INClientFactoryResilienceSetter<TRequest, TResponse> factoryResilienceSetter, 
             IResiliencePolicySettings<TRequest, TResponse> policySettings)
         {
-            return factoryResilienceSetter.Use(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(policySettings));
+            return factoryResilienceSetter.Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(policySettings));
         }
     }
 }

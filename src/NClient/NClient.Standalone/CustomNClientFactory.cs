@@ -8,7 +8,7 @@ namespace NClient
     /// <summary>
     /// The factory used to create the client with custom providers.
     /// </summary>
-    public class CustomNClientFactory<TRequest, TResponse> : INClientFactory
+    internal class CustomNClientFactory<TRequest, TResponse> : INClientFactory
     {
         private readonly CustomizerContext<TRequest, TResponse> _customizerContext;
         
@@ -23,7 +23,6 @@ namespace NClient
         public TClient Create<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_customizerContext).Build();
         }
     }

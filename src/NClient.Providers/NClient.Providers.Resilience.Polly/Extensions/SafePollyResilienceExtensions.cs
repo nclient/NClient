@@ -23,13 +23,12 @@ namespace NClient.Providers.Resilience.Polly
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
             return clientOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
+                safeMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
+                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
                 (
                     retryCount: 0,
                     sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ResultPredicate,
-                    onFallbackAsync: settings.OnFallbackAsync
+                    resultPredicate: settings.ResultPredicate
                 )));
         }
         
@@ -45,13 +44,12 @@ namespace NClient.Providers.Resilience.Polly
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
             return factoryOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
+                safeMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
+                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
                 (
                     retryCount: 0,
                     sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ResultPredicate,
-                    onFallbackAsync: settings.OnFallbackAsync
+                    resultPredicate: settings.ResultPredicate
                 )));
         }
         

@@ -10,13 +10,22 @@ namespace NClient.Abstractions.Builders
 {
     public interface INClientFactoryOptionalBuilder<TRequest, TResponse>
     {
+        #region MyRegion
+
+        // TODO: doc
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringSuccess(
+            Predicate<ResponseContext<TRequest, TResponse>> successCondition,
+            Action<ResponseContext<TRequest, TResponse>> onFailure);
+
+        #endregion
+        
         #region Serializer
         
         /// <summary>
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
-        INClientFactoryOptionalBuilder<TRequest, TResponse> ChangeSerializerToCustom(ISerializerProvider serializerProvider);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider);
 
         #endregion
         

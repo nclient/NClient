@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Exceptions;
 

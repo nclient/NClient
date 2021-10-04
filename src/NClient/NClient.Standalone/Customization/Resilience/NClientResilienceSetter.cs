@@ -6,7 +6,7 @@ using NClient.Builders.Context;
 
 namespace NClient.Customization.Resilience
 {
-    public class NClientResilienceSetter<TClient, TRequest, TResponse> : NClientFactoryResilienceSetter<TRequest, TResponse>, INClientResilienceSetter<TClient, TRequest, TResponse>
+    internal class NClientResilienceSetter<TClient, TRequest, TResponse> : NClientFactoryResilienceSetter<TRequest, TResponse>, INClientResilienceSetter<TClient, TRequest, TResponse>
     {
         public NClientResilienceSetter(CustomizerContext<TRequest, TResponse> context, MethodInfo? selectedMethod) : base(context, selectedMethod)
         {

@@ -6,6 +6,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Core.Interceptors.Validation;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -18,6 +19,7 @@ namespace NClient.Core.Interceptors.HttpClients
     {
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
+        private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
@@ -26,6 +28,7 @@ namespace NClient.Core.Interceptors.HttpClients
         public ResilienceHttpClient(
             ISerializerProvider serializerProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -33,6 +36,7 @@ namespace NClient.Core.Interceptors.HttpClients
         {
             _serializerProvider = serializerProvider;
             _clientHandler = clientHandler;
+            _responseValidator = responseValidator;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
@@ -68,7 +72,7 @@ namespace NClient.Core.Interceptors.HttpClients
                     .ConfigureAwait(false);
                 
                 response = await client.ExecuteAsync(request).ConfigureAwait(false);
-                
+
                 response = await _clientHandler
                     .HandleResponseAsync(response, methodInvocation)
                     .ConfigureAwait(false);
@@ -82,7 +86,12 @@ namespace NClient.Core.Interceptors.HttpClients
             }
             
             _logger?.LogDebug("Response received. Request id: '{requestId}'.", httpRequest.Id);
-            return new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
+            var responseContext = new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
+            if (responseContext.MethodInvocation.ResultType == typeof(TResponse))
+                return responseContext;
+            if (typeof(HttpResponse).IsAssignableFrom(responseContext.MethodInvocation.ResultType))
+                return responseContext;
+            return _responseValidator.Ensure(responseContext);
         }
     }
 }

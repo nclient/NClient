@@ -17,6 +17,7 @@ using NClient.Core.Interceptors.Invocation;
 using NClient.Core.Interceptors.MethodBuilders;
 using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Core.Interceptors.RequestBuilders;
+using NClient.Core.Interceptors.Validation;
 using NClient.Core.Mappers;
 
 namespace NClient.Core.Interceptors
@@ -27,9 +28,9 @@ namespace NClient.Core.Interceptors
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
-            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger<TClient>? logger = null);
     }
@@ -73,9 +74,9 @@ namespace NClient.Core.Interceptors
             Uri host,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
-            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory,
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger<TClient>? logger = null)
         {
@@ -87,6 +88,7 @@ namespace NClient.Core.Interceptors
                 CreateResilienceHttpClientProvider(
                     serializerProvider,
                     clientHandlers,
+                    responseValidator,
                     httpClientProvider,
                     httpMessageBuilder,
                     methodResiliencePolicyProvider,
@@ -104,6 +106,7 @@ namespace NClient.Core.Interceptors
         private static IResilienceHttpClientProvider<TRequest, TResponse> CreateResilienceHttpClientProvider<TClient, TRequest, TResponse>(
             ISerializerProvider serializerProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -112,6 +115,7 @@ namespace NClient.Core.Interceptors
             return new ResilienceHttpClientProvider<TRequest, TResponse>(
                 serializerProvider,
                 new ClientHandlerDecorator<TClient, TRequest, TResponse>(clientHandlers, logger),
+                responseValidator,
                 httpClientProvider,
                 httpMessageBuilder,
                 methodResiliencePolicyProvider,

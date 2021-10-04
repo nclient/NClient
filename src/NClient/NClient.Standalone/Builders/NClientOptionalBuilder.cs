@@ -12,6 +12,7 @@ using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.Validation;
 using NClient.Core.Proxy;
 using NClient.Core.Validation;
 using NClient.Customization.Resilience;
@@ -34,10 +35,19 @@ namespace NClient.Builders
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> ChangeSerializerToCustom(ISerializerProvider serializerProvider)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
             _context.SetSerializer(serializerProvider);
+            return this;
+        }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringSuccess(
+            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
+        {
+            Ensure.IsNotNull(successCondition, nameof(successCondition));
+            Ensure.IsNotNull(onFailure, nameof(onFailure));
+            _context.SetEnsureSuccess(successCondition, onFailure);
             return this;
         }
 
@@ -131,9 +141,14 @@ namespace NClient.Builders
                 new Uri(_context.Host),
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
-                _context.HttpClientExceptionFactory,
                 _context.SerializerProvider,
                 _context.ClientHandlers.ToArray(),
+                new ResponseValidator<TRequest, TResponse>(
+                    new ResponseValidatorSettings<TRequest, TResponse>(
+                        _context.SuccessCondition ?? (_ => true), 
+                        _context.OnFailure ?? (_ =>
+                        {
+                        }))),
                 _context.MethodResiliencePolicyProvider
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider ?? new NoResiliencePolicyProvider<TRequest, TResponse>(), 

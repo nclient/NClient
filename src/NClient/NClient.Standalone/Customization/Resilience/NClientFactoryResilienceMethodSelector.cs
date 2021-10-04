@@ -6,7 +6,7 @@ using NClient.Core.Helpers;
 
 namespace NClient.Customization.Resilience
 {
-    public class NClientFactoryResilienceMethodSelector<TRequest, TResponse> : INClientFactoryResilienceMethodSelector<TRequest, TResponse>
+    internal class NClientFactoryResilienceMethodSelector<TRequest, TResponse> : INClientFactoryResilienceMethodSelector<TRequest, TResponse>
     {
         private readonly CustomizerContext<TRequest, TResponse> _context;
         

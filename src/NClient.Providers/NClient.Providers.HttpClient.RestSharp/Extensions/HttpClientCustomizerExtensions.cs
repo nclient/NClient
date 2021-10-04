@@ -21,8 +21,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpHttpClientProvider(),
-                new RestSharpHttpMessageBuilderProvider(),
-                new RestSharpHttpClientExceptionFactory());
+                new RestSharpHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -36,8 +35,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpHttpClientProvider(),
-                new RestSharpHttpMessageBuilderProvider(),
-                new RestSharpHttpClientExceptionFactory());
+                new RestSharpHttpMessageBuilderProvider());
         }
 
         /// <summary>
@@ -54,8 +52,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpHttpClientProvider(authenticator),
-                new RestSharpHttpMessageBuilderProvider(),
-                new RestSharpHttpClientExceptionFactory());
+                new RestSharpHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -71,8 +68,7 @@ namespace NClient.Providers.HttpClient.RestSharp
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpHttpClientProvider(authenticator),
-                new RestSharpHttpMessageBuilderProvider(),
-                new RestSharpHttpClientExceptionFactory());
+                new RestSharpHttpMessageBuilderProvider());
         }
     }
 }

@@ -5,7 +5,7 @@ using NClient.Common.Helpers;
 
 namespace NClient.Builders
 {
-    public class NClientSerializerBuilder<TClient, TRequest, TResponse> : INClientSerializerBuilder<TClient, TRequest, TResponse>
+    internal class NClientSerializerBuilder<TClient, TRequest, TResponse> : INClientSerializerBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
         private readonly CustomizerContext<TRequest, TResponse> _context;

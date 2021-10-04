@@ -7,18 +7,9 @@ namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly ISystemHttpClientExceptionFactory _httpClientExceptionFactory;
-        public SystemHttpMessageBuilderProvider()
-        {
-            _httpClientExceptionFactory = new SystemHttpClientExceptionFactory();
-        }
-        
         public IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
         {
-            return new SystemHttpMessageBuilder(
-                serializer,
-                new FinalHttpRequestBuilder(serializer),
-                _httpClientExceptionFactory);
+            return new SystemHttpMessageBuilder(serializer, new FinalHttpRequestBuilder(serializer));
         }
     }
 }

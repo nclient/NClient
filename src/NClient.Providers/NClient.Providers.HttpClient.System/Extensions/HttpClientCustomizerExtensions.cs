@@ -19,8 +19,7 @@ namespace NClient.Providers.HttpClient.System
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -34,8 +33,7 @@ namespace NClient.Providers.HttpClient.System
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -54,8 +52,7 @@ namespace NClient.Providers.HttpClient.System
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(httpClientFactory, httpClientName), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -73,8 +70,7 @@ namespace NClient.Providers.HttpClient.System
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(httpClientFactory, httpClientName), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
 
         /// <summary>
@@ -92,8 +88,7 @@ namespace NClient.Providers.HttpClient.System
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(httpMessageHandler), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
@@ -110,8 +105,7 @@ namespace NClient.Providers.HttpClient.System
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpClientProvider(httpMessageHandler), 
-                new SystemHttpMessageBuilderProvider(),
-                new SystemHttpClientExceptionFactory());
+                new SystemHttpMessageBuilderProvider());
         }
     }
 }

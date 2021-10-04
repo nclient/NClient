@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
@@ -10,7 +11,7 @@ using NClient.Exceptions.Factories;
 
 namespace NClient.Builders.Context
 {
-    public class CustomizerContext<TRequest, TResponse>
+    internal class CustomizerContext<TRequest, TResponse>
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
@@ -18,9 +19,11 @@ namespace NClient.Builders.Context
 
         public IHttpClientProvider<TRequest, TResponse> HttpClientProvider { get; private set; } = null!;
         public IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider { get; private set; } = null!;
-        public IHttpClientExceptionFactory<TRequest, TResponse> HttpClientExceptionFactory { get; private set; } = null!;
-
+        
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
+
+        public Predicate<ResponseContext<TRequest, TResponse>>? SuccessCondition { get; private set; }
+        public Action<ResponseContext<TRequest, TResponse>>? OnFailure { get; private set; }
 
         public ICollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
@@ -45,17 +48,22 @@ namespace NClient.Builders.Context
 
         public void SetHttpClientProvider(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
-            IHttpClientExceptionFactory<TRequest, TResponse> httpClientExceptionFactory)
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
             HttpClientProvider = httpClientProvider;
             HttpMessageBuilderProvider = httpMessageBuilderProvider;
-            HttpClientExceptionFactory = httpClientExceptionFactory;
         }
 
         public void SetSerializer(ISerializerProvider serializerProvider)
         {
             SerializerProvider = serializerProvider;
+        }
+        
+        public void SetEnsureSuccess(
+            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
+        {
+            SuccessCondition = successCondition;
+            OnFailure = onFailure;
         }
 
         public void SetHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)
@@ -120,7 +128,7 @@ namespace NClient.Builders.Context
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
-            if (HttpClientProvider is null || HttpMessageBuilderProvider is null || HttpClientExceptionFactory is null)
+            if (HttpClientProvider is null || HttpMessageBuilderProvider is null)
                 throw _clientBuildExceptionFactory.HttpClientIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();

@@ -1,7 +1,6 @@
 ﻿using System;
-using NClient.Abstractions.Exceptions;
 
-namespace NClient.Abstractions.HttpClients
+namespace NClient.Abstractions.Exceptions
 {
     /// <summary>
     /// Represents exceptions thrown by NClient client during the processing of the HTTP request.

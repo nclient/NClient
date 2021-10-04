@@ -33,8 +33,17 @@ namespace NClient.Builders
             _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringSuccess(
+            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
+        {
+            Ensure.IsNotNull(successCondition, nameof(successCondition));
+            Ensure.IsNotNull(onFailure, nameof(onFailure));
+            _context.SetEnsureSuccess(successCondition, onFailure);
+            return this;
+        }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> ChangeSerializerToCustom(ISerializerProvider serializerProvider)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
             _context.SetSerializer(serializerProvider);

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;

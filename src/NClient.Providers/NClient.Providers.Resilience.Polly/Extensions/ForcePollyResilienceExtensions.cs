@@ -20,7 +20,7 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithForceResilience(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return clientOptionalBuilder.WithForceResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
         }
         
         /// <summary>
@@ -34,7 +34,7 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithForceResilience(new ConfiguredPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return factoryOptionalBuilder.WithForceResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
         }
 
         /// <summary>

@@ -5,7 +5,7 @@ using NClient.Common.Helpers;
 
 namespace NClient.Builders
 {
-    public class NClientFactorySerializerBuilder<TRequest, TResponse> : INClientFactorySerializerBuilder<TRequest, TResponse>
+    internal class NClientFactorySerializerBuilder<TRequest, TResponse> : INClientFactorySerializerBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
         private readonly CustomizerContext<TRequest, TResponse> _context;
