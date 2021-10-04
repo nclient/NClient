@@ -34,15 +34,15 @@ namespace NClient.Providers.HttpClient.System
 
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType));
 
+            foreach (var header in httpRequest.Headers)
+            {
+                httpRequestMessage.Headers.Add(header.Name, header.Value);
+            }
+            
             if (httpRequest.Body != null)
             {
                 var body = _serializer.Serialize(httpRequest.Body);
                 httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, _serializer.ContentType);
-            }
-
-            foreach (var header in httpRequest.Headers)
-            {
-                httpRequestMessage.Headers.Add(header.Name, header.Value);
             }
 
             return Task.FromResult(httpRequestMessage);

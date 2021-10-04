@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
@@ -39,6 +40,8 @@ namespace NClient.Providers.HttpClient.RestSharp
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
+            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType).ToString());
+            
             foreach (var header in httpRequest.Headers)
             {
                 restRequest.AddHeader(header.Name, header.Value);
