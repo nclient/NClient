@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
-using NClient.Providers.HttpClient.System;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Extensions.DependencyInjection
 {
     public static class AddNClientExtensions
@@ -84,14 +83,7 @@ namespace NClient.Extensions.DependencyInjection
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TClient : class
         {
-            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            
-            return new CustomNClientBuilder()
-                .For<TClient>(host)
-                .UsingSystemHttpClient(httpClientFactory, httpClientName)
-                .UsingJsonSerializer()
-                .WithLogging(loggerFactory);
+            return new AspNetNClientBuilder(httpClientName, serviceProvider).For<TClient>(host);
         }
     }
 }

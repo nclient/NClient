@@ -5,6 +5,7 @@ using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Extensions.DependencyInjection
 {
     public static class AddCustomNClientFactoryExtensions

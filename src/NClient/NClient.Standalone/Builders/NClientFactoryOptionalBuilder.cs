@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Builders;
@@ -38,7 +37,7 @@ namespace NClient.Builders
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
             IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            _context.SetEnsureSuccess(ensuringSettings);
+            _context.SetEnsuringSetting(ensuringSettings);
             return this;
         }
 
@@ -47,10 +46,16 @@ namespace NClient.Builders
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));
             Ensure.IsNotNull(onFailure, nameof(onFailure));
-            _context.SetEnsureSuccess(successCondition, onFailure);
+            _context.SetEnsuringSetting(successCondition, onFailure);
             return this;
         }
         
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> NotEnsuringSuccess()
+        {
+            _context.ClearEnsuringSetting();
+            return this;
+        }
+
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
@@ -58,7 +63,7 @@ namespace NClient.Builders
             return this;
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
             _context.SetHandlers(handlers);

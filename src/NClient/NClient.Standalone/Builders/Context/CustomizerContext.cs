@@ -8,6 +8,7 @@ using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Core.Resilience;
 using NClient.Exceptions.Factories;
 
 namespace NClient.Builders.Context
@@ -59,15 +60,20 @@ namespace NClient.Builders.Context
             SerializerProvider = serializerProvider;
         }
         
-        public void SetEnsureSuccess(
+        public void SetEnsuringSetting(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
         {
-            SetEnsureSuccess(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
+            SetEnsuringSetting(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
         }
         
-        public void SetEnsureSuccess(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+        public void SetEnsuringSetting(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
             EnsuringSettings = ensuringSettings;
+        }
+        
+        public void ClearEnsuringSetting()
+        {
+            EnsuringSettings = null;
         }
 
         public void SetHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)
@@ -91,6 +97,7 @@ namespace NClient.Builders.Context
         public void SetResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             AllMethodsResiliencePolicyProvider = provider;
+            MethodsWithResiliencePolicy.Clear();
         }
 
         public void SetResiliencePolicy(MethodInfo methodInfo, IResiliencePolicyProvider<TRequest, TResponse> provider)
@@ -105,9 +112,29 @@ namespace NClient.Builders.Context
                 SetResiliencePolicy(methodInfo, provider);
             }
         }
+        
+        public void ClearAllMethodsResiliencePolicy()
+        {
+            AllMethodsResiliencePolicyProvider = null;
+            MethodsWithResiliencePolicy.Clear();
+        }
+        
+        public void ClearMethodResiliencePolicy(MethodInfo methodInfo)
+        {
+            MethodsWithResiliencePolicy[methodInfo] = new StubResiliencePolicyProvider<TRequest, TResponse>();
+        }
+        
+        public void ClearMethodResiliencePolicy(IEnumerable<MethodInfo> methodInfos)
+        {
+            foreach (var methodInfo in methodInfos)
+            {
+                ClearMethodResiliencePolicy(methodInfo);
+            }
+        }
 
         public void ClearResiliencePolicy()
         {
+            MethodResiliencePolicyProvider = null;
             AllMethodsResiliencePolicyProvider = null;
             MethodsWithResiliencePolicy.Clear();
         }

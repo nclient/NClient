@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Builders;
@@ -28,7 +29,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                //.WithCustomHandling(new CustomHandler()) // TODO: не работает
+                .WithCustomHandling(new CustomHandler())
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -42,7 +43,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithCustomHandling(new[] { new CustomHandler(), new CustomHandler() }) // TODO: неудобно
+                .WithCustomHandling(new CustomHandler(), new CustomHandler())
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -50,32 +51,16 @@ namespace NClient.Api.Tests.BasicClientUseCases
             response.Should().Be(id);
         }
         
-        [Test]
-        public async Task NClientBuilder_WithAdditionalSingleCustomHandler_NotThrow()
+        [Test, Ignore("Not Implemented")]
+        public Task NClientBuilder_WithAdditionalSingleCustomHandler_NotThrow()
         {
-            const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
-                //.WithCustomHandling(new CustomHandler()) // TODO: не работает
-                .Build();
-            
-            var response = await client.GetAsync(id);
-
-            response.Should().Be(id);
+            throw new NotImplementedException();
         }
         
-        [Test]
-        public async Task NClientBuilder_WithAdditionalCollectionOfCustomHandlers_NotThrow()
+        [Test, Ignore("Not Implemented")]
+        public Task NClientBuilder_WithAdditionalCollectionOfCustomHandlers_NotThrow()
         {
-            const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
-                .WithCustomHandling(new[] { new CustomHandler(), new CustomHandler() }) // TODO: не работает
-                .Build();
-            
-            var response = await client.GetAsync(id);
-
-            response.Should().Be(id);
+            throw new NotImplementedException();
         }
     }
 }

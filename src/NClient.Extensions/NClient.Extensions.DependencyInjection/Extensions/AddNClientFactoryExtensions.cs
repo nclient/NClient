@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Builders;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
-using NClient.Providers.HttpClient.System;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Extensions.DependencyInjection
 {
     public static class AddNClientFactoryExtensions
@@ -82,14 +81,7 @@ namespace NClient.Extensions.DependencyInjection
 
         private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredCustomizer(IServiceProvider serviceProvider, string factoryName, string httpClientName)
         {
-            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            
-            return new CustomNClientFactoryBuilder()
-                .For(factoryName)
-                .UsingSystemHttpClient(httpClientFactory, httpClientName)
-                .UsingJsonSerializer()
-                .WithLogging(loggerFactory);
+            return new AspNetNClientFactoryBuilder(httpClientName, serviceProvider).For(factoryName);
         }
     }
 }

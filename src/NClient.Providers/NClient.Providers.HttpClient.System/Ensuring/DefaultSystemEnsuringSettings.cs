@@ -5,10 +5,10 @@ using NClient.Abstractions.Exceptions;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.System
 {
-    public class DefaultEnsuringSettings : EnsuringSettings<HttpRequestMessage, HttpResponseMessage>
+    public class DefaultSystemEnsuringSettings : EnsuringSettings<HttpRequestMessage, HttpResponseMessage>
     {
-        public DefaultEnsuringSettings() : base(
-            successCondition: x => x.Response.IsSuccessStatusCode,
+        public DefaultSystemEnsuringSettings() : base(
+            isSuccess: x => x.Response.IsSuccessStatusCode,
             onFailure: x =>
             {
                 try

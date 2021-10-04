@@ -16,11 +16,11 @@ namespace NClient.Providers.Resilience.Polly
         public IResiliencePolicy<TRequest, TResponse> Create()
         {
             var basePolicy = Policy<ResponseContext<TRequest, TResponse>>
-                .HandleResult(_settings.ResultPredicate).Or<Exception>();
+                .HandleResult(_settings.ShouldRetry).Or<Exception>();
 
             var retryPolicy = basePolicy.WaitAndRetryAsync(
-                _settings.RetryCount,
-                _settings.SleepDuration);
+                _settings.MaxRetries,
+                _settings.GetDelay);
             
             return new PollyResiliencePolicy<TRequest, TResponse>(retryPolicy);
         }

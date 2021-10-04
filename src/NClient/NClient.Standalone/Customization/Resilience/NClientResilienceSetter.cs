@@ -22,5 +22,12 @@ namespace NClient.Customization.Resilience
             
             return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(Context);
         }
+        
+        INClientResilienceMethodSelector<TClient, TRequest, TResponse> INClientResilienceSetter<TClient, TRequest, TResponse>.DoNotUse()
+        {
+            DoNotUse();
+            
+            return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(Context);
+        }
     }
 }

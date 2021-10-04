@@ -5,7 +5,6 @@ using FluentAssertions.Extensions;
 using NClient.Abstractions.Resilience;
 using NClient.Exceptions;
 using NClient.Providers.Resilience.Polly;
-using NClient.Resilience;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
 using NClient.Tests.Clients;
@@ -139,10 +138,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithSafePollyResilience(new DefaultResiliencePolicySettings
-                {
-                    SleepDuration = _ => 0.Seconds()
-                })
+                .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -158,10 +154,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithSafePollyResilience(new DefaultResiliencePolicySettings
-                {
-                    SleepDuration = _ => 0.Seconds()
-                })
+                .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -177,10 +170,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
-                {
-                    SleepDuration = _ => 0.Seconds()
-                })
+                .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -196,10 +186,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = new NClientBuilder()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithIdempotentPollyResilience(new DefaultResiliencePolicySettings
-                {
-                    SleepDuration = _ => 0.Seconds()
-                })
+                .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))

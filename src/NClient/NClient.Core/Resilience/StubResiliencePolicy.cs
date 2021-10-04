@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NClient.Abstractions.Resilience;
 
-namespace NClient.Abstractions.Resilience.Providers
+namespace NClient.Core.Resilience
 {
-    internal class NoResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
+    internal class StubResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {
         public async Task<TResponse> ExecuteAsync(Func<Task<ResponseContext<TRequest, TResponse>>> action)
         {

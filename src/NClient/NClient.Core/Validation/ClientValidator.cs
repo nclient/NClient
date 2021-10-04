@@ -3,13 +3,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience.Providers;
+using NClient.Core.Ensuring;
 using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.Validation;
+using NClient.Core.Resilience;
 using NClient.Core.Serialization;
 using NClient.Exceptions;
 
@@ -42,9 +43,9 @@ namespace NClient.Core.Validation
                     new StubHttpMessageBuilderProvider(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
-                    new ResponseValidator<HttpRequest, HttpResponse>(new NoEnsuringSettings<HttpRequest, HttpResponse>()),
+                    new ResponseValidator<HttpRequest, HttpResponse>(new StubEnsuringSettings<HttpRequest, HttpResponse>()),
                     new MethodResiliencePolicyProviderAdapter<HttpRequest, HttpResponse>(
-                        new NoResiliencePolicyProvider<HttpRequest, HttpResponse>()));
+                        new StubResiliencePolicyProvider<HttpRequest, HttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

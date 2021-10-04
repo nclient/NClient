@@ -4,7 +4,6 @@ using NClient.Abstractions.Builders;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.HttpClient.System;
 using NClient.Testing.Common.Apis;
-using NClient.Testing.Common.Clients;
 using NClient.Tests.Clients;
 using NUnit.Framework;
 

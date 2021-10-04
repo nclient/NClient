@@ -6,6 +6,7 @@ using NClient.Builders.Context;
 
 namespace NClient.Customization.Resilience
 {
+    // TODO: Need tests
     internal class NClientFactoryResilienceSetter<TRequest, TResponse> : INClientFactoryResilienceSetter<TRequest, TResponse>
     {
         private readonly IEnumerable<MethodInfo>? _selectedMethods;
@@ -29,6 +30,16 @@ namespace NClient.Customization.Resilience
                 Context.SetResiliencePolicy(resiliencePolicyProvider);
             else
                 Context.SetResiliencePolicy(_selectedMethods, resiliencePolicyProvider);
+            
+            return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(Context);
+        }
+        
+        public INClientFactoryResilienceMethodSelector<TRequest, TResponse> DoNotUse()
+        {
+            if (_selectedMethods is null) 
+                Context.ClearAllMethodsResiliencePolicy();
+            else
+                Context.ClearMethodResiliencePolicy(_selectedMethods);
             
             return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(Context);
         }

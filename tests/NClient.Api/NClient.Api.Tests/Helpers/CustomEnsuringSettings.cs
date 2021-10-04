@@ -6,7 +6,7 @@ namespace NClient.Api.Tests.Helpers
     public class CustomEnsuringSettings : EnsuringSettings<HttpRequestMessage, HttpResponseMessage>
     {
         public CustomEnsuringSettings() : base(
-            successCondition: _ => true, 
+            isSuccess: _ => true, 
             onFailure: _ => { })
         {
         }

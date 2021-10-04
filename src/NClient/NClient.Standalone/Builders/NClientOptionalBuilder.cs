@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Builders;
@@ -12,9 +11,11 @@ using NClient.Abstractions.Serialization;
 using NClient.Builders.Context;
 using NClient.ClientGeneration;
 using NClient.Common.Helpers;
+using NClient.Core.Ensuring;
 using NClient.Core.Interceptors;
 using NClient.Core.Interceptors.Validation;
 using NClient.Core.Proxy;
+using NClient.Core.Resilience;
 using NClient.Core.Validation;
 using NClient.Customization.Resilience;
 
@@ -39,7 +40,7 @@ namespace NClient.Builders
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
             IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            _context.SetEnsureSuccess(ensuringSettings);
+            _context.SetEnsuringSetting(ensuringSettings);
             return this;
         }
         
@@ -48,10 +49,16 @@ namespace NClient.Builders
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));
             Ensure.IsNotNull(onFailure, nameof(onFailure));
-            _context.SetEnsureSuccess(successCondition, onFailure);
+            _context.SetEnsuringSetting(successCondition, onFailure);
             return this;
         }
         
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess()
+        {
+            _context.ClearEnsuringSetting();
+            return this;
+        }
+
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithReplacedSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
@@ -59,7 +66,7 @@ namespace NClient.Builders
             return this;
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
             _context.SetHandlers(handlers);
@@ -151,12 +158,12 @@ namespace NClient.Builders
                 _context.HttpMessageBuilderProvider,
                 _context.SerializerProvider,
                 _context.ClientHandlers.ToArray(),
-                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new NoEnsuringSettings<TRequest, TResponse>()),
+                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
                 _context.MethodResiliencePolicyProvider
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
-                    _context.AllMethodsResiliencePolicyProvider ?? new NoResiliencePolicyProvider<TRequest, TResponse>(), 
+                    _context.AllMethodsResiliencePolicyProvider ?? new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy),
-                _context.Logger as ILogger<TClient>);
+                _context.Logger as ILogger<TClient> ?? _context.LoggerFactory?.CreateLogger<TClient>());
 
             return _clientGenerator.CreateClient<TClient>(interceptor);
         }

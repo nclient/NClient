@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Customization.Resilience;
 using NClient.Abstractions.Ensuring;
@@ -20,6 +19,8 @@ namespace NClient.Abstractions.Builders
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
             Predicate<ResponseContext<TRequest, TResponse>> successCondition,
             Action<ResponseContext<TRequest, TResponse>> onFailure);
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess();
 
         #endregion
         
@@ -39,7 +40,7 @@ namespace NClient.Abstractions.Builders
         /// Sets collection of <see cref="IClientHandler{TRequest,TResponse}"/> used to handle HTTP requests and responses />.
         /// </summary>
         /// <param name="handlers">The collection of handlers.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> handlers);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers);
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();

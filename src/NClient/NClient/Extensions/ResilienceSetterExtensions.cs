@@ -1,8 +1,9 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using NClient.Abstractions.Customization.Resilience;
 using NClient.Abstractions.Resilience;
+using NClient.Providers.HttpClient.System;
 using NClient.Providers.Resilience.Polly;
-using NClient.Resilience;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -12,16 +13,18 @@ namespace NClient
         // TODO: doc
         public static INClientResilienceMethodSelector<TClient, HttpRequestMessage, HttpResponseMessage> Use<TClient>(
             this INClientResilienceSetter<TClient, HttpRequestMessage, HttpResponseMessage> clientResilienceSetter, 
-            IResiliencePolicySettings<HttpRequestMessage, HttpResponseMessage>? policySettings = null)
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            return clientResilienceSetter.UsePolly(policySettings ?? new DefaultResiliencePolicySettings());
+            return clientResilienceSetter.UsePolly(
+                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
         
         public static INClientFactoryResilienceMethodSelector<HttpRequestMessage, HttpResponseMessage> Use(
             this INClientFactoryResilienceSetter<HttpRequestMessage, HttpResponseMessage> factoryResilienceSetter, 
-            IResiliencePolicySettings<HttpRequestMessage, HttpResponseMessage>? policySettings = null)
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            return factoryResilienceSetter.UsePolly(policySettings ?? new DefaultResiliencePolicySettings());
+            return factoryResilienceSetter.UsePolly(
+                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
     }
 }

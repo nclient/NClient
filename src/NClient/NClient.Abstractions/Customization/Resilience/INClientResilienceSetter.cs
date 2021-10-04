@@ -6,5 +6,6 @@ namespace NClient.Abstractions.Customization.Resilience
     public interface INClientResilienceSetter<TClient, TRequest, TResponse>
     {
         INClientResilienceMethodSelector<TClient, TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider);
+        INClientResilienceMethodSelector<TClient, TRequest, TResponse> DoNotUse();
     }
 }

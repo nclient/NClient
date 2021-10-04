@@ -19,7 +19,7 @@ namespace NClient.Core.Interceptors.Validation
 
         public ResponseContext<TRequest, TResponse> Ensure(ResponseContext<TRequest, TResponse> responseContext)
         {
-            if (_ensuringSettings.SuccessCondition(responseContext))
+            if (_ensuringSettings.IsSuccess(responseContext))
                 return responseContext;
             
             _ensuringSettings.OnFailure(responseContext);

@@ -10,13 +10,13 @@ namespace NClient.Providers.HttpClient.System
             this INClientOptionalBuilder<TClient, IRestRequest, IRestResponse> factoryOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.EnsuringCustomSuccess(new DefaultEnsuringSettings());
+            return factoryOptionalBuilder.EnsuringCustomSuccess(new DefaultRestSharpEnsuringSettings());
         }
         
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> EnsuringRestSharpSuccess(
             this INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.EnsuringCustomSuccess(new DefaultEnsuringSettings());
+            return factoryOptionalBuilder.EnsuringCustomSuccess(new DefaultRestSharpEnsuringSettings());
         }
     }
 }

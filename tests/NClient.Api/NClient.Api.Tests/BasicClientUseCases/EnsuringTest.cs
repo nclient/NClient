@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Builders;
-using NClient.Abstractions.Ensuring;
 using NClient.Api.Tests.Helpers;
 using NClient.Testing.Common.Apis;
 using NClient.Tests.Clients;
@@ -29,7 +28,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .EnsuringCustomSuccess(new NoEnsuringSettings<HttpRequestMessage, HttpResponseMessage>()) // TODO: неудобно дважды!
+                .NotEnsuringSuccess()
                 .Build();
 
             var response = await client.GetAsync(id);
