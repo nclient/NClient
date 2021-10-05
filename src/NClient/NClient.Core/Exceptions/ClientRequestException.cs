@@ -25,14 +25,7 @@ namespace NClient.Exceptions
         /// <summary>
         /// Shows HTTP error or not.
         /// </summary>
-        public bool IsHttpError => InnerException is ClientHttpRequestException;
-
-        public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, ClientHttpRequestException innerException)
-            : base(message, interfaceType, methodInfo, innerException)
-        {
-            HttpRequest = innerException.Request;
-            HttpResponse = innerException.Response;
-        }
+        public bool IsHttpError => InnerException is HttpClientException;
 
         public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, Exception innerException)
             : base(message, interfaceType, methodInfo, innerException)

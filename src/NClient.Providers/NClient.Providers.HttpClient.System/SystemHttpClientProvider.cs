@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Abstractions.Exceptions.Factories;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.System.Builders;
 using NClient.Providers.HttpClient.System.Stubs;
 
 namespace NClient.Providers.HttpClient.System
@@ -12,7 +10,7 @@ namespace NClient.Providers.HttpClient.System
     /// <summary>
     /// The System.Net.Http based provider for a component that can create <see cref="IHttpClient"/> instances.
     /// </summary>
-    public class SystemHttpClientProvider : IHttpClientProvider
+    public class SystemHttpClientProvider : IHttpClientProvider<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly Func<IHttpClientFactory> _httpClientFactory;
         private readonly string? _httpClientName;
@@ -60,20 +58,11 @@ namespace NClient.Providers.HttpClient.System
             _httpClientName = httpClientName;
         }
 
-        public IHttpClient Create(ISerializer serializer)
+        public IHttpClient<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
 
-            var httpRequestMessageBuilder = new HttpRequestMessageBuilder(serializer);
-            var httpResponseBuilder = new HttpResponseBuilder(
-                new FinalHttpRequestBuilder(serializer),
-                new ClientHttpRequestExceptionFactory());
-
-            return new SystemHttpClient(
-                httpRequestMessageBuilder,
-                httpResponseBuilder,
-                _httpClientFactory.Invoke(),
-                _httpClientName);
+            return new SystemHttpClient(_httpClientFactory.Invoke(), _httpClientName);
         }
     }
 }

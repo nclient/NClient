@@ -6,7 +6,7 @@ namespace NClient.Common.Helpers
     [DebuggerStepThrough]
     internal static class Ensure
     {
-        public static T IsNotNull<T>(T value, string paramName) where T : class
+        public static T IsNotNull<T>(T? value, string paramName)
         {
             if (value == null)
                 throw EnsureExceptionFactory.CreateArgumentNullException(paramName);

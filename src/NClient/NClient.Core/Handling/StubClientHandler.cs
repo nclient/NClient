@@ -1,22 +1,19 @@
 ﻿using System.Threading.Tasks;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Invocation;
 
 namespace NClient.Core.Handling
 {
-    internal class StubClientHandler : IClientHandler
+    internal class StubClientHandler<TRequest, TResponse> : IClientHandler<TRequest, TResponse>
     {
-        public Task<HttpRequest> HandleRequestAsync(
-            HttpRequest httpRequest, MethodInvocation methodInvocation)
+        public Task<TRequest> HandleRequestAsync(TRequest request, MethodInvocation methodInvocation)
         {
-            return Task.FromResult(httpRequest);
+            return Task.FromResult(request);
         }
 
-        public Task<HttpResponse> HandleResponseAsync(
-            HttpResponse httpResponse, MethodInvocation methodInvocation)
+        public Task<TResponse> HandleResponseAsync(TResponse response, MethodInvocation methodInvocation)
         {
-            return Task.FromResult(httpResponse);
+            return Task.FromResult(response);
         }
     }
 }

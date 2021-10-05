@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Sandbox.ThirdPartyS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.HttpClient.System", "src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj", "{47A43396-24E7-41E3-BA94-041EC1F82494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.System", "src\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj", "{66DF531E-A4A7-4645-A99E-3C9BC78F6000}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Json.System", "src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj", "{66DF531E-A4A7-4645-A99E-3C9BC78F6000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Newtonsoft", "src\NClient.Providers\NClient.Providers.Serialization.Newtonsoft\NClient.Providers.Serialization.Newtonsoft.csproj", "{094AD70B-2B16-49FA-B510-608BA26DAE2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Json.Newtonsoft", "src\NClient.Providers\NClient.Providers.Serialization.Json.Newtonsoft\NClient.Providers.Serialization.Json.Newtonsoft.csproj", "{094AD70B-2B16-49FA-B510-608BA26DAE2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Common", "src\NClient\NClient.Common\NClient.Common.csproj", "{BD55F8A3-3155-44F2-A31A-3311CFB6733F}"
 EndProject
@@ -72,6 +72,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "providers", "providers", "{B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.HttpClient.System.Tests", "tests\NClient.Providers\NClient.Providers.HttpClient.System.Tests\NClient.Providers.HttpClient.System.Tests.csproj", "{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{AEC33EA4-4C52-4043-9938-A7043AE3E0FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Api.Tests", "tests\NClient.Api\NClient.Api.Tests\NClient.Api.Tests.csproj", "{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Xml.System", "src\NClient.Providers\NClient.Providers.Serialization.Xml.System\NClient.Providers.Serialization.Xml.System.csproj", "{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Xml.System.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.Xml.System.Tests\NClient.Providers.Serialization.Xml.System.Tests.csproj", "{462BFC4C-79D6-4998-BE77-A8F6C52AE131}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -215,6 +223,21 @@ Global
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131}.Release|Any CPU.Build.0 = Release|Any CPU
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +267,10 @@ Global
 		{68902399-1298-43F9-849F-57294A568A94} = {FA3E8CC3-EE01-4E00-8B83-4650EA50E215}
 		{B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C} = {F3AF19D7-1D80-4449-98CC-96BC13FF8103}
 		{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
+		{AEC33EA4-4C52-4043-9938-A7043AE3E0FC} = {F3AF19D7-1D80-4449-98CC-96BC13FF8103}
+		{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88} = {AEC33EA4-4C52-4043-9938-A7043AE3E0FC}
+		{71A83AD1-BC3D-4D91-81D8-7CC5FBE64992} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
+		{462BFC4C-79D6-4998-BE77-A8F6C52AE131} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {244A4C58-8FA7-496C-ABCF-72F333149A20}

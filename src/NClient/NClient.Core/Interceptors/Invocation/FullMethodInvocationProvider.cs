@@ -8,13 +8,12 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Core.Interceptors.Invocation
 {
-    internal interface IFullMethodInvocationProvider
+    internal interface IFullMethodInvocationProvider<TRequest, TResponse>
     {
-        FullMethodInvocation Get(
-            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation);
+        FullMethodInvocation<TRequest, TResponse> Get(Type interfaceType, Type resultType, IInvocation invocation);
     }
 
-    internal class FullMethodInvocationProvider : IFullMethodInvocationProvider
+    internal class FullMethodInvocationProvider<TRequest, TResponse> : IFullMethodInvocationProvider<TRequest, TResponse>
     {
         private readonly IProxyGenerator _proxyGenerator;
 
@@ -22,12 +21,11 @@ namespace NClient.Core.Interceptors.Invocation
         {
             _proxyGenerator = proxyGenerator;
         }
-
-        public FullMethodInvocation Get(
-            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation)
+        
+        public FullMethodInvocation<TRequest, TResponse> Get(Type interfaceType, Type resultType, IInvocation invocation)
         {
             if (!IsNClientMethod(invocation.Method))
-                return BuildInvocation(interfaceType, controllerType, resultType, invocation, resiliencePolicyProvider: null);
+                return BuildInvocation(interfaceType, resultType, invocation, resiliencePolicyProvider: null);
 
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
@@ -38,32 +36,25 @@ namespace NClient.Core.Interceptors.Invocation
             ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
 
             var innerInvocation = keepDataInterceptor.Invocation!;
-            var resiliencePolicyProvider = (IResiliencePolicyProvider?)invocation.Arguments[1];
 
-            return BuildInvocation(interfaceType, controllerType, resultType, innerInvocation, resiliencePolicyProvider);
+            var resiliencePolicyArgumentIndex = invocation.Method.GetParameters()
+                .Select((param, index) => new { Param = param, Index = index })
+                .SingleOrDefault(x => x.Param.ParameterType == typeof(IResiliencePolicyProvider<TRequest, TResponse>))?
+                .Index;
+            var resiliencePolicyProvider = resiliencePolicyArgumentIndex.HasValue
+                ? (IResiliencePolicyProvider<TRequest, TResponse>?)invocation.Arguments[resiliencePolicyArgumentIndex.Value]
+                : null;
+
+            return BuildInvocation(interfaceType, resultType, innerInvocation, resiliencePolicyProvider);
         }
-
-        private static FullMethodInvocation BuildInvocation(
-            Type interfaceType, Type? controllerType, Type resultType, IInvocation invocation, IResiliencePolicyProvider? resiliencePolicyProvider)
+        
+        private static FullMethodInvocation<TRequest, TResponse> BuildInvocation(
+            Type interfaceType, Type resultType, IInvocation invocation, IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider)
         {
-            var clientType = controllerType ?? interfaceType;
-            var clientMethod = controllerType is null
-                ? invocation.Method
-                : GetMethodImpl(interfaceType, controllerType, invocation.Method);
-            var clientMethodArguments = invocation.Arguments;
-
-            return new FullMethodInvocation(clientType, clientMethod, clientMethodArguments, resultType)
+            return new FullMethodInvocation<TRequest, TResponse>(interfaceType, invocation.Method, invocation.Arguments, resultType)
             {
                 ResiliencePolicyProvider = resiliencePolicyProvider
             };
-        }
-
-        private static MethodInfo GetMethodImpl(Type interfaceType, Type implType, MethodInfo interfaceMethod)
-        {
-            var interfaceMapping = implType.GetInterfaceMap(interfaceType);
-            var methodPairs = interfaceMapping.InterfaceMethods
-                .Zip(interfaceMapping.TargetMethods, (x, y) => (First: x, Second: y));
-            return methodPairs.SingleOrDefault(x => x.First == interfaceMethod).Second;
         }
 
         private static bool IsNClientMethod(MethodInfo method)

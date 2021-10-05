@@ -16,8 +16,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
-      <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.System\NClient.Providers.Serialization.System.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
 

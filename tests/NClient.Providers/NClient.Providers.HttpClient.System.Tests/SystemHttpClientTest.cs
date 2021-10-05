@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
-using NClient.Providers.Serialization.System;
+using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 using WireMock.Matchers;
@@ -24,7 +24,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Body = new() { Id = 1, Value = 2 };
-        private static readonly ISerializer Serializer = new SystemSerializerProvider().Create();
+        private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create();
         private static readonly HttpHeader AcceptHeader = new("Accept", "application/json");
         private static readonly HttpHeader ServerHeader = new("Server", "Kestrel");
         private static readonly HttpHeader EmptyContentLengthHeader = new("Content-Length", "0");
@@ -33,9 +33,9 @@ namespace NClient.Providers.HttpClient.System.Tests
         
         public static readonly IEnumerable ValidTestCases = new[]
         {
-            BuildHeadRequestTestCase(),
-            BuildGetRequestTestCase(),
-            BuildPostRequestTestCase()
+            ExecutionHeadRequestTestCase(),
+            ExecutionGetRequestTestCase(),
+            ExecutionPostRequestTestCase()
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
@@ -43,15 +43,18 @@ namespace NClient.Providers.HttpClient.System.Tests
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);
+            var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
 
-            var response = await httpClient.ExecuteAsync(request);
+            var httpRequest = await httpMessageBuilder.BuildRequestAsync(request);
+            var httpResponse = await httpClient.ExecuteAsync(httpRequest);
+            var response = await httpMessageBuilder.BuildResponseAsync(request, httpResponse);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
             response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Headers, x => x.WithoutStrictOrdering());
         }
 
-        private static TestCaseData BuildHeadRequestTestCase()
+        private static TestCaseData ExecutionHeadRequestTestCase()
         {
             var method = HttpMethod.Head;
             var request = new HttpRequest(RequestId, Resource, method)
@@ -98,10 +101,11 @@ namespace NClient.Providers.HttpClient.System.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory);
+            return new TestCaseData(request, response, serverFactory)
+                .SetName(nameof(ExecutionHeadRequestTestCase));
         }
         
-        private static TestCaseData BuildGetRequestTestCase()
+        private static TestCaseData ExecutionGetRequestTestCase()
         {
             var method = HttpMethod.Get;
             var request = new HttpRequest(RequestId, Resource, method)
@@ -154,10 +158,11 @@ namespace NClient.Providers.HttpClient.System.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory);
+            return new TestCaseData(request, response, serverFactory)
+                .SetName(nameof(ExecutionGetRequestTestCase));
         }
         
-        private static TestCaseData BuildPostRequestTestCase()
+        private static TestCaseData ExecutionPostRequestTestCase()
         {
             var method = HttpMethod.Post;
             var content = Serializer.Serialize(Body);
@@ -215,7 +220,8 @@ namespace NClient.Providers.HttpClient.System.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory);
+            return new TestCaseData(request, response, serverFactory)
+                .SetName(nameof(ExecutionPostRequestTestCase));
         }
     }
 }

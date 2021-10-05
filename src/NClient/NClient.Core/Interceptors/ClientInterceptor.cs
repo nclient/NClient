@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
-using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Interceptors.HttpClients;
+using NClient.Core.Interceptors.HttpResponsePopulation;
 using NClient.Core.Interceptors.Invocation;
 using NClient.Core.Interceptors.MethodBuilders;
 using NClient.Core.Interceptors.RequestBuilders;
@@ -17,40 +17,40 @@ using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
 namespace NClient.Core.Interceptors
 {
-    internal class ClientInterceptor<T> : AsyncInterceptorBase
+    internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
         private readonly Uri _host;
-        private readonly IResilienceHttpClientProvider _resilienceHttpClientProvider;
-        private readonly IFullMethodInvocationProvider _fullMethodInvocationProvider;
+        private readonly IResilienceHttpClientProvider<TRequest, TResponse> _resilienceHttpClientProvider;
+        private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IHttpResponsePopulater _httpResponsePopulater;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
-        private readonly IClientHandler _clientHandler;
         private readonly IGuidProvider _guidProvider;
-        private readonly Type? _controllerType;
-        private readonly ILogger<T>? _logger;
+        private readonly ILogger<TClient>? _logger;
 
         public ClientInterceptor(
             Uri host,
-            IResilienceHttpClientProvider resilienceHttpClientProvider,
-            IFullMethodInvocationProvider fullMethodInvocationProvider,
+            IResilienceHttpClientProvider<TRequest, TResponse> resilienceHttpClientProvider,
+            IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IHttpResponsePopulater httpResponsePopulater,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
-            IClientHandler clientHandler,
             IGuidProvider guidProvider,
-            Type? controllerType = null,
-            ILogger<T>? logger = null)
+            ILogger<TClient>? logger = null)
         {
             _host = host;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _fullMethodInvocationProvider = fullMethodInvocationProvider;
+            _httpMessageBuilder = httpMessageBuilder;
+            _httpResponsePopulater = httpResponsePopulater;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
-            _clientHandler = clientHandler;
             _guidProvider = guidProvider;
-            _controllerType = controllerType;
             _logger = logger;
         }
 
@@ -72,63 +72,82 @@ namespace NClient.Core.Interceptors
         {
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
-
+            
             HttpResponse? httpResponse = null;
+            HttpResponse? populatedHttpResponse = null;
             try
             {
                 var fullMethodInvocation = _fullMethodInvocationProvider
-                    .Get(interfaceType: typeof(T), _controllerType, resultType, invocation);
+                    .Get(interfaceType: typeof(TClient), resultType, invocation);
                 var clientMethod = _methodBuilder
                     .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
 
-                var request = _requestBuilder
-                    .Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
-                await _clientHandler
-                    .HandleRequestAsync(request, fullMethodInvocation)
-                    .ConfigureAwait(false);
+                var httpRequest = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
 
-                var response = await _resilienceHttpClientProvider
-                    .Create(fullMethodInvocation.ResiliencePolicyProvider)
-                    .ExecuteAsync(request, fullMethodInvocation)
-                    .ConfigureAwait(false);
-                await _clientHandler
-                    .HandleResponseAsync(response, fullMethodInvocation)
-                    .ConfigureAwait(false);
-
-                if (typeof(HttpResponse).IsAssignableFrom(resultType))
+                TResponse? response = default;
+                try
                 {
+                    response = await _resilienceHttpClientProvider
+                        .Create(fullMethodInvocation.ResiliencePolicyProvider)
+                        .ExecuteAsync(httpRequest, fullMethodInvocation)
+                        .ConfigureAwait(false);
+                }
+                catch (HttpClientException<TRequest, TResponse> e)
+                {
+                    response = e.Response;
+                    throw;
+                }
+                finally
+                {
+                    if (response is not null)
+                    {
+                        httpResponse = await _httpMessageBuilder
+                            .BuildResponseAsync(httpRequest!, response)
+                            .ConfigureAwait(false);
+                        populatedHttpResponse = _httpResponsePopulater.Populate(httpResponse, resultType);   
+                    }
+                    
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                    return response;
                 }
 
-                _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
-                return response.GetType().GetProperty("Value")?.GetValue(response)!;
+                if (resultType == typeof(TResponse))
+                    return response!;
+
+                if (typeof(HttpResponse).IsAssignableFrom(resultType))
+                    return populatedHttpResponse!;
+
+                return populatedHttpResponse!
+                    .GetType()
+                    .GetProperty(nameof(HttpResponse<object>.Value))?
+                    .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)
             {
                 _logger?.LogError(e, "Client validation error. Request id: '{requestId}'.", requestId);
-                e.InterfaceType = typeof(T);
+                e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (ClientArgumentException e)
             {
                 _logger?.LogError(e, "Method call error. Request id: '{requestId}'.", requestId);
-                e.InterfaceType = typeof(T);
+                e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
-            catch (ClientHttpRequestException e)
+            catch (HttpClientException<TRequest, TResponse> e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", requestId);
-                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(T), invocation.Method, e);
+                throw _clientRequestExceptionFactory.WrapClientHttpRequestException(interfaceType: typeof(TClient), invocation.Method, populatedHttpResponse!, e);
             }
             catch (Exception e)
             {
                 _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
+                if (populatedHttpResponse is not null)
+                    throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, populatedHttpResponse, e);
                 if (httpResponse is not null)
-                    throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, httpResponse, e);
-                throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(T), invocation.Method, e);
+                    throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, httpResponse, e);
+                throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, e);
             }
         }
     }

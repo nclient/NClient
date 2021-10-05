@@ -8,15 +8,15 @@ namespace NClient.Core.Exceptions.Factories
 {
     public interface IClientRequestExceptionFactory
     {
-        ClientRequestException WrapClientHttpRequestException(Type interfaceType, MethodInfo methodInfo, ClientHttpRequestException httpRequestException);
+        ClientRequestException WrapClientHttpRequestException(Type interfaceType, MethodInfo methodInfo, HttpResponse httpResponse, HttpClientException httpClientException);
         ClientRequestException WrapException(Type interfaceType, MethodInfo methodInfo, Exception exception);
         ClientRequestException WrapException(Type interfaceType, MethodInfo methodInfo, HttpResponse httpResponse, Exception exception);
     }
 
     public class ClientRequestExceptionFactory : IClientRequestExceptionFactory
     {
-        public ClientRequestException WrapClientHttpRequestException(Type interfaceType, MethodInfo methodInfo, ClientHttpRequestException httpRequestException) =>
-            new(httpRequestException.Message, interfaceType, methodInfo, httpRequestException);
+        public ClientRequestException WrapClientHttpRequestException(Type interfaceType, MethodInfo methodInfo, HttpResponse httpResponse, HttpClientException httpClientException) =>
+            new(httpClientException.Message, interfaceType, methodInfo, httpResponse, httpClientException);
 
         public ClientRequestException WrapException(Type interfaceType, MethodInfo methodInfo, Exception exception) =>
             new(exception.Message, interfaceType, methodInfo, exception);

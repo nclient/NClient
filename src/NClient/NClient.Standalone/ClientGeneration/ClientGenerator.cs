@@ -5,7 +5,7 @@ namespace NClient.ClientGeneration
 {
     internal interface IClientGenerator
     {
-        TInterface CreateClient<TInterface>(IAsyncInterceptor asyncInterceptor);
+        TClient CreateClient<TClient>(IAsyncInterceptor asyncInterceptor);
     }
 
     internal class ClientGenerator : IClientGenerator
@@ -17,11 +17,11 @@ namespace NClient.ClientGeneration
             _proxyGenerator = proxyGenerator;
         }
 
-        public TInterface CreateClient<TInterface>(IAsyncInterceptor asyncInterceptor)
+        public TClient CreateClient<TClient>(IAsyncInterceptor asyncInterceptor)
         {
-            return (TInterface)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
-                interfaceToProxy: typeof(TInterface),
-                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TInterface>), typeof(IHttpNClient<TInterface>) },
+            return (TClient)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
+                interfaceToProxy: typeof(TClient),
+                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TClient>), typeof(IHttpNClient<TClient>) },
                 interceptors: asyncInterceptor.ToInterceptor());
         }
     }

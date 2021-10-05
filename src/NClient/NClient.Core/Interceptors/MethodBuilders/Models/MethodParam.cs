@@ -3,7 +3,8 @@ using NClient.Annotations.Parameters;
 
 namespace NClient.Core.Interceptors.MethodBuilders.Models
 {
-    internal class MethodParam
+    // TODO: doc
+    public class MethodParam
     {
         public string Name { get; }
         public Type Type { get; }

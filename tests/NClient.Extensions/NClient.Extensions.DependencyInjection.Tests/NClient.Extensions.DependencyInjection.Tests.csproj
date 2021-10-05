@@ -11,15 +11,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Extensions\NClient.Extensions.DependencyInjection\NClient.Extensions.DependencyInjection.csproj"/>
+        <ProjectReference Include="..\..\..\src\NClient.Extensions\NClient.Extensions.DependencyInjection\NClient.Extensions.DependencyInjection.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj"/>
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.Newtonsoft\NClient.Providers.Serialization.Json.Newtonsoft.csproj" />
+        <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace NClient.Core.Helpers.ObjectToKeyValueConverters
 {
-    public class PropertyKeyValue
+    internal class PropertyKeyValue
     {
         public string Key { get; }
         public object? Value { get; }
