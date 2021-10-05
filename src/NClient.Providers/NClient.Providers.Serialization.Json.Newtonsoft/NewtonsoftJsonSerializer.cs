@@ -18,12 +18,12 @@ namespace NClient.Providers.Serialization.Json.Newtonsoft
             _jsonSerializerSettings = jsonSerializerSettings;
         }
 
-        public object? Deserialize(string json, Type returnType)
+        public object? Deserialize(string source, Type returnType)
         {
-            Ensure.IsNotNull(json, nameof(json));
+            Ensure.IsNotNull(source, nameof(source));
             Ensure.IsNotNull(returnType, nameof(returnType));
 
-            return JsonConvert.DeserializeObject(json, returnType, _jsonSerializerSettings);
+            return JsonConvert.DeserializeObject(source, returnType, _jsonSerializerSettings);
         }
 
         public string Serialize<T>(T? value)
