@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Helpers
 {
-    public static class UriHelper
+    internal static class UriHelper
     {
         public static Uri Combine(Uri baseUri, string relativePath)
         {

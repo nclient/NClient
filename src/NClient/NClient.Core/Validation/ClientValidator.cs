@@ -4,9 +4,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience.Providers;
+using NClient.Core.Ensuring;
 using NClient.Core.Handling;
 using NClient.Core.HttpClients;
 using NClient.Core.Interceptors;
+using NClient.Core.Interceptors.Validation;
 using NClient.Core.Resilience;
 using NClient.Core.Serialization;
 using NClient.Exceptions;
@@ -15,8 +18,8 @@ namespace NClient.Core.Validation
 {
     internal interface IClientValidator
     {
-        Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class;
+        Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+            where TClient : class;
     }
 
     internal class ClientValidator : IClientValidator
@@ -30,20 +33,20 @@ namespace NClient.Core.Validation
             _proxyGenerator = proxyGenerator;
         }
 
-        public async Task EnsureAsync<TInterface>(IClientInterceptorFactory clientInterceptorFactory)
-            where TInterface : class
+        public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+            where TClient : class
         {
             var interceptor = clientInterceptorFactory
-                .Create<TInterface, HttpRequest, HttpResponse>(
+                .Create<TClient, HttpRequest, HttpResponse>(
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
-                    new StubHttpClientExceptionFactory(),
                     new StubSerializerProvider(),
                     new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
-                    new DefaultMethodResiliencePolicyProvider<HttpRequest, HttpResponse>(
-                        new DefaultResiliencePolicyProvider<HttpRequest, HttpResponse>()));
-            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TInterface>(interceptor.ToInterceptor());
+                    new ResponseValidator<HttpRequest, HttpResponse>(new StubEnsuringSettings<HttpRequest, HttpResponse>()),
+                    new MethodResiliencePolicyProviderAdapter<HttpRequest, HttpResponse>(
+                        new StubResiliencePolicyProvider<HttpRequest, HttpResponse>()));
+            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);
         }

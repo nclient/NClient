@@ -2,8 +2,9 @@
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Resilience;
+using NClient.Core.Interceptors.Validation;
 
 namespace NClient.Core.Interceptors.HttpClients
 {
@@ -16,6 +17,7 @@ namespace NClient.Core.Interceptors.HttpClients
     {
         private readonly ISerializerProvider _serializerProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
+        private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
@@ -24,6 +26,7 @@ namespace NClient.Core.Interceptors.HttpClients
         public ResilienceHttpClientProvider(
             ISerializerProvider serializerProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -31,6 +34,7 @@ namespace NClient.Core.Interceptors.HttpClients
         {
             _serializerProvider = serializerProvider;
             _clientHandler = clientHandler;
+            _responseValidator = responseValidator;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
@@ -42,11 +46,12 @@ namespace NClient.Core.Interceptors.HttpClients
             return new ResilienceHttpClient<TRequest, TResponse>(
                 _serializerProvider,
                 _clientHandler,
+                _responseValidator,
                 _httpClientProvider,
                 _httpMessageBuilder,
                 resiliencePolicyProvider == null
                     ? _methodResiliencePolicyProvider
-                    : new DefaultMethodResiliencePolicyProvider<TRequest, TResponse>(resiliencePolicyProvider),
+                    : new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(resiliencePolicyProvider),
                 _logger);
         }
     }

@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
+using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
 
@@ -16,30 +17,18 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddNClientFactory(name: "factoryName");
+            serviceCollection.AddNClientFactory();
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClientFactory_Default_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
-
-            serviceCollection.AddNClientFactory(name: "factoryName");
-
-            var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
-        public void AddNClientFactory_NamedClient_NotBeNull()
+        public void AddNClientFactory_WithLogging_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
-            serviceCollection.AddHttpClient("TestClient");
 
-            serviceCollection.AddNClientFactory(name: "factoryName", httpClientName: "TestClient");
+            serviceCollection.AddNClientFactory();
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -48,9 +37,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClientFactory_Builder_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(name: "factoryName", builder => builder);
+            serviceCollection.AddNClientFactory(builder => builder.WithForceResilience().Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -59,10 +48,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClientFactory_BuilderWithCustomSettings_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(name: "factoryName", builder => builder
-                .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
+            serviceCollection.AddNClientFactory(builder => builder
+                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();

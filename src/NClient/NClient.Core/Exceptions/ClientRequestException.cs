@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Exceptions;
 
@@ -24,7 +25,7 @@ namespace NClient.Exceptions
         /// <summary>
         /// Shows HTTP error or not.
         /// </summary>
-        public bool IsHttpError => InnerException?.GetType() == typeof(HttpClientException<,>);
+        public bool IsHttpError => InnerException is HttpClientException;
 
         public ClientRequestException(string message, Type interfaceType, MethodInfo methodInfo, Exception innerException)
             : base(message, interfaceType, methodInfo, innerException)

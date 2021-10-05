@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NClient.Core.Helpers
 {
-    public static class EnumerableExtensions
+    internal static class EnumerableExtensions
     {
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {

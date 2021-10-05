@@ -26,8 +26,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
-        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>

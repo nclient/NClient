@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
@@ -18,18 +19,15 @@ namespace NClient.Providers.HttpClient.RestSharp
         private readonly ISerializer _serializer;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-        private readonly IRestSharpHttpClientExceptionFactory _httpClientExceptionFactory;
 
         public RestSharpHttpMessageBuilder(
             ISerializer serializer,
             IRestSharpMethodMapper restSharpMethodMapper,
-            IFinalHttpRequestBuilder finalHttpRequestBuilder,
-            IRestSharpHttpClientExceptionFactory httpClientExceptionFactory)
+            IFinalHttpRequestBuilder finalHttpRequestBuilder)
         {
             _serializer = serializer;
             _restSharpMethodMapper = restSharpMethodMapper;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
-            _httpClientExceptionFactory = httpClientExceptionFactory;
         }
 
         public Task<IRestRequest> BuildRequestAsync(HttpRequest httpRequest)
@@ -42,6 +40,8 @@ namespace NClient.Providers.HttpClient.RestSharp
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
+            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType).ToString());
+            
             foreach (var header in httpRequest.Headers)
             {
                 restRequest.AddHeader(header.Name, header.Value);
@@ -78,12 +78,9 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ResponseUri = response.ResponseUri,
                 Headers = new HttpResponseHeaderContainer(responseHeaders),
                 ErrorMessage = response.ErrorMessage,
+                ErrorException = response.ErrorException,
                 ProtocolVersion = response.ProtocolVersion
             };
-
-            httpResponse.ErrorException = response.ErrorException is not null
-                ? _httpClientExceptionFactory.Create(response.Request, response, response.ErrorException)
-                : null;
 
             return Task.FromResult(httpResponse);
         }

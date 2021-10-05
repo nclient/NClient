@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NClient.Core.Tests
 {
     [Parallelizable]
-    public class ObjectToKeyValueTest
+    internal class ObjectToKeyValueTest
     {
         private static readonly ClientObjectMemberManagerExceptionFactory ClientObjectMemberManagerExceptionFactory = new();
         private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();

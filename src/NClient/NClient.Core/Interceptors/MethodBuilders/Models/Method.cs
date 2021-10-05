@@ -5,7 +5,8 @@ using NClient.Annotations.Versioning;
 
 namespace NClient.Core.Interceptors.MethodBuilders.Models
 {
-    internal class Method
+    // TODO: doc
+    public class Method
     {
         public string Name { get; }
         public string ClientName { get; }

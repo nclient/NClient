@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using NClient.Abstractions.HttpClients;
 
 namespace NClient.Abstractions.Resilience
 {
@@ -11,6 +12,7 @@ namespace NClient.Abstractions.Resilience
         /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
         /// </summary>
         /// <param name="methodInfo">The method to apply the policy to.</param>
-        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo);
+        /// <param name="httpRequest">The HTTP request to apply the policy to.</param>
+        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, HttpRequest httpRequest);
     }
 }

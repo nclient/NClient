@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
 
@@ -23,9 +24,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public void AddNClient_OnlyHost_NotBeNull()
+        public void AddNClient_WithLogging_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(host: "http://localhost:5000");
 
@@ -34,26 +35,12 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public void AddNClient_NamedClient_NotBeNull()
-        {
-            var serviceCollection = new ServiceCollection().AddLogging();
-            serviceCollection.AddHttpClient("TestClient");
-
-            serviceCollection.AddNClient<ITestClientWithMetadata>(
-                host: "http://localhost:5000",
-                httpClientName: "TestClient");
-
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
-            client.Should().NotBeNull();
-        }
-
-        [Test]
         public void AddNClient_Builder_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
-                host: "http://localhost:5000", builder => builder.WithResiliencePolicy());
+                host: "http://localhost:5000", builder => builder.WithForceResilience().Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
@@ -62,11 +49,12 @@ namespace NClient.Extensions.DependencyInjection.Tests
         [Test]
         public void AddNClient_BuilderWithCustomSettings_NotBeNull()
         {
-            var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
+            var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
-                    .WithResiliencePolicy(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
+                    .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                    .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

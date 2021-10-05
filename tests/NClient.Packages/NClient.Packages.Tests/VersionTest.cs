@@ -46,11 +46,11 @@ namespace NClient.Packages.Tests
 
         [Test]
         public void NClient_Providers_Serialization_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.System").Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.System").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Serialization_Newtonsoft() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Extensions_DependencyInjection() =>

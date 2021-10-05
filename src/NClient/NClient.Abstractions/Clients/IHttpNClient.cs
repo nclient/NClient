@@ -6,6 +6,7 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions.Clients
 {
+    // TODO: doc
     public interface IHttpNClient<T>
     {
         /// <summary>

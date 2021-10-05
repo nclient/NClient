@@ -20,8 +20,9 @@ namespace NClient.Tests.ClientTests
         {
             _httpApiMockFactory = new HttpApiMockFactory(port: 5016);
 
-            _httpClient = new NClientBuilder()
-                .Use<IHttpClientWithMetadata>(_httpApiMockFactory.ApiUri.ToString())
+            _httpClient = NClientGallery.NativeClients
+                .GetBasic()
+                .For<IHttpClientWithMetadata>(_httpApiMockFactory.ApiUri.ToString())
                 .Build();
         }
 
