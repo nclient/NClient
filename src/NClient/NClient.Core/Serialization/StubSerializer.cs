@@ -7,7 +7,7 @@ namespace NClient.Core.Serialization
     {
         public string ContentType { get; } = "application/json";
 
-        public object? Deserialize(string json, Type returnType)
+        public object? Deserialize(string source, Type returnType)
         {
             return null;
         }
