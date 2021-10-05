@@ -17,18 +17,18 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryHttpClientBuilder, INClientFactory> configure,
+            Func<INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             factoryName ??= GuidProvider.Create().ToString();
             
-            return serviceCollection.AddSingleton(_ => configure(new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(_ => implementationFactory(new CustomNClientFactoryBuilder().For(factoryName)));
         }
 
         // TODO: doc
@@ -36,18 +36,18 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryHttpClientBuilder, INClientFactory> configure,
+            Func<IServiceProvider, INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             factoryName ??= GuidProvider.Create().ToString();
 
-            return serviceCollection.AddSingleton(serviceProvider => configure(serviceProvider, new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new CustomNClientFactoryBuilder().For(factoryName)));
         }
     }
 }

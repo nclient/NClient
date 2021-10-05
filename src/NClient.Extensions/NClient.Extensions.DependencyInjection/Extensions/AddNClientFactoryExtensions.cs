@@ -37,14 +37,14 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> configure,
+            Func<INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             factoryName ??= GuidProvider.Create().ToString();
             var httpClientName = GuidProvider.Create().ToString();
@@ -52,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
-                return configure(preConfiguredBuilder);
+                return implementationFactory(preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
@@ -60,14 +60,14 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IHttpClientBuilder AddNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> configure,
+            Func<IServiceProvider, INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage>, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             factoryName ??= GuidProvider.Create().ToString();
             var httpClientName = GuidProvider.Create().ToString();
@@ -75,7 +75,7 @@ namespace NClient.Extensions.DependencyInjection
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
-                return configure(serviceProvider, preConfiguredBuilder);
+                return implementationFactory(serviceProvider, preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 

@@ -38,21 +38,21 @@ namespace NClient.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> configure)
+            string host, Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             var httpClientName = GuidProvider.Create().ToString();
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
-                return configure(preConfiguredBuilder);
+                return implementationFactory(preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
@@ -61,21 +61,21 @@ namespace NClient.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <param name="configure">The action to configure NClient settings.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> configure)
+            string host, Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
-            Ensure.IsNotNull(configure, nameof(configure));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
 
             var httpClientName = GuidProvider.Create().ToString();
             return serviceCollection.AddSingleton(serviceProvider =>
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
-                return configure(serviceProvider, preConfiguredBuilder);
+                return implementationFactory(serviceProvider, preConfiguredBuilder);
             }).AddHttpClient(httpClientName);
         }
 
