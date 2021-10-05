@@ -33,11 +33,11 @@ namespace NClient.Providers.Serialization.Xml.System
 
         public string Serialize<T>(T? value)
         {
-            Ensure.IsNotNull((object)value!, nameof(value));
+            Ensure.IsNotNull(value, nameof(value));
             
             using var memoryStream = new MemoryStream();
             using var xmlWriter = XmlWriter.Create(memoryStream, _xmlWriterSettings);
-            new XmlSerializer(value.GetType()).Serialize(xmlWriter, value);
+            new XmlSerializer(value!.GetType()).Serialize(xmlWriter, value);
             return Encoding.UTF8.GetString(memoryStream.ToArray());
         }
     }
