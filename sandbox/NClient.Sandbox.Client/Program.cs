@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Providers.Resilience.Polly;
@@ -70,24 +69,20 @@ namespace NClient.Sandbox.Client
             var fileClientLogger = serviceProvider.GetRequiredService<ILogger<IFileClient>>();
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            _weatherForecastClient = NClientProvider
-                .Use<IWeatherForecastClient>(host: "http://localhost:5000")
-                .WithCustomHandling(new IClientHandler<HttpRequestMessage, HttpResponseMessage>[]
-                {
-                    new LoggingClientHandler(handlerLogger)
-                })
+            _weatherForecastClient = NClientGallery.NativeClients
+                .GetBasic()
+                .For<IWeatherForecastClient>(host: "http://localhost:5000")
+                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
                 .WithCustomResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
                     .ForMethod(x => (Func<WeatherForecastDto, Task>)x.PostAsync).UsePolly(fallbackPolicy))
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
 
-            _fileClient = NClientProvider
-                .Use<IFileClient>(host: "http://localhost:5002")
-                .WithCustomHandling(new IClientHandler<HttpRequestMessage, HttpResponseMessage>[]
-                {
-                    new LoggingClientHandler(handlerLogger)
-                })
+            _fileClient = NClientGallery.NativeClients
+                .GetBasic()
+                .For<IFileClient>(host: "http://localhost:5002")
+                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
                 .WithCustomResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
                     .ForMethod(x => (Func<byte[], Task>)x.PostTextFileAsync).UsePolly(fallbackPolicy))

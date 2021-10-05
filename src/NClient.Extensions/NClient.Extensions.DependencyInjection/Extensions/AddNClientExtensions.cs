@@ -83,7 +83,7 @@ namespace NClient.Extensions.DependencyInjection
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TClient : class
         {
-            return new AspNetNClientBuilder(httpClientName, serviceProvider).For<TClient>(host);
+            return new InjectedNClientBuilder(serviceProvider, httpClientName).For<TClient>(host);
         }
     }
 }

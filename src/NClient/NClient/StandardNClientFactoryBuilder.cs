@@ -3,10 +3,15 @@ using NClient.Abstractions.Builders;
 
 namespace NClient
 {
+    public interface IStandardNClientFactoryBuilder
+    {
+        INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName);
+    }
+    
     /// <summary>
     /// The builder used to create the client factory.
     /// </summary>
-    public class NClientFactoryBuilder
+    public class StandardNClientFactoryBuilder : IStandardNClientFactoryBuilder
     {
         public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {

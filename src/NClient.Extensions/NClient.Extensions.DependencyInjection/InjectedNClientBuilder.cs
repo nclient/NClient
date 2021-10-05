@@ -8,24 +8,31 @@ using NClient.Providers.HttpClient.System;
 namespace NClient.Extensions.DependencyInjection
 {
     // TODO: doc
-    public class AspNetNClientFactoryBuilder
+    public interface IInjectedNClientBuilder
     {
-        private readonly string? _httpClientName;
+        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
+            where TClient : class;
+    }
+    
+    public class InjectedNClientBuilder : IInjectedNClientBuilder
+    {
         private readonly IServiceProvider _serviceProvider;
+        private readonly string? _httpClientName;
         
-        public AspNetNClientFactoryBuilder(string? httpClientName, IServiceProvider serviceProvider)
+        public InjectedNClientBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
         {
-            _httpClientName = httpClientName;
             _serviceProvider = serviceProvider;
+            _httpClientName = httpClientName;
         }
         
-        public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
+            where TClient : class
         {
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             
-            return new CustomNClientFactoryBuilder()
-                .For(factoryName)
+            return new CustomNClientBuilder()
+                .For<TClient>(host)
                 .UsingSystemHttpClient(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
                 .EnsuringSuccess()

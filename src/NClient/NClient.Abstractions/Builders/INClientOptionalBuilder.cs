@@ -30,7 +30,7 @@ namespace NClient.Abstractions.Builders
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithSerializerReplacedBy(ISerializerProvider serializerProvider);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider);
 
         #endregion
         

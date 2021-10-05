@@ -19,7 +19,8 @@ namespace NClient.Tests.ClientTests
         {
             _overriddenApiMockFactory = new OverriddenApiMockFactory(port: 5020);
 
-            _overriddenClient = new NClientBuilder()
+            _overriddenClient = NClientGallery.NativeClients
+                .GetBasic()
                 .For<IOverriddenClientWithMetadata>(_overriddenApiMockFactory.ApiUri.ToString())
                 .Build();
         }

@@ -27,7 +27,8 @@ namespace NClient.Tests.ClientTests
         public void Setup()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5013);
-            _returnClient = new NClientBuilder()
+            _returnClient = NClientGallery.NativeClients
+                .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
         }

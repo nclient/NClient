@@ -17,7 +17,8 @@ namespace NClient.Tests.ClientTests
         {
             _headerApiMockFactory = new HeaderApiMockFactory(port: 5008);
 
-            _headerClient = new NClientBuilder()
+            _headerClient = NClientGallery.NativeClients
+                .GetBasic()
                 .For<IHeaderClientWithMetadata>(_headerApiMockFactory.ApiUri.ToString())
                 .Build();
         }

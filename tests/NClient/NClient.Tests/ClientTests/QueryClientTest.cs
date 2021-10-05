@@ -17,7 +17,8 @@ namespace NClient.Tests.ClientTests
         public void Setup()
         {
             _queryApiMockFactory = new QueryApiMockFactory(port: 5009);
-            _queryClient = new NClientBuilder()
+            _queryClient = NClientGallery.NativeClients
+                .GetBasic()
                 .For<IQueryClientWithMetadata>(_queryApiMockFactory.ApiUri.ToString())
                 .Build();
         }

@@ -3,10 +3,16 @@ using NClient.Abstractions.Builders;
 
 namespace NClient
 {
+    public interface IStandardNClientBuilder
+    {
+        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
+            where TClient : class;
+    }
+    
     /// <summary>
     /// The builder used to create the client.
     /// </summary>
-    public class NClientBuilder
+    public class StandardNClientBuilder : IStandardNClientBuilder
     {
         public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class
@@ -17,7 +23,7 @@ namespace NClient
                 .UsingJsonSerializer()
                 .EnsuringSuccess()
                 .WithoutHandling()
-                .WithoutResilience()
+                .WithIdempotentResilience()
                 .WithoutLogging();
         }
     }

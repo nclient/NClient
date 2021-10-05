@@ -19,7 +19,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public void SetUp()
         {
             _api = new BasicApiMockFactory(5027);
-            _optionalBuilder = new NClientBuilder().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
+            _optionalBuilder = NClientGallery.NativeClients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         
         [Test]
@@ -28,7 +28,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithSerializerReplacedByNewtonsoftJson()
+                .WithNewtonsoftJsonSerialization()
                 .Build();
             
             var response = await client.GetAsync(id);

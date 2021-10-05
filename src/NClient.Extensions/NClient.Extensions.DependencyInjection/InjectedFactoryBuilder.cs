@@ -8,25 +8,29 @@ using NClient.Providers.HttpClient.System;
 namespace NClient.Extensions.DependencyInjection
 {
     // TODO: doc
-    public class AspNetNClientBuilder
+    public interface IInjectedFactoryBuilder
     {
-        private readonly string? _httpClientName;
+        INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName);
+    }
+    
+    public class InjectedFactoryBuilder : IInjectedFactoryBuilder
+    {
         private readonly IServiceProvider _serviceProvider;
+        private readonly string? _httpClientName;
         
-        public AspNetNClientBuilder(string? httpClientName, IServiceProvider serviceProvider)
+        public InjectedFactoryBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
         {
-            _httpClientName = httpClientName;
             _serviceProvider = serviceProvider;
+            _httpClientName = httpClientName;
         }
         
-        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
-            where TClient : class
+        public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             
-            return new CustomNClientBuilder()
-                .For<TClient>(host)
+            return new CustomNClientFactoryBuilder()
+                .For(factoryName)
                 .UsingSystemHttpClient(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
                 .EnsuringSuccess()
