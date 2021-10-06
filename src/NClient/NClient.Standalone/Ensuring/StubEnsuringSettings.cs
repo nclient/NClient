@@ -12,7 +12,9 @@ namespace NClient.Standalone.Ensuring
         public StubEnsuringSettings()
         {
             IsSuccess = _ => true;
-            OnFailure = _ => { };
+            OnFailure = _ =>
+            {
+            };
         }
     }
 }

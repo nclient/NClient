@@ -58,7 +58,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = _optionalBuilder
                 .EnsuringCustomSuccess(
                     successCondition: _ => true, 
-                    onFailure: _ => { })
+                    onFailure: _ =>
+                    {
+                    })
                 .Build();
             
             var response = await client.GetAsync(id);

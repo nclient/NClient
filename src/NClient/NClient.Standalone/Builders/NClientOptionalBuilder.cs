@@ -30,10 +30,15 @@ namespace NClient.Standalone.Builders
 
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
-            _context = context;
             var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
-            new ClientValidator(proxyGeneratorProvider.Value).EnsureAsync<TClient>(_clientInterceptorFactory);
+            
+            new ClientValidator(proxyGeneratorProvider.Value)
+                .EnsureAsync<TClient>(_clientInterceptorFactory)
+                .GetAwaiter()
+                .GetResult();
+            
+            _context = context;
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
         

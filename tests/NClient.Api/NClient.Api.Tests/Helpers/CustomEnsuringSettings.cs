@@ -7,7 +7,9 @@ namespace NClient.Api.Tests.Helpers
     {
         public CustomEnsuringSettings() : base(
             isSuccess: _ => true, 
-            onFailure: _ => { })
+            onFailure: _ =>
+            {
+            })
         {
         }
     }
