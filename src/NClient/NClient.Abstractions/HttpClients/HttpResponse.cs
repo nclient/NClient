@@ -7,7 +7,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for HTTP response data with deserialized body.
     /// </summary>
-    public class HttpResponse<TValue> : HttpResponse
+    public class HttpResponse<TValue> : HttpResponse, IHttpResponse<TValue>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
@@ -20,7 +20,7 @@ namespace NClient.Abstractions.HttpClients
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="value">The object obtained as a result of deserialization of the body.</param>
-        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value)
+        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TValue? value)
             : base(httpResponse, httpRequest)
         {
             Value = value;
@@ -39,16 +39,16 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for HTTP response data.
     /// </summary>
-    public class HttpResponse
+    public class HttpResponse : IHttpResponse
     {
         /// <summary>
         /// The HTTP request that the response belongs to.
         /// </summary>
-        public HttpRequest Request { get; }
+        public IHttpRequest Request { get; }
         /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        public HttpResponseContent Content { get; set; }
+        public IHttpResponseContent Content { get; set; }
         /// <summary>
         /// Gets HTTP response status code.
         /// </summary>
@@ -64,7 +64,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        public HttpResponseHeaderContainer Headers { get; set; }
+        public IHttpResponseHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -87,16 +87,16 @@ namespace NClient.Abstractions.HttpClients
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
-        public HttpResponse(HttpRequest httpRequest)
+        public HttpResponse(IHttpRequest httpRequest)
         {
             Ensure.IsNotNull(httpRequest, nameof(httpRequest));
 
             Request = httpRequest;
             Content = new HttpResponseContent();
-            Headers = new HttpResponseHeaderContainer(Array.Empty<HttpHeader>());
+            Headers = new HttpResponseHeaderContainer(Array.Empty<IHttpHeader>());
         }
 
-        internal HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest) : this(httpRequest)
+        internal HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest) : this(httpRequest)
         {
             Ensure.IsNotNull(httpResponse, nameof(httpResponse));
             
@@ -113,7 +113,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
         /// </summary>
-        public HttpResponse EnsureSuccess()
+        public IHttpResponse EnsureSuccess()
         {
             if (!IsSuccessful)
                 throw ErrorException!;

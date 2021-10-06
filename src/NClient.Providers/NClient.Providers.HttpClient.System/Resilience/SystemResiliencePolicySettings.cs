@@ -9,12 +9,12 @@ namespace NClient.Providers.HttpClient.System
     {
         public int MaxRetries { get; }
         public Func<int, TimeSpan> GetDelay { get; }
-        public Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool> ShouldRetry { get; }
+        public Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool> ShouldRetry { get; }
         
         public SystemResiliencePolicySettings(
             int maxRetries, 
             Func<int, TimeSpan> getDelay, 
-            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool> shouldRetry)
+            Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool> shouldRetry)
         {
             MaxRetries = maxRetries;
             GetDelay = getDelay;

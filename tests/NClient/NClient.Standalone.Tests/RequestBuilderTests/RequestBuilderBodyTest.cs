@@ -36,7 +36,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultipleBodyParameters_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParameters>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -66,7 +66,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultipleBodyParametersWithoutAttributes_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParametersWithoutAttributes>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -96,7 +96,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultiplyPrimitiveBodyParameters_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyPrimitiveBodyParameters>(), 1, "val");
 
             buildRequestFunc

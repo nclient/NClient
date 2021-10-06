@@ -12,7 +12,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
 {
     internal interface IResilienceHttpClient<TResponse>
     {
-        Task<TResponse> ExecuteAsync(HttpRequest request, MethodInvocation methodInvocation);
+        Task<TResponse> ExecuteAsync(IHttpRequest request, IMethodInvocation methodInvocation);
     }
 
     internal class ResilienceHttpClient<TRequest, TResponse> : IResilienceHttpClient<TResponse>
@@ -43,7 +43,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             _logger = logger;
         }
 
-        public async Task<TResponse> ExecuteAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
+        public async Task<TResponse> ExecuteAsync(IHttpRequest httpRequest, IMethodInvocation methodInvocation)
         {
             return await _methodResiliencePolicyProvider
                 .Create(methodInvocation.MethodInfo, httpRequest)
@@ -51,7 +51,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
                 .ConfigureAwait(false);
         }
 
-        private async Task<ResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
+        private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IHttpRequest httpRequest, IMethodInvocation methodInvocation)
         {
             _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", httpRequest.Method, httpRequest.Resource, httpRequest.Id);
 
@@ -89,7 +89,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             var responseContext = new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
             if (responseContext.MethodInvocation.ResultType == typeof(TResponse))
                 return responseContext;
-            if (typeof(HttpResponse).IsAssignableFrom(responseContext.MethodInvocation.ResultType))
+            if (typeof(IHttpResponse).IsAssignableFrom(responseContext.MethodInvocation.ResultType))
                 return responseContext;
             return _responseValidator.Ensure(responseContext);
         }

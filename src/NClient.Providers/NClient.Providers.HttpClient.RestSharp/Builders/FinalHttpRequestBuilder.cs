@@ -9,7 +9,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        HttpRequest Build(HttpRequest request, IRestRequest restRequest);
+        IHttpRequest Build(IHttpRequest request, IRestRequest restRequest);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
@@ -25,7 +25,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             _restSharpMethodMapper = restSharpMethodMapper;
         }
         
-        public HttpRequest Build(HttpRequest request, IRestRequest restRequest)
+        public IHttpRequest Build(IHttpRequest request, IRestRequest restRequest)
         {
             var resource = new Uri(restRequest.Resource);
             var method = _restSharpMethodMapper.Map(restRequest.Method);

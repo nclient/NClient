@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 
 namespace NClient.Abstractions.HttpClients
 {
-    public class HttpResponseHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    public class HttpResponseHeaderContainer : IHttpResponseHeaderContainer
     {
         private readonly HttpResponseHeaders _httpResponseHeaders;
 
@@ -37,7 +37,7 @@ namespace NClient.Abstractions.HttpClients
             _httpResponseHeaders = httpResponseHeaders;
         }
 
-        public HttpResponseHeaderContainer(IEnumerable<HttpHeader> httpHeaders)
+        public HttpResponseHeaderContainer(IEnumerable<IHttpHeader> httpHeaders)
         {
             var fakeHttpResponseMessage = new HttpResponseMessage();
             foreach (var headerValues in httpHeaders.GroupBy(x => x.Name))

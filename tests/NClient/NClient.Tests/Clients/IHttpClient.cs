@@ -11,15 +11,15 @@ namespace NClient.Tests.Clients
     public interface IHttpClientWithMetadata : IHttpClient
     {
         [GetMethod]
-        new Task<HttpResponse<int>> GetAsync(int id);
+        new Task<IHttpResponse<int>> GetAsync(int id);
 
         [PostMethod]
-        new Task<HttpResponse<BasicEntity>> PostAsync(BasicEntity entity);
+        new Task<IHttpResponse<BasicEntity>> PostAsync(BasicEntity entity);
 
         [PutMethod]
-        new Task<HttpResponse> PutAsync(BasicEntity entity);
+        new Task<IHttpResponse> PutAsync(BasicEntity entity);
 
         [DeleteMethod]
-        new HttpResponse Delete(int id);
+        new IHttpResponse Delete(int id);
     }
 }

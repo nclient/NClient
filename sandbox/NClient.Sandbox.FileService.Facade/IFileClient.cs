@@ -11,9 +11,9 @@ namespace NClient.Sandbox.FileService.Facade
     public interface IFileClient : IFileController
     {
         [Override]
-        new Task<HttpResponse> GetTextFileAsync([RouteParam] long id);
+        new Task<IHttpResponse> GetTextFileAsync([RouteParam] long id);
 
         [Override]
-        new Task<HttpResponse> GetImageAsync(long id);
+        new Task<IHttpResponse> GetImageAsync(long id);
     }
 }

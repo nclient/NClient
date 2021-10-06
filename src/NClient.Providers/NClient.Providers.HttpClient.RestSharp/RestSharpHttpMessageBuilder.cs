@@ -6,9 +6,11 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.HttpClient.RestSharp.Builders;
 using NClient.Providers.HttpClient.RestSharp.Helpers;
-using RestSharp;
-using HttpHeader = NClient.Abstractions.HttpClients.HttpHeader;
-using HttpResponse = NClient.Abstractions.HttpClients.HttpResponse;
+using ParameterType = RestSharp.ParameterType;
+using DataFormat = RestSharp.DataFormat;
+using RestRequest = RestSharp.RestRequest;
+using IRestRequest = RestSharp.IRestRequest;
+using IRestResponse = RestSharp.IRestResponse;
 
 namespace NClient.Providers.HttpClient.RestSharp
 {
@@ -30,7 +32,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
 
-        public Task<IRestRequest> BuildRequestAsync(HttpRequest httpRequest)
+        public Task<IRestRequest> BuildRequestAsync(IHttpRequest httpRequest)
         {
             var method = _restSharpMethodMapper.Map(httpRequest.Method);
             var restRequest = new RestRequest(httpRequest.Resource, method, DataFormat.Json);
@@ -56,7 +58,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, IRestResponse response)
+        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IRestResponse response)
         {
             var finalRequest = _finalHttpRequestBuilder.Build(httpRequest, response.Request);
             
@@ -82,7 +84,7 @@ namespace NClient.Providers.HttpClient.RestSharp
                 ProtocolVersion = response.ProtocolVersion
             };
 
-            return Task.FromResult(httpResponse);
+            return Task.FromResult<IHttpResponse>(httpResponse);
         }
     }
 }

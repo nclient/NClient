@@ -24,7 +24,7 @@ namespace NClient.Providers.HttpClient.System
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
         
-        public Task<HttpRequestMessage> BuildRequestAsync(HttpRequest httpRequest)
+        public Task<HttpRequestMessage> BuildRequestAsync(IHttpRequest httpRequest)
         {
             var parameters = httpRequest.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
@@ -48,7 +48,7 @@ namespace NClient.Providers.HttpClient.System
             return Task.FromResult(httpRequestMessage);
         }
 
-        public async Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, HttpResponseMessage response)
+        public async Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, HttpResponseMessage response)
         {
             var exception = TryGetException(response);
             

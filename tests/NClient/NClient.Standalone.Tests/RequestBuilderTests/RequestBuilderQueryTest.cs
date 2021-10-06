@@ -121,7 +121,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_ArrayOfCustomTypeParameter_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IArrayOfCustomTypeParameter>(),
                 arguments: new object[] { new[] { new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 } } });
 
@@ -152,7 +152,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_DictionaryOfCustomTypesParameter_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDictionaryOfCustomTypesParameter>(),
                 arguments: new object[] { new Dictionary<int, BasicEntity> { [1] = new() { Id = 1, Value = 2 }, [2] = new() { Id = 2, Value = 3 } } });
 
@@ -210,7 +210,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_ComplexCustomTypeWithCustomTypeArrayQueryParam_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeWithArrayOfCustomTypesParameter>(),
                 new EntityWithCustomTypeArray { Id = 1, Value = "val", Array = new[] { new BasicEntity(), new BasicEntity() } });
 
@@ -247,7 +247,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_CustomTypeWithDictionaryOfCustomTypesParameter_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeWithDictionaryOfCustomTypesParameter>(),
                 new EntityWithCustomTypeDict { Id = 1, Value = "val", Dict = new Dictionary<int, BasicEntity> { [1] = new(), [2] = new() } });
 

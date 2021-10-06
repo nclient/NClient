@@ -52,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestSharpHttpClient()
                 .UsingNewtonsoftJsonSerializer()
-                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<IRestRequest, IRestResponse>>())
+                .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();

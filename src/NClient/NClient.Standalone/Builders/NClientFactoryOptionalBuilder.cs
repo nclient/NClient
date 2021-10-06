@@ -42,7 +42,7 @@ namespace NClient.Standalone.Builders
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
+            Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));
             Ensure.IsNotNull(onFailure, nameof(onFailure));

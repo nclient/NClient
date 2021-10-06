@@ -72,8 +72,8 @@ namespace NClient.Standalone.Interceptors
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
             
-            HttpResponse? httpResponse = null;
-            HttpResponse? populatedHttpResponse = null;
+            IHttpResponse? httpResponse = null;
+            IHttpResponse? populatedHttpResponse = null;
             try
             {
                 var fullMethodInvocation = _fullMethodInvocationProvider
@@ -112,12 +112,12 @@ namespace NClient.Standalone.Interceptors
                 if (resultType == typeof(TResponse))
                     return response!;
 
-                if (typeof(HttpResponse).IsAssignableFrom(resultType))
+                if (typeof(IHttpResponse).IsAssignableFrom(resultType))
                     return populatedHttpResponse!;
 
                 return populatedHttpResponse!
                     .GetType()
-                    .GetProperty(nameof(HttpResponse<object>.Value))?
+                    .GetProperty(nameof(IHttpResponse<object>.Value))?
                     .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)

@@ -42,7 +42,7 @@ namespace NClient.Tests.ClientTests
         public void AsResilientInvoke_InternalServerError_ThrowClientRequestException()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
-            var noOpPolicy = new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>());
+            var noOpPolicy = new PollyResiliencePolicyProvider<HttpRequestMessage, HttpResponseMessage>(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>());
             var returnClient = NClientGallery.NativeClients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
@@ -111,7 +111,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
-                    .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
+                    .UsePolly(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -129,7 +129,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
-                    .UsePolly(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
+                    .UsePolly(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))

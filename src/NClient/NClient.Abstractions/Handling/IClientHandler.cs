@@ -14,7 +14,7 @@ namespace NClient.Abstractions.Handling
         /// <param name="request">The source HTTP request.</param>
         /// <param name="methodInvocation">The information about invocation of a client method.</param>
         /// <returns></returns>
-        Task<TRequest> HandleRequestAsync(TRequest request, MethodInvocation methodInvocation);
+        Task<TRequest> HandleRequestAsync(TRequest request, IMethodInvocation methodInvocation);
 
         /// <summary>
         /// Handles HTTP response after receiving it.
@@ -22,6 +22,6 @@ namespace NClient.Abstractions.Handling
         /// <param name="response">The source HTTP response.</param>
         /// <param name="methodInvocation">The information about invocation of a client method.</param>
         /// <returns></returns>
-        Task<TResponse> HandleResponseAsync(TResponse response, MethodInvocation methodInvocation);
+        Task<TResponse> HandleResponseAsync(TResponse response, IMethodInvocation methodInvocation);
     }
 }

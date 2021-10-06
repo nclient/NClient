@@ -10,7 +10,7 @@ namespace NClient.Providers.HttpClient.System.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        Task<HttpRequest> BuildAsync(HttpRequest request, HttpRequestMessage httpRequestMessage);
+        Task<IHttpRequest> BuildAsync(IHttpRequest request, HttpRequestMessage httpRequestMessage);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
@@ -22,7 +22,7 @@ namespace NClient.Providers.HttpClient.System.Builders
             _serializer = serializer;
         }
         
-        public async Task<HttpRequest> BuildAsync(HttpRequest request, HttpRequestMessage httpRequestMessage)
+        public async Task<IHttpRequest> BuildAsync(IHttpRequest request, HttpRequestMessage httpRequestMessage)
         {
             var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
             var content = httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -37,10 +37,10 @@ namespace NClient.Providers.HttpClient.System.Builders
 
             var headers = httpRequestMessage.Headers?
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<HttpHeader>();
+                .ToArray() ?? Array.Empty<IHttpHeader>();
             var contentHeaders = httpRequestMessage.Content?.Headers
                 .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<HttpHeader>();
+                .ToArray() ?? Array.Empty<IHttpHeader>();
             foreach (var header in headers.Concat(contentHeaders))
             {
                 finalRequest.AddHeader(header.Name, header.Value);

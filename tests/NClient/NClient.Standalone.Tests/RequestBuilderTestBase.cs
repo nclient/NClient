@@ -59,28 +59,28 @@ namespace NClient.Standalone.Tests
             return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());
         }
 
-        internal HttpRequest BuildRequest(Method method, params object[] arguments)
+        internal IHttpRequest BuildRequest(Method method, params object[] arguments)
         {
             return BuildRequest(host: "http://localhost:5000", method, arguments);
         }
 
-        internal HttpRequest BuildRequest(string host, Method method, params object[] arguments)
+        internal IHttpRequest BuildRequest(string host, Method method, params object[] arguments)
         {
             return RequestBuilder.Build(RequestId, host: new Uri(host), method, arguments);
         }
 
         protected static void AssertHttpRequest(
-            HttpRequest actualRequest,
+            IHttpRequest actualRequest,
             Uri uri,
             HttpMethod httpMethod,
-            IEnumerable<HttpParameter>? parameters = null,
-            IEnumerable<HttpHeader>? headers = null,
+            IEnumerable<IHttpParameter>? parameters = null,
+            IEnumerable<IHttpHeader>? headers = null,
             object? body = null)
         {
             actualRequest.Resource.Should().Be(uri);
             actualRequest.Method.Should().Be(httpMethod);
-            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<HttpParameter>(), config => config.WithoutStrictOrdering());
-            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<HttpHeader>(), config => config.WithoutStrictOrdering());
+            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IHttpParameter>(), config => config.WithoutStrictOrdering());
+            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHttpHeader>(), config => config.WithoutStrictOrdering());
             actualRequest.Body.Should().BeEquivalentTo(body);
         }
     }

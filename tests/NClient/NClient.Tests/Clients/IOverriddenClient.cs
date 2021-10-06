@@ -11,11 +11,11 @@ namespace NClient.Tests.Clients
     public interface IOverriddenClientWithMetadata : IOverriddenClientWithMetadataBase
     {
         [Override]
-        new Task<HttpResponse<int>> GetAsync(int id);
+        new Task<IHttpResponse<int>> GetAsync(int id);
 
         [Override]
         [PutMethod("fakePost")]
-        new Task<HttpResponse> PostAsync(BasicEntity entity);
+        new Task<IHttpResponse> PostAsync(BasicEntity entity);
 
         [Override]
         [Header("test", "2")]

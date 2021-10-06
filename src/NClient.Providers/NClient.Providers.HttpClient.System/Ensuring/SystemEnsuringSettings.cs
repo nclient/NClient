@@ -8,12 +8,12 @@ namespace NClient.Providers.HttpClient.System
 {
     public class SystemEnsuringSettings : IEnsuringSettings<HttpRequestMessage, HttpResponseMessage>
     {
-        public Predicate<ResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
-        public Action<ResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
+        public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
+        public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
         
         public SystemEnsuringSettings(
-            Predicate<ResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
-            Action<ResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
+            Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
+            Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
         {
             IsSuccess = isSuccess;
             OnFailure = onFailure;

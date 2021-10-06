@@ -60,7 +60,7 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="settings">The settings for default resilience policy provider.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafePollyResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            int maxRetries, Func<int, TimeSpan> getDelay, Func<ResponseContext<TRequest, TResponse>, bool> shouldRetry)
+            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
@@ -76,7 +76,7 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="settings">The settings for default resilience policy provider.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafePollyResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
-            int maxRetries, Func<int, TimeSpan> getDelay, Func<ResponseContext<TRequest, TResponse>, bool> shouldRetry)
+            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
@@ -92,7 +92,7 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafePollyResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            IAsyncPolicy<ResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
@@ -110,7 +110,7 @@ namespace NClient.Providers.Resilience.Polly
         /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafePollyResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
-            IAsyncPolicy<ResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<ResponseContext<TRequest, TResponse>> otherMethodPolicy)
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             

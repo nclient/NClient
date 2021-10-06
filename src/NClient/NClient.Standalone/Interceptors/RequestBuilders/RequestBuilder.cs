@@ -14,7 +14,7 @@ namespace NClient.Standalone.Interceptors.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
+        IHttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
@@ -39,7 +39,7 @@ namespace NClient.Standalone.Interceptors.RequestBuilders
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public HttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
+        public IHttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
         {
             var httpMethod = _httpMethodProvider.Get(method.Attribute);
             var routeTemplate = _routeTemplateProvider.Get(method);

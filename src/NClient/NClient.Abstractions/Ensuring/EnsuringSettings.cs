@@ -5,12 +5,12 @@ namespace NClient.Abstractions.Ensuring
 {
     public class EnsuringSettings<TRequest, TResponse> : IEnsuringSettings<TRequest, TResponse>
     {
-        public virtual Predicate<ResponseContext<TRequest, TResponse>> IsSuccess { get; }
-        public virtual Action<ResponseContext<TRequest, TResponse>> OnFailure { get; }
+        public virtual Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
+        public virtual Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
         
         public EnsuringSettings(
-            Predicate<ResponseContext<TRequest, TResponse>> isSuccess, 
-            Action<ResponseContext<TRequest, TResponse>> onFailure)
+            Predicate<IResponseContext<TRequest, TResponse>> isSuccess, 
+            Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
             IsSuccess = isSuccess;
             OnFailure = onFailure;

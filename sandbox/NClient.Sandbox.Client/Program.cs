@@ -43,7 +43,7 @@ namespace NClient.Sandbox.Client
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
 
-            var basePolicy = Policy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(x =>
+            var basePolicy = Policy<IResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(x =>
             {
                 if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
                     return false;
@@ -58,7 +58,7 @@ namespace NClient.Sandbox.Client
                 {
                     if (delegateResult.Exception is not null)
                         throw delegateResult.Exception;
-                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                    if (typeof(IHttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
                     delegateResult.Result.Response.EnsureSuccessStatusCode();
                     return Task.CompletedTask;
