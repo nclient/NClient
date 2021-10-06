@@ -72,8 +72,8 @@ namespace NClient.Standalone.Interceptors
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
             
-            HttpResponse? httpResponse = null;
-            HttpResponse? populatedHttpResponse = null;
+            IHttpResponse? httpResponse = null;
+            IHttpResponse? populatedHttpResponse = null;
             try
             {
                 var fullMethodInvocation = _fullMethodInvocationProvider

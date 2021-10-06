@@ -49,7 +49,7 @@
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
-        public HttpResponseWithError(HttpResponse httpResponse, HttpRequest httpRequest, TError? error)
+        public HttpResponseWithError(IHttpResponse httpResponse, IHttpRequest httpRequest, TError? error)
             : base(httpResponse, httpRequest)
         {
             Error = error;

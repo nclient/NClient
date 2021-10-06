@@ -5,7 +5,7 @@ namespace NClient.Abstractions.Ensuring
 {
     public interface IEnsuringSettings<TRequest, TResponse>
     {
-        Predicate<ResponseContext<TRequest, TResponse>> IsSuccess { get; }
-        Action<ResponseContext<TRequest, TResponse>> OnFailure { get; }
+        Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
+        Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
     }
 }

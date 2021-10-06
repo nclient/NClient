@@ -43,7 +43,7 @@ namespace NClient.Sandbox.Client
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
 
-            var basePolicy = Policy<ResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(x =>
+            var basePolicy = Policy<IResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(x =>
             {
                 if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
                     return false;

@@ -19,7 +19,7 @@ namespace NClient.Standalone.Handling
             _logger = logger;
         }
 
-        public async Task<TRequest> HandleRequestAsync(TRequest request, MethodInvocation methodInvocation)
+        public async Task<TRequest> HandleRequestAsync(TRequest request, IMethodInvocation methodInvocation)
         {
             var handledHttpRequest = request;
             foreach (var clientHandler in _clientHandlers)
@@ -32,7 +32,7 @@ namespace NClient.Standalone.Handling
             return handledHttpRequest;
         }
 
-        public async Task<TResponse> HandleResponseAsync(TResponse response, MethodInvocation methodInvocation)
+        public async Task<TResponse> HandleResponseAsync(TResponse response, IMethodInvocation methodInvocation)
         {
             var handledHttpResponse = response;
             foreach (var clientHandler in _clientHandlers)

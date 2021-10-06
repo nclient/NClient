@@ -6,8 +6,8 @@ namespace NClient.Standalone.Ensuring
 {
     internal class StubEnsuringSettings<TRequest, TResponse> : IEnsuringSettings<TRequest, TResponse>
     {
-        public Predicate<ResponseContext<TRequest, TResponse>> IsSuccess { get; }
-        public Action<ResponseContext<TRequest, TResponse>> OnFailure { get; }
+        public Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
+        public Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
 
         public StubEnsuringSettings()
         {

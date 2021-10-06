@@ -6,12 +6,12 @@ namespace NClient.Abstractions.Resilience
     {
         public int MaxRetries { get; }
         public Func<int, TimeSpan> GetDelay { get; }
-        public Func<ResponseContext<TRequest, TResponse>, bool> ShouldRetry { get; }
+        public Func<IResponseContext<TRequest, TResponse>, bool> ShouldRetry { get; }
         
         public ResiliencePolicySettings(
             int retryCount, 
             Func<int, TimeSpan> sleepDuration, 
-            Func<ResponseContext<TRequest, TResponse>, bool> resultPredicate)
+            Func<IResponseContext<TRequest, TResponse>, bool> resultPredicate)
         {
             MaxRetries = retryCount;
             GetDelay = sleepDuration;

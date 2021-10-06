@@ -9,6 +9,6 @@
         /// <summary>
         /// Gets headers returned by server with the response content.
         /// </summary>
-        HttpResponseContentHeaderContainer Headers { get; }
+        IHttpResponseContentHeaderContainer Headers { get; }
     }
 }

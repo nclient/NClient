@@ -4,7 +4,7 @@ namespace NClient.Abstractions.HttpClients
 {
     public interface IHttpMessageBuilder<TRequest, TResponse>
     {
-        Task<TRequest> BuildRequestAsync(HttpRequest httpRequest);
-        Task<HttpResponse> BuildResponseAsync(HttpRequest httpRequest, TResponse response);
+        Task<TRequest> BuildRequestAsync(IHttpRequest httpRequest);
+        Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, TResponse response);
     }
 }

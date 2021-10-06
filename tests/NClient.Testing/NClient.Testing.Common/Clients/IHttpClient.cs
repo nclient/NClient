@@ -11,27 +11,27 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse<int>> GetAsync(int id);
+        Task<IHttpResponse<int>> GetAsync(int id);
 
         /// <summary>
         /// Url: api/basic
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse<BasicEntity>> PostAsync(BasicEntity entity);
+        Task<IHttpResponse<BasicEntity>> PostAsync(BasicEntity entity);
 
         /// <summary>
         /// Url: api/basic
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse> PutAsync(BasicEntity entity);
+        Task<IHttpResponse> PutAsync(BasicEntity entity);
 
         /// <summary>
         /// Url: api/basic?id={id}
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        HttpResponse Delete(int id);
+        IHttpResponse Delete(int id);
     }
 }

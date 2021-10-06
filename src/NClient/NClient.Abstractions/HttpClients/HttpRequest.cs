@@ -36,11 +36,11 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
-        public IReadOnlyCollection<HttpParameter> Parameters => _parameters;
+        public IReadOnlyCollection<IHttpParameter> Parameters => _parameters;
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        public IReadOnlyCollection<HttpHeader> Headers => _headers;
+        public IReadOnlyCollection<IHttpHeader> Headers => _headers;
 
         /// <summary>
         /// Creates container for HTTP request data.

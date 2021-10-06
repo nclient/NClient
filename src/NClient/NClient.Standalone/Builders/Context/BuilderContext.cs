@@ -61,7 +61,7 @@ namespace NClient.Standalone.Builders.Context
         }
         
         public void SetEnsuringSetting(
-            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
+            Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
             SetEnsuringSetting(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
         }

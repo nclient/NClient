@@ -21,6 +21,6 @@ namespace NClient.Abstractions.Resilience
         /// <summary>
         /// The predicate to filter the results this policy will handle.
         /// </summary>
-        Func<ResponseContext<TRequest, TResponse>, bool> ShouldRetry { get; }
+        Func<IResponseContext<TRequest, TResponse>, bool> ShouldRetry { get; }
     }
 }

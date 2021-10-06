@@ -7,7 +7,7 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulater
     {
-        HttpResponse Populate(HttpResponse httpResponse, Type resultType);
+        IHttpResponse Populate(IHttpResponse httpResponse, Type resultType);
     }
 
     internal class HttpResponsePopulater : IHttpResponsePopulater
@@ -19,7 +19,7 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             _serializer = serializer;
         }
 
-        public HttpResponse Populate(HttpResponse httpResponse, Type resultType)
+        public IHttpResponse Populate(IHttpResponse httpResponse, Type resultType)
         {
             var (bodyType, errorType) = GetBodyAndErrorType(resultType);
 
@@ -70,14 +70,14 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             return sourceType.IsGenericType && sourceType.GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
-        private object? TryGetBodyObject(Type bodyType, HttpResponse response)
+        private object? TryGetBodyObject(Type bodyType, IHttpResponse response)
         {
             return response.IsSuccessful
                 ? _serializer.Deserialize(response.Content.ToString(), bodyType)
                 : null;
         }
 
-        private object? TryGetErrorObject(Type errorType, HttpResponse response)
+        private object? TryGetErrorObject(Type errorType, IHttpResponse response)
         {
             return !response.IsSuccessful
                 ? _serializer.Deserialize(response.Content.ToString(), errorType)

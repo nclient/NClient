@@ -8,13 +8,13 @@ namespace NClient.Api.Tests.Helpers
 {
     public class CustomHandler : IClientHandler<HttpRequestMessage, HttpResponseMessage>
     {
-        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request, MethodInvocation methodInvocation)
+        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request, IMethodInvocation methodInvocation)
         {
             Console.WriteLine("Request is starting...");
             return Task.FromResult(request);
         }
         
-        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, MethodInvocation methodInvocation)
+        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, IMethodInvocation methodInvocation)
         {
             Console.WriteLine("Request completed.");
             return Task.FromResult(response);

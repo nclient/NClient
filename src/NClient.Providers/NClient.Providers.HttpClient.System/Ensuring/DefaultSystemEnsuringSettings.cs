@@ -9,8 +9,8 @@ namespace NClient.Providers.HttpClient.System
 {
     public class DefaultSystemEnsuringSettings : IEnsuringSettings<HttpRequestMessage, HttpResponseMessage>
     {
-        public Predicate<ResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
-        public Action<ResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
+        public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
+        public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
         
         public DefaultSystemEnsuringSettings() : this(
             isSuccess: x => x.Response.IsSuccessStatusCode,
@@ -29,8 +29,8 @@ namespace NClient.Providers.HttpClient.System
         }
         
         public DefaultSystemEnsuringSettings(
-            Predicate<ResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
-            Action<ResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
+            Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
+            Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
         {
             IsSuccess = isSuccess;
             OnFailure = onFailure;

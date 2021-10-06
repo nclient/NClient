@@ -26,7 +26,7 @@ namespace NClient.Resilience
                     new MethodInfoEqualityComparer());
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, HttpRequest httpRequest)
+        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest)
         {
             _resiliencePolicyProviders.TryGetValue(methodInfo, out var provider);
             return provider?.Create() ?? _defaultResiliencePolicyProvider!.Create();

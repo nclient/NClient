@@ -16,11 +16,11 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// The HTTP request that the response belongs to.
         /// </summary>
-        HttpRequest Request { get; }
+        IHttpRequest Request { get; }
         /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        HttpResponseContent Content { get; set; }
+        IHttpResponseContent Content { get; set; }
         /// <summary>
         /// Gets HTTP response status code.
         /// </summary>
@@ -36,7 +36,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        HttpResponseHeaderContainer Headers { get; set; }
+        IHttpResponseHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -56,6 +56,6 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
         /// </summary>
-        HttpResponse EnsureSuccess();
+        IHttpResponse EnsureSuccess();
     }
 }

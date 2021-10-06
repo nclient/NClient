@@ -29,11 +29,11 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
-        IReadOnlyCollection<HttpParameter> Parameters { get; }
+        IReadOnlyCollection<IHttpParameter> Parameters { get; }
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        IReadOnlyCollection<HttpHeader> Headers { get; }
+        IReadOnlyCollection<IHttpHeader> Headers { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>

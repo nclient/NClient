@@ -51,7 +51,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClientFactory(builder => builder
-                .WithForcePollyResilience(Policy.NoOpAsync<ResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

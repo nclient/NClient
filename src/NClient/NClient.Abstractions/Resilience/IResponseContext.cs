@@ -6,6 +6,6 @@ namespace NClient.Abstractions.Resilience
     {
         TRequest Request { get; }
         TResponse Response { get; }
-        MethodInvocation MethodInvocation { get; }
+        IMethodInvocation MethodInvocation { get; }
     }
 }

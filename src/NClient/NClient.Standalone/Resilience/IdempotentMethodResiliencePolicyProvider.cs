@@ -19,7 +19,7 @@ namespace NClient.Resilience
             _otherMethodProvider = otherMethodProvider;
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, HttpRequest httpRequest)
+        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest)
         {
             return httpRequest.Method switch
             {

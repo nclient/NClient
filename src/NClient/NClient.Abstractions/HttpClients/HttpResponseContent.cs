@@ -17,7 +17,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response content.
         /// </summary>
-        public HttpResponseContentHeaderContainer Headers { get; }
+        public IHttpResponseContentHeaderContainer Headers { get; }
 
         [SuppressMessage("ReSharper", "UnusedVariable")]
         public HttpResponseContent(byte[]? bytes = null, HttpResponseContentHeaderContainer? headerContainer = null)

@@ -37,15 +37,15 @@ namespace NClient.Standalone.Validation
             where TClient : class
         {
             var interceptor = clientInterceptorFactory
-                .Create<TClient, HttpRequest, HttpResponse>(
+                .Create<TClient, IHttpRequest, IHttpResponse>(
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
                     new StubSerializerProvider(),
-                    new[] { new StubClientHandler<HttpRequest, HttpResponse>() },
-                    new ResponseValidator<HttpRequest, HttpResponse>(new StubEnsuringSettings<HttpRequest, HttpResponse>()),
-                    new MethodResiliencePolicyProviderAdapter<HttpRequest, HttpResponse>(
-                        new StubResiliencePolicyProvider<HttpRequest, HttpResponse>()));
+                    new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
+                    new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()),
+                    new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
+                        new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

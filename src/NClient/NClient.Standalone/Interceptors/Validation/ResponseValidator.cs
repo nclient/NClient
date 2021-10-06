@@ -5,7 +5,7 @@ namespace NClient.Standalone.Interceptors.Validation
 {
     internal interface IResponseValidator<TRequest, TResponse>
     {
-        ResponseContext<TRequest, TResponse> Ensure(ResponseContext<TRequest, TResponse> responseContext);
+        IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext);
     }
     
     internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
@@ -17,7 +17,7 @@ namespace NClient.Standalone.Interceptors.Validation
             _ensuringSettings = ensuringSettings;
         }
 
-        public ResponseContext<TRequest, TResponse> Ensure(ResponseContext<TRequest, TResponse> responseContext)
+        public IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext)
         {
             if (_ensuringSettings.IsSuccess(responseContext))
                 return responseContext;
