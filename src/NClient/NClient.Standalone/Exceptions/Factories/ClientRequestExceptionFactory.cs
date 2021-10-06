@@ -4,7 +4,7 @@ using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
 using NClient.Exceptions;
 
-namespace NClient.Core.Exceptions.Factories
+namespace NClient.Standalone.Exceptions.Factories
 {
     public interface IClientRequestExceptionFactory
     {

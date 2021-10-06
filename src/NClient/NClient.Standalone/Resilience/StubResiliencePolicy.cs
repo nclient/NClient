@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Resilience
+namespace NClient.Standalone.Resilience
 {
     internal class StubResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {

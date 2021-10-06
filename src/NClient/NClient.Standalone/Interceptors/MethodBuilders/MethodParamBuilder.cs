@@ -3,10 +3,10 @@ using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Abstractions;
 using NClient.Annotations.Parameters;
-using NClient.Core.Interceptors.MethodBuilders.Models;
-using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Interceptors.MethodBuilders.Providers;
 
-namespace NClient.Core.Interceptors.MethodBuilders
+namespace NClient.Standalone.Interceptors.MethodBuilders
 {
     internal interface IMethodParamBuilder
     {

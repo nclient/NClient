@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
-using NClient.Core.Helpers.ObjectToKeyValueConverters;
-using NClient.Core.Interceptors.MethodBuilders.Models;
-using NClient.Core.Interceptors.RequestBuilders.Models;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Interceptors.RequestBuilders.Models;
 
-namespace NClient.Core.Interceptors.RequestBuilders
+namespace NClient.Standalone.Interceptors.RequestBuilders
 {
     internal interface IRequestBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using NClient.Annotations.Parameters;
 
-namespace NClient.Core.Interceptors.MethodBuilders.Models
+namespace NClient.Standalone.Interceptors.MethodBuilders.Models
 {
     // TODO: doc
     public class MethodParam

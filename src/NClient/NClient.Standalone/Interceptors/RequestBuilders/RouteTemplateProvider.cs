@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using NClient.Core.AspNetRouting;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.AspNetRouting;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
 
-namespace NClient.Core.Interceptors.RequestBuilders
+namespace NClient.Standalone.Interceptors.RequestBuilders
 {
     internal interface IRouteTemplateProvider
     {

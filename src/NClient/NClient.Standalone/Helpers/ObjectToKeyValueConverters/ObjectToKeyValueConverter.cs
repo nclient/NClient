@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Standalone.Exceptions.Factories;
 
-namespace NClient.Core.Helpers.ObjectToKeyValueConverters
+namespace NClient.Standalone.Helpers.ObjectToKeyValueConverters
 {
     internal interface IObjectToKeyValueConverter
     {

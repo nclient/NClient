@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// An exception that is thrown for error constructing a <see cref="RoutePattern"/>.

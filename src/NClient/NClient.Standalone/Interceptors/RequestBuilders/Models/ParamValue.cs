@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Core.Interceptors.RequestBuilders.Models
+namespace NClient.Standalone.Interceptors.RequestBuilders.Models
 {
     internal class Parameter
     {

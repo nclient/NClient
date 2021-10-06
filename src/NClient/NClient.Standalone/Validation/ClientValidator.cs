@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience.Providers;
-using NClient.Core.Ensuring;
-using NClient.Core.Handling;
-using NClient.Core.HttpClients;
-using NClient.Core.Interceptors;
-using NClient.Core.Interceptors.Validation;
-using NClient.Core.Resilience;
-using NClient.Core.Serialization;
 using NClient.Exceptions;
+using NClient.Standalone.Ensuring;
+using NClient.Standalone.Handling;
+using NClient.Standalone.HttpClients;
+using NClient.Standalone.Interceptors;
+using NClient.Standalone.Interceptors.Validation;
+using NClient.Standalone.Resilience;
+using NClient.Standalone.Serialization;
 
-namespace NClient.Core.Validation
+namespace NClient.Standalone.Validation
 {
     internal interface IClientValidator
     {

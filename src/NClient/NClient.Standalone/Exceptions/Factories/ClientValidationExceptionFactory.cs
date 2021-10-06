@@ -2,7 +2,7 @@
 using NClient.Annotations;
 using NClient.Exceptions;
 
-namespace NClient.Core.Exceptions.Factories
+namespace NClient.Standalone.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {

@@ -6,21 +6,21 @@ using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Exceptions.Factories;
-using NClient.Core.Handling;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
-using NClient.Core.Helpers.ObjectToKeyValueConverters;
-using NClient.Core.Interceptors.HttpClients;
-using NClient.Core.Interceptors.HttpResponsePopulation;
-using NClient.Core.Interceptors.Invocation;
-using NClient.Core.Interceptors.MethodBuilders;
-using NClient.Core.Interceptors.MethodBuilders.Providers;
-using NClient.Core.Interceptors.RequestBuilders;
-using NClient.Core.Interceptors.Validation;
 using NClient.Core.Mappers;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Handling;
+using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
+using NClient.Standalone.Interceptors.HttpClients;
+using NClient.Standalone.Interceptors.HttpResponsePopulation;
+using NClient.Standalone.Interceptors.Invocation;
+using NClient.Standalone.Interceptors.MethodBuilders;
+using NClient.Standalone.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.Interceptors.RequestBuilders;
+using NClient.Standalone.Interceptors.Validation;
 
-namespace NClient.Core.Interceptors
+namespace NClient.Standalone.Interceptors
 {
     internal interface IClientInterceptorFactory
     {

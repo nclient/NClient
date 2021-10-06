@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using NClient.Annotations.Methods;
-using NClient.Testing.Common;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.RequestBuilderTests

@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.AspNetRouting
+﻿namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Represents a part of a route pattern.

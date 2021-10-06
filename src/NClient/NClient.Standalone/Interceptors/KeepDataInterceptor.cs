@@ -1,7 +1,7 @@
 ﻿using System;
 using Castle.DynamicProxy;
 
-namespace NClient.Core.Interceptors
+namespace NClient.Standalone.Interceptors
 {
     internal class KeepDataInterceptor : IInterceptor
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// The parsed representation of a policy in a <see cref="RoutePattern"/> parameter. Instances

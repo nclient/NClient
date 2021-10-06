@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using NClient.Core.Exceptions;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Exceptions

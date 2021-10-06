@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// An <see cref="IEqualityComparer{Object}"/> implementation that compares objects as-if

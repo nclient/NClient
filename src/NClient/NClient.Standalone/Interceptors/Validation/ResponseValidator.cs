@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Interceptors.Validation
+namespace NClient.Standalone.Interceptors.Validation
 {
     internal interface IResponseValidator<TRequest, TResponse>
     {

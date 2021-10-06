@@ -1,7 +1,7 @@
 ﻿using System;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Core.Serialization
+namespace NClient.Standalone.Serialization
 {
     internal class StubSerializer : ISerializer
     {

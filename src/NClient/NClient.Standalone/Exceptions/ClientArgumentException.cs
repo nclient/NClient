@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
 
-namespace NClient.Core.Exceptions
+// ReSharper disable once CheckNamespace
+namespace NClient.Exceptions
 {
     public class ClientArgumentException : ClientException
     {

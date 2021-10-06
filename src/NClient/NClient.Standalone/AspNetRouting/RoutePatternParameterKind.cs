@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.AspNetRouting
+﻿namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Defines the kinds of <see cref="RoutePatternParameterPart"/> instances.

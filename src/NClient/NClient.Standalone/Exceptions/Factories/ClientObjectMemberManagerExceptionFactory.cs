@@ -2,7 +2,7 @@
 using NClient.Core.Helpers.ObjectMemberManagers.Factories;
 using NClient.Exceptions;
 
-namespace NClient.Core.Exceptions.Factories
+namespace NClient.Standalone.Exceptions.Factories
 {
     public class ClientObjectMemberManagerExceptionFactory : IObjectMemberManagerExceptionFactory
     {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 #pragma warning disable 8618
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Helper type for avoiding allocations while building arrays.

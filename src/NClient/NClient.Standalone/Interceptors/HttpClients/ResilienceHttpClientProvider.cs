@@ -4,9 +4,9 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Interceptors.Validation;
+using NClient.Standalone.Interceptors.Validation;
 
-namespace NClient.Core.Interceptors.HttpClients
+namespace NClient.Standalone.Interceptors.HttpClients
 {
     internal interface IResilienceHttpClientProvider<TRequest, TResponse>
     {

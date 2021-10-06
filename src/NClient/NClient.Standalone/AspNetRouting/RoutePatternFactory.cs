@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.AspNetCore.Routing;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Contains factory methods for creating <see cref="RoutePattern"/> and related types.

@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
+using NClient.Standalone.Exceptions.Factories;
 
-namespace NClient.Core.Interceptors.MethodBuilders.Providers
+namespace NClient.Standalone.Interceptors.MethodBuilders.Providers
 {
     internal interface IParamAttributeProvider
     {

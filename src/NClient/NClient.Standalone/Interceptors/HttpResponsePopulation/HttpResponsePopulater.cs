@@ -3,7 +3,7 @@ using System.Linq;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Core.Interceptors.HttpResponsePopulation
+namespace NClient.Standalone.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulater
     {

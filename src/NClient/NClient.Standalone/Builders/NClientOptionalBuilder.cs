@@ -8,18 +8,18 @@ using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
-using NClient.Builders.Context;
-using NClient.ClientGeneration;
 using NClient.Common.Helpers;
-using NClient.Configuration.Resilience;
-using NClient.Core.Ensuring;
-using NClient.Core.Interceptors;
-using NClient.Core.Interceptors.Validation;
 using NClient.Core.Proxy;
-using NClient.Core.Resilience;
-using NClient.Core.Validation;
+using NClient.Standalone.Builders.Context;
+using NClient.Standalone.ClientGeneration;
+using NClient.Standalone.Configuration.Resilience;
+using NClient.Standalone.Ensuring;
+using NClient.Standalone.Interceptors;
+using NClient.Standalone.Interceptors.Validation;
+using NClient.Standalone.Resilience;
+using NClient.Standalone.Validation;
 
-namespace NClient.Builders
+namespace NClient.Standalone.Builders
 {
     internal class NClientOptionalBuilder<TClient, TRequest, TResponse> : INClientOptionalBuilder<TClient, TRequest, TResponse>
         where TClient : class

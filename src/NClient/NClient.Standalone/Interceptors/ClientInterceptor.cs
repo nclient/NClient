@@ -4,18 +4,17 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
-using NClient.Core.Exceptions;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Interceptors.HttpClients;
-using NClient.Core.Interceptors.HttpResponsePopulation;
-using NClient.Core.Interceptors.Invocation;
-using NClient.Core.Interceptors.MethodBuilders;
-using NClient.Core.Interceptors.RequestBuilders;
 using NClient.Exceptions;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.HttpClients;
+using NClient.Standalone.Interceptors.HttpResponsePopulation;
+using NClient.Standalone.Interceptors.Invocation;
+using NClient.Standalone.Interceptors.MethodBuilders;
+using NClient.Standalone.Interceptors.RequestBuilders;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
-namespace NClient.Core.Interceptors
+namespace NClient.Standalone.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {

@@ -2,9 +2,9 @@
 using System.Reflection;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
-using NClient.Builders.Context;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Configuration.Resilience
+namespace NClient.Standalone.Configuration.Resilience
 {
     internal class NClientResilienceSetter<TClient, TRequest, TResponse> : NClientFactoryResilienceSetter<TRequest, TResponse>, INClientResilienceSetter<TClient, TRequest, TResponse>
     {

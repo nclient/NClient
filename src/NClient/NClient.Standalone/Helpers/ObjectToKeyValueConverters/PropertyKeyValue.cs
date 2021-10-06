@@ -1,4 +1,4 @@
-﻿namespace NClient.Core.Helpers.ObjectToKeyValueConverters
+﻿namespace NClient.Standalone.Helpers.ObjectToKeyValueConverters
 {
     internal class PropertyKeyValue
     {

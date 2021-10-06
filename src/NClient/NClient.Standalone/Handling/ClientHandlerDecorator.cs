@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Invocation;
 
-namespace NClient.Core.Handling
+namespace NClient.Standalone.Handling
 {
     internal class ClientHandlerDecorator<TClient, TRequest, TResponse> : IClientHandler<TRequest, TResponse>
     {

@@ -1,6 +1,6 @@
 ﻿using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Resilience
+namespace NClient.Standalone.Resilience
 {
     internal class StubResiliencePolicyProvider<TRequest, TResponse> : IResiliencePolicyProvider<TRequest, TResponse>
     {

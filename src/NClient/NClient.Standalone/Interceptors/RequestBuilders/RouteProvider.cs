@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
-using NClient.Core.AspNetRouting;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
-using NClient.Core.Interceptors.RequestBuilders.Models;
+using NClient.Standalone.AspNetRouting;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.RequestBuilders.Models;
 
-namespace NClient.Core.Interceptors.RequestBuilders
+namespace NClient.Standalone.Interceptors.RequestBuilders
 {
     internal interface IRouteProvider
     {

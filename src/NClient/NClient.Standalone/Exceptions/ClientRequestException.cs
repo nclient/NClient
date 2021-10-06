@@ -2,7 +2,6 @@
 using System.Reflection;
 using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.HttpClients;
-using NClient.Core.Exceptions;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Exceptions

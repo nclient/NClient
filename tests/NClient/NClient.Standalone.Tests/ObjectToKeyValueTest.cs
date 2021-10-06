@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
-using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Exceptions;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
 using NUnit.Framework;
 
-namespace NClient.Core.Tests
+namespace NClient.Standalone.Tests
 {
     [Parallelizable]
     internal class ObjectToKeyValueTest

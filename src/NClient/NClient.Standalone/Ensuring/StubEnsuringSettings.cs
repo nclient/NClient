@@ -2,7 +2,7 @@
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Ensuring
+namespace NClient.Standalone.Ensuring
 {
     internal class StubEnsuringSettings<TRequest, TResponse> : IEnsuringSettings<TRequest, TResponse>
     {

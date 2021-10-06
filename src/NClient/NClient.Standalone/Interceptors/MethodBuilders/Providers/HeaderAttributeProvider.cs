@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers;
-using NClient.Core.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
 
-namespace NClient.Core.Interceptors.MethodBuilders.Providers
+namespace NClient.Standalone.Interceptors.MethodBuilders.Providers
 {
     internal interface IHeaderAttributeProvider
     {

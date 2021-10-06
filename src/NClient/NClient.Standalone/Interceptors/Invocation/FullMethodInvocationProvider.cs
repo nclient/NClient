@@ -6,7 +6,7 @@ using Castle.DynamicProxy;
 using NClient.Abstractions.Clients;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Interceptors.Invocation
+namespace NClient.Standalone.Interceptors.Invocation
 {
     internal interface IFullMethodInvocationProvider<TRequest, TResponse>
     {

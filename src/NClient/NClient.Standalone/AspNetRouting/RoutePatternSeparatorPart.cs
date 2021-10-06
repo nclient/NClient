@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Represents an optional separator part of a route pattern. Instances of <see cref="RoutePatternSeparatorPart"/>

@@ -1,4 +1,6 @@
-﻿namespace NClient.Core.Exceptions.Factories
+﻿using NClient.Exceptions;
+
+namespace NClient.Standalone.Exceptions.Factories
 {
     public interface IClientArgumentExceptionFactory
     {

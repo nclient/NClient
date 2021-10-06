@@ -1,7 +1,7 @@
 ﻿using Castle.DynamicProxy;
 using NClient.Abstractions.Clients;
 
-namespace NClient.ClientGeneration
+namespace NClient.Standalone.ClientGeneration
 {
     internal interface IClientGenerator
     {

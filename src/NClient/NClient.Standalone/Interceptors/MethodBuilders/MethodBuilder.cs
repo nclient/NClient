@@ -5,11 +5,11 @@ using System.Reflection;
 using NClient.Abstractions.Helpers;
 using NClient.Annotations;
 using NClient.Core.Helpers;
-using NClient.Core.Interceptors.MethodBuilders.Models;
-using NClient.Core.Interceptors.MethodBuilders.Providers;
 using NClient.Exceptions;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Interceptors.MethodBuilders.Providers;
 
-namespace NClient.Core.Interceptors.MethodBuilders
+namespace NClient.Standalone.Interceptors.MethodBuilders
 {
     internal interface IMethodBuilder
     {

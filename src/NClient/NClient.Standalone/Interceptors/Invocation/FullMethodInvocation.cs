@@ -3,7 +3,7 @@ using System.Reflection;
 using NClient.Abstractions.Invocation;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Core.Interceptors.Invocation
+namespace NClient.Standalone.Interceptors.Invocation
 {
     internal class FullMethodInvocation<TRequest, TResponse> : MethodInvocation
     {

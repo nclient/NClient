@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Core.HttpClients
+namespace NClient.Standalone.HttpClients
 {
     internal class StubHttpClientProvider : IHttpClientProvider<HttpRequest, HttpResponse>
     {

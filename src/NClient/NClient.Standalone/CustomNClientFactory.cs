@@ -1,8 +1,9 @@
 ﻿using NClient.Abstractions;
-using NClient.Builders;
-using NClient.Builders.Context;
 using NClient.Common.Helpers;
+using NClient.Standalone.Builders;
+using NClient.Standalone.Builders.Context;
 
+// ReSharper disable once CheckNamespace
 namespace NClient
 {
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace NClient.Core.AspNetRouting
+namespace NClient.Standalone.AspNetRouting
 {
     /// <summary>
     /// Resprents a literal text part of a route pattern. Instances of <see cref="RoutePatternLiteralPart"/>

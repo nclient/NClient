@@ -3,7 +3,7 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Versioning;
 
-namespace NClient.Core.Interceptors.MethodBuilders.Models
+namespace NClient.Standalone.Interceptors.MethodBuilders.Models
 {
     // TODO: doc
     public class Method

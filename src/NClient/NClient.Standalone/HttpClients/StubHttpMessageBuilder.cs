@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 
-namespace NClient.Core.HttpClients
+namespace NClient.Standalone.HttpClients
 {
     public class StubHttpMessageBuilder : IHttpMessageBuilder<HttpRequest, HttpResponse>
     {
