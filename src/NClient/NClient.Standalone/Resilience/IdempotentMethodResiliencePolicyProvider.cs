@@ -1,8 +1,10 @@
 ﻿using System.Net.Http;
 using System.Reflection;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
 
-namespace NClient.Abstractions.Resilience.Providers
+// ReSharper disable once CheckNamespace
+namespace NClient.Resilience
 {
     public class IdempotentMethodResiliencePolicyProvider<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
     {

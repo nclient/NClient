@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace NClient.Abstractions.Helpers
+namespace NClient.Core.Helpers
 {
     internal class MethodInfoEqualityComparer : OverridingMethodInfoEqualityComparer
     {

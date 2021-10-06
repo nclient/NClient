@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Resilience;
+using NClient.Core.Helpers;
 
-namespace NClient.Abstractions.Resilience.Providers
+// ReSharper disable once CheckNamespace
+namespace NClient.Resilience
 {
     public class MethodResiliencePolicyProviderAdapter<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
     {

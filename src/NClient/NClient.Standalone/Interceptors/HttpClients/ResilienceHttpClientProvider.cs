@@ -2,8 +2,8 @@
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
+using NClient.Resilience;
 using NClient.Standalone.Interceptors.Validation;
 
 namespace NClient.Standalone.Interceptors.HttpClients

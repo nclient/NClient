@@ -4,10 +4,10 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Core.Helpers;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Standalone.Resilience;
 
