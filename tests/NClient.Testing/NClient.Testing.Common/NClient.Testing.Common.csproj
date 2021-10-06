@@ -11,17 +11,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="5.10.3"/>
-        <PackageReference Include="Moq" Version="4.16.0"/>
-        <PackageReference Include="NUnit" Version="3.12.0"/>
-        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0"/>
-        <PackageReference Include="WireMock.Net" Version="1.4.13"/>
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+        <PackageReference Include="Moq" Version="4.16.0" />
+        <PackageReference Include="NUnit" Version="3.12.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+        <PackageReference Include="WireMock.Net" Version="1.4.13" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj"/>
+        <ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
