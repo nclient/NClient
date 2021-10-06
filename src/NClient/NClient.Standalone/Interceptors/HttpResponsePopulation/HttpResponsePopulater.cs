@@ -26,14 +26,15 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             if (bodyType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(IHttpResponseWithError<>).MakeGenericType(errorType);
+                var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
                 return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, errorObject);
             }
 
             if (bodyType is not null && errorType is null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, httpResponse);
-                var genericResponseType = typeof(IHttpResponse<>).MakeGenericType(bodyType);
+                // TODO: Because of this, it is impossible to use custom implementations of HTTP responses:
+                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
                 return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject);
             }
 
@@ -41,7 +42,7 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             {
                 var bodyObject = TryGetBodyObject(bodyType, httpResponse);
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(IHttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
+                var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
                 return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject, errorObject);
             }
 
