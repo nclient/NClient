@@ -8,7 +8,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// Response content.
     /// </summary>
-    public class HttpResponseContent
+    public class HttpResponseContent : IHttpResponseContent
     {
         /// <summary>
         /// Gets byte representation of response content.

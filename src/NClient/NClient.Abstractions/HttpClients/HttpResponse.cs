@@ -7,7 +7,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for HTTP response data with deserialized body.
     /// </summary>
-    public class HttpResponse<TValue> : HttpResponse
+    public class HttpResponse<TValue> : HttpResponse, IHttpResponse<TValue>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
@@ -39,7 +39,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for HTTP response data.
     /// </summary>
-    public class HttpResponse
+    public class HttpResponse : IHttpResponse
     {
         /// <summary>
         /// The HTTP request that the response belongs to.

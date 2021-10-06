@@ -2,7 +2,7 @@
 
 namespace NClient.Abstractions.Resilience
 {
-    public class ResponseContext<TRequest, TResponse>
+    public class ResponseContext<TRequest, TResponse> : IResponseContext<TRequest, TResponse>
     {
         public TRequest Request { get; }
         public TResponse Response { get; }

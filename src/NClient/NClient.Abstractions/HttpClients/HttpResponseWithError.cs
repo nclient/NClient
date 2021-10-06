@@ -3,7 +3,7 @@
     /// <summary>
     /// The container for HTTP response data with deserialized body including error.
     /// </summary>
-    public class HttpResponseWithError<TValue, TError> : HttpResponse<TValue>
+    public class HttpResponseWithError<TValue, TError> : HttpResponse<TValue>, IHttpResponseWithError<TValue, TError>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.
@@ -36,7 +36,7 @@
     /// <summary>
     /// The container for HTTP response data with deserialized body error.
     /// </summary>
-    public class HttpResponseWithError<TError> : HttpResponse
+    public class HttpResponseWithError<TError> : HttpResponse, IHttpResponseWithError<TError>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.

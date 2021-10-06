@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 
 namespace NClient.Abstractions.HttpClients
 {
-    public class HttpResponseHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    public class HttpResponseHeaderContainer : IHttpResponseHeaderContainer
     {
         private readonly HttpResponseHeaders _httpResponseHeaders;
 

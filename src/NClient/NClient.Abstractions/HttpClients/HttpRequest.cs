@@ -8,7 +8,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for data used to make requests.
     /// </summary>
-    public class HttpRequest
+    public class HttpRequest : IHttpRequest
     {
         private readonly List<HttpParameter> _parameters = new();
         private readonly List<HttpHeader> _headers = new();
