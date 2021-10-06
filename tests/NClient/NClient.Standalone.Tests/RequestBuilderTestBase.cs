@@ -73,14 +73,14 @@ namespace NClient.Standalone.Tests
             IHttpRequest actualRequest,
             Uri uri,
             HttpMethod httpMethod,
-            IEnumerable<HttpParameter>? parameters = null,
-            IEnumerable<HttpHeader>? headers = null,
+            IEnumerable<IHttpParameter>? parameters = null,
+            IEnumerable<IHttpHeader>? headers = null,
             object? body = null)
         {
             actualRequest.Resource.Should().Be(uri);
             actualRequest.Method.Should().Be(httpMethod);
-            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<HttpParameter>(), config => config.WithoutStrictOrdering());
-            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<HttpHeader>(), config => config.WithoutStrictOrdering());
+            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IHttpParameter>(), config => config.WithoutStrictOrdering());
+            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHttpHeader>(), config => config.WithoutStrictOrdering());
             actualRequest.Body.Should().BeEquivalentTo(body);
         }
     }

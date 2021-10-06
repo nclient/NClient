@@ -58,7 +58,7 @@ namespace NClient.Sandbox.Client
                 {
                     if (delegateResult.Exception is not null)
                         throw delegateResult.Exception;
-                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                    if (typeof(IHttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
                         return Task.CompletedTask;
                     delegateResult.Result.Response.EnsureSuccessStatusCode();
                     return Task.CompletedTask;

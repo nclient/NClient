@@ -10,8 +10,8 @@ namespace NClient.Abstractions.HttpClients
     /// </summary>
     public class HttpRequest : IHttpRequest
     {
-        private readonly List<HttpParameter> _parameters = new();
-        private readonly List<HttpHeader> _headers = new();
+        private readonly List<IHttpParameter> _parameters = new();
+        private readonly List<IHttpHeader> _headers = new();
 
         /// <summary>
         /// Gets the request id.

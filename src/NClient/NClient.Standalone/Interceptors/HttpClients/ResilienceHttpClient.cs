@@ -89,7 +89,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             var responseContext = new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
             if (responseContext.MethodInvocation.ResultType == typeof(TResponse))
                 return responseContext;
-            if (typeof(HttpResponse).IsAssignableFrom(responseContext.MethodInvocation.ResultType))
+            if (typeof(IHttpResponse).IsAssignableFrom(responseContext.MethodInvocation.ResultType))
                 return responseContext;
             return _responseValidator.Ensure(responseContext);
         }

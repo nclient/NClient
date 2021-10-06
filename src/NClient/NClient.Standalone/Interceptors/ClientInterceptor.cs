@@ -112,12 +112,12 @@ namespace NClient.Standalone.Interceptors
                 if (resultType == typeof(TResponse))
                     return response!;
 
-                if (typeof(HttpResponse).IsAssignableFrom(resultType))
+                if (typeof(IHttpResponse).IsAssignableFrom(resultType))
                     return populatedHttpResponse!;
 
                 return populatedHttpResponse!
                     .GetType()
-                    .GetProperty(nameof(HttpResponse<object>.Value))?
+                    .GetProperty(nameof(IHttpResponse<object>.Value))?
                     .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)

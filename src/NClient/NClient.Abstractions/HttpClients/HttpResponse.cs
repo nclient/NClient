@@ -20,7 +20,7 @@ namespace NClient.Abstractions.HttpClients
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="value">The object obtained as a result of deserialization of the body.</param>
-        public HttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, TValue? value)
+        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TValue? value)
             : base(httpResponse, httpRequest)
         {
             Value = value;
@@ -93,7 +93,7 @@ namespace NClient.Abstractions.HttpClients
 
             Request = httpRequest;
             Content = new HttpResponseContent();
-            Headers = new HttpResponseHeaderContainer(Array.Empty<HttpHeader>());
+            Headers = new HttpResponseHeaderContainer(Array.Empty<IHttpHeader>());
         }
 
         internal HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest) : this(httpRequest)

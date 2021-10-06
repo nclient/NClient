@@ -26,23 +26,23 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             if (bodyType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
-                return (HttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, errorObject);
+                var genericResponseType = typeof(IHttpResponseWithError<>).MakeGenericType(errorType);
+                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, errorObject);
             }
 
             if (bodyType is not null && errorType is null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, httpResponse);
-                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
-                return (HttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject);
+                var genericResponseType = typeof(IHttpResponse<>).MakeGenericType(bodyType);
+                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject);
             }
 
             if (bodyType is not null && errorType is not null)
             {
                 var bodyObject = TryGetBodyObject(bodyType, httpResponse);
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
-                return (HttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject, errorObject);
+                var genericResponseType = typeof(IHttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
+                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject, errorObject);
             }
 
             return httpResponse;
@@ -50,16 +50,16 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
 
         private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType(Type resultType)
         {
-            if (resultType == typeof(void) || resultType == typeof(HttpResponse))
+            if (resultType == typeof(void) || resultType == typeof(IHttpResponse))
                 return (null, null);
 
-            if (IsAssignableFromGeneric(resultType, typeof(HttpResponseWithError<>)))
+            if (IsAssignableFromGeneric(resultType, typeof(IHttpResponseWithError<>)))
                 return (null, resultType.GetGenericArguments().Single());
 
-            if (IsAssignableFromGeneric(resultType, typeof(HttpResponse<>)))
+            if (IsAssignableFromGeneric(resultType, typeof(IHttpResponse<>)))
                 return (resultType.GetGenericArguments().Single(), null);
 
-            if (IsAssignableFromGeneric(resultType, typeof(HttpResponseWithError<,>)))
+            if (IsAssignableFromGeneric(resultType, typeof(IHttpResponseWithError<,>)))
                 return (resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 
             return (resultType, null);

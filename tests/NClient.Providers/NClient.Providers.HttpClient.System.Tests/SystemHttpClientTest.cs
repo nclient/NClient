@@ -39,7 +39,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(HttpRequest request, HttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(IHttpRequest request, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);

@@ -29,7 +29,7 @@ namespace NClient.Abstractions.HttpClients
             _httpContentHeaders = httpContentHeaders;
         }
         
-        public HttpResponseContentHeaderContainer(IEnumerable<HttpHeader> httpHeaders)
+        public HttpResponseContentHeaderContainer(IEnumerable<IHttpHeader> httpHeaders)
         {
             var fakeHttpContent = new ByteArrayContent(Array.Empty<byte>());
             foreach (var headerValues in httpHeaders.GroupBy(x => x.Name))
