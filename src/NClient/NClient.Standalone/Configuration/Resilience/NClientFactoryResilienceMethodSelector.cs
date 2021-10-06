@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using NClient.Abstractions.Configuration.Resilience;
-using NClient.Builders.Context;
 using NClient.Core.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Configuration.Resilience
+namespace NClient.Standalone.Configuration.Resilience
 {
     internal class NClientFactoryResilienceMethodSelector<TRequest, TResponse> : INClientFactoryResilienceMethodSelector<TRequest, TResponse>
     {

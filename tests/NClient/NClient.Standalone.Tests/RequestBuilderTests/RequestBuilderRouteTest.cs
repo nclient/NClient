@@ -8,7 +8,6 @@ using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Exceptions;
-using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

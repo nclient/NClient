@@ -1,6 +1,7 @@
 ﻿using System;
 using NClient.Abstractions.Exceptions;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Exceptions
 {
     public class ClientBuildException : NClientException

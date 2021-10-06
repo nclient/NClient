@@ -4,14 +4,14 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Resilience;
-using NClient.Exceptions.Factories;
+using NClient.Core.Helpers;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Resilience;
 
-namespace NClient.Builders.Context
+namespace NClient.Standalone.Builders.Context
 {
     internal class BuilderContext<TRequest, TResponse>
     {

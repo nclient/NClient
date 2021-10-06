@@ -1,9 +1,9 @@
 ﻿using NClient.Abstractions.Builders;
 using NClient.Abstractions.Serialization;
-using NClient.Builders.Context;
 using NClient.Common.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Builders
+namespace NClient.Standalone.Builders
 {
     internal class NClientFactorySerializerBuilder<TRequest, TResponse> : INClientFactorySerializerBuilder<TRequest, TResponse>
     {

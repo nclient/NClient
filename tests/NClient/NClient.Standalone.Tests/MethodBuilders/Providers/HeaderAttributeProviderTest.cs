@@ -7,9 +7,9 @@ using FluentAssertions;
 using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
-using NClient.Core.Exceptions.Factories;
-using NClient.Core.Interceptors.MethodBuilders.Models;
-using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers

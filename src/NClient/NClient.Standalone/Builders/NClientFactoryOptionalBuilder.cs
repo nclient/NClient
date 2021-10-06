@@ -6,16 +6,16 @@ using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Resilience.Providers;
 using NClient.Abstractions.Serialization;
-using NClient.Builders.Context;
-using NClient.ClientGeneration;
 using NClient.Common.Helpers;
-using NClient.Configuration.Resilience;
-using NClient.Core.Interceptors;
 using NClient.Core.Proxy;
+using NClient.Resilience;
+using NClient.Standalone.Builders.Context;
+using NClient.Standalone.ClientGeneration;
+using NClient.Standalone.Configuration.Resilience;
+using NClient.Standalone.Interceptors;
 
-namespace NClient.Builders
+namespace NClient.Standalone.Builders
 {
     internal class NClientFactoryOptionalBuilder<TRequest, TResponse> : INClientFactoryOptionalBuilder<TRequest, TResponse>
     {

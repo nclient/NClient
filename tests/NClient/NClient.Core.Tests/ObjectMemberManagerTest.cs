@@ -6,9 +6,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations.Parameters;
 using NClient.Common.Helpers;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
 
 namespace NClient.Core.Tests

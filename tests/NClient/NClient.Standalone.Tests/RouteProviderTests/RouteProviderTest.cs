@@ -3,12 +3,12 @@ using System.Net;
 using FluentAssertions;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
-using NClient.Core.AspNetRouting;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
-using NClient.Core.Interceptors.RequestBuilders;
-using NClient.Core.Interceptors.RequestBuilders.Models;
 using NClient.Exceptions;
+using NClient.Standalone.AspNetRouting;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Interceptors.RequestBuilders;
+using NClient.Standalone.Interceptors.RequestBuilders.Models;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
