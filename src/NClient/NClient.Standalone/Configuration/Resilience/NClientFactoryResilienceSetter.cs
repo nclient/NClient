@@ -9,39 +9,34 @@ namespace NClient.Standalone.Configuration.Resilience
     // TODO: Need tests
     internal class NClientFactoryResilienceSetter<TRequest, TResponse> : INClientFactoryResilienceSetter<TRequest, TResponse>
     {
+        private readonly BuilderContextModificator<TRequest, TResponse> _builderContextModificator;
         private readonly IEnumerable<MethodInfo>? _selectedMethods;
         
-        protected readonly BuilderContext<TRequest, TResponse> Context;
-        
-        public NClientFactoryResilienceSetter(BuilderContext<TRequest, TResponse> context, MethodInfo? selectedMethod) 
-            : this(context, selectedMethod is null ? null : new[] { selectedMethod })
+        public NClientFactoryResilienceSetter(BuilderContextModificator<TRequest, TResponse> builderContextModificator, MethodInfo? selectedMethod) 
+            : this(builderContextModificator, selectedMethod is null ? null : new[] { selectedMethod })
         {
         }
         
-        public NClientFactoryResilienceSetter(BuilderContext<TRequest, TResponse> context, IEnumerable<MethodInfo>? selectedMethods)
+        public NClientFactoryResilienceSetter(BuilderContextModificator<TRequest, TResponse> builderContextModificator, IEnumerable<MethodInfo>? selectedMethods)
         {
-            Context = context;
+            _builderContextModificator = builderContextModificator;
             _selectedMethods = selectedMethods;
         }
 
         public INClientFactoryResilienceMethodSelector<TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
-            if (_selectedMethods is null) 
-                Context.SetResiliencePolicy(resiliencePolicyProvider);
-            else
-                Context.SetResiliencePolicy(_selectedMethods, resiliencePolicyProvider);
-            
-            return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(Context);
+            _builderContextModificator.Add(context => _selectedMethods is null
+                ? context.WithResiliencePolicy(resiliencePolicyProvider)
+                : context.WithResiliencePolicy(_selectedMethods, resiliencePolicyProvider));
+            return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_builderContextModificator);
         }
         
         public INClientFactoryResilienceMethodSelector<TRequest, TResponse> DoNotUse()
         {
-            if (_selectedMethods is null) 
-                Context.ClearAllMethodsResiliencePolicy();
-            else
-                Context.ClearMethodResiliencePolicy(_selectedMethods);
-            
-            return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(Context);
+            _builderContextModificator.Add(context => _selectedMethods is null
+                ? context.WithoutAllMethodsResiliencePolicy()
+                : context.WithoutMethodResiliencePolicy(_selectedMethods));
+            return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_builderContextModificator);
         }
     }
 }

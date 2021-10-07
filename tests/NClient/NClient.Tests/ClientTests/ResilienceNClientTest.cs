@@ -103,7 +103,7 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test]
-        public void WithResiliencePolicyForGet_GetRequestWithInternalServerError_NotClientRequestException()
+        public void WithResiliencePolicyForGet_GetRequestWithInternalServerError_ThrowClientRequestException()
         {
             using var api = _returnApiMockFactory.MockInternalServerError();
             var returnClient = NClientGallery.NativeClients
@@ -111,7 +111,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
-                    .UsePolly(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
+                    .Use(maxRetries: 2, getDelay: _ => 0.Seconds()))
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -120,21 +120,21 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public void WithResiliencePolicyForGet_PostRequestWithInternalServerError_ThrowClientRequestException()
+        public void WithResiliencePolicyForGet_PostRequestWithFlakyInternalServerError_NotThrow()
         {
             var entity = new BasicEntity { Id = 1 };
-            using var api = _returnApiMockFactory.MockInternalServerError();
+            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
             var returnClient = NClientGallery.NativeClients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
-                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
-                    .UsePolly(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()))
+                    .ForMethod(x => (Action<BasicEntity>)x.Post)
+                    .Use(maxRetries: 2, getDelay: _ => 0.Seconds()))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .NotThrow();
         }
 
         [Test]

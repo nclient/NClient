@@ -25,28 +25,23 @@ namespace NClient.Standalone.Builders
         where TClient : class
     {
         private readonly BuilderContext<TRequest, TResponse> _context;
+        private readonly SingletonProxyGeneratorProvider _proxyGeneratorProvider;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientGenerator _clientGenerator;
 
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
-            var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
-            _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
-            
-            new ClientValidator(proxyGeneratorProvider.Value)
-                .EnsureAsync<TClient>(_clientInterceptorFactory)
-                .GetAwaiter()
-                .GetResult();
-            
             _context = context;
-            _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
+            _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
+            _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
+            _clientGenerator = new ClientGenerator(_proxyGeneratorProvider.Value);
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
             IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            _context.SetEnsuringSetting(ensuringSettings);
-            return this;
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithEnsuringSetting(ensuringSettings));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
@@ -54,108 +49,126 @@ namespace NClient.Standalone.Builders
         {
             Ensure.IsNotNull(successCondition, nameof(successCondition));
             Ensure.IsNotNull(onFailure, nameof(onFailure));
-            _context.SetEnsuringSetting(successCondition, onFailure);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithEnsuringSetting(successCondition, onFailure));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess()
         {
-            _context.ClearEnsuringSetting();
-            return this;
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutEnsuringSetting());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-            _context.SetSerializer(serializerProvider);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithSerializer(serializerProvider));
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
         {
             Ensure.IsNotNull(handlers, nameof(handlers));
-            _context.SetHandlers(handlers);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithHandlers(handlers));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling()
         {
-            _context.ClearHandlers();
-            return this;
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutHandlers());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             Ensure.IsNotNull(provider, nameof(provider));
-            _context.SetResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider));
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider)));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithIdempotentResilience(
             IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
         {
             Ensure.IsNotNull(idempotentMethodProvider, nameof(idempotentMethodProvider));
-            _context.SetResiliencePolicy(new IdempotentMethodResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodProvider, otherMethodProvider));
-            return this;
+            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodProvider, otherMethodProvider)));
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafeResilience(
             IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
         {
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
-            _context.SetResiliencePolicy(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider));
-            return this;
+            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResiliencePolicy(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider)));
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
-            _context.SetResiliencePolicy(methodResiliencePolicyProvider);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResiliencePolicy(methodResiliencePolicyProvider));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
-            configure(new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_context));
-            return this;
+
+            var builderContextModificator = new BuilderContextModificator<TRequest, TResponse>();
+            configure(new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(builderContextModificator));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModificator.Invoke(_context));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience()
         {
-            _context.ClearResiliencePolicy();
-            return this;
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutResiliencePolicy());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
-            _context.SetLogging(loggerFactory);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithLogging(loggerFactory));
         }
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger<TClient> logger)
         {
             Ensure.IsNotNull(logger, nameof(logger));
-            _context.SetLogging(logger);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithLogging(logger));
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger)
         {
             Ensure.IsNotNull(logger, nameof(logger));
-            _context.SetLogging(logger);
-            return this;
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithLogging(logger));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging()
         {
-            _context.ClearLogging();
-            return this;
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutLogging());
         }
 
         public TClient Build()
         {
             _context.EnsureComplete();
+            new ClientValidator(_proxyGeneratorProvider.Value)
+                .EnsureAsync<TClient>(_clientInterceptorFactory)
+                .GetAwaiter()
+                .GetResult();
             
             var interceptor = _clientInterceptorFactory.Create(
                 new Uri(_context.Host),

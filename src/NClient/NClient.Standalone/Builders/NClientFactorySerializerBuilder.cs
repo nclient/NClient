@@ -19,9 +19,9 @@ namespace NClient.Standalone.Builders
         public INClientFactoryOptionalBuilder<TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-
-            _context.SetSerializer(serializerProvider);
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context);
+            
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithSerializer(serializerProvider));
         }
     }
 }

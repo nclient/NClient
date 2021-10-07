@@ -20,12 +20,10 @@ namespace NClient.Standalone.Builders
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
-
-            var context = new BuilderContext<TRequest, TResponse>();
-
-            context.SetHost(_host);
-            context.SetHttpClientProvider(httpClientProvider, httpMessageBuilderProvider);
-            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(context);
+            
+            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
+                .WithHost(_host)
+                .WithHttpClientProvider(httpClientProvider, httpMessageBuilderProvider));
         }
     }
 }
