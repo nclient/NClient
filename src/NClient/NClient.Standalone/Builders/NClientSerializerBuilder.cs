@@ -18,9 +18,9 @@ namespace NClient.Standalone.Builders
         public INClientOptionalBuilder<TClient, TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-
-            _context.SetSerializer(serializerProvider);
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context);
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithSerializer(serializerProvider));
         }
     }
 }
