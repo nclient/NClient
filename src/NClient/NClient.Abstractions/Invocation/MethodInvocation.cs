@@ -6,7 +6,7 @@ namespace NClient.Abstractions.Invocation
     /// <summary>
     /// Encapsulates an information about invocation of a client method.
     /// </summary>
-    public class MethodInvocation
+    public class MethodInvocation : IMethodInvocation
     {
         /// <summary>
         /// Gets type of client interface.

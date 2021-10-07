@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.Helpers;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
-using NClient.Core.Resilience;
-using NClient.Exceptions.Factories;
+using NClient.Core.Helpers;
+using NClient.Standalone.Exceptions.Factories;
+using NClient.Standalone.Resilience;
 
-namespace NClient.Builders.Context
+namespace NClient.Standalone.Builders.Context
 {
     internal class BuilderContext<TRequest, TResponse>
     {
@@ -42,120 +43,187 @@ namespace NClient.Builders.Context
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
-        public void SetHost(string host)
+        public BuilderContext(BuilderContext<TRequest, TResponse> builderContext)
         {
-            Host = host;
+            _clientBuildExceptionFactory = builderContext._clientBuildExceptionFactory;
+            
+            Host = builderContext.Host;
+            
+            HttpClientProvider = builderContext.HttpClientProvider;
+            HttpMessageBuilderProvider = builderContext.HttpMessageBuilderProvider;
+
+            SerializerProvider = builderContext.SerializerProvider;
+
+            EnsuringSettings = builderContext.EnsuringSettings;
+
+            ClientHandlers = builderContext.ClientHandlers.ToList();
+
+            MethodResiliencePolicyProvider = builderContext.MethodResiliencePolicyProvider;
+            AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
+            MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
+
+            Logger = builderContext.Logger;
+            LoggerFactory = builderContext.LoggerFactory;
         }
 
-        public void SetHttpClientProvider(
+        public BuilderContext<TRequest, TResponse> WithHost(string host)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                Host = host
+            };
+        }
+
+        public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
-            HttpClientProvider = httpClientProvider;
-            HttpMessageBuilderProvider = httpMessageBuilderProvider;
-        }
-
-        public void SetSerializer(ISerializerProvider serializerProvider)
-        {
-            SerializerProvider = serializerProvider;
-        }
-        
-        public void SetEnsuringSetting(
-            Predicate<ResponseContext<TRequest, TResponse>> successCondition, Action<ResponseContext<TRequest, TResponse>> onFailure)
-        {
-            SetEnsuringSetting(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
-        }
-        
-        public void SetEnsuringSetting(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
-        {
-            EnsuringSettings = ensuringSettings;
-        }
-        
-        public void ClearEnsuringSetting()
-        {
-            EnsuringSettings = null;
-        }
-
-        public void SetHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)
-        {
-            foreach (var clientHandler in clientHandlers)
+            return new BuilderContext<TRequest, TResponse>(this)
             {
-                ClientHandlers.Add(clientHandler);
-            }
+                HttpClientProvider = httpClientProvider,
+                HttpMessageBuilderProvider = httpMessageBuilderProvider
+            };
         }
 
-        public void ClearHandlers()
+        public BuilderContext<TRequest, TResponse> WithSerializer(ISerializerProvider serializerProvider)
         {
-            ClientHandlers.Clear();
-        }
-
-        public void SetResiliencePolicy(IMethodResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            MethodResiliencePolicyProvider = provider;
-        }
-        
-        public void SetResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            AllMethodsResiliencePolicyProvider = provider;
-            MethodsWithResiliencePolicy.Clear();
-        }
-
-        public void SetResiliencePolicy(MethodInfo methodInfo, IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            MethodsWithResiliencePolicy[methodInfo] = provider;
-        }
-        
-        public void SetResiliencePolicy(IEnumerable<MethodInfo> methodInfos, IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            foreach (var methodInfo in methodInfos)
+            return new BuilderContext<TRequest, TResponse>(this)
             {
-                SetResiliencePolicy(methodInfo, provider);
-            }
+                SerializerProvider = serializerProvider
+            };
         }
         
-        public void ClearAllMethodsResiliencePolicy()
+        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(
+            Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
-            AllMethodsResiliencePolicyProvider = null;
-            MethodsWithResiliencePolicy.Clear();
+            return WithEnsuringSetting(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
         }
         
-        public void ClearMethodResiliencePolicy(MethodInfo methodInfo)
+        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
         {
-            MethodsWithResiliencePolicy[methodInfo] = new StubResiliencePolicyProvider<TRequest, TResponse>();
-        }
-        
-        public void ClearMethodResiliencePolicy(IEnumerable<MethodInfo> methodInfos)
-        {
-            foreach (var methodInfo in methodInfos)
+            return new BuilderContext<TRequest, TResponse>(this)
             {
-                ClearMethodResiliencePolicy(methodInfo);
-            }
-        }
-
-        public void ClearResiliencePolicy()
-        {
-            MethodResiliencePolicyProvider = null;
-            AllMethodsResiliencePolicyProvider = null;
-            MethodsWithResiliencePolicy.Clear();
-        }
-
-        public void SetLogging(ILogger logger)
-        {
-            Logger = logger;
+                EnsuringSettings = ensuringSettings
+            };
         }
         
-        public void SetLogging(ILoggerFactory loggerFactory)
+        public BuilderContext<TRequest, TResponse> WithoutEnsuringSetting()
         {
-            LoggerFactory = loggerFactory;
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                EnsuringSettings = null
+            };
         }
 
-        public void ClearLogging()
+        public BuilderContext<TRequest, TResponse> WithHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)
         {
-            Logger = null;
-            LoggerFactory = null;
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ClientHandlers = ClientHandlers.Concat(clientHandlers).ToList()
+            };
         }
 
-        public BuilderContext<TRequest, TResponse> EnsureComplete()
+        public BuilderContext<TRequest, TResponse> WithoutHandlers()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ClientHandlers = new List<IClientHandler<TRequest, TResponse>>()
+            };
+        }
+
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IMethodResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                MethodResiliencePolicyProvider = provider
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AllMethodsResiliencePolicyProvider = provider,
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+            };
+        }
+
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(MethodInfo methodInfo, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy)
+                {
+                    [methodInfo] = provider
+                }
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IEnumerable<MethodInfo> methodInfos, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                MethodsWithResiliencePolicy = MethodsWithResiliencePolicy.Concat(methodInfos.ToDictionary(x => x, _ => provider))
+                    .GroupBy(x => x.Key)
+                    .ToDictionary(x => x.Key, x => x.Last().Value)
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutAllMethodsResiliencePolicy()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AllMethodsResiliencePolicyProvider = null,
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutMethodResiliencePolicy(MethodInfo methodInfo)
+        {
+            return WithResiliencePolicy(methodInfo, new StubResiliencePolicyProvider<TRequest, TResponse>());
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutMethodResiliencePolicy(IEnumerable<MethodInfo> methodInfos)
+        {
+            return WithResiliencePolicy(methodInfos, new StubResiliencePolicyProvider<TRequest, TResponse>());
+        }
+
+        public BuilderContext<TRequest, TResponse> WithoutResiliencePolicy()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                MethodResiliencePolicyProvider = null,
+                AllMethodsResiliencePolicyProvider = null,
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+            };
+        }
+
+        public BuilderContext<TRequest, TResponse> WithLogging(ILogger logger)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                Logger = logger
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                LoggerFactory = loggerFactory
+            };
+        }
+
+        public BuilderContext<TRequest, TResponse> WithoutLogging()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                Logger = null,
+                LoggerFactory = null
+            };
+        }
+
+        public void EnsureComplete()
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
@@ -163,8 +231,6 @@ namespace NClient.Builders.Context
                 throw _clientBuildExceptionFactory.HttpClientIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();
-            
-            return this;
         }
     }
 }

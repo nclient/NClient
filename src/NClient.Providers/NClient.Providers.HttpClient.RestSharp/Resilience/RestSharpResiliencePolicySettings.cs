@@ -9,9 +9,9 @@ namespace NClient.Providers.HttpClient.System
     {
         public int MaxRetries { get; }
         public Func<int, TimeSpan> GetDelay { get; }
-        public Func<ResponseContext<IRestRequest, IRestResponse>, bool> ShouldRetry { get; }
+        public Func<IResponseContext<IRestRequest, IRestResponse>, bool> ShouldRetry { get; }
         
-        public RestSharpResiliencePolicySettings(int maxRetries, Func<int, TimeSpan> getDelay, Func<ResponseContext<IRestRequest, IRestResponse>, bool> shouldRetry)
+        public RestSharpResiliencePolicySettings(int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<IRestRequest, IRestResponse>, bool> shouldRetry)
         {
             MaxRetries = maxRetries;
             GetDelay = getDelay;

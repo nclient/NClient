@@ -13,7 +13,7 @@ namespace NClient
         // TODO: doc
         public static INClientResilienceMethodSelector<TClient, HttpRequestMessage, HttpResponseMessage> Use<TClient>(
             this INClientResilienceSetter<TClient, HttpRequestMessage, HttpResponseMessage> clientResilienceSetter, 
-            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
             return clientResilienceSetter.UsePolly(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
@@ -21,7 +21,7 @@ namespace NClient
         
         public static INClientFactoryResilienceMethodSelector<HttpRequestMessage, HttpResponseMessage> Use(
             this INClientFactoryResilienceSetter<HttpRequestMessage, HttpResponseMessage> factoryResilienceSetter, 
-            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
             return factoryResilienceSetter.UsePolly(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));

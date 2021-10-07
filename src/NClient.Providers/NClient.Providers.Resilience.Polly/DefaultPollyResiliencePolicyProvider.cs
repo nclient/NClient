@@ -15,7 +15,7 @@ namespace NClient.Providers.Resilience.Polly
         
         public IResiliencePolicy<TRequest, TResponse> Create()
         {
-            var basePolicy = Policy<ResponseContext<TRequest, TResponse>>
+            var basePolicy = Policy<IResponseContext<TRequest, TResponse>>
                 .HandleResult(_settings.ShouldRetry).Or<Exception>();
 
             var retryPolicy = basePolicy.WaitAndRetryAsync(

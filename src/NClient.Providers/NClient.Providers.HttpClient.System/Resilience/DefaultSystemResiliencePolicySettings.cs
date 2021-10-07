@@ -14,7 +14,7 @@ namespace NClient.Providers.HttpClient.System
         public DefaultSystemResiliencePolicySettings(
             int? maxRetries = null, 
             Func<int, TimeSpan>? getDelay = null, 
-            Func<ResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null) 
+            Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null) 
             : base(
                 maxRetries: maxRetries ?? 2, 
                 getDelay: getDelay ?? (retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))), 

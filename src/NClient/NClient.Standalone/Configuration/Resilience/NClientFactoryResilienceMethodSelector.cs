@@ -1,36 +1,36 @@
 ﻿using System;
 using System.Linq.Expressions;
 using NClient.Abstractions.Configuration.Resilience;
-using NClient.Builders.Context;
 using NClient.Core.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Configuration.Resilience
+namespace NClient.Standalone.Configuration.Resilience
 {
     internal class NClientFactoryResilienceMethodSelector<TRequest, TResponse> : INClientFactoryResilienceMethodSelector<TRequest, TResponse>
     {
-        private readonly BuilderContext<TRequest, TResponse> _context;
+        private readonly BuilderContextModificator<TRequest, TResponse> _builderContextModificator;
         
-        public NClientFactoryResilienceMethodSelector(BuilderContext<TRequest, TResponse> context)
+        public NClientFactoryResilienceMethodSelector(BuilderContextModificator<TRequest, TResponse> builderContextModificator)
         {
-            _context = context;
+            _builderContextModificator = builderContextModificator;
         }
 
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethods()
         {
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_context, selectedMethods: null);
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethods: null);
         }
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethodsOf<TClient>()
         {
             var selectedMethods = typeof(TClient).GetInterfaceMethods();
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_context, selectedMethods);
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethods);
         }
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector)
         {
             var func = methodSelector.Compile();
             var selectedMethod = func.Invoke(default!).Method;
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_context, selectedMethod);
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethod);
         }
     }
 }

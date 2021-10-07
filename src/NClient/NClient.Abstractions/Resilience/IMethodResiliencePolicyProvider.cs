@@ -13,6 +13,6 @@ namespace NClient.Abstractions.Resilience
         /// </summary>
         /// <param name="methodInfo">The method to apply the policy to.</param>
         /// <param name="httpRequest">The HTTP request to apply the policy to.</param>
-        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, HttpRequest httpRequest);
+        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest);
     }
 }

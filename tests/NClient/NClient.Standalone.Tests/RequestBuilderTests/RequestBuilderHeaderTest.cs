@@ -7,7 +7,6 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Exceptions;
-using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -61,7 +60,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_CustomTypeHeader_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeHeader>(), new BasicEntity { Id = 1 });
 
             buildRequestFunc
@@ -76,7 +75,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyCustomTypeHeader>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -130,7 +129,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_DuplicateInClientAndParamHeaders_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInClientAndParamHeaders>(), 2);
 
             buildRequestFunc
@@ -145,7 +144,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_DuplicateInMethodAndParamHeaders_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInMethodAndParamHeaders>(), 2);
 
             buildRequestFunc

@@ -23,7 +23,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         private static readonly Uri Host = new("http://localhost:5022");
         private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
-        private static readonly BasicEntity Body = new() { Id = 1, Value = 2 };
+        private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
         private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create();
         private static readonly HttpHeader AcceptHeader = new("Accept", "application/json");
         private static readonly HttpHeader ServerHeader = new("Server", "Kestrel");
@@ -39,7 +39,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(HttpRequest request, HttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(IHttpRequest request, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);
@@ -47,7 +47,7 @@ namespace NClient.Providers.HttpClient.System.Tests
 
             var httpRequest = await httpMessageBuilder.BuildRequestAsync(request);
             var httpResponse = await httpClient.ExecuteAsync(httpRequest);
-            var response = await httpMessageBuilder.BuildResponseAsync(request, httpResponse);
+            var response = await httpMessageBuilder.BuildResponseAsync(request.Id, request.Data?.GetType(), httpResponse);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
             response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
@@ -59,13 +59,13 @@ namespace NClient.Providers.HttpClient.System.Tests
             var method = HttpMethod.Head;
             var request = new HttpRequest(RequestId, Resource, method)
             {
-                Body = null,
+                Data = null,
                 Content = null
             };
             
             var finalRequest = new HttpRequest(RequestId, Resource, method)
             {
-                Body = null,
+                Data = null,
                 Content = null
             };
             finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
@@ -110,18 +110,18 @@ namespace NClient.Providers.HttpClient.System.Tests
             var method = HttpMethod.Get;
             var request = new HttpRequest(RequestId, Resource, method)
             {
-                Body = null,
+                Data = null,
                 Content = null
             };
             
             var finalRequest = new HttpRequest(RequestId, Resource, method)
             {
-                Body = null,
+                Data = null,
                 Content = null
             };
             finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
             
-            var content = Serializer.Serialize(Body);
+            var content = Serializer.Serialize(Data);
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new HttpResponse(finalRequest)
             {
@@ -154,7 +154,7 @@ namespace NClient.Providers.HttpClient.System.Tests
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
                         .WithHeader(EmptyContentLengthHeader.Name, content.Length.ToString())
                         .WithHeader(ServerHeader.Name, ServerHeader.Value)
-                        .WithBodyAsJson(Body));
+                        .WithBodyAsJson(Data));
                 return server;
             });
 
@@ -165,17 +165,17 @@ namespace NClient.Providers.HttpClient.System.Tests
         private static TestCaseData ExecutionPostRequestTestCase()
         {
             var method = HttpMethod.Post;
-            var content = Serializer.Serialize(Body);
+            var content = Serializer.Serialize(Data);
             
             var request = new HttpRequest(RequestId, Resource, method)
             {
-                Body = Body,
+                Data = Data,
                 Content = null
             };
             
             var finalRequest = new HttpRequest(RequestId, Resource, method)
             {
-                Body = Body,
+                Data = Data,
                 Content = content
             };
             finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
@@ -209,7 +209,7 @@ namespace NClient.Providers.HttpClient.System.Tests
                         .WithPath(Resource.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
-                        .WithBody(new JsonMatcher(Body))
+                        .WithBody(new JsonMatcher(Data))
                         .UsingPost())
                     .RespondWith(Response.Create()
                         .WithStatusCode(200)

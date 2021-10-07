@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc;
-using NClient.Abstractions.Helpers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;

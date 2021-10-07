@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Builders;
 using NClient.Api.Tests.Helpers;
+using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Tests.Clients;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -58,7 +58,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = _optionalBuilder
                 .EnsuringCustomSuccess(
                     successCondition: _ => true, 
-                    onFailure: _ => { })
+                    onFailure: _ =>
+                    {
+                    })
                 .Build();
             
             var response = await client.GetAsync(id);

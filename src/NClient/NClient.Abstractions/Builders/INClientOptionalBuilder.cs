@@ -17,8 +17,8 @@ namespace NClient.Abstractions.Builders
         
         // TODO: doc
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            Predicate<ResponseContext<TRequest, TResponse>> successCondition,
-            Action<ResponseContext<TRequest, TResponse>> onFailure);
+            Predicate<IResponseContext<TRequest, TResponse>> successCondition,
+            Action<IResponseContext<TRequest, TResponse>> onFailure);
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess();
 

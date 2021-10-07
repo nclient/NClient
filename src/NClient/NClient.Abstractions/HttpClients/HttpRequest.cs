@@ -8,10 +8,10 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for data used to make requests.
     /// </summary>
-    public class HttpRequest
+    public class HttpRequest : IHttpRequest
     {
-        private readonly List<HttpParameter> _parameters = new();
-        private readonly List<HttpHeader> _headers = new();
+        private readonly List<IHttpParameter> _parameters = new();
+        private readonly List<IHttpHeader> _headers = new();
 
         /// <summary>
         /// Gets the request id.
@@ -28,7 +28,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
-        public object? Body { get; set; }
+        public object? Data { get; set; }
         /// <summary>
         /// Gets string representation of request body.
         /// </summary>
@@ -36,11 +36,11 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
-        public IReadOnlyCollection<HttpParameter> Parameters => _parameters;
+        public IReadOnlyCollection<IHttpParameter> Parameters => _parameters;
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        public IReadOnlyCollection<HttpHeader> Headers => _headers;
+        public IReadOnlyCollection<IHttpHeader> Headers => _headers;
 
         /// <summary>
         /// Creates container for HTTP request data.

@@ -1,9 +1,9 @@
 ﻿using NClient.Abstractions.Builders;
 using NClient.Abstractions.HttpClients;
-using NClient.Builders.Context;
 using NClient.Common.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Builders
+namespace NClient.Standalone.Builders
 {
     internal class NClientFactoryHttpClientBuilder : INClientFactoryHttpClientBuilder
     {
@@ -20,11 +20,9 @@ namespace NClient.Builders
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
-
-            var context = new BuilderContext<TRequest, TResponse>();
             
-            context.SetHttpClientProvider(httpClientProvider, httpMessageBuilderProvider);
-            return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, context);
+            return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
+                .WithHttpClientProvider(httpClientProvider, httpMessageBuilderProvider));
         }
     }
 }

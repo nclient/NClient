@@ -8,9 +8,9 @@ using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Versioning;
-using NClient.Core.Interceptors.MethodBuilders;
-using NClient.Core.Interceptors.MethodBuilders.Models;
-using NClient.Core.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.Interceptors.MethodBuilders;
+using NClient.Standalone.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders

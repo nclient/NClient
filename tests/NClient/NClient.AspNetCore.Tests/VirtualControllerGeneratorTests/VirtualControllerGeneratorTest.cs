@@ -15,6 +15,7 @@ using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NUnit.Framework;
 
 namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
@@ -32,7 +33,9 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         {
             _controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _virtualControllerGenerator = new VirtualControllerGenerator(
-                new VirtualControllerAttributeBuilder(),
+                new VirtualControllerAttributeBuilder(
+                    new ObjectMemberManager(new ControllerObjectMemberManagerExceptionFactory()),
+                    new ControllerValidationExceptionFactory()),
                 new NClientAttributeMapper(),
                 new ControllerValidationExceptionFactory(),
                 new GuidProvider());

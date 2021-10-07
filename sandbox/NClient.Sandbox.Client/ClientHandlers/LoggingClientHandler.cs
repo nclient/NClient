@@ -15,12 +15,12 @@ namespace NClient.Sandbox.Client.ClientHandlers
             _logger = logger;
         }
 
-        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request, MethodInvocation methodInvocation)
+        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request, IMethodInvocation methodInvocation)
         {
             return Task.FromResult(request);
         }
 
-        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, MethodInvocation methodInvocation)
+        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, IMethodInvocation methodInvocation)
         {
             _logger.LogDebug("The response with the body is received: {httpRequestContent}", response.Content);
             return Task.FromResult(response);

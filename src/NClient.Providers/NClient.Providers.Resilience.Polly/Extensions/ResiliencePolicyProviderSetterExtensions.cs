@@ -24,7 +24,7 @@ namespace NClient.Providers.Resilience.Polly
         
         public static INClientResilienceMethodSelector<TClient, TRequest, TResponse> UsePolly<TClient, TRequest, TResponse>(
             this INClientResilienceSetter<TClient, TRequest, TResponse> clientResilienceSetter, 
-            int maxRetries, Func<int, TimeSpan> getDelay, Func<ResponseContext<TRequest, TResponse>, bool> shouldRetry)
+            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
         {
             return clientResilienceSetter.UsePolly(
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
@@ -32,7 +32,7 @@ namespace NClient.Providers.Resilience.Polly
         
         public static INClientFactoryResilienceMethodSelector<TRequest, TResponse> UsePolly<TRequest, TResponse>(
             this INClientFactoryResilienceSetter<TRequest, TResponse> factoryResilienceSetter, 
-            int maxRetries, Func<int, TimeSpan> getDelay, Func<ResponseContext<TRequest, TResponse>, bool> shouldRetry)
+            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
         {
             return factoryResilienceSetter.UsePolly(
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
@@ -41,14 +41,14 @@ namespace NClient.Providers.Resilience.Polly
         // TODO: doc
         public static INClientResilienceMethodSelector<TClient, TRequest, TResponse> UsePolly<TClient, TRequest, TResponse>(
             this INClientResilienceSetter<TClient, TRequest, TResponse> clientResilienceSetter, 
-            IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
         {
             return clientResilienceSetter.Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
         }
 
         public static INClientFactoryResilienceMethodSelector<TRequest, TResponse> UsePolly<TRequest, TResponse>(
             this INClientFactoryResilienceSetter<TRequest, TResponse> factoryResilienceSetter, 
-            IAsyncPolicy<ResponseContext<TRequest, TResponse>> asyncPolicy)
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
         {
             return factoryResilienceSetter.Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
         }

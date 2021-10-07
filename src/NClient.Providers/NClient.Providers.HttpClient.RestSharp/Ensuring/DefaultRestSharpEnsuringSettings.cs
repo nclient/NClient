@@ -7,9 +7,12 @@ using RestSharp;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.System
 {
-    public class DefaultRestSharpEnsuringSettings : EnsuringSettings<IRestRequest, IRestResponse>
+    public class DefaultRestSharpEnsuringSettings : IEnsuringSettings<IRestRequest, IRestResponse>
     {
-        public DefaultRestSharpEnsuringSettings() : base(
+        public Predicate<IResponseContext<IRestRequest, IRestResponse>> IsSuccess { get; }
+        public Action<IResponseContext<IRestRequest, IRestResponse>> OnFailure { get; }
+        
+        public DefaultRestSharpEnsuringSettings() : this(
             isSuccess: responseContext => 
                 responseContext.Response.IsSuccessful,
             onFailure: responseContext => 
@@ -18,10 +21,11 @@ namespace NClient.Providers.HttpClient.System
         }
         
         public DefaultRestSharpEnsuringSettings(
-            Predicate<ResponseContext<IRestRequest, IRestResponse>> isSuccess, 
-            Action<ResponseContext<IRestRequest, IRestResponse>> onFailure) 
-            : base(isSuccess, onFailure)
+            Predicate<IResponseContext<IRestRequest, IRestResponse>> isSuccess, 
+            Action<IResponseContext<IRestRequest, IRestResponse>> onFailure)
         {
+            IsSuccess = isSuccess;
+            OnFailure = onFailure;
         }
     }
 }

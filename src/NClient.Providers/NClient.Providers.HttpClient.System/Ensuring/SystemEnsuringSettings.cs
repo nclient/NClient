@@ -6,13 +6,17 @@ using NClient.Abstractions.Resilience;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.System
 {
-    public class SystemEnsuringSettings : EnsuringSettings<HttpRequestMessage, HttpResponseMessage>
+    public class SystemEnsuringSettings : IEnsuringSettings<HttpRequestMessage, HttpResponseMessage>
     {
+        public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
+        public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
+        
         public SystemEnsuringSettings(
-            Predicate<ResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
-            Action<ResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure) 
-            : base(isSuccess, onFailure)
+            Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
+            Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
         {
+            IsSuccess = isSuccess;
+            OnFailure = onFailure;
         }
     }
 }

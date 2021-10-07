@@ -12,10 +12,17 @@
 
     <ItemGroup>
         <PackageReference Include="NClient" Version="*-*"/>
+        <PackageReference Include="NClient.Core" Version="*-*"/>
+        <PackageReference Include="NClient.Abstractions" Version="*-*"/>
+        <PackageReference Include="NClient.Annotations" Version="*-*"/>
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
         <PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Newtonsoft" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.HttpClient.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
     </ItemGroup>
 

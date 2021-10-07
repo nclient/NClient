@@ -3,20 +3,14 @@ using NClient.Abstractions.Resilience;
 
 namespace NClient.Abstractions.Ensuring
 {
-    public interface IEnsuringSettings<TRequest, TResponse>
-    {
-        Predicate<ResponseContext<TRequest, TResponse>> IsSuccess { get; }
-        Action<ResponseContext<TRequest, TResponse>> OnFailure { get; }
-    }
-    
     public class EnsuringSettings<TRequest, TResponse> : IEnsuringSettings<TRequest, TResponse>
     {
-        public virtual Predicate<ResponseContext<TRequest, TResponse>> IsSuccess { get; }
-        public virtual Action<ResponseContext<TRequest, TResponse>> OnFailure { get; }
+        public virtual Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
+        public virtual Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
         
         public EnsuringSettings(
-            Predicate<ResponseContext<TRequest, TResponse>> isSuccess, 
-            Action<ResponseContext<TRequest, TResponse>> onFailure)
+            Predicate<IResponseContext<TRequest, TResponse>> isSuccess, 
+            Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
             IsSuccess = isSuccess;
             OnFailure = onFailure;

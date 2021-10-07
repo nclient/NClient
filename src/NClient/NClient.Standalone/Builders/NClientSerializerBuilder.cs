@@ -1,9 +1,9 @@
 ﻿using NClient.Abstractions.Builders;
 using NClient.Abstractions.Serialization;
-using NClient.Builders.Context;
 using NClient.Common.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Builders
+namespace NClient.Standalone.Builders
 {
     internal class NClientSerializerBuilder<TClient, TRequest, TResponse> : INClientSerializerBuilder<TClient, TRequest, TResponse>
         where TClient : class
@@ -18,9 +18,9 @@ namespace NClient.Builders
         public INClientOptionalBuilder<TClient, TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
-
-            _context.SetSerializer(serializerProvider);
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context);
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithSerializer(serializerProvider));
         }
     }
 }

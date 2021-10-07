@@ -8,7 +8,7 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// Response content.
     /// </summary>
-    public class HttpResponseContent
+    public class HttpResponseContent : IHttpResponseContent
     {
         /// <summary>
         /// Gets byte representation of response content.
@@ -17,13 +17,13 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets headers returned by server with the response content.
         /// </summary>
-        public HttpResponseContentHeaderContainer Headers { get; }
+        public IHttpResponseContentHeaderContainer Headers { get; }
 
         [SuppressMessage("ReSharper", "UnusedVariable")]
-        public HttpResponseContent(byte[]? bytes = null, HttpResponseContentHeaderContainer? headerContainer = null)
+        public HttpResponseContent(byte[]? bytes = null, IHttpResponseContentHeaderContainer? headerContainer = null)
         {
             Bytes = bytes ?? Array.Empty<byte>();
-            Headers = headerContainer ?? new HttpResponseContentHeaderContainer(Array.Empty<HttpHeader>());
+            Headers = headerContainer ?? new HttpResponseContentHeaderContainer(Array.Empty<IHttpHeader>());
             
             // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
             // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.

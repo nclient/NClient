@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 
 namespace NClient.Abstractions.HttpClients
 {
-    public class HttpResponseContentHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    public class HttpResponseContentHeaderContainer : IHttpResponseContentHeaderContainer
     {
         private readonly HttpContentHeaders _httpContentHeaders;
 
@@ -29,7 +29,7 @@ namespace NClient.Abstractions.HttpClients
             _httpContentHeaders = httpContentHeaders;
         }
         
-        public HttpResponseContentHeaderContainer(IEnumerable<HttpHeader> httpHeaders)
+        public HttpResponseContentHeaderContainer(IEnumerable<IHttpHeader> httpHeaders)
         {
             var fakeHttpContent = new ByteArrayContent(Array.Empty<byte>());
             foreach (var headerValues in httpHeaders.GroupBy(x => x.Name))

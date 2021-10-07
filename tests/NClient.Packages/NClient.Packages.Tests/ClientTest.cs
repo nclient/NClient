@@ -31,17 +31,16 @@ namespace NClient.Packages.Tests
         {
             const int id = 1;
             const string host = "http://localhost:5002";
-            var client = new ServiceCollection()
-                .AddHttpClient()
-                .AddNClient<ITest>(host, builder => builder.WithResiliencePolicy())
-                .AddLogging()
+            var serviceCollection = new ServiceCollection().AddLogging();
+            serviceCollection.AddNClient<ITest>(host, builder => builder.WithSafeResilience().Build());
+            var client = serviceCollection
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();
             using var server = RunMockServer(host, id);
 
             var result = await client.GetAsync(id);
 
-            PackagesVersionProvider.GetCurrent<NClientBuilder>().Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent<NClientGallery>().Should().Be(PackagesVersionProvider.GetNew());
             result.Should().Be("result");
         }
 

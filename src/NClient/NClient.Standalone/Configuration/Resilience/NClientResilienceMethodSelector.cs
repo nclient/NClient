@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Linq.Expressions;
 using NClient.Abstractions.Configuration.Resilience;
-using NClient.Builders.Context;
 using NClient.Core.Helpers;
+using NClient.Standalone.Builders.Context;
 
-namespace NClient.Configuration.Resilience
+namespace NClient.Standalone.Configuration.Resilience
 {
     internal class NClientResilienceMethodSelector<TClient, TRequest, TResponse> : INClientResilienceMethodSelector<TClient, TRequest, TResponse>
     {
-        private readonly BuilderContext<TRequest, TResponse> _context;
+        private readonly BuilderContextModificator<TRequest, TResponse> _builderContextModificator;
         
-        public NClientResilienceMethodSelector(BuilderContext<TRequest, TResponse> context)
+        public NClientResilienceMethodSelector(BuilderContextModificator<TRequest, TResponse> builderContextModificator)
         {
-            _context = context;
+            _builderContextModificator = builderContextModificator;
         }
         
         public INClientResilienceSetter<TClient, TRequest, TResponse> ForAllMethods()
         {
             var selectedMethods = typeof(TClient).GetInterfaceMethods();
-            return new NClientResilienceSetter<TClient, TRequest, TResponse>(_context, selectedMethods);
+            return new NClientResilienceSetter<TClient, TRequest, TResponse>(_builderContextModificator, selectedMethods);
         }
         
         public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> methodSelector)
         {
             var func = methodSelector.Compile();
             var selectedMethod = func.Invoke(default!).Method;
-            return new NClientResilienceSetter<TClient, TRequest, TResponse>(_context, selectedMethod);
+            return new NClientResilienceSetter<TClient, TRequest, TResponse>(_builderContextModificator, selectedMethod);
         }
     }
 }

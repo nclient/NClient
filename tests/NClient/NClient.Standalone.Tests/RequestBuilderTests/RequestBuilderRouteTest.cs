@@ -8,7 +8,6 @@ using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
 using NClient.Exceptions;
-using NClient.Testing.Common;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -245,7 +244,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_PrimitiveRouteParamWithoutTokenInRoute_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IPrimitiveRouteParamWithoutTokenInRoute>(),
                 1);
 
@@ -261,7 +260,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MethodRouteWithCustomTypeParamToken_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMethodRouteWithCustomTypeParamToken>(),
                 new BasicEntity { Id = 1, Value = 2 });
 
@@ -277,7 +276,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_ApiRouteWithCustomTypeParamToken_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IApiRouteWithCustomTypeParamToken>(),
                 new BasicEntity { Id = 1, Value = 2 });
 
@@ -293,7 +292,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_CustomTypeRouteParam_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeRouteParam>(),
                 new BasicEntity { Id = 1, Value = 2 });
 
@@ -309,7 +308,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_CustomTypeRouteParamWithoutTokenInRoute_ThrowClientValidationException()
         {
-            Func<HttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeRouteParamWithoutTokenInRoute>(),
                 new BasicEntity { Id = 1, Value = 2 });
 
