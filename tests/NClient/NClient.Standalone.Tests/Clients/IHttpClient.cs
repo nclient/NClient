@@ -5,7 +5,7 @@ using NClient.Annotations.Methods;
 using NClient.Testing.Common.Entities;
 using IHttpClient = NClient.Testing.Common.Clients.IHttpClient;
 
-namespace NClient.Tests.Clients
+namespace NClient.Standalone.Tests.Clients
 {
     [Path("api/http")]
     public interface IHttpClientWithMetadata : IHttpClient

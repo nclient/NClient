@@ -30,6 +30,21 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
+        
+        public IWireMockServer MockNotFoundIntGetMethod(int id)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath($"/api/rest/{id}")
+                    .WithHeader("Accept", "application/json")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(404)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson("Error message"));
+
+            return api;
+        }
 
         public IWireMockServer MockStringGetMethod(string id)
         {
@@ -42,6 +57,21 @@ namespace NClient.Testing.Common.Apis
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(id));
+
+            return api;
+        }
+        
+        public IWireMockServer MockNotFoundStringGetMethod(string id)
+        {
+            var api = WireMockServer.Start(ApiUri.ToString());
+            api.Given(Request.Create()
+                    .WithPath($"/api/rest/{id}")
+                    .WithHeader("Accept", "application/json")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(404)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson("Error message"));
 
             return api;
         }

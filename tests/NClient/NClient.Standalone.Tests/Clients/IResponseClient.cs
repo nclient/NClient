@@ -6,7 +6,7 @@ using NClient.Annotations.Methods;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Tests.Clients
+namespace NClient.Standalone.Tests.Clients
 {
     [Path("api/response")]
     public interface IResponseClientWithMetadata : IResponseClient

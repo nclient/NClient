@@ -81,7 +81,7 @@ namespace NClient.Standalone.Tests
             actualRequest.Method.Should().Be(httpMethod);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IHttpParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHttpHeader>(), config => config.WithoutStrictOrdering());
-            actualRequest.Body.Should().BeEquivalentTo(body);
+            actualRequest.Data.Should().BeEquivalentTo(body);
         }
     }
 }

@@ -4,7 +4,7 @@ using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Testing.Common.Clients;
 
-namespace NClient.Tests.Clients
+namespace NClient.Standalone.Tests.Clients
 {
     [Path("api/header")]
     public interface IHeaderClientWithMetadata : IHeaderClient

@@ -7,29 +7,29 @@ namespace NClient.Abstractions.HttpClients
     /// <summary>
     /// The container for HTTP response data with deserialized body.
     /// </summary>
-    public class HttpResponse<TValue> : HttpResponse, IHttpResponse<TValue>
+    public class HttpResponse<TData> : HttpResponse, IHttpResponse<TData>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
         /// </summary>
-        public TValue? Value { get; }
+        public TData? Data { get; }
 
         /// <summary>
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
-        /// <param name="value">The object obtained as a result of deserialization of the body.</param>
-        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TValue? value)
+        /// <param name="data">The object obtained as a result of deserialization of the body.</param>
+        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TData? data)
             : base(httpResponse, httpRequest)
         {
-            Value = value;
+            Data = data;
         }
 
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
         /// </summary>
-        public new HttpResponse<TValue> EnsureSuccess()
+        public new HttpResponse<TData> EnsureSuccess()
         {
             base.EnsureSuccess();
             return this;

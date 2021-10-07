@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
-using NClient.Tests.Clients;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -57,7 +57,7 @@ namespace NClient.Tests.ClientTests
             var result = _returnClient.GetHttpResponse(id);
 
             result.IsSuccessful.Should().BeTrue();
-            result.Value.Should().BeEquivalentTo(entity);
+            result.Data.Should().BeEquivalentTo(entity);
         }
         
         [Test]

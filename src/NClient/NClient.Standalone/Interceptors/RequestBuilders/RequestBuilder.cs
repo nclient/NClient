@@ -88,7 +88,7 @@ namespace NClient.Standalone.Interceptors.RequestBuilders
                 .ToArray();
             if (bodyParams.Length > 1)
                 throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
-            request.Body = bodyParams.SingleOrDefault()?.Value;
+            request.Data = bodyParams.SingleOrDefault()?.Value;
 
             return request;
         }

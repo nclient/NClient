@@ -22,7 +22,7 @@ namespace NClient.Standalone.Interceptors
         private readonly IResilienceHttpClientProvider<TRequest, TResponse> _resilienceHttpClientProvider;
         private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
-        private readonly IHttpResponsePopulater _httpResponsePopulater;
+        private readonly IHttpResponsePopulator _httpResponsePopulator;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
@@ -34,7 +34,7 @@ namespace NClient.Standalone.Interceptors
             IResilienceHttpClientProvider<TRequest, TResponse> resilienceHttpClientProvider,
             IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
-            IHttpResponsePopulater httpResponsePopulater,
+            IHttpResponsePopulator httpResponsePopulator,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
@@ -45,7 +45,7 @@ namespace NClient.Standalone.Interceptors
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _fullMethodInvocationProvider = fullMethodInvocationProvider;
             _httpMessageBuilder = httpMessageBuilder;
-            _httpResponsePopulater = httpResponsePopulater;
+            _httpResponsePopulator = httpResponsePopulator;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _methodBuilder = methodBuilder;
             _requestBuilder = requestBuilder;
@@ -101,9 +101,11 @@ namespace NClient.Standalone.Interceptors
                     if (response is not null)
                     {
                         httpResponse = await _httpMessageBuilder
-                            .BuildResponseAsync(httpRequest!, response)
+                            .BuildResponseAsync(httpRequest.Id, httpRequest.Data?.GetType(), response)
                             .ConfigureAwait(false);
-                        populatedHttpResponse = _httpResponsePopulater.Populate(httpResponse, resultType);   
+                        populatedHttpResponse = await _httpResponsePopulator
+                            .PopulateAsync(httpResponse, resultType)
+                            .ConfigureAwait(false);   
                     }
                     
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
@@ -117,7 +119,7 @@ namespace NClient.Standalone.Interceptors
 
                 return populatedHttpResponse!
                     .GetType()
-                    .GetProperty(nameof(IHttpResponse<object>.Value))?
+                    .GetProperty(nameof(IHttpResponse<object>.Data))?
                     .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)
