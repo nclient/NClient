@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\NClient\NClient\NClient.csproj" />
+        <ProjectReference Include="..\NClient.Standalone.Tests\NClient.Standalone.Tests.csproj" />
     </ItemGroup>
 
     <ItemGroup>

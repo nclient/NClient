@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Builders;
 using NClient.Api.Tests.Helpers;
+using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Tests.Clients;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases

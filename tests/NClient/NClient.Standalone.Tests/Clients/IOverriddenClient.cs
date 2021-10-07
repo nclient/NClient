@@ -6,7 +6,7 @@ using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Tests.Clients
+namespace NClient.Standalone.Tests.Clients
 {
     public interface IOverriddenClientWithMetadata : IOverriddenClientWithMetadataBase
     {
