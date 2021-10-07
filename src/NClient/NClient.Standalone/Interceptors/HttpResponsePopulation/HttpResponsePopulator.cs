@@ -5,16 +5,16 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Standalone.Interceptors.HttpResponsePopulation
 {
-    internal interface IHttpResponsePopulater
+    internal interface IHttpResponsePopulator
     {
         IHttpResponse Populate(IHttpResponse httpResponse, Type resultType);
     }
 
-    internal class HttpResponsePopulater : IHttpResponsePopulater
+    internal class HttpResponsePopulator : IHttpResponsePopulator
     {
         private readonly ISerializer _serializer;
 
-        public HttpResponsePopulater(ISerializer serializer)
+        public HttpResponsePopulator(ISerializer serializer)
         {
             _serializer = serializer;
         }
