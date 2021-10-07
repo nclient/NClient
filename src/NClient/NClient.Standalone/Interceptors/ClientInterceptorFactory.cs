@@ -95,7 +95,7 @@ namespace NClient.Standalone.Interceptors
                     logger),
                 new FullMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 httpMessageBuilder,
-                new HttpResponsePopulator(serializerProvider.Create()),
+                new HttpResponsePopulator<TRequest, TResponse>(serializerProvider.Create(), httpMessageBuilder),
                 _clientRequestExceptionFactory,
                 _clientMethodBuilder,
                 _requestBuilder,

@@ -36,7 +36,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.Value.Should().Be(id);
+            result.Data.Should().Be(id);
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -50,7 +50,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.Value.Should().BeEquivalentTo(entity);
+            result.Data.Should().BeEquivalentTo(entity);
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 

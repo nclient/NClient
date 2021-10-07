@@ -57,7 +57,7 @@ namespace NClient.Tests.ClientTests
             var result = _returnClient.GetHttpResponse(id);
 
             result.IsSuccessful.Should().BeTrue();
-            result.Value.Should().BeEquivalentTo(entity);
+            result.Data.Should().BeEquivalentTo(entity);
         }
         
         [Test]

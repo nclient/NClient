@@ -21,7 +21,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
-        object? Body { get; set; }
+        object? Data { get; set; }
         /// <summary>
         /// Gets string representation of request body.
         /// </summary>

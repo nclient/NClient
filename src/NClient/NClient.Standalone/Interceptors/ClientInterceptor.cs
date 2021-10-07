@@ -101,9 +101,11 @@ namespace NClient.Standalone.Interceptors
                     if (response is not null)
                     {
                         httpResponse = await _httpMessageBuilder
-                            .BuildResponseAsync(httpRequest!, response)
+                            .BuildResponseAsync(httpRequest.Id, httpRequest.Data?.GetType(), response)
                             .ConfigureAwait(false);
-                        populatedHttpResponse = _httpResponsePopulator.Populate(httpResponse, resultType);   
+                        populatedHttpResponse = await _httpResponsePopulator
+                            .PopulateAsync(httpResponse, resultType)
+                            .ConfigureAwait(false);   
                     }
                     
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
@@ -117,7 +119,7 @@ namespace NClient.Standalone.Interceptors
 
                 return populatedHttpResponse!
                     .GetType()
-                    .GetProperty(nameof(IHttpResponse<object>.Value))?
+                    .GetProperty(nameof(IHttpResponse<object>.Data))?
                     .GetValue(populatedHttpResponse)!;
             }
             catch (ClientValidationException e)

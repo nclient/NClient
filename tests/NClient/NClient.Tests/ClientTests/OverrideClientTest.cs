@@ -35,7 +35,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Value.Should().Be(1);
+            result.Data.Should().Be(1);
         }
 
         [Test]

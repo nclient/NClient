@@ -8,7 +8,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
         /// </summary>
-        TValue? Value { get; }
+        TValue? Data { get; }
     }
     
     public interface IHttpResponse

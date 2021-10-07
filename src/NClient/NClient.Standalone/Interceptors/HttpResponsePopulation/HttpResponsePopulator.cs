@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
@@ -7,49 +8,55 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
 {
     internal interface IHttpResponsePopulator
     {
-        IHttpResponse Populate(IHttpResponse httpResponse, Type resultType);
+        Task<IHttpResponse> PopulateAsync(IHttpResponse httpResponse, Type resultType);
     }
 
-    internal class HttpResponsePopulator : IHttpResponsePopulator
+    internal class HttpResponsePopulator<TRequest, TResponse> : IHttpResponsePopulator
     {
         private readonly ISerializer _serializer;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
 
-        public HttpResponsePopulator(ISerializer serializer)
+        public HttpResponsePopulator(
+            ISerializer serializer,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder)
         {
             _serializer = serializer;
+            _httpMessageBuilder = httpMessageBuilder;
         }
 
-        public IHttpResponse Populate(IHttpResponse httpResponse, Type resultType)
+        public async Task<IHttpResponse> PopulateAsync(IHttpResponse httpResponse, Type resultType)
         {
-            var (bodyType, errorType) = GetBodyAndErrorType(resultType);
+            var (dataType, errorType) = GetDataAndErrorType(resultType);
 
-            if (bodyType is null && errorType is not null)
+            if (dataType is null && errorType is not null)
             {
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
-                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, errorObject);
+                return await _httpMessageBuilder
+                    .BuildResponseWithErrorAsync(errorObject, errorType, httpResponse)
+                    .ConfigureAwait(false);
             }
 
-            if (bodyType is not null && errorType is null)
+            if (dataType is not null && errorType is null)
             {
-                var bodyObject = TryGetBodyObject(bodyType, httpResponse);
-                // TODO: Because of this, it is impossible to use custom implementations of HTTP responses:
-                var genericResponseType = typeof(HttpResponse<>).MakeGenericType(bodyType);
-                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject);
+                var dataObject = TryGetDataObject(dataType, httpResponse);
+                return await _httpMessageBuilder
+                    .BuildResponseWithDataAsync(dataObject, dataType, httpResponse)
+                    .ConfigureAwait(false);
             }
 
-            if (bodyType is not null && errorType is not null)
+            if (dataType is not null && errorType is not null)
             {
-                var bodyObject = TryGetBodyObject(bodyType, httpResponse);
+                var dataObject = TryGetDataObject(dataType, httpResponse);
                 var errorObject = TryGetErrorObject(errorType, httpResponse);
-                var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(bodyType, errorType);
-                return (IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, bodyObject, errorObject);
+                return await _httpMessageBuilder
+                    .BuildResponseWithDataAndErrorAsync(dataObject, dataType, errorObject, errorType, httpResponse)
+                    .ConfigureAwait(false);
             }
 
             return httpResponse;
         }
 
-        private static (Type? BodyType, Type? ErrorType) GetBodyAndErrorType(Type resultType)
+        private static (Type? DataType, Type? ErrorType) GetDataAndErrorType(Type resultType)
         {
             if (resultType == typeof(void) || resultType == typeof(IHttpResponse))
                 return (null, null);
@@ -71,10 +78,10 @@ namespace NClient.Standalone.Interceptors.HttpResponsePopulation
             return sourceType.IsGenericType && sourceType.GetGenericTypeDefinition().IsAssignableFrom(destType.GetGenericTypeDefinition());
         }
 
-        private object? TryGetBodyObject(Type bodyType, IHttpResponse response)
+        private object? TryGetDataObject(Type dataType, IHttpResponse response)
         {
             return response.IsSuccessful
-                ? _serializer.Deserialize(response.Content.ToString(), bodyType)
+                ? _serializer.Deserialize(response.Content.ToString(), dataType)
                 : null;
         }
 

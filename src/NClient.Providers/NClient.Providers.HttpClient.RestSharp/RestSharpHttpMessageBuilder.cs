@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -49,18 +50,18 @@ namespace NClient.Providers.HttpClient.RestSharp
                 restRequest.AddHeader(header.Name, header.Value);
             }
 
-            if (httpRequest.Body is not null)
+            if (httpRequest.Data is not null)
             {
-                var body = _serializer.Serialize(httpRequest.Body);
+                var body = _serializer.Serialize(httpRequest.Data);
                 restRequest.AddParameter(_serializer.ContentType, body, ParameterType.RequestBody);
             }
 
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IRestResponse response)
+        public Task<IHttpResponse> BuildResponseAsync(Guid requestId, Type? requestDataType, IRestResponse response)
         {
-            var finalRequest = _finalHttpRequestBuilder.Build(httpRequest, response.Request);
+            var finalRequest = _finalHttpRequestBuilder.Build(requestId, requestDataType, response.Request);
             
             var allHeaders = response.Headers
                 .Where(x => x.Name != null)
@@ -85,6 +86,24 @@ namespace NClient.Providers.HttpClient.RestSharp
             };
 
             return Task.FromResult<IHttpResponse>(httpResponse);
+        }
+        
+        public Task<IHttpResponse> BuildResponseWithDataAsync(object? data, Type dataType, IHttpResponse httpResponse)
+        {
+            var genericResponseType = typeof(HttpResponse<>).MakeGenericType(dataType);
+            return Task.FromResult((IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, data));
+        }
+        
+        public Task<IHttpResponse> BuildResponseWithErrorAsync(object? error, Type errorType, IHttpResponse httpResponse)
+        {
+            var genericResponseType = typeof(HttpResponseWithError<>).MakeGenericType(errorType);
+            return Task.FromResult((IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, error));
+        }
+        
+        public Task<IHttpResponse> BuildResponseWithDataAndErrorAsync(object? data, Type dataType, object? error, Type errorType, IHttpResponse httpResponse)
+        {
+            var genericResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(dataType, errorType);
+            return Task.FromResult((IHttpResponse)Activator.CreateInstance(genericResponseType, httpResponse, httpResponse.Request, data, error));
         }
     }
 }
