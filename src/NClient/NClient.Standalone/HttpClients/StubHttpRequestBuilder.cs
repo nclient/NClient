@@ -3,7 +3,7 @@ using NClient.Abstractions.HttpClients;
 
 namespace NClient.Standalone.HttpClients
 {
-    public class StubHttpRequestBuilder : IHttpRequestBuilder<IHttpRequest>
+    public class StubHttpRequestBuilder : IHttpMessageBuilder<IHttpRequest>
     {
         public Task<IHttpRequest> BuildRequestAsync(IHttpRequest httpRequest)
         {

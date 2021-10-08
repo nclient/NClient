@@ -6,9 +6,9 @@ namespace NClient.Providers.HttpClient.System
 {
     public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage>
     {
-        public IHttpRequestBuilder<HttpRequestMessage> Create(ISerializer serializer)
+        public IHttpMessageBuilder<HttpRequestMessage> Create(ISerializer serializer)
         {
-            return new SystemHttpRequestBuilder(serializer);
+            return new SystemHttpMessageBuilder(serializer);
         }
     }
 }

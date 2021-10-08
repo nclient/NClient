@@ -4,6 +4,6 @@ namespace NClient.Abstractions.HttpClients
 {
     public interface IHttpMessageBuilderProvider<TRequest>
     {
-        IHttpRequestBuilder<TRequest> Create(ISerializer serializer);
+        IHttpMessageBuilder<TRequest> Create(ISerializer serializer);
     }
 }
