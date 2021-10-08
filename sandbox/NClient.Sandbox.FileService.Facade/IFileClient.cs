@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Parameters;
 using NClient.Annotations.Versioning;
+using NClient.Providers.Results.HttpMessages;
 
 namespace NClient.Sandbox.FileService.Facade
 {

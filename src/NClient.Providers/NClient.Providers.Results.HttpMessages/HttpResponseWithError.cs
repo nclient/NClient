@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.HttpClients
+﻿using NClient.Abstractions.HttpClients;
+
+namespace NClient.Providers.Results.HttpMessages
 {
     /// <summary>
     /// The container for HTTP response data with deserialized body including error.

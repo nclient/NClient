@@ -1,4 +1,4 @@
-﻿namespace NClient.Abstractions.HttpClients
+﻿namespace NClient.Providers.Results.HttpMessages
 {
     public interface IHttpResponseContent
     {

@@ -7,6 +7,7 @@ using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
 using NClient.Standalone.Interceptors.MethodBuilders;

@@ -8,14 +8,14 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Standalone.Mapping
 {
-    public class StubResponseMapper : IResponseMapper<IHttpResponse>
+    public class StubResponseMapper : IResponseMapper<object>
     {
         public bool CanMapTo(Type resultType)
         {
             return true;
         }
         
-        public async Task<object?> MapAsync(Type resultType, IHttpRequest httpRequest, IHttpResponse response, ISerializer serializer)
+        public async Task<object?> MapAsync(Type resultType, IHttpRequest httpRequest, object response, ISerializer serializer)
         {
             return null;
         }

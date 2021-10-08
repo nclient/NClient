@@ -33,7 +33,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        IReadOnlyCollection<IHttpHeader> Headers { get; }
+        IReadOnlyCollection<IHttpHeader2> Headers { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>

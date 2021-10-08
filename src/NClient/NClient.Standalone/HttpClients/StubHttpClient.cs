@@ -4,12 +4,11 @@ using NClient.Abstractions.HttpClients;
 
 namespace NClient.Standalone.HttpClients
 {
-    internal class StubHttpClient : IHttpClient<IHttpRequest, IHttpResponse>
+    internal class StubHttpClient : IHttpClient<IHttpRequest, object>
     {
-        public Task<IHttpResponse> ExecuteAsync(IHttpRequest request)
+        public Task<object> ExecuteAsync(IHttpRequest request)
         {
-            var response = new HttpResponse(request) { StatusCode = HttpStatusCode.OK };
-            return Task.FromResult<IHttpResponse>(response);
+            return Task.FromResult((object)null);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace NClient.Abstractions.HttpClients
+namespace NClient.Providers.Results.HttpMessages
 {
     /// <summary>
     /// Response content.

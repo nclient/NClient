@@ -61,8 +61,6 @@ namespace NClient.Standalone.Interceptors.Invocation
         {
             if (typeof(IResilienceNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
-            if (typeof(IHttpNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
-                return true;
 
             return false;
         }

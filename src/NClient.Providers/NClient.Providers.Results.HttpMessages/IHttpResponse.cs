@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net;
+using NClient.Abstractions.HttpClients;
 
-namespace NClient.Abstractions.HttpClients
+namespace NClient.Providers.Results.HttpMessages
 {
     public interface IHttpResponse<TValue> : IHttpResponse
     {

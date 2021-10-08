@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Results.HttpMessages\NClient.Providers.Results.HttpMessages.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj" />
     </ItemGroup>
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 
-namespace NClient.Abstractions.HttpClients
+namespace NClient.Providers.Results.HttpMessages
 {
     public interface IHttpResponseContentHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
     {

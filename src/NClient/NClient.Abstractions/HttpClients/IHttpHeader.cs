@@ -1,6 +1,6 @@
 ﻿namespace NClient.Abstractions.HttpClients
 {
-    public interface IHttpHeader
+    public interface IHttpHeader2
     {
         string Name { get; }
         string Value { get; }

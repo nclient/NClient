@@ -12,14 +12,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0"/>
-        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
-        <PackageReference Include="System.Text.Json" Version="5.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="System.Text.Json" Version="5.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\NClient\NClient.Abstractions\NClient.Abstractions.csproj"/>
-        <ProjectReference Include="..\..\src\NClient\NClient.Annotations\NClient.Annotations.csproj"/>
+        <ProjectReference Include="..\..\src\NClient.Providers\NClient.Providers.Results.HttpMessages\NClient.Providers.Results.HttpMessages.csproj" />
+        <ProjectReference Include="..\..\src\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+        <ProjectReference Include="..\..\src\NClient\NClient.Annotations\NClient.Annotations.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,6 +7,7 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Exceptions;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

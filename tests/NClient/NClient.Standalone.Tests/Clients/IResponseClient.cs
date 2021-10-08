@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 

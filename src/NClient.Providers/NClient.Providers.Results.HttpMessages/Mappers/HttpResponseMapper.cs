@@ -7,7 +7,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Providers.HttpClient.System.Mapping
+namespace NClient.Providers.Results.HttpMessages.Mappers
 {
     public class HttpResponseMapper : IResponseMapper<HttpResponseMessage>
     {

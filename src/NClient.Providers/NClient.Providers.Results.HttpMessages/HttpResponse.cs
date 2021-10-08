@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net;
+using NClient.Abstractions.HttpClients;
 using NClient.Common.Helpers;
 
-namespace NClient.Abstractions.HttpClients
+namespace NClient.Providers.Results.HttpMessages
 {
     /// <summary>
     /// The container for HTTP response data with deserialized body.

@@ -3,9 +3,9 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Standalone.HttpClients
 {
-    internal class StubHttpClientProvider : IHttpClientProvider<IHttpRequest, IHttpResponse>
+    internal class StubHttpClientProvider : IHttpClientProvider<IHttpRequest, object>
     {
-        public IHttpClient<IHttpRequest, IHttpResponse> Create(ISerializer? serializer = null)
+        public IHttpClient<IHttpRequest, object> Create(ISerializer? serializer = null)
         {
             return new StubHttpClient();
         }
