@@ -35,7 +35,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.Get(1))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .ThrowExactly<ClientRequestException<HttpResponseMessage>>();
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.AsResilient().Invoke(client => client.Get(1), noOpPolicy))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .ThrowExactly<ClientRequestException<HttpResponseMessage>>();
         }
         
         [Test]
@@ -116,7 +116,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.Get(1))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .ThrowExactly<ClientRequestException<HttpResponseMessage>>();
         }
         
         [Test]
@@ -168,7 +168,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .ThrowExactly<ClientRequestException<HttpResponseMessage>>();
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace NClient.Tests.ClientTests
 
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
-                .ThrowExactly<ClientRequestException>();
+                .ThrowExactly<ClientRequestException<HttpResponseMessage>>();
         }
     }
 }

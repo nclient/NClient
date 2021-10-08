@@ -5,6 +5,7 @@ using NClient.Abstractions.Builders;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
@@ -66,6 +67,20 @@ namespace NClient.Standalone.Builders
             
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithSerializer(serializerProvider));
+        }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponse(params IResponseMapper<TResponse>[] responseMappers)
+        {
+            Ensure.IsNotNull(responseMappers, nameof(responseMappers));
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResponseMappers(responseMappers));
+        }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResponse()
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutResponseMappers());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
@@ -175,8 +190,9 @@ namespace NClient.Standalone.Builders
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
                 _context.SerializerProvider,
-                _context.ClientHandlers.ToArray(),
                 new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
+                _context.ClientHandlers.ToArray(),
+                _context.ResponseMappers,
                 _context.MethodResiliencePolicyProvider
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider ?? new StubResiliencePolicyProvider<TRequest, TResponse>(), 

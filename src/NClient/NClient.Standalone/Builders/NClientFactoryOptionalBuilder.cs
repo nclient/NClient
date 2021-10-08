@@ -5,6 +5,7 @@ using NClient.Abstractions.Builders;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
@@ -65,6 +66,20 @@ namespace NClient.Standalone.Builders
             
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithSerializer(serializerProvider));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponse(params IResponseMapper<TResponse>[] responseMappers)
+        {
+            Ensure.IsNotNull(responseMappers, nameof(responseMappers));
+            
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithResponseMappers(responseMappers));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResponse()
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithoutResponseMappers());
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)

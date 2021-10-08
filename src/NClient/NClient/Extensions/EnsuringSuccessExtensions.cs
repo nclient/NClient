@@ -8,10 +8,10 @@ namespace NClient
     public static class EnsuringSuccessExtensions
     {
         public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> EnsuringSuccess<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder) 
+            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.EnsuringSystemSuccess();
+            return clientOptionalBuilder.EnsuringSystemSuccess();
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> EnsuringSuccess(

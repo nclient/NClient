@@ -19,7 +19,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
-        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IHttpMessageBuilder<TRequest> _httpMessageBuilder;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -28,7 +28,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IHttpMessageBuilder<TRequest> httpMessageBuilder,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger? logger = null)
         {

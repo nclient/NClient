@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
+using NClient.Providers.HttpClient.System.Mapping;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -39,18 +40,19 @@ namespace NClient.Providers.HttpClient.System.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(IHttpRequest request, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(IHttpRequest httpRequest, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
+            var httpResponseMapper = new HttpResponseMapper();
 
-            var httpRequest = await httpMessageBuilder.BuildRequestAsync(request);
-            var httpResponse = await httpClient.ExecuteAsync(httpRequest);
-            var response = await httpMessageBuilder.BuildResponseAsync(request.Id, request.Data?.GetType(), httpResponse);
+            var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);
+            var response = await httpClient.ExecuteAsync(request);
+            var httpResponse = (IHttpResponse)(await httpResponseMapper.MapAsync(typeof(IHttpResponse), httpRequest, response, Serializer))!;
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
-            response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
+            httpResponse.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
+            httpResponse.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Headers, x => x.WithoutStrictOrdering());
         }
 

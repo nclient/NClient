@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 
@@ -31,6 +32,15 @@ namespace NClient.Abstractions.Builders
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider);
+
+        #endregion
+        
+        #region Responses
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponse(
+            params IResponseMapper<TResponse>[] responseMappers);
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResponse();
 
         #endregion
         

@@ -23,6 +23,7 @@ namespace NClient
                 .UsingJsonSerializer()
                 .EnsuringSuccess()
                 .WithoutHandling()
+                .WithHttpResponse()
                 .WithIdempotentResilience()
                 .WithoutLogging();
         }

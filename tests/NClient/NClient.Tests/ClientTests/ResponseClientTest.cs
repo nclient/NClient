@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -51,7 +52,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -64,7 +65,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -77,7 +78,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -159,7 +160,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.GetResponseWithErrorAsync(id))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError == false);
         }
 
@@ -212,7 +213,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -225,7 +226,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -238,7 +239,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError);
         }
 
@@ -318,7 +319,7 @@ namespace NClient.Tests.ClientTests
             (await _responseClient
                     .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
                     .Should()
-                    .ThrowAsync<ClientRequestException>())
+                    .ThrowAsync<ClientRequestException<HttpResponseMessage>>())
                 .Where(x => x.IsHttpError == false);
         }
 

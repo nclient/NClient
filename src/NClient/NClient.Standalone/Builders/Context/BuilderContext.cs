@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
@@ -21,14 +22,16 @@ namespace NClient.Standalone.Builders.Context
         public string Host { get; private set; } = null!;
 
         public IHttpClientProvider<TRequest, TResponse> HttpClientProvider { get; private set; } = null!;
-        public IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider { get; private set; } = null!;
+        public IHttpMessageBuilderProvider<TRequest> HttpMessageBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
-
+        
         public IEnsuringSettings<TRequest, TResponse>? EnsuringSettings { get; private set; }
 
-        public ICollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
+        public IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
+        public IReadOnlyCollection<IResponseMapper<TResponse>> ResponseMappers { get; private set; }
+        
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? MethodResiliencePolicyProvider { get; private set; }
         public IResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
@@ -38,7 +41,8 @@ namespace NClient.Standalone.Builders.Context
 
         public BuilderContext()
         {
-            ClientHandlers = new List<IClientHandler<TRequest, TResponse>>();
+            ResponseMappers = Array.Empty<IResponseMapper<TResponse>>();
+            ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
@@ -56,7 +60,9 @@ namespace NClient.Standalone.Builders.Context
 
             EnsuringSettings = builderContext.EnsuringSettings;
 
-            ClientHandlers = builderContext.ClientHandlers.ToList();
+            ClientHandlers = builderContext.ClientHandlers.ToArray();
+
+            ResponseMappers = builderContext.ResponseMappers.ToArray();
 
             MethodResiliencePolicyProvider = builderContext.MethodResiliencePolicyProvider;
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
@@ -76,7 +82,7 @@ namespace NClient.Standalone.Builders.Context
 
         public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
+            IHttpMessageBuilderProvider<TRequest> httpMessageBuilderProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -92,7 +98,7 @@ namespace NClient.Standalone.Builders.Context
                 SerializerProvider = serializerProvider
             };
         }
-        
+
         public BuilderContext<TRequest, TResponse> WithEnsuringSetting(
             Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
@@ -119,7 +125,7 @@ namespace NClient.Standalone.Builders.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ClientHandlers = ClientHandlers.Concat(clientHandlers).ToList()
+                ClientHandlers = clientHandlers.ToArray()
             };
         }
 
@@ -128,6 +134,22 @@ namespace NClient.Standalone.Builders.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 ClientHandlers = new List<IClientHandler<TRequest, TResponse>>()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResponseMappers(IEnumerable<IResponseMapper<TResponse>> responseMappers)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ResponseMappers = responseMappers.ToArray()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutResponseMappers()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ResponseMappers = Array.Empty<IResponseMapper<TResponse>>()
             };
         }
 

@@ -21,6 +21,7 @@ namespace NClient
                 .UsingJsonSerializer()
                 .EnsuringSuccess()
                 .WithoutHandling()
+                .WithHttpResponse()
                 .WithoutResilience()
                 .WithoutLogging();
         }

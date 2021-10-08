@@ -122,7 +122,7 @@ namespace NClient.Standalone.Tests
                     .EnsuringSystemSuccess()
                     .Build()
                     .GetAsync(id))
-                .Should().ThrowExactlyAsync<ClientRequestException>();
+                .Should().ThrowExactlyAsync<ClientRequestException<HttpResponseMessage>>();
         }
         
         [Test]
@@ -135,7 +135,7 @@ namespace NClient.Standalone.Tests
                     .EnsuringSystemSuccess()
                     .Build()
                     .GetAsync(id))
-                .Should().ThrowExactlyAsync<ClientRequestException>();
+                .Should().ThrowExactlyAsync<ClientRequestException<HttpResponseMessage>>();
         }
     }
 }
