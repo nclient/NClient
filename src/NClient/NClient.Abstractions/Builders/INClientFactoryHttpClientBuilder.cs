@@ -11,6 +11,6 @@ namespace NClient.Abstractions.Builders
         /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder"/>.</param>
         INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilderProvider<TRequest> httpMessageBuilderProvider);
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider);
     }
 }

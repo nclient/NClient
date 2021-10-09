@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Invocation;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Standalone.Interceptors.Validation;
 
 namespace NClient.Standalone.Interceptors.HttpClients
@@ -21,7 +25,8 @@ namespace NClient.Standalone.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
-        private readonly IHttpMessageBuilder<TRequest> _httpMessageBuilder;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IReadOnlyCollection<IResponseMapper> _responseMappers;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -30,7 +35,8 @@ namespace NClient.Standalone.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilder<TRequest> httpMessageBuilder,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IEnumerable<IResponseMapper> responseMappers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger? logger)
         {
@@ -39,6 +45,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             _responseValidator = responseValidator;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
+            _responseMappers = responseMappers.ToArray();
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
@@ -88,6 +95,10 @@ namespace NClient.Standalone.Interceptors.HttpClients
             _logger?.LogDebug("Response received. Request id: '{requestId}'.", httpRequest.Id);
             var responseContext = new ResponseContext<TRequest, TResponse>(request, response, methodInvocation);
             if (responseContext.MethodInvocation.ResultType == typeof(TResponse))
+                return responseContext;
+            if (responseContext.MethodInvocation.ResultType == typeof(HttpResponse) || responseContext.MethodInvocation.ResultType == typeof(IHttpResponse))
+                return responseContext;
+            if (_responseMappers.Any(x => x.CanMapTo(responseContext.MethodInvocation.ResultType)))
                 return responseContext;
             return _responseValidator.Ensure(responseContext);
         }

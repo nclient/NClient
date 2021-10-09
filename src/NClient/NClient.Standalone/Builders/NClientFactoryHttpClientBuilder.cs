@@ -16,7 +16,7 @@ namespace NClient.Standalone.Builders
         
         public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider, 
-            IHttpMessageBuilderProvider<TRequest> httpMessageBuilderProvider)
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
             Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));

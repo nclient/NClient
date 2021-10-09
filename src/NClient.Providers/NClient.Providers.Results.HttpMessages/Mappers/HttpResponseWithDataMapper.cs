@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Serialization;
 
 namespace NClient.Providers.Results.HttpMessages.Mappers
 {
-    public class HttpResponseWithDataMapper : IResponseMapper<HttpResponseMessage>
+    public class HttpResponseWithDataMapper : IResponseMapper
     {
-        private readonly HttpResponseMapper _httpResponseMapper;
-        
-        public HttpResponseWithDataMapper()
-        {
-            _httpResponseMapper = new HttpResponseMapper();
-        }
-        
         public bool CanMapTo(Type resultType)
         {
             if (!resultType.IsGenericType)
@@ -26,12 +17,8 @@ namespace NClient.Providers.Results.HttpMessages.Mappers
                 || resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>).GetGenericTypeDefinition();
         }
 
-        public async Task<object?> MapAsync(Type resultType, IHttpRequest httpRequest, HttpResponseMessage response, ISerializer serializer)
+        public async Task<object?> MapAsync(Type resultType, IHttpResponse httpResponse, ISerializer serializer)
         {
-            var httpResponse = (HttpResponse)(await _httpResponseMapper
-                .MapAsync(resultType, httpRequest, response, serializer)
-                .ConfigureAwait(false))!;
-            
             var dataType = resultType.GetGenericArguments().Single();
             var data = TryGetDataObject(dataType, httpResponse, serializer);
             var genericResponseType = typeof(HttpResponse<>).MakeGenericType(dataType);

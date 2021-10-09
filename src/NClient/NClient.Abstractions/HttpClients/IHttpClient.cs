@@ -10,7 +10,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Executes HTTP requests.
         /// </summary>
-        /// <param name="request">The container for HTTP request data.</param>
-        Task<TResponse> ExecuteAsync(TRequest request);
+        /// <param name="httpRequest">The container for HTTP request data.</param>
+        Task<TResponse> ExecuteAsync(TRequest httpRequest);
     }
 }

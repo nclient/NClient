@@ -17,12 +17,12 @@ namespace NClient.Providers.HttpClient.System
             _httpClientName = httpClientName ?? Options.DefaultName;
         }
 
-        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage request)
+        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage httpRequest)
         {
-            Ensure.IsNotNull(request, nameof(request));
+            Ensure.IsNotNull(httpRequest, nameof(httpRequest));
 
             var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            return await httpClient.SendAsync(request).ConfigureAwait(false);
+            return await httpClient.SendAsync(httpRequest).ConfigureAwait(false);
         }
     }
 }

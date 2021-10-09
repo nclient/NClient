@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Resilience;
@@ -19,7 +21,8 @@ namespace NClient.Standalone.Interceptors.HttpClients
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
-        private readonly IHttpMessageBuilder<TRequest> _httpMessageBuilder;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly IEnumerable<IResponseMapper> _responseMappers;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly ILogger? _logger;
 
@@ -28,7 +31,8 @@ namespace NClient.Standalone.Interceptors.HttpClients
             IClientHandler<TRequest, TResponse> clientHandler,
             IResponseValidator<TRequest, TResponse> responseValidator,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilder<TRequest> httpMessageBuilder,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            IEnumerable<IResponseMapper> responseMappers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger? logger = null)
         {
@@ -37,6 +41,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
             _responseValidator = responseValidator;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilder = httpMessageBuilder;
+            _responseMappers = responseMappers;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _logger = logger;
         }
@@ -49,6 +54,7 @@ namespace NClient.Standalone.Interceptors.HttpClients
                 _responseValidator,
                 _httpClientProvider,
                 _httpMessageBuilder,
+                _responseMappers,
                 resiliencePolicyProvider == null
                     ? _methodResiliencePolicyProvider
                     : new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(resiliencePolicyProvider),

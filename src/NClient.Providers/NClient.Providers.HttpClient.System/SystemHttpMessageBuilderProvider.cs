@@ -4,9 +4,9 @@ using NClient.Abstractions.Serialization;
 
 namespace NClient.Providers.HttpClient.System
 {
-    public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage>
+    public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {
-        public IHttpMessageBuilder<HttpRequestMessage> Create(ISerializer serializer)
+        public IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
         {
             return new SystemHttpMessageBuilder(serializer);
         }

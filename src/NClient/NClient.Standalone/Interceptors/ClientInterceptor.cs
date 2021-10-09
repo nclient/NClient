@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Exceptions;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Mapping;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Standalone.Interceptors.HttpClients;
 using NClient.Standalone.Interceptors.Invocation;
@@ -21,10 +23,11 @@ namespace NClient.Standalone.Interceptors
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
         private readonly Uri _host;
+        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IResilienceHttpClientProvider<TRequest, TResponse> _resilienceHttpClientProvider;
         private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IReadOnlyCollection<IResponseMapper<TResponse>> _responseMappers;
+        private readonly IReadOnlyCollection<IResponseMapper> _responseMappers;
         private readonly IClientRequestExceptionFactory<TResponse> _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IRequestBuilder _requestBuilder;
@@ -33,10 +36,11 @@ namespace NClient.Standalone.Interceptors
 
         public ClientInterceptor(
             Uri host,
+            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IResilienceHttpClientProvider<TRequest, TResponse> resilienceHttpClientProvider,
             IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
             ISerializerProvider serializerProvider,
-            IEnumerable<IResponseMapper<TResponse>> responseMappers,
+            IEnumerable<IResponseMapper> responseMappers,
             IClientRequestExceptionFactory<TResponse> clientRequestExceptionFactory,
             IMethodBuilder methodBuilder,
             IRequestBuilder requestBuilder,
@@ -44,6 +48,7 @@ namespace NClient.Standalone.Interceptors
             ILogger<TClient>? logger = null)
         {
             _host = host;
+            _httpMessageBuilder = httpMessageBuilder;
             _resilienceHttpClientProvider = resilienceHttpClientProvider;
             _fullMethodInvocationProvider = fullMethodInvocationProvider;
             _serializerProvider = serializerProvider;
@@ -99,19 +104,26 @@ namespace NClient.Standalone.Interceptors
                 {
                     _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 }
+                
                 if (resultType == typeof(void))
                     return response;
 
                 if (resultType == typeof(TResponse))
                     return response!;
 
+                var httpResponse = await _httpMessageBuilder
+                    .BuildResponseAsync(httpRequest, response)
+                    .ConfigureAwait(false);
+
+                if (resultType == typeof(HttpResponse) || resultType == typeof(IHttpResponse))
+                    return httpResponse;
+
                 if (_responseMappers.FirstOrDefault(x => x.CanMapTo(resultType)) is { } responseMapper)
                     return await responseMapper
-                        .MapAsync(resultType, httpRequest, response, _serializerProvider.Create())
+                        .MapAsync(resultType, httpResponse, _serializerProvider.Create())
                         .ConfigureAwait(false);
 
-                // TODO: use specific exception
-                throw new Exception();
+                return _serializerProvider.Create().Deserialize(httpResponse.Content.ToString(), resultType);
             }
             catch (ClientValidationException e)
             {

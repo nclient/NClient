@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using NClient.Common.Helpers;
+using NClient.Providers.Results.HttpMessages;
 
 namespace NClient.Abstractions.HttpClients
 {
@@ -11,7 +12,7 @@ namespace NClient.Abstractions.HttpClients
     public class HttpRequest : IHttpRequest
     {
         private readonly List<IHttpParameter> _parameters = new();
-        private readonly List<IHttpHeader2> _headers = new();
+        private readonly List<IHttpHeader> _headers = new();
 
         /// <summary>
         /// Gets the request id.
@@ -40,7 +41,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        public IReadOnlyCollection<IHttpHeader2> Headers => _headers;
+        public IReadOnlyCollection<IHttpHeader> Headers => _headers;
 
         /// <summary>
         /// Creates container for HTTP request data.
@@ -81,7 +82,7 @@ namespace NClient.Abstractions.HttpClients
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
 
-            _headers.Add(new HttpHeader2(name, value));
+            _headers.Add(new HttpHeader(name, value));
         }
     }
 }

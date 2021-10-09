@@ -22,7 +22,7 @@ namespace NClient.Standalone.Builders.Context
         public string Host { get; private set; } = null!;
 
         public IHttpClientProvider<TRequest, TResponse> HttpClientProvider { get; private set; } = null!;
-        public IHttpMessageBuilderProvider<TRequest> HttpMessageBuilderProvider { get; private set; } = null!;
+        public IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
         
@@ -30,7 +30,7 @@ namespace NClient.Standalone.Builders.Context
 
         public IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
-        public IReadOnlyCollection<IResponseMapper<TResponse>> ResponseMappers { get; private set; }
+        public IReadOnlyCollection<IResponseMapper> ResponseMappers { get; private set; }
         
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? MethodResiliencePolicyProvider { get; private set; }
         public IResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
@@ -41,7 +41,7 @@ namespace NClient.Standalone.Builders.Context
 
         public BuilderContext()
         {
-            ResponseMappers = Array.Empty<IResponseMapper<TResponse>>();
+            ResponseMappers = Array.Empty<IResponseMapper>();
             ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
@@ -82,7 +82,7 @@ namespace NClient.Standalone.Builders.Context
 
         public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
-            IHttpMessageBuilderProvider<TRequest> httpMessageBuilderProvider)
+            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -137,7 +137,7 @@ namespace NClient.Standalone.Builders.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResponseMappers(IEnumerable<IResponseMapper<TResponse>> responseMappers)
+        public BuilderContext<TRequest, TResponse> WithResponseMappers(IEnumerable<IResponseMapper> responseMappers)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -149,7 +149,7 @@ namespace NClient.Standalone.Builders.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResponseMappers = Array.Empty<IResponseMapper<TResponse>>()
+                ResponseMappers = Array.Empty<IResponseMapper>()
             };
         }
 

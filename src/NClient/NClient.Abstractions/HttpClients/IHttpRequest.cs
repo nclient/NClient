@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using NClient.Providers.Results.HttpMessages;
 
 namespace NClient.Abstractions.HttpClients
 {
@@ -33,7 +34,7 @@ namespace NClient.Abstractions.HttpClients
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        IReadOnlyCollection<IHttpHeader2> Headers { get; }
+        IReadOnlyCollection<IHttpHeader> Headers { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>

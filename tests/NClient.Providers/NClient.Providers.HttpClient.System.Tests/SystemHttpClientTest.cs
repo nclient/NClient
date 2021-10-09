@@ -9,7 +9,6 @@ using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 using NClient.Providers.Results.HttpMessages;
-using NClient.Providers.Results.HttpMessages.Mappers;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -46,11 +45,10 @@ namespace NClient.Providers.HttpClient.System.Tests
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
-            var httpResponseMapper = new HttpResponseMapper();
 
             var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);
             var response = await httpClient.ExecuteAsync(request);
-            var httpResponse = (IHttpResponse)(await httpResponseMapper.MapAsync(typeof(IHttpResponse), httpRequest, response, Serializer))!;
+            var httpResponse = await httpMessageBuilder.BuildResponseAsync(httpRequest, response);
             
             httpResponse.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
             httpResponse.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)

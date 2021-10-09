@@ -69,7 +69,7 @@ namespace NClient.Standalone.Builders
                 .WithSerializer(serializerProvider));
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponse(params IResponseMapper<TResponse>[] responseMappers)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponse(params IResponseMapper[] responseMappers)
         {
             Ensure.IsNotNull(responseMappers, nameof(responseMappers));
             

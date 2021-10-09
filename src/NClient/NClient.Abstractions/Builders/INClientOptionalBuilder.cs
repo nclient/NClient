@@ -38,7 +38,7 @@ namespace NClient.Abstractions.Builders
         #region Responses
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponse(
-            params IResponseMapper<TResponse>[] responseMappers);
+            params IResponseMapper[] responseMappers);
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResponse();
 

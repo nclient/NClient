@@ -6,13 +6,13 @@ using Castle.DynamicProxy;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Mapping;
 using NClient.Exceptions;
+using NClient.Providers.Results.HttpMessages;
 using NClient.Resilience;
 using NClient.Standalone.Ensuring;
 using NClient.Standalone.Handling;
 using NClient.Standalone.HttpClients;
 using NClient.Standalone.Interceptors;
 using NClient.Standalone.Interceptors.Validation;
-using NClient.Standalone.Mapping;
 using NClient.Standalone.Resilience;
 using NClient.Standalone.Serialization;
 
@@ -39,16 +39,16 @@ namespace NClient.Standalone.Validation
             where TClient : class
         {
             var interceptor = clientInterceptorFactory
-                .Create<TClient, IHttpRequest, object>(
+                .Create<TClient, IHttpRequest, IHttpResponse>(
                     FakeHost,
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
                     new StubSerializerProvider(),
-                    new ResponseValidator<IHttpRequest, object>(new StubEnsuringSettings<IHttpRequest, object>()),
-                    new[] { new StubClientHandler<IHttpRequest, object>() },
-                    new[] { new StubResponseMapper() },
-                    new MethodResiliencePolicyProviderAdapter<IHttpRequest, object>(
-                        new StubResiliencePolicyProvider<IHttpRequest, object>()));
+                    new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()),
+                    new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
+                    Array.Empty<IResponseMapper>(),
+                    new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
+                        new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);
