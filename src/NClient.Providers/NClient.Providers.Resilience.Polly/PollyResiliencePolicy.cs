@@ -24,12 +24,12 @@ namespace NClient.Providers.Resilience.Polly
             _asyncPolicy = asyncPolicy;
         }
 
-        public async Task<TResponse> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action)
+        public async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action)
         {
             Ensure.IsNotNull(action, nameof(action));
 
             var responseContext = await _asyncPolicy.ExecuteAsync(action).ConfigureAwait(false);
-            return responseContext.Response;
+            return responseContext;
         }
     }
 }

@@ -9,8 +9,8 @@ using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Versioning;
 using NClient.Core.Mappers;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
-using NClient.Standalone.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders.Providers

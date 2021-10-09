@@ -10,7 +10,7 @@ namespace NClient.Providers.HttpClient.System.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        Task<IHttpRequest> BuildAsync(Guid requestId, Type? dataType, HttpRequestMessage httpRequestMessage);
+        Task<IHttpRequest> BuildAsync(IHttpRequest httpRequest, HttpRequestMessage httpRequestMessage);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
@@ -22,16 +22,16 @@ namespace NClient.Providers.HttpClient.System.Builders
             _serializer = serializer;
         }
         
-        public async Task<IHttpRequest> BuildAsync(Guid requestId, Type? dataType, HttpRequestMessage httpRequestMessage)
+        public async Task<IHttpRequest> BuildAsync(IHttpRequest httpRequest, HttpRequestMessage httpRequestMessage)
         {
             var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
             var content = httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var finalRequest = new HttpRequest(requestId, resource, httpRequestMessage.Method)
+            var finalRequest = new HttpRequest(httpRequest.Id, resource, httpRequestMessage.Method)
             {
                 Content = content,
-                Data = content is not null && dataType is not null 
-                    ? _serializer.Deserialize(content, dataType) 
+                Data = content is not null && httpRequest.Data is not null 
+                    ? _serializer.Deserialize(content, httpRequest.Data.GetType()) 
                     : null
             };
 

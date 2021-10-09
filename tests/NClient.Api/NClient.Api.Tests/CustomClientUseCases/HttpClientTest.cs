@@ -19,7 +19,8 @@ namespace NClient.Api.Tests.CustomClientUseCases
         public void SetUp()
         {
             _api = new BasicApiMockFactory(5029);
-            _optionalBuilder = new CustomNClientBuilder().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
+            _optionalBuilder = new CustomNClientBuilder()
+                .For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
 
         [Test]

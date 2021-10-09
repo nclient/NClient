@@ -1,11 +1,8 @@
-﻿using NClient.Abstractions.Invocation;
-
-namespace NClient.Abstractions.Resilience
+﻿namespace NClient.Abstractions.Resilience
 {
     public interface IResponseContext<TRequest, TResponse>
     {
         TRequest Request { get; }
         TResponse Response { get; }
-        IMethodInvocation MethodInvocation { get; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.Invocation;
 
 namespace NClient.Abstractions.Handling
 {
@@ -12,16 +11,14 @@ namespace NClient.Abstractions.Handling
         /// Handles HTTP request before sending it.
         /// </summary>
         /// <param name="request">The source HTTP request.</param>
-        /// <param name="methodInvocation">The information about invocation of a client method.</param>
         /// <returns></returns>
-        Task<TRequest> HandleRequestAsync(TRequest request, IMethodInvocation methodInvocation);
+        Task<TRequest> HandleRequestAsync(TRequest request);
 
         /// <summary>
         /// Handles HTTP response after receiving it.
         /// </summary>
         /// <param name="response">The source HTTP response.</param>
-        /// <param name="methodInvocation">The information about invocation of a client method.</param>
         /// <returns></returns>
-        Task<TResponse> HandleResponseAsync(TResponse response, IMethodInvocation methodInvocation);
+        Task<TResponse> HandleResponseAsync(TResponse response);
     }
 }
