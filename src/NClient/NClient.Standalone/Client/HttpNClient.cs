@@ -184,7 +184,7 @@ namespace NClient.Standalone.Client
         
         private object? TryGetDataObject(Type dataType, IHttpResponse response)
         {
-            // TODO: надо использовать валидатор
+            // TODO: should use response validator
             return response.IsSuccessful
                 ? _serializer.Deserialize(response.Content.ToString(), dataType)
                 : null;

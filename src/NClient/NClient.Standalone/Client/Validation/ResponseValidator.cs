@@ -5,6 +5,7 @@ namespace NClient.Standalone.Client.Validation
 {
     internal interface IResponseValidator<TRequest, TResponse>
     {
+        bool IsValid(IResponseContext<TRequest, TResponse> responseContext);
         IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext);
     }
     
@@ -17,6 +18,11 @@ namespace NClient.Standalone.Client.Validation
             _ensuringSettings = ensuringSettings;
         }
 
+        public bool IsValid(IResponseContext<TRequest, TResponse> responseContext)
+        {
+            return _ensuringSettings.IsSuccess(responseContext);
+        }
+        
         public IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext)
         {
             if (_ensuringSettings.IsSuccess(responseContext))
