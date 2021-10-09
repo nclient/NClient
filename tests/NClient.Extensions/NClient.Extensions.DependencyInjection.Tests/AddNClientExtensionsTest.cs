@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
@@ -40,7 +41,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
-                host: "http://localhost:5000", builder => builder.WithForceResilience().Build());
+                host: "http://localhost:5000", builder => builder
+                    .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

@@ -28,7 +28,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithSafeResilience()
+                .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();  
             
             var response = await client.GetAsync(id);
@@ -42,7 +42,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithIdempotentResilience()
+                .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -56,7 +56,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .WithSafeResilience()
+                .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
                         
             var response = await client.GetAsync(id);
@@ -71,9 +71,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .WithSafeResilience(
-                    maxRetries: 3,
                     getDelay: _ => TimeSpan.FromSeconds(2),
-                    shouldRetry: x => x.Response.IsSuccessStatusCode)
+                    shouldRetry: x => !x.Response.IsSuccessStatusCode)
                 .Build();
                         
             var response = await client.GetAsync(id);
@@ -91,8 +90,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
                     .ForAllMethods().DoNotUse()
                     .ForMethod(x => (Func<int, Task<int>>)x.GetAsync).Use(
                         maxRetries: 3,
-                        getDelay: _ => TimeSpan.FromSeconds(2),
-                        shouldRetry: x => x.Response.IsSuccessStatusCode))
+                        getDelay: _ => TimeSpan.FromSeconds(0),
+                        shouldRetry: x => !x.Response.IsSuccessStatusCode))
                 .Build();
                         
             var response = await client.GetAsync(id);

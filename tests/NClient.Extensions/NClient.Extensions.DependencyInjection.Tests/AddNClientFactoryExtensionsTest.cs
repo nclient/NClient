@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
@@ -39,7 +40,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder.WithForceResilience().Build());
+            serviceCollection.AddNClientFactory(builder => builder
+                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
