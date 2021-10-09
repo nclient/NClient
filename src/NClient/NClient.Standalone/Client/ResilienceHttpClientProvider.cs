@@ -4,7 +4,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Resilience;
-using NClient.Standalone.ClientProxy.Interceptors.Validation;
+using NClient.Standalone.Client.Validation;
 
 namespace NClient.Standalone.Client
 {

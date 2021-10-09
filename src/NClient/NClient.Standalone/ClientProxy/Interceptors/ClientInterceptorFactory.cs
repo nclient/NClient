@@ -11,11 +11,11 @@ using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
 using NClient.Standalone.Client;
 using NClient.Standalone.Client.Handling;
+using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Interceptors.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.Validation;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
 

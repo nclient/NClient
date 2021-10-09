@@ -11,8 +11,8 @@ using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.HttpClients;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Serialization;
+using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Interceptors;
-using NClient.Standalone.ClientProxy.Interceptors.Validation;
 
 namespace NClient.Standalone.ClientProxy.Validation
 {

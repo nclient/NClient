@@ -12,11 +12,11 @@ using NClient.Core.Proxy;
 using NClient.Resilience;
 using NClient.Standalone.Client.Ensuring;
 using NClient.Standalone.Client.Resilience;
+using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.ClientGeneration;
 using NClient.Standalone.ClientProxy.Interceptors;
-using NClient.Standalone.ClientProxy.Interceptors.Validation;
 using NClient.Standalone.ClientProxy.Validation;
 
 namespace NClient.Standalone.ClientProxy.Building
