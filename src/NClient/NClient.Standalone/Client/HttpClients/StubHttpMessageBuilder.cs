@@ -10,7 +10,7 @@ namespace NClient.Standalone.Client.HttpClients
         {
             return Task.FromResult(httpRequest);
         }
-        public Task<IHttpResponse> BuildResponseAsync(Guid requestId, Type? requestDataType, IHttpResponse response)
+        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IHttpResponse response)
         {
             return Task.FromResult(response);
         }

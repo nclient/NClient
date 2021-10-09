@@ -39,9 +39,9 @@ namespace NClient.Standalone.ClientProxy.Validation
             var interceptor = clientInterceptorFactory
                 .Create<TClient, IHttpRequest, IHttpResponse>(
                     FakeHost,
+                    new StubSerializerProvider(),
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
-                    new StubSerializerProvider(),
                     new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
                     new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()),
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(

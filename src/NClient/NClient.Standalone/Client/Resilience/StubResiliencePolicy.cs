@@ -6,10 +6,9 @@ namespace NClient.Standalone.Client.Resilience
 {
     internal class StubResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {
-        public async Task<TResponse> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action)
+        public async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action)
         {
-            var responseContext = await action.Invoke().ConfigureAwait(false);
-            return responseContext.Response;
+            return await action.Invoke().ConfigureAwait(false);
         }
     }
 }

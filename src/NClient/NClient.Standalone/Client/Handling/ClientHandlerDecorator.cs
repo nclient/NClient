@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
-using NClient.Abstractions.Invocation;
 
 namespace NClient.Standalone.Client.Handling
 {
@@ -19,26 +18,26 @@ namespace NClient.Standalone.Client.Handling
             _logger = logger;
         }
 
-        public async Task<TRequest> HandleRequestAsync(TRequest request, IMethodInvocation methodInvocation)
+        public async Task<TRequest> HandleRequestAsync(TRequest request)
         {
             var handledHttpRequest = request;
             foreach (var clientHandler in _clientHandlers)
             {
                 handledHttpRequest = await clientHandler
-                    .HandleRequestAsync(handledHttpRequest, methodInvocation)
+                    .HandleRequestAsync(handledHttpRequest)
                     .ConfigureAwait(false);
             }
 
             return handledHttpRequest;
         }
 
-        public async Task<TResponse> HandleResponseAsync(TResponse response, IMethodInvocation methodInvocation)
+        public async Task<TResponse> HandleResponseAsync(TResponse response)
         {
             var handledHttpResponse = response;
             foreach (var clientHandler in _clientHandlers)
             {
                 handledHttpResponse = await clientHandler
-                    .HandleResponseAsync(handledHttpResponse, methodInvocation)
+                    .HandleResponseAsync(handledHttpResponse)
                     .ConfigureAwait(false);
             }
 

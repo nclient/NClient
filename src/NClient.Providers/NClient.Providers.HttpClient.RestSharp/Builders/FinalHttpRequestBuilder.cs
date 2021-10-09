@@ -9,7 +9,7 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        IHttpRequest Build(Guid requestId, Type? dataType, IRestRequest restRequest);
+        IHttpRequest Build(IHttpRequest httpRequest, IRestRequest restRequest);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
@@ -25,13 +25,13 @@ namespace NClient.Providers.HttpClient.RestSharp.Builders
             _restSharpMethodMapper = restSharpMethodMapper;
         }
         
-        public IHttpRequest Build(Guid requestId, Type? dataType, IRestRequest restRequest)
+        public IHttpRequest Build(IHttpRequest httpRequest, IRestRequest restRequest)
         {
             var resource = new Uri(restRequest.Resource);
             var method = _restSharpMethodMapper.Map(restRequest.Method);
             var content = restRequest.Body is null ? null : _serializer.Serialize(restRequest.Body.Value);
 
-            var finalRequest = new HttpRequest(requestId, resource, method)
+            var finalRequest = new HttpRequest(httpRequest.Id, resource, method)
             {
                 Data = restRequest.Body?.Value,
                 Content = content

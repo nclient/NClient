@@ -2,12 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Providers.Resilience.Polly;
 using NClient.Sandbox.Client.ClientHandlers;
@@ -45,8 +43,9 @@ namespace NClient.Sandbox.Client
 
             var basePolicy = Policy<IResponseContext<HttpRequestMessage, HttpResponseMessage>>.HandleResult(x =>
             {
-                if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
-                    return false;
+                // TODO:
+                //if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.Response.StatusCode == HttpStatusCode.NotFound)
+                //    return false;
                 return !x.Response.IsSuccessStatusCode;
             }).Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
@@ -58,8 +57,9 @@ namespace NClient.Sandbox.Client
                 {
                     if (delegateResult.Exception is not null)
                         throw delegateResult.Exception;
-                    if (typeof(IHttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
-                        return Task.CompletedTask;
+                    // TODO:
+                    //if (typeof(IHttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
+                    //    return Task.CompletedTask;
                     delegateResult.Result.Response.EnsureSuccessStatusCode();
                     return Task.CompletedTask;
                 });

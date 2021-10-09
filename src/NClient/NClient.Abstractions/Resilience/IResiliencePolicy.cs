@@ -12,6 +12,6 @@ namespace NClient.Abstractions.Resilience
         /// Executes the specified asynchronous action within the policy and returns the result.
         /// </summary>
         /// <param name="action">The action to perform.</param>
-        Task<TResponse> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action);
+        Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action);
     }
 }
