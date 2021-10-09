@@ -6,9 +6,9 @@ using NClient.Annotations.Versioning;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Exceptions;
 using NClient.Standalone.AspNetRouting;
+using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
+using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders.Models;
 using NClient.Standalone.Exceptions.Factories;
-using NClient.Standalone.Interceptors.RequestBuilders;
-using NClient.Standalone.Interceptors.RequestBuilders.Models;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

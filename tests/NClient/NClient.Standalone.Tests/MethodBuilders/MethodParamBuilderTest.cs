@@ -6,9 +6,9 @@ using System.Reflection;
 using FluentAssertions;
 using Moq;
 using NClient.Annotations.Parameters;
-using NClient.Standalone.Interceptors.MethodBuilders;
-using NClient.Standalone.Interceptors.MethodBuilders.Models;
-using NClient.Standalone.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.MethodBuilders
