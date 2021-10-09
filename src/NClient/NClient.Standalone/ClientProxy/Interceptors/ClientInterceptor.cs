@@ -60,7 +60,9 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
+            #pragma warning disable 8600, 8603
             return (TResult)await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
+            #pragma warning restore 8600, 8603
         }
 
         private async Task<object?> ProcessInvocationAsync(IInvocation invocation, Type resultType)

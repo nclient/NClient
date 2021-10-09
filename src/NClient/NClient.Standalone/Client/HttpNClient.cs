@@ -54,7 +54,9 @@ namespace NClient.Standalone.Client
 
         public async Task<TResult> GetResultAsync<TResult>(IHttpRequest httpRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
+            #pragma warning disable 8600, 8603
             return (TResult)await GetResultAsync(httpRequest, typeof(TResult), resiliencePolicy).ConfigureAwait(false);
+            #pragma warning restore 8600, 8603
         }
 
         public async Task<TResponse> GetOriginalResponseAsync(IHttpRequest httpRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
