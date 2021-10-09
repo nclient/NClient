@@ -90,14 +90,13 @@ namespace NClient.Standalone.Interceptors
                     httpClientProvider,
                     httpMessageBuilder,
                     serializerProvider,
-                    responseValidator,
                     clientHandlers,
-                    responseMappers,
                     methodResiliencePolicyProvider,
                     logger),
                 new FullMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 serializerProvider,
                 responseMappers,
+                responseValidator,
                 new ClientRequestExceptionFactory<TResponse>(),
                 _clientMethodBuilder,
                 _requestBuilder,
@@ -109,19 +108,15 @@ namespace NClient.Standalone.Interceptors
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             ISerializerProvider serializerProvider,
-            IResponseValidator<TRequest, TResponse> responseValidator,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            IReadOnlyCollection<IResponseMapper> responseMappers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             ILogger<TClient>? logger)
         {
             return new ResilienceHttpClientProvider<TRequest, TResponse>(
                 serializerProvider,
                 new ClientHandlerDecorator<TClient, TRequest, TResponse>(clientHandlers, logger),
-                responseValidator,
                 httpClientProvider,
                 httpMessageBuilder,
-                responseMappers,
                 methodResiliencePolicyProvider,
                 logger);
         }
