@@ -14,8 +14,8 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class ResponseClientTest
     {
-        private static readonly Error BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
-        private static readonly Error InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };
+        private static readonly HttpError BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
+        private static readonly HttpError InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };
 
         private IResponseClientWithMetadata _responseClient = null!;
         private ResponseApiMockFactory _responseApiMockFactory = null!;

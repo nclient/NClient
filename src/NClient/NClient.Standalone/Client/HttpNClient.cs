@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
@@ -6,6 +7,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.Results;
 
 namespace NClient.Standalone.Client
 {
@@ -33,6 +35,8 @@ namespace NClient.Standalone.Client
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
+        
+        private readonly ResultBuilder[] resultBuilders;
 
         public HttpNClient(
             ISerializer serializer,
@@ -50,6 +54,8 @@ namespace NClient.Standalone.Client
             _resiliencePolicy = resiliencePolicy;
             _responseValidator = responseValidator;
             _logger = logger;
+
+            resultBuilders = new[] { new ResultBuilder() };
         }
 
         public async Task<TResult> GetResultAsync<TResult>(IHttpRequest httpRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
@@ -105,12 +111,15 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
 
-            _responseValidator.Ensure(responseContext);
-                
             var httpResponse = await _httpMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Response)
                 .ConfigureAwait(false);
 
+            if (resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
+                return resultBuilder.Build(dataType, httpResponse, _serializer);
+            
+            _responseValidator.Ensure(responseContext);
+            
             return _serializer.Deserialize(httpResponse.Content.ToString(), dataType);
         }
         
