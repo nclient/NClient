@@ -45,7 +45,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Client" />
         <Folder Include="Helpers" />
     </ItemGroup>
     

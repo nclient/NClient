@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Standalone.ClientProxy.Interceptors.HttpResponsePopulation
+namespace NClient.Standalone.Client
 {
     internal interface IHttpResponsePopulator
     {

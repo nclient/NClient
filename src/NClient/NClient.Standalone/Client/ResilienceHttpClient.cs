@@ -8,7 +8,7 @@ using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.ClientProxy.Interceptors.Validation;
 
-namespace NClient.Standalone.ClientProxy.Interceptors.HttpClients
+namespace NClient.Standalone.Client
 {
     internal interface IResilienceHttpClient<TResponse>
     {
