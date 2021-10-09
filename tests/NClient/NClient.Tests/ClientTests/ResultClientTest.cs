@@ -26,12 +26,12 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test]
-        public async Task BasicClient_GetIntAsync_ResultWithInt()
+        public async Task BasicClient_GetIResultWithIntAsync_IResultWithInt()
         {
             const int id = 1;
             using var api = _resultApiMockFactory.MockGetIntMethod(id);
 
-            var result = await _resultClient.GetIntAsync(id);
+            var result = await _resultClient.GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(id);
@@ -39,13 +39,13 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task BasicClient_GetNotFoundIntAsync_ResultWithError()
+        public async Task BasicClient_GetIResultWithNotFoundIntAsync_IResultWithError()
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
             using var api = _resultApiMockFactory.MockGetNotFoundIntMethod(id);
 
-            var result = await _resultClient.GetIntAsync(id);
+            var result = await _resultClient.GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);
@@ -53,13 +53,13 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task BasicClient_GetEntityAsync_ResultWithEntity()
+        public async Task BasicClient_GetIResultWithEntityAsync_IResultWithEntity()
         {
             const int id = 1;
             var expectedEntity = new BasicEntity { Id = id, Value = 2 };
             using var api = _resultApiMockFactory.MockGetEntityMethod(id);
 
-            var result = await _resultClient.GetEntityAsync(id);
+            var result = await _resultClient.GetIResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().BeEquivalentTo(expectedEntity);
@@ -67,13 +67,68 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task BasicClient_GetNotFoundEntityAsync_ResultWithError()
+        public async Task BasicClient_GetIResultWithNotFoundEntityAsync_IResultWithError()
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
             using var api = _resultApiMockFactory.MockGetNotFoundEntityMethod(id);
 
-            var result = await _resultClient.GetEntityAsync(id);
+            var result = await _resultClient.GetResultWithEntityAsync(id);
+
+            using var assertionScope = new AssertionScope();
+            result.Value.Should().Be(null);
+            result.Error.Should().BeEquivalentTo(expectedError);
+        }
+        
+        [Test]
+        public async Task BasicClient_GetResultWithIntAsync_ResultWithInt()
+        {
+            const int id = 1;
+            using var api = _resultApiMockFactory.MockGetIntMethod(id);
+
+            var result = await _resultClient.GetResultWithIntAsync(id);
+
+            using var assertionScope = new AssertionScope();
+            result.Value.Should().Be(id);
+            result.Error.Should().Be(null);
+        }
+        
+        [Test]
+        public async Task BasicClient_GetResultWithNotFoundIntAsync_ResultWithError()
+        {
+            const int id = 1;
+            var expectedError = new Error { Message = "Error" };
+            using var api = _resultApiMockFactory.MockGetNotFoundIntMethod(id);
+
+            var result = await _resultClient.GetIResultWithIntAsync(id);
+
+            using var assertionScope = new AssertionScope();
+            result.Value.Should().Be(null);
+            result.Error.Should().BeEquivalentTo(expectedError);
+        }
+        
+        [Test]
+        public async Task BasicClient_GetResultWithEntityAsync_ResultWithEntity()
+        {
+            const int id = 1;
+            var expectedEntity = new BasicEntity { Id = id, Value = 2 };
+            using var api = _resultApiMockFactory.MockGetEntityMethod(id);
+
+            var result = await _resultClient.GetResultWithEntityAsync(id);
+
+            using var assertionScope = new AssertionScope();
+            result.Value.Should().BeEquivalentTo(expectedEntity);
+            result.Error.Should().Be(null);
+        }
+        
+        [Test]
+        public async Task BasicClient_GetResultWithNotFoundEntityAsync_ResultWithError()
+        {
+            const int id = 1;
+            var expectedError = new Error { Message = "Error" };
+            using var api = _resultApiMockFactory.MockGetNotFoundEntityMethod(id);
+
+            var result = await _resultClient.GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);

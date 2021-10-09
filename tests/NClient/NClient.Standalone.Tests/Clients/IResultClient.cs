@@ -11,9 +11,15 @@ namespace NClient.Standalone.Tests.Clients
     public interface IResultClientWithMetadata : IResultClient
     {
         [GetMethod("ints")]
-        new Task<IResult<int?, Error?>> GetIntAsync(int id);
+        Task<IResult<int?, Error?>> GetIResultWithIntAsync(int id);
+        
+        [GetMethod("ints")]
+        Task<Result<int?, Error?>> GetResultWithIntAsync(int id);
 
         [GetMethod("entities")]
-        new Task<IResult<BasicEntity?, Error?>> GetEntityAsync(int id);
+        Task<IResult<BasicEntity?, Error?>> GetIResultWithEntityAsync(int id);
+        
+        [GetMethod("entities")]
+        Task<Result<BasicEntity?, Error?>> GetResultWithEntityAsync(int id);
     }
 }
