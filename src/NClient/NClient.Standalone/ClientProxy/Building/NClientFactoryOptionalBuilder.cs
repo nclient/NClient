@@ -140,6 +140,12 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithResultBuilders(resultBuilderProviders));
         }
         
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders)
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithResultBuilders(resultBuilderProviders));
+        }
+        
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResults()
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context

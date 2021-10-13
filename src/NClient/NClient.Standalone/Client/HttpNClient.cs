@@ -34,6 +34,7 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
+        private readonly IEnumerable<IResultBuilder<TResponse>> _typedResultBuilders;
         private readonly IReadOnlyCollection<IResultBuilder<IHttpResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
@@ -45,6 +46,7 @@ namespace NClient.Standalone.Client
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
             IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IEnumerable<IResultBuilder<TResponse>> typedResultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -53,6 +55,7 @@ namespace NClient.Standalone.Client
             _httpMessageBuilder = httpMessageBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
+            _typedResultBuilders = typedResultBuilders;
             _resultBuilders = resultBuilders.ToArray();
             _responseValidator = responseValidator;
             _logger = logger;
@@ -111,6 +114,9 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
 
+            if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext.Response)) is { } typedResultBuilder)
+                return typedResultBuilder.Build(dataType, responseContext.Response, _serializer);
+            
             var httpResponse = await _httpMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Response)
                 .ConfigureAwait(false);

@@ -35,6 +35,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
         public IReadOnlyCollection<IResultBuilderProvider<IHttpResponse>> ResultBuilderProviders { get; private set; }
+        public IReadOnlyCollection<IResultBuilderProvider<TResponse>> TypedResultBuilderProviders { get; private set; }
 
         public ILogger? Logger { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
@@ -44,6 +45,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
             ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
+            TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
@@ -67,6 +69,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
 
             ResultBuilderProviders = builderContext.ResultBuilderProviders;
+            TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders;
             
             Logger = builderContext.Logger;
             LoggerFactory = builderContext.LoggerFactory;
@@ -209,6 +212,14 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 ResultBuilderProviders = resultBuilderProviders.ToArray()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<TResponse>> resultBuilderProviders)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                TypedResultBuilderProviders = resultBuilderProviders.ToArray()
             };
         }
         

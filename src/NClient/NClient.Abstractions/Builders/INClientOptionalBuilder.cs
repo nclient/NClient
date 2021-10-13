@@ -75,6 +75,8 @@ namespace NClient.Abstractions.Builders
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders);
         
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders);
+        
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResults();
 
         #endregion

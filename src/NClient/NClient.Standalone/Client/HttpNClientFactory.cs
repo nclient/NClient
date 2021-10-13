@@ -23,6 +23,7 @@ namespace NClient.Standalone.Client
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
         private readonly IEnumerable<IResultBuilderProvider<IHttpResponse>> _resultBuilderProviders;
+        private readonly IEnumerable<IResultBuilderProvider<TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -33,6 +34,7 @@ namespace NClient.Standalone.Client
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
+            IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -42,6 +44,7 @@ namespace NClient.Standalone.Client
             _clientHandler = clientHandler;
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _resultBuilderProviders = resultBuilderProviders;
+            _typedResultBuilderProviders = typedResultBuilderProviders;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -57,6 +60,7 @@ namespace NClient.Standalone.Client
                 _clientHandler,
                 _resiliencePolicyProvider.Create(),
                 _resultBuilderProviders.Select(x => x.Create()),
+                _typedResultBuilderProviders.Select(x => x.Create()),
                 _responseValidator,
                 _logger);
         }
