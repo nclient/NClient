@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.Client.Validation;
 
@@ -19,6 +22,8 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
+        private readonly IEnumerable<IResultBuilderProvider<IHttpResponse>> _resultBuilderProviders;
+        private readonly IEnumerable<IResultBuilderProvider<TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -28,6 +33,8 @@ namespace NClient.Standalone.Client
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
+            IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
+            IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -36,6 +43,8 @@ namespace NClient.Standalone.Client
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
             _clientHandler = clientHandler;
             _resiliencePolicyProvider = resiliencePolicyProvider;
+            _resultBuilderProviders = resultBuilderProviders;
+            _typedResultBuilderProviders = typedResultBuilderProviders;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -50,6 +59,8 @@ namespace NClient.Standalone.Client
                 _httpMessageBuilderProvider.Create(serializer),
                 _clientHandler,
                 _resiliencePolicyProvider.Create(),
+                _resultBuilderProviders.Select(x => x.Create()),
+                _typedResultBuilderProviders.Select(x => x.Create()),
                 _responseValidator,
                 _logger);
         }

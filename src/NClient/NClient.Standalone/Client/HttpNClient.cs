@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.Client.Validation;
 
@@ -31,6 +34,8 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
+        private readonly IEnumerable<IResultBuilder<TResponse>> _typedResultBuilders;
+        private readonly IReadOnlyCollection<IResultBuilder<IHttpResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -40,6 +45,8 @@ namespace NClient.Standalone.Client
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
+            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IEnumerable<IResultBuilder<TResponse>> typedResultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -48,6 +55,8 @@ namespace NClient.Standalone.Client
             _httpMessageBuilder = httpMessageBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
+            _typedResultBuilders = typedResultBuilders;
+            _resultBuilders = resultBuilders.ToArray();
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -105,12 +114,18 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
 
-            _responseValidator.Ensure(responseContext);
-                
+            if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext.Response)) is { } typedResultBuilder)
+                return typedResultBuilder.Build(dataType, responseContext.Response, _serializer);
+            
             var httpResponse = await _httpMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Response)
                 .ConfigureAwait(false);
 
+            if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
+                return resultBuilder.Build(dataType, httpResponse, _serializer);
+            
+            _responseValidator.Ensure(responseContext);
+            
             return _serializer.Deserialize(httpResponse.Content.ToString(), dataType);
         }
         

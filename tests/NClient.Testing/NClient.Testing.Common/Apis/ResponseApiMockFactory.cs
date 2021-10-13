@@ -59,7 +59,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(400)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new Error { Code = HttpStatusCode.BadRequest, Message = "Error" }));
+                    .WithBodyAsJson(new HttpError { Code = HttpStatusCode.BadRequest, Message = "Error" }));
 
             return api;
         }
@@ -107,7 +107,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(400)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new Error { Code = HttpStatusCode.BadRequest, Message = "Error" }));
+                    .WithBodyAsJson(new HttpError { Code = HttpStatusCode.BadRequest, Message = "Error" }));
 
             return api;
         }
@@ -119,7 +119,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(500)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new Error { Code = HttpStatusCode.InternalServerError, Message = "Error" }));
+                    .WithBodyAsJson(new HttpError { Code = HttpStatusCode.InternalServerError, Message = "Error" }));
 
             return api;
         }

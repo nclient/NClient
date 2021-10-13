@@ -5,7 +5,9 @@ using NClient.Abstractions.Builders;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
@@ -130,6 +132,24 @@ namespace NClient.Standalone.ClientProxy.Building
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithoutResiliencePolicy());
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders)
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithResultBuilders(resultBuilderProviders));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders)
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithResultBuilders(resultBuilderProviders));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResults()
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithoutResultBuilders());
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)

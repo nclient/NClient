@@ -82,7 +82,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                 httpRequest = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
                 var resiliencePolicy = fullMethodInvocation.ResiliencePolicyProvider?.Create()
                     ?? _methodResiliencePolicyProvider.Create(fullMethodInvocation.MethodInfo, httpRequest);
-                var result = await ProcessInvocationAsync(httpRequest, resultType, resiliencePolicy)
+                var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
 
                 _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
@@ -115,7 +115,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             }
         }
         
-        private async Task<object?> ProcessInvocationAsync(IHttpRequest httpRequest, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
+        private async Task<object?> ExecuteHttpResponseAsync(IHttpRequest httpRequest, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
         {
             if (resultType == typeof(TResponse))
                 return await _httpNClientFactory

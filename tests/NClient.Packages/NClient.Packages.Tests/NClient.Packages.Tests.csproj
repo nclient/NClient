@@ -20,6 +20,7 @@
         <PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*"/>
         <PackageReference Include="NClient.Providers.HttpClient.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Results.LanguageExt" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>

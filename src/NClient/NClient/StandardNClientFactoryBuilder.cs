@@ -22,6 +22,7 @@ namespace NClient
                 .EnsuringSuccess()
                 .WithoutHandling()
                 .WithoutResilience()
+                .WithResults()
                 .WithoutLogging();
         }
     }

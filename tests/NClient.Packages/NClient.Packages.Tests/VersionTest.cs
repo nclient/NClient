@@ -45,6 +45,10 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
+        public void NClient_Providers_Results_LanguageExt() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Results.LanguageExt").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
         public void NClient_Providers_Serialization_Json_System() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.System").Should().Be(PackagesVersionProvider.GetNew());
 
