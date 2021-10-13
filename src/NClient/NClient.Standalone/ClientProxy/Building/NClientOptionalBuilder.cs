@@ -5,7 +5,9 @@ using NClient.Abstractions.Builders;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
@@ -132,6 +134,18 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResiliencePolicy());
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilder<IHttpResponse>[] resultBuilders)
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithResultBuilders(resultBuilders));
+        }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResults()
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutResultBuilders());
+        }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
         {
@@ -176,11 +190,12 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
                 _context.ClientHandlers.ToArray(),
-                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
                 _context.MethodResiliencePolicyProvider
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider ?? new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy),
+                _context.ResultBuilders,
+                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
                 _context.Logger as ILogger<TClient> ?? _context.LoggerFactory?.CreateLogger<TClient>());
 
             return _clientGenerator.CreateClient<TClient>(interceptor);

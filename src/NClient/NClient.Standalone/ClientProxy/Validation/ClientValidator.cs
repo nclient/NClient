@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Results;
 using NClient.Exceptions;
 using NClient.Resilience;
 using NClient.Standalone.Client.Ensuring;
@@ -43,9 +44,10 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
                     new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
-                    new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()),
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
-                        new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()));
+                        new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
+                    Array.Empty<IResultBuilder<IHttpResponse>>(),
+                    new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

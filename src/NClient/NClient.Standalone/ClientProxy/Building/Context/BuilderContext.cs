@@ -7,6 +7,7 @@ using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
 using NClient.Standalone.Client.Resilience;
@@ -27,19 +28,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public IEnsuringSettings<TRequest, TResponse>? EnsuringSettings { get; private set; }
 
-        public ICollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
+        public IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? MethodResiliencePolicyProvider { get; private set; }
         public IResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
-        public Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
+        public IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
+        
+        public IReadOnlyCollection<IResultBuilder<IHttpResponse>> ResultBuilders { get; private set; }
 
         public ILogger? Logger { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
 
         public BuilderContext()
         {
-            ClientHandlers = new List<IClientHandler<TRequest, TResponse>>();
+            ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
+            ResultBuilders = Array.Empty<IResultBuilder<IHttpResponse>>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
@@ -62,6 +66,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
 
+            ResultBuilders = builderContext.ResultBuilders;
+            
             Logger = builderContext.Logger;
             LoggerFactory = builderContext.LoggerFactory;
         }
@@ -152,7 +158,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy)
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value))
                 {
                     [methodInfo] = provider
                 }
@@ -195,6 +201,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
                 MethodResiliencePolicyProvider = null,
                 AllMethodsResiliencePolicyProvider = null,
                 MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ResultBuilders = resultBuilders.ToArray()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutResultBuilders()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                ResultBuilders = Array.Empty<IResultBuilder<IHttpResponse>>()
             };
         }
 

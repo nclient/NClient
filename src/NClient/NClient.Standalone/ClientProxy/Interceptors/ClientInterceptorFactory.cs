@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
@@ -30,8 +31,9 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            IResponseValidator<TRequest, TResponse> responseValidator,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
+            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger<TClient>? logger = null);
     }
 
@@ -76,8 +78,9 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            IResponseValidator<TRequest, TResponse> responseValidator,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
+            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger<TClient>? logger = null)
         {
             return new ClientInterceptor<TClient, TRequest, TResponse>(
@@ -92,6 +95,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                     httpMessageBuilderProvider,
                     new ClientHandlerDecorator<TClient, TRequest, TResponse>(clientHandlers, logger),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
+                    resultBuilders,
                     responseValidator,
                     logger),
                 methodResiliencePolicyProvider,

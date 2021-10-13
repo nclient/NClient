@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using NClient.Abstractions.Results;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
-using NClient.Standalone.Results;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 

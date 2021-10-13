@@ -1,4 +1,4 @@
-﻿namespace NClient.Standalone.Results
+﻿namespace NClient.Abstractions.Results
 {
     public interface IResult<TValue, TError>
     {

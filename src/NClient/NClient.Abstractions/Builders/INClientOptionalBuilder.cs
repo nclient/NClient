@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
+using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 
 namespace NClient.Abstractions.Builders
@@ -66,6 +68,15 @@ namespace NClient.Abstractions.Builders
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
         
+        #endregion
+
+        #region Results
+
+        // TODO: doc
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilder<IHttpResponse>[] resultBuilders);
+        
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResults();
+
         #endregion
         
         #region Logging

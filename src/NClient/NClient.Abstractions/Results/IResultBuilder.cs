@@ -1,7 +1,7 @@
 ﻿using System;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Standalone.Results
+namespace NClient.Abstractions.Results
 {
     public interface IResultBuilder<TResponse>
     {

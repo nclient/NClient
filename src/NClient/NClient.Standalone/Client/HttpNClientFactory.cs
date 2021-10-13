@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.Client.Validation;
 
@@ -19,6 +21,7 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
+        private readonly IEnumerable<IResultBuilder<IHttpResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -28,6 +31,7 @@ namespace NClient.Standalone.Client
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
+            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -36,6 +40,7 @@ namespace NClient.Standalone.Client
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
             _clientHandler = clientHandler;
             _resiliencePolicyProvider = resiliencePolicyProvider;
+            _resultBuilders = resultBuilders;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -50,6 +55,7 @@ namespace NClient.Standalone.Client
                 _httpMessageBuilderProvider.Create(serializer),
                 _clientHandler,
                 _resiliencePolicyProvider.Create(),
+                _resultBuilders,
                 _responseValidator,
                 _logger);
         }

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Standalone.Client.Validation;
-using NClient.Standalone.Results;
 
 namespace NClient.Standalone.Client
 {
@@ -33,10 +34,9 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
+        private readonly IReadOnlyCollection<IResultBuilder<IHttpResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
-        
-        private readonly ResultBuilder[] resultBuilders;
 
         public HttpNClient(
             ISerializer serializer,
@@ -44,6 +44,7 @@ namespace NClient.Standalone.Client
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
+            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -52,10 +53,9 @@ namespace NClient.Standalone.Client
             _httpMessageBuilder = httpMessageBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
+            _resultBuilders = resultBuilders.ToArray();
             _responseValidator = responseValidator;
             _logger = logger;
-
-            resultBuilders = new[] { new ResultBuilder() };
         }
 
         public async Task<TResult> GetResultAsync<TResult>(IHttpRequest httpRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
@@ -115,7 +115,7 @@ namespace NClient.Standalone.Client
                 .BuildResponseAsync(httpRequest, responseContext.Response)
                 .ConfigureAwait(false);
 
-            if (resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
+            if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
                 return resultBuilder.Build(dataType, httpResponse, _serializer);
             
             _responseValidator.Ensure(responseContext);
