@@ -6,6 +6,7 @@
       "src\\NClient.Providers\\NClient.Providers.HttpClient.System\\NClient.Providers.HttpClient.System.csproj",
       "src\\NClient.Providers\\NClient.Providers.HttpClient.RestSharp\\NClient.Providers.HttpClient.RestSharp.csproj",
       "src\\NClient.Providers\\NClient.Providers.Resilience.Polly\\NClient.Providers.Resilience.Polly.csproj",
+      "src\\NClient.Providers\\NClient.Providers.Results.LanguageExt\\NClient.Providers.Results.LanguageExt.csproj",
 	  "src\\NClient.Providers\\NClient.Providers.Serialization.Json.System\\NClient.Providers.Serialization.Json.System.csproj",
       "src\\NClient.Providers\\NClient.Providers.Serialization.Json.Newtonsoft\\NClient.Providers.Serialization.Json.Newtonsoft.csproj",
 	  "src\\NClient.Providers\\NClient.Providers.Serialization.Xml.System\\NClient.Providers.Serialization.Xml.System.csproj",
