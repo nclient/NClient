@@ -4,8 +4,8 @@ using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations.Methods;
 using NClient.Common.Helpers;
+using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
 using NClient.Standalone.Exceptions.Factories;
-using NClient.Standalone.Interceptors.RequestBuilders;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.HttpMethodProviderTests

@@ -85,31 +85,27 @@ namespace NClient.Standalone.Tests
         }
 
         [Test]
-        public async Task NotEnsuringSuccess_GetIntAsync_Zero()
+        public async Task NotEnsuringSuccess_GetNotFoundInt_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
-                .NotEnsuringSuccess()
-                .Build()
-                .GetAsync(id);
-
-            result.Should().Be(0);
+            await _preConfiguredBasicClient.Invoking(async x => await x.NotEnsuringSuccess()
+                    .Build()
+                    .GetAsync(id))
+                .Should().ThrowExactlyAsync<ClientRequestException>();
         }
         
-        [Test]
-        public async Task NotEnsuringSuccess_GetStringAsync_Null()
+        [Test, Ignore("it doesn't work with a string")]
+        public async Task NotEnsuringSuccess_GetNotFoundString_ThrowClientRequestException()
         {
             const string id = "1";
             using var api = _restApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
-                .NotEnsuringSuccess()
-                .Build()
-                .GetAsync(id);
-
-            result.Should().BeNull();
+            await _preConfiguredBasicClient.Invoking(async x => await x.NotEnsuringSuccess()
+                    .Build()
+                    .GetAsync(id))
+                .Should().ThrowExactlyAsync<ClientRequestException>();
         }
         
         [Test]

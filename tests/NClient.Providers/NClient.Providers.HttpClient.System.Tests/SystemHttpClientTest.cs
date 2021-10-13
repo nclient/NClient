@@ -39,18 +39,18 @@ namespace NClient.Providers.HttpClient.System.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(IHttpRequest request, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(IHttpRequest httpRequest, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpClientProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
 
-            var httpRequest = await httpMessageBuilder.BuildRequestAsync(request);
-            var httpResponse = await httpClient.ExecuteAsync(httpRequest);
-            var response = await httpMessageBuilder.BuildResponseAsync(request.Id, request.Data?.GetType(), httpResponse);
+            var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);
+            var response = await httpClient.ExecuteAsync(request);
+            var httpResponse = await httpMessageBuilder.BuildResponseAsync(httpRequest, response);
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
-            response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
+            httpResponse.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
+            httpResponse.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Headers, x => x.WithoutStrictOrdering());
         }
 

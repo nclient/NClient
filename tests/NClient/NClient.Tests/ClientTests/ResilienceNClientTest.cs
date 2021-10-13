@@ -61,7 +61,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.NativeClients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience()
+                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -78,7 +78,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.NativeClients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience()
+                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -94,7 +94,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.NativeClients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience()
+                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.GetHttpResponse(id))
@@ -111,7 +111,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
-                    .Use(maxRetries: 2, getDelay: _ => 0.Seconds()))
+                    .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
             returnClient.Invoking(x => x.Get(1))
@@ -129,7 +129,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
                     .ForMethod(x => (Action<BasicEntity>)x.Post)
-                    .Use(maxRetries: 2, getDelay: _ => 0.Seconds()))
+                    .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))

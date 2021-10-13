@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
@@ -32,7 +33,8 @@ namespace NClient.Packages.Tests
             const int id = 1;
             const string host = "http://localhost:5002";
             var serviceCollection = new ServiceCollection().AddLogging();
-            serviceCollection.AddNClient<ITest>(host, builder => builder.WithSafeResilience().Build());
+            serviceCollection.AddNClient<ITest>(host, builder => builder
+                .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
             var client = serviceCollection
                 .BuildServiceProvider()
                 .GetRequiredService<ITest>();

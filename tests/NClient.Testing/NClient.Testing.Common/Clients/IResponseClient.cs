@@ -26,7 +26,7 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<IHttpResponseWithError<int, Error>> GetResponseWithErrorAsync(int id);
+        Task<IHttpResponseWithError<int, HttpError>> GetResponseWithErrorAsync(int id);
 
         /// <summary>
         /// Url: api/basic
@@ -47,6 +47,6 @@ namespace NClient.Testing.Common.Clients
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<IHttpResponseWithError<Error>> PostResponseWithErrorAsync(BasicEntity entity);
+        Task<IHttpResponseWithError<HttpError>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }

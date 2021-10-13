@@ -7,12 +7,12 @@ using FluentAssertions;
 using NClient.Abstractions.HttpClients;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
+using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
-using NClient.Standalone.Interceptors.MethodBuilders;
-using NClient.Standalone.Interceptors.MethodBuilders.Models;
-using NClient.Standalone.Interceptors.MethodBuilders.Providers;
-using NClient.Standalone.Interceptors.RequestBuilders;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests
