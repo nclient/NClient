@@ -134,10 +134,10 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutResiliencePolicy());
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilder<IHttpResponse>[] resultBuilders)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders)
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResultBuilders(resultBuilders));
+                .WithResultBuilders(resultBuilderProviders));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResults()

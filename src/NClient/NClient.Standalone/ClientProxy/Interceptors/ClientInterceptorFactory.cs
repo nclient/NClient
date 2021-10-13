@@ -32,7 +32,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger<TClient>? logger = null);
     }
@@ -79,7 +79,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger<TClient>? logger = null)
         {
@@ -95,7 +95,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                     httpMessageBuilderProvider,
                     new ClientHandlerDecorator<TClient, TRequest, TResponse>(clientHandlers, logger),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
-                    resultBuilders,
+                    resultBuilderProviders,
                     responseValidator,
                     logger),
                 methodResiliencePolicyProvider,

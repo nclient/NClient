@@ -77,7 +77,7 @@ namespace NClient.Abstractions.Builders
         #region Results
 
         // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilder<IHttpResponse>[] resultBuilders);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders);
         
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResults();
 

@@ -34,7 +34,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
-        public IReadOnlyCollection<IResultBuilder<IHttpResponse>> ResultBuilders { get; private set; }
+        public IReadOnlyCollection<IResultBuilderProvider<IHttpResponse>> ResultBuilderProviders { get; private set; }
 
         public ILogger? Logger { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
@@ -43,7 +43,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
-            ResultBuilders = Array.Empty<IResultBuilder<IHttpResponse>>();
+            ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
@@ -66,7 +66,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
 
-            ResultBuilders = builderContext.ResultBuilders;
+            ResultBuilderProviders = builderContext.ResultBuilderProviders;
             
             Logger = builderContext.Logger;
             LoggerFactory = builderContext.LoggerFactory;
@@ -204,11 +204,11 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders)
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilders = resultBuilders.ToArray()
+                ResultBuilderProviders = resultBuilderProviders.ToArray()
             };
         }
         
@@ -216,7 +216,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilders = Array.Empty<IResultBuilder<IHttpResponse>>()
+                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>()
             };
         }
 

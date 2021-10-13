@@ -135,10 +135,10 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutResiliencePolicy());
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilder<IHttpResponse>[] resultBuilders)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders)
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithResultBuilders(resultBuilders));
+                .WithResultBuilders(resultBuilderProviders));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResults()
@@ -194,7 +194,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider ?? new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy),
-                _context.ResultBuilders,
+                _context.ResultBuilderProviders,
                 new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
                 _context.Logger as ILogger<TClient> ?? _context.LoggerFactory?.CreateLogger<TClient>());
 

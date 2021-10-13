@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
@@ -21,7 +22,7 @@ namespace NClient.Standalone.Client
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
-        private readonly IEnumerable<IResultBuilder<IHttpResponse>> _resultBuilders;
+        private readonly IEnumerable<IResultBuilderProvider<IHttpResponse>> _resultBuilderProviders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -31,7 +32,7 @@ namespace NClient.Standalone.Client
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
-            IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
+            IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -40,7 +41,7 @@ namespace NClient.Standalone.Client
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
             _clientHandler = clientHandler;
             _resiliencePolicyProvider = resiliencePolicyProvider;
-            _resultBuilders = resultBuilders;
+            _resultBuilderProviders = resultBuilderProviders;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -55,7 +56,7 @@ namespace NClient.Standalone.Client
                 _httpMessageBuilderProvider.Create(serializer),
                 _clientHandler,
                 _resiliencePolicyProvider.Create(),
-                _resultBuilders,
+                _resultBuilderProviders.Select(x => x.Create()),
                 _responseValidator,
                 _logger);
         }

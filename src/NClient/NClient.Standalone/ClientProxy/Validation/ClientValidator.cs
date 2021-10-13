@@ -46,7 +46,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
                         new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
-                    Array.Empty<IResultBuilder<IHttpResponse>>(),
+                    Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
                     new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 

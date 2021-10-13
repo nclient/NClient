@@ -10,13 +10,13 @@ namespace NClient
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithCustomResults(new ResultBuilder());
+            return clientOptionalBuilder.WithCustomResults(new ResultBuilderProvider());
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResults(new ResultBuilder());
+            return factoryOptionalBuilder.WithCustomResults(new ResultBuilderProvider());
         }
     }
 }
