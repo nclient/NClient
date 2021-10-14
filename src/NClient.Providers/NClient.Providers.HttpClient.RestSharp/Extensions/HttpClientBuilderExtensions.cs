@@ -1,11 +1,12 @@
 ﻿using NClient.Abstractions.Building;
 using NClient.Abstractions.HttpClients;
 using NClient.Common.Helpers;
+using NClient.Providers.HttpClient.RestSharp;
 using RestSharp;
 using RestSharp.Authenticators;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.HttpClient.RestSharp
+namespace NClient
 {
     public static class HttpClientBuilderExtensions
     {

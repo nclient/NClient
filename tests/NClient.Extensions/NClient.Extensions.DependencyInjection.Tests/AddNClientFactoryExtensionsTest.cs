@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
 using NClient.Abstractions.Resilience;
-using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
 

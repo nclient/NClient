@@ -5,7 +5,7 @@ using NClient.Common.Helpers;
 using NClient.Providers.Serialization.Json.System;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Serialization.System
+namespace NClient
 {
     // TODO: check doc
     public static class OptionalBuilderExtensions
