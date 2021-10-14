@@ -196,9 +196,9 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
                 _context.ClientHandlers.ToArray(),
-                _context.MethodResiliencePolicyProvider
-                ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
-                    _context.AllMethodsResiliencePolicyProvider ?? new StubResiliencePolicyProvider<TRequest, TResponse>(), 
+                new MethodResiliencePolicyProviderDecorator<TRequest, TResponse>(
+                    _context.AllMethodsResiliencePolicyProvider 
+                    ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(new StubResiliencePolicyProvider<TRequest, TResponse>()), 
                     _context.MethodsWithResiliencePolicy),
                 _context.ResultBuilderProviders,
                 _context.TypedResultBuilderProviders,

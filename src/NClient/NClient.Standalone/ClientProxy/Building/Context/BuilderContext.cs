@@ -30,8 +30,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
-        public IMethodResiliencePolicyProvider<TRequest, TResponse>? MethodResiliencePolicyProvider { get; private set; }
-        public IResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
+        public IMethodResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
         public IReadOnlyCollection<IResultBuilderProvider<IHttpResponse>> ResultBuilderProviders { get; private set; }
@@ -64,7 +63,6 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             ClientHandlers = builderContext.ClientHandlers.ToList();
 
-            MethodResiliencePolicyProvider = builderContext.MethodResiliencePolicyProvider;
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
 
@@ -144,16 +142,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodResiliencePolicyProvider = provider
-            };
-        }
-        
-        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            return new BuilderContext<TRequest, TResponse>(this)
-            {
-                AllMethodsResiliencePolicyProvider = provider,
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+                AllMethodsResiliencePolicyProvider = provider
             };
         }
 
@@ -177,16 +166,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
                     .ToDictionary(x => x.Key, x => x.Last().Value)
             };
         }
-        
-        public BuilderContext<TRequest, TResponse> WithoutAllMethodsResiliencePolicy()
-        {
-            return new BuilderContext<TRequest, TResponse>(this)
-            {
-                AllMethodsResiliencePolicyProvider = null,
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
-            };
-        }
-        
+
         public BuilderContext<TRequest, TResponse> WithoutMethodResiliencePolicy(MethodInfo methodInfo)
         {
             return WithResiliencePolicy(methodInfo, new StubResiliencePolicyProvider<TRequest, TResponse>());
@@ -201,7 +181,6 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodResiliencePolicyProvider = null,
                 AllMethodsResiliencePolicyProvider = null,
                 MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
             };

@@ -2,6 +2,7 @@
 using System.Reflection;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
+using NClient.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
@@ -29,7 +30,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
         INClientResilienceMethodSelector<TClient, TRequest, TResponse> INClientResilienceSetter<TClient, TRequest, TResponse>.Use(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
         {
             _builderContextModifier.Add(context => _selectedMethods is null 
-                ? context.WithResiliencePolicy(resiliencePolicyProvider) 
+                ? context.WithoutResiliencePolicy().WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(resiliencePolicyProvider)) 
                 : context.WithResiliencePolicy(_selectedMethods, resiliencePolicyProvider));
             return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_builderContextModifier);
         }
@@ -37,7 +38,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
         INClientResilienceMethodSelector<TClient, TRequest, TResponse> INClientResilienceSetter<TClient, TRequest, TResponse>.DoNotUse()
         {
             _builderContextModifier.Add(context => _selectedMethods is null
-                ? context.WithoutAllMethodsResiliencePolicy()
+                ? context.WithoutResiliencePolicy()
                 : context.WithoutMethodResiliencePolicy(_selectedMethods));
             return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_builderContextModifier);
         }
