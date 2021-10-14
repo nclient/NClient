@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentAssertions.Extensions;
 using NClient.Abstractions.Resilience;
 using NClient.Exceptions;
@@ -114,27 +115,122 @@ namespace NClient.Tests.ClientTests
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
-            returnClient.Invoking(x => x.Get(1))
+            returnClient.Invoking(x => x.Get(id: 1))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
         }
-        
+
         [Test]
-        public void WithResiliencePolicyForGet_PostRequestWithFlakyInternalServerError_NotThrow()
+        public void WithResiliencePolicyForGet_GetRequestWithFlakyInternalServerError_NotThrow()
         {
-            var entity = new BasicEntity { Id = 1 };
-            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .WithCustomResilience(selector => selector
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .Use(getDelay: _ => 0.Seconds()))
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
+                .Should()
+                .NotThrow();
+        }
+        
+        [Test]
+        public void WithResiliencePolicyForGet_GetAndPostRequestWithInternalServerError_ThrowClientRequestException()
+        {
+            var returnClient = NClientGallery.Clients
+                .GetBasic()
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithCustomResilience(selector => selector
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .Use(getDelay: _ => 0.Seconds())
                     .ForMethod(x => (Action<BasicEntity>)x.Post)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
-            returnClient.Invoking(x => x.Post(entity))
+            using var assertionScope = new AssertionScope();
+            using (var _ = _returnApiMockFactory.MockInternalServerError())
+            {
+                returnClient.Invoking(x => x.Get(id: 1))
+                    .Should()
+                    .ThrowExactly<ClientRequestException>();
+            }
+            using (var _ = _returnApiMockFactory.MockInternalServerError())
+            {
+                returnClient.Invoking(x => x.Post(new BasicEntity()))
+                    .Should()
+                    .ThrowExactly<ClientRequestException>();
+            }
+        }
+        
+        [Test]
+        public void WithResiliencePolicyForGet_GetAndPostRequestWithFlakyInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            var entity = new BasicEntity();
+            var returnClient = NClientGallery.Clients
+                .GetBasic()
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithCustomResilience(selector => selector
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .Use(getDelay: _ => 0.Seconds())
+                    .ForMethod(x => (Action<BasicEntity>)x.Post)
+                    .Use(getDelay: _ => 0.Seconds()))
+                .Build();
+            
+            using var assertionScope = new AssertionScope();
+            using (var _ = _returnApiMockFactory.MockFlakyGetMethod(id, entity))
+            {
+                returnClient.Invoking(x => x.Get(id))
+                    .Should()
+                    .NotThrow();
+            }
+            using (var _ = _returnApiMockFactory.MockFlakyPostMethod(entity))
+            {
+                returnClient.Invoking(x => x.Post(entity))
+                    .Should()
+                    .NotThrow();
+            }
+        }
+        
+        [Test]
+        public void WithResiliencePolicyForGet_ForAllMethodsWithFlakyInternalServerError_NotThrow()
+        {
+            const int id = 1;
+            using var api = _returnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
+            var returnClient = NClientGallery.Clients
+                .GetBasic()
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithCustomResilience(selector => selector
+                    .ForAllMethods()
+                    .Use(getDelay: _ => 0.Seconds()))
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
+        }
+        
+        [Test]
+        public void WithResiliencePolicyForGet_ForAllMethodsAndGetRequestWithInternalServerError_ThrowClientRequestException()
+        {
+            using var api = _returnApiMockFactory.MockInternalServerError();
+            var returnClient = NClientGallery.Clients
+                .GetBasic()
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithCustomResilience(selector => selector
+                    .ForAllMethods()
+                    .Use(getDelay: _ => 0.Seconds())
+                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .DoNotUse())
+                .Build();
+
+            returnClient.Invoking(x => x.Get(id: 1))
+                .Should()
+                .ThrowExactly<ClientRequestException>();
         }
 
         [Test]
