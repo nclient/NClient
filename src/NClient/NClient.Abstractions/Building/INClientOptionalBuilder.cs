@@ -8,7 +8,7 @@ using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.Builders
+namespace NClient.Abstractions.Building
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {

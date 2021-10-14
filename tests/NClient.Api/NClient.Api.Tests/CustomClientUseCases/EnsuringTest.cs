@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Providers.HttpClient.RestSharp;
 using NClient.Providers.HttpClient.System;
 using NClient.Standalone.Tests.Clients;

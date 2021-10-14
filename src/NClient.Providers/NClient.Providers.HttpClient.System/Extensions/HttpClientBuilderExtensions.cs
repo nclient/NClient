@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
+using NClient.Abstractions.HttpClients;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -8,7 +9,7 @@ namespace NClient.Providers.HttpClient.System
     public static class HttpClientBuilderExtensions
     {
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpClient<TClient>(
@@ -40,8 +41,8 @@ namespace NClient.Providers.HttpClient.System
         /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
-        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="System.Net.Http.HttpClient"/> instances.</param>
-        /// <param name="httpClientName">The logical name of <see cref="System.Net.Http.HttpClient"/> to create.</param>
+        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
+        /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
         public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpClient<TClient>(
             this INClientHttpClientBuilder<TClient> clientHttpClientBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
@@ -59,8 +60,8 @@ namespace NClient.Providers.HttpClient.System
         /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
-        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="System.Net.Http.HttpClient"/> instances.</param>
-        /// <param name="httpClientName">The logical name of <see cref="System.Net.Http.HttpClient"/> to create.</param>
+        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
+        /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
         public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpClient(
             this INClientFactoryHttpClientBuilder factoryHttpClientBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)

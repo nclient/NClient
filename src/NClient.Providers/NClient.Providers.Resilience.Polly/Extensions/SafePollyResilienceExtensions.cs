@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
 using Polly;

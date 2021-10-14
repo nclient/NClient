@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Builders;
+﻿using NClient.Abstractions.Building;
 
 namespace NClient.Abstractions
 {

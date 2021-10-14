@@ -1,6 +1,6 @@
 ﻿using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.Builders
+namespace NClient.Abstractions.Building
 {
     public interface INClientSerializerBuilder<TClient, TRequest, TResponse> where TClient : class
     {

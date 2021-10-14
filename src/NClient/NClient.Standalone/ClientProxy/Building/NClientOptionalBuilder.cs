@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;

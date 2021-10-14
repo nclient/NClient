@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Api.Tests.Helpers;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
