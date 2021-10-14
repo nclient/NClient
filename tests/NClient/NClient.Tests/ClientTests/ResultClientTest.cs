@@ -19,7 +19,7 @@ namespace NClient.Tests.ClientTests
         {
             _resultApiMockFactory = new ResultApiMockFactory(port: 5031);
 
-            _resultClient = NClientGallery.NativeClients
+            _resultClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IResultClientWithMetadata>(_resultApiMockFactory.ApiUri.ToString())
                 .Build();

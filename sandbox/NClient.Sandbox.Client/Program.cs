@@ -62,7 +62,7 @@ namespace NClient.Sandbox.Client
             var fileClientLogger = serviceProvider.GetRequiredService<ILogger<IFileClient>>();
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            _weatherForecastClient = NClientGallery.NativeClients
+            _weatherForecastClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IWeatherForecastClient>(host: "http://localhost:5000")
                 .WithCustomHandling(new LoggingClientHandler(handlerLogger))
@@ -72,7 +72,7 @@ namespace NClient.Sandbox.Client
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
 
-            _fileClient = NClientGallery.NativeClients
+            _fileClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IFileClient>(host: "http://localhost:5002")
                 .WithCustomHandling(new LoggingClientHandler(handlerLogger))

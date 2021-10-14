@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
         {
             _optionalParamApiMockFactory = new OptionalParamApiMockFactory(port: 5018);
 
-            _optionalParamClient = NClientGallery.NativeClients
+            _optionalParamClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IOptionalParamWithMetadata>(_optionalParamApiMockFactory.ApiUri.ToString())
                 .Build();

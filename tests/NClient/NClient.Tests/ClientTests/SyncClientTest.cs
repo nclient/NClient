@@ -16,7 +16,7 @@ namespace NClient.Tests.ClientTests
         public void Setup()
         {
             _syncApiMockFactory = new SyncApiMockFactory(port: 5012);
-            _syncClient = NClientGallery.NativeClients
+            _syncClient = NClientGallery.Clients
                 .GetBasic()
                 .For<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())
                 .Build();
