@@ -123,9 +123,9 @@ namespace NClient.Standalone.ClientProxy.Building
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
-            var builderContextModificator = new BuilderContextModificator<TRequest, TResponse>();
-            configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(builderContextModificator));
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModificator.Invoke(_context));
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(builderContextModifier));
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModifier.Invoke(_context));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResilience()

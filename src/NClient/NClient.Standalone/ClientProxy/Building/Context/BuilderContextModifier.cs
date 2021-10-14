@@ -2,11 +2,11 @@
 {
     internal delegate BuilderContext<TRequest, TResponse> BuildContextFunc<TRequest, TResponse>(BuilderContext<TRequest, TResponse> context);
 
-    internal class BuilderContextModificator<TRequest, TResponse>
+    internal class BuilderContextModifier<TRequest, TResponse>
     {
         private BuildContextFunc<TRequest, TResponse> _buildContextFunc;
         
-        public BuilderContextModificator()
+        public BuilderContextModifier()
         {
             _buildContextFunc = context => context;
         }
