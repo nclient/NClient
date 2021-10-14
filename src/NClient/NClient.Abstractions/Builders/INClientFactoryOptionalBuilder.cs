@@ -52,7 +52,7 @@ namespace NClient.Abstractions.Builders
         #region Resilience
 
         // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
 

@@ -84,7 +84,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             Ensure.IsNotNull(provider, nameof(provider));
             

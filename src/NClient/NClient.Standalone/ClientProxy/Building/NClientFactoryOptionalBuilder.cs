@@ -83,7 +83,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             Ensure.IsNotNull(provider, nameof(provider));
             

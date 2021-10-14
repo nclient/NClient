@@ -52,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestSharpHttpClient()
                 .UsingNewtonsoftJsonSerializer()
-                .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
+                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

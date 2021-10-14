@@ -23,7 +23,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_ForceResilience_NotThrow()
+        public async Task NClientBuilder_FullResilience_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);

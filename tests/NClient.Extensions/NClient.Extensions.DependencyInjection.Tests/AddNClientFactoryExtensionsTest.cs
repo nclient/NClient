@@ -41,7 +41,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClientFactory(builder => builder
-                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
+                .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -53,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClientFactory(builder => builder
-                .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

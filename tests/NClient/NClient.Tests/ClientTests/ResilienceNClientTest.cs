@@ -61,7 +61,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
+                .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.Get(id))
@@ -78,7 +78,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
+                .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.Post(entity))
@@ -94,7 +94,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
-                .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0))
+                .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
 
             returnClient.Invoking(x => x.GetHttpResponse(id))
