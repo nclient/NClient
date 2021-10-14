@@ -17,6 +17,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 {
     internal class BuilderContext<TRequest, TResponse>
     {
+        private static readonly MethodInfoEqualityComparer MethodInfoEqualityComparer = new(); 
+        
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
         public string Host { get; private set; } = null!;
@@ -42,7 +44,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public BuilderContext()
         {
             ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
-            MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(new MethodInfoEqualityComparer());
+            MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodInfoEqualityComparer);
             ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
             TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
@@ -64,7 +66,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             ClientHandlers = builderContext.ClientHandlers.ToList();
 
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
-            MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value);
+            MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy
+                .ToDictionary(x => x.Key, x => x.Value, MethodInfoEqualityComparer);
 
             ResultBuilderProviders = builderContext.ResultBuilderProviders;
             TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders;
@@ -150,9 +153,9 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value))
-                {
-                    [methodInfo] = provider
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value, MethodInfoEqualityComparer)) 
+                { 
+                    [methodInfo] = provider 
                 }
             };
         }
@@ -161,9 +164,9 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodsWithResiliencePolicy = MethodsWithResiliencePolicy.Concat(methodInfos.ToDictionary(x => x, _ => provider))
-                    .GroupBy(x => x.Key)
-                    .ToDictionary(x => x.Key, x => x.Last().Value)
+                MethodsWithResiliencePolicy = MethodsWithResiliencePolicy.Concat(methodInfos.ToDictionary(x => x, _ => provider, MethodInfoEqualityComparer))
+                    .GroupBy(x => x.Key, MethodInfoEqualityComparer)
+                    .ToDictionary(x => x.Key, x => x.Last().Value, MethodInfoEqualityComparer)
             };
         }
 
@@ -182,7 +185,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 AllMethodsResiliencePolicyProvider = null,
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>()
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodInfoEqualityComparer)
             };
         }
         
