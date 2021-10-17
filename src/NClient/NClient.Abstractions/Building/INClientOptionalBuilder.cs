@@ -15,7 +15,7 @@ namespace NClient.Abstractions.Building
         #region MyRegion
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings);
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
         
         // TODO: doc
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
@@ -88,18 +88,12 @@ namespace NClient.Abstractions.Building
         /// </summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory);
-        
-        /// <summary>
-        /// Sets instances of <see cref="ILogger"/>.
-        /// </summary>
-        /// <param name="logger">The logger for a client.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger<TClient> logger);
 
         /// <summary>
         /// Sets instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(params ILogger[] loggers);
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();

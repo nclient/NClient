@@ -13,6 +13,7 @@ using NClient.Common.Helpers;
 using NClient.Core.Proxy;
 using NClient.Resilience;
 using NClient.Standalone.Client.Ensuring;
+using NClient.Standalone.Client.Logging;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -40,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Building
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings)
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithEnsuringSetting(ensuringSettings));
@@ -160,20 +161,13 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithLogging(loggerFactory));
         }
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger<TClient> logger)
-        {
-            Ensure.IsNotNull(logger, nameof(logger));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithLogging(logger));
-        }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(params ILogger[] loggers)
         {
-            Ensure.IsNotNull(logger, nameof(logger));
+            Ensure.IsNotNull(loggers, nameof(loggers));
             
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithLogging(logger));
+                .WithLogging(loggers));
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging()
@@ -195,15 +189,19 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.SerializerProvider,
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
-                _context.ClientHandlers.ToArray(),
+                _context.ClientHandlers,
                 new MethodResiliencePolicyProviderDecorator<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider 
                     ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(new StubResiliencePolicyProvider<TRequest, TResponse>()), 
                     _context.MethodsWithResiliencePolicy),
                 _context.ResultBuilderProviders,
                 _context.TypedResultBuilderProviders,
-                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings ?? new StubEnsuringSettings<TRequest, TResponse>()),
-                _context.Logger as ILogger<TClient> ?? _context.LoggerFactory?.CreateLogger<TClient>());
+                new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings.Any() 
+                    ? _context.EnsuringSettings.ToArray() 
+                    : new IEnsuringSettings<TRequest, TResponse>[] { new StubEnsuringSettings<TRequest, TResponse>() }),
+                new LoggerDecorator<TClient>(_context.LoggerFactory is not null
+                    ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
+                    : _context.Loggers));
 
             return _clientGenerator.CreateClient<TClient>(interceptor);
         }

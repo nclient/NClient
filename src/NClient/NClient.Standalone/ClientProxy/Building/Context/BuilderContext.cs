@@ -17,8 +17,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 {
     internal class BuilderContext<TRequest, TResponse>
     {
-        private static readonly MethodInfoEqualityComparer MethodInfoEqualityComparer = new(); 
-        
+        private readonly MethodInfoEqualityComparer _methodInfoEqualityComparer = new();
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
         public string Host { get; private set; } = null!;
@@ -28,7 +27,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
-        public IEnsuringSettings<TRequest, TResponse>? EnsuringSettings { get; private set; }
+        public IReadOnlyCollection<IEnsuringSettings<TRequest, TResponse>> EnsuringSettings { get; private set; }
 
         public IReadOnlyCollection<IClientHandler<TRequest, TResponse>> ClientHandlers { get; private set; }
 
@@ -38,15 +37,17 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IReadOnlyCollection<IResultBuilderProvider<IHttpResponse>> ResultBuilderProviders { get; private set; }
         public IReadOnlyCollection<IResultBuilderProvider<TResponse>> TypedResultBuilderProviders { get; private set; }
 
-        public ILogger? Logger { get; private set; }
+        public IReadOnlyCollection<ILogger> Loggers { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
 
         public BuilderContext()
         {
+            EnsuringSettings = Array.Empty<IEnsuringSettings<TRequest, TResponse>>();
             ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>();
-            MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodInfoEqualityComparer);
+            MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(_methodInfoEqualityComparer);
             ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
             TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>();
+            Loggers = Array.Empty<ILogger>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
 
@@ -61,18 +62,18 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             SerializerProvider = builderContext.SerializerProvider;
 
-            EnsuringSettings = builderContext.EnsuringSettings;
+            EnsuringSettings = builderContext.EnsuringSettings.ToArray();
 
-            ClientHandlers = builderContext.ClientHandlers.ToList();
+            ClientHandlers = builderContext.ClientHandlers.ToArray();
 
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy
-                .ToDictionary(x => x.Key, x => x.Value, MethodInfoEqualityComparer);
+                .ToDictionary(x => x.Key, x => x.Value, _methodInfoEqualityComparer);
 
-            ResultBuilderProviders = builderContext.ResultBuilderProviders;
-            TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders;
+            ResultBuilderProviders = builderContext.ResultBuilderProviders.ToArray();
+            TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders.ToArray();
             
-            Logger = builderContext.Logger;
+            Loggers = builderContext.Loggers.ToArray();
             LoggerFactory = builderContext.LoggerFactory;
         }
 
@@ -106,14 +107,14 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public BuilderContext<TRequest, TResponse> WithEnsuringSetting(
             Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
-            return WithEnsuringSetting(new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure));
+            return WithEnsuringSetting(new[] { new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure) });
         }
         
-        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(IEnumerable<IEnsuringSettings<TRequest, TResponse>> ensuringSettings)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                EnsuringSettings = ensuringSettings
+                EnsuringSettings = EnsuringSettings.Concat(ensuringSettings).ToArray()
             };
         }
         
@@ -121,7 +122,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                EnsuringSettings = null
+                EnsuringSettings = Array.Empty<IEnsuringSettings<TRequest, TResponse>>()
             };
         }
 
@@ -137,7 +138,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ClientHandlers = new List<IClientHandler<TRequest, TResponse>>()
+                ClientHandlers = Array.Empty<IClientHandler<TRequest, TResponse>>()
             };
         }
 
@@ -153,7 +154,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value, MethodInfoEqualityComparer)) 
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodsWithResiliencePolicy.ToDictionary(x => x.Key, x => x.Value, _methodInfoEqualityComparer)) 
                 { 
                     [methodInfo] = provider 
                 }
@@ -164,9 +165,9 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                MethodsWithResiliencePolicy = MethodsWithResiliencePolicy.Concat(methodInfos.ToDictionary(x => x, _ => provider, MethodInfoEqualityComparer))
-                    .GroupBy(x => x.Key, MethodInfoEqualityComparer)
-                    .ToDictionary(x => x.Key, x => x.Last().Value, MethodInfoEqualityComparer)
+                MethodsWithResiliencePolicy = MethodsWithResiliencePolicy.Concat(methodInfos.ToDictionary(x => x, _ => provider, _methodInfoEqualityComparer))
+                    .GroupBy(x => x.Key, _methodInfoEqualityComparer)
+                    .ToDictionary(x => x.Key, x => x.Last().Value, _methodInfoEqualityComparer)
             };
         }
 
@@ -185,7 +186,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 AllMethodsResiliencePolicyProvider = null,
-                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(MethodInfoEqualityComparer)
+                MethodsWithResiliencePolicy = new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(_methodInfoEqualityComparer)
             };
         }
         
@@ -193,7 +194,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = resultBuilderProviders.ToArray()
+                ResultBuilderProviders = ResultBuilderProviders.Concat(resultBuilderProviders).ToArray()
             };
         }
         
@@ -201,7 +202,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                TypedResultBuilderProviders = resultBuilderProviders.ToArray()
+                TypedResultBuilderProviders = TypedResultBuilderProviders.Concat(resultBuilderProviders).ToArray()
             };
         }
         
@@ -209,15 +210,16 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>()
+                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
+                TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>()
             };
         }
 
-        public BuilderContext<TRequest, TResponse> WithLogging(ILogger logger)
+        public BuilderContext<TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                Logger = logger
+                Loggers = Loggers.Concat(loggers).ToArray()
             };
         }
         
@@ -233,7 +235,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                Logger = null,
+                Loggers = Array.Empty<ILogger>(),
                 LoggerFactory = null
             };
         }

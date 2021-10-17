@@ -37,7 +37,7 @@ namespace NClient.Standalone.ClientProxy.Building
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings)
         {
             Ensure.IsNotNull(ensuringSettings, nameof(ensuringSettings));
             
@@ -160,12 +160,12 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(loggerFactory));
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(ILogger logger)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(params ILogger[] loggers)
         {
-            Ensure.IsNotNull(logger, nameof(logger));
+            Ensure.IsNotNull(loggers, nameof(loggers));
             
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithLogging(logger));
+                .WithLogging(loggers));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutLogging()
