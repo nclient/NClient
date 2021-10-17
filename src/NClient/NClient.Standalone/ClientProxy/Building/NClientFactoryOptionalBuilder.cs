@@ -11,7 +11,6 @@ using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
-using NClient.Resilience;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.ClientGeneration;
@@ -81,34 +80,6 @@ namespace NClient.Standalone.ClientProxy.Building
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithoutHandlers());
-        }
-
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            Ensure.IsNotNull(provider, nameof(provider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider)));
-        }
-        
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(idempotentMethodProvider, nameof(idempotentMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodProvider, otherMethodProvider)));
-        }
-
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider)));
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)

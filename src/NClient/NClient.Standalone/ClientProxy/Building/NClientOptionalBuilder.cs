@@ -85,34 +85,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            Ensure.IsNotNull(provider, nameof(provider));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider)));
-        }
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithIdempotentResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(idempotentMethodProvider, nameof(idempotentMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodProvider, otherMethodProvider)));
-        }
-
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafeResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithResiliencePolicy(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider)));
-        }
-
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));

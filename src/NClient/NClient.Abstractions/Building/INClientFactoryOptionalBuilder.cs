@@ -50,12 +50,7 @@ namespace NClient.Abstractions.Building
         #endregion
 
         #region Resilience
-
-        // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-
+        
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
