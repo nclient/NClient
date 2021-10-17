@@ -8,4 +8,9 @@ namespace NClient.Abstractions.Ensuring
         Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
         Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
     }
+    
+    public interface IOrderedEnsuringSettings
+    {
+        public int Order { get; }
+    }
 }

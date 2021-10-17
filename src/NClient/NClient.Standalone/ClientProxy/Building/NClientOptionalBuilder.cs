@@ -189,15 +189,27 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.SerializerProvider,
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
-                _context.ClientHandlers,
+                _context.ClientHandlers
+                    .OrderByDescending(x => x is IOrderedClientHandler)
+                    .ThenBy(x => (x as IOrderedClientHandler)?.Order)
+                    .ToArray(),
                 new MethodResiliencePolicyProviderDecorator<TRequest, TResponse>(
                     _context.AllMethodsResiliencePolicyProvider 
                     ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(new StubResiliencePolicyProvider<TRequest, TResponse>()), 
                     _context.MethodsWithResiliencePolicy),
-                _context.ResultBuilderProviders,
-                _context.TypedResultBuilderProviders,
+                _context.ResultBuilderProviders
+                    .OrderByDescending(x => x is IOrderedResultBuilderProvider)
+                    .ThenBy(x => (x as IOrderedResultBuilderProvider)?.Order)
+                    .ToArray(),
+                _context.TypedResultBuilderProviders
+                    .OrderByDescending(x => x is IOrderedResultBuilderProvider)
+                    .ThenBy(x => (x as IOrderedResultBuilderProvider)?.Order)
+                    .ToArray(),
                 new ResponseValidator<TRequest, TResponse>(_context.EnsuringSettings.Any() 
-                    ? _context.EnsuringSettings.ToArray() 
+                    ? _context.EnsuringSettings
+                        .OrderByDescending(x => x is IOrderedEnsuringSettings)
+                        .ThenBy(x => (x as IOrderedEnsuringSettings)?.Order)
+                        .ToArray()
                     : new IEnsuringSettings<TRequest, TResponse>[] { new StubEnsuringSettings<TRequest, TResponse>() }),
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null
                     ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
