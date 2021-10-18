@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
@@ -22,14 +23,14 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithIdempotentResilience(
-                idempotentMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
-                (
-                    retryCount: 0,
-                    sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ShouldRetry
-                )));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                    maxRetries: 0,
+                    getDelay: _ => TimeSpan.FromSeconds(0),
+                    shouldRetry: settings.ShouldRetry)))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -43,14 +44,14 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithIdempotentResilience(
-                idempotentMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
-                (
-                    retryCount: 0,
-                    sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ShouldRetry
-                )));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                    maxRetries: 0,
+                    getDelay: _ => TimeSpan.FromSeconds(0),
+                    shouldRetry: settings.ShouldRetry)))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         // TODO: doc
@@ -98,9 +99,11 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithIdempotentResilience(
-                idempotentMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy), 
-                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
         
         /// <summary>
@@ -115,9 +118,12 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithIdempotentResilience(
-                idempotentMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy), 
-                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
+            // TODO: use extension: httpRequest.Method == HttpMethod.Post
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
     }
 }

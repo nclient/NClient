@@ -9,13 +9,13 @@ namespace NClient.Abstractions.Resilience
         public Func<IResponseContext<TRequest, TResponse>, bool> ShouldRetry { get; }
         
         public ResiliencePolicySettings(
-            int retryCount, 
-            Func<int, TimeSpan> sleepDuration, 
-            Func<IResponseContext<TRequest, TResponse>, bool> resultPredicate)
+            int maxRetries, 
+            Func<int, TimeSpan> getDelay, 
+            Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
         {
-            MaxRetries = retryCount;
-            GetDelay = sleepDuration;
-            ShouldRetry = resultPredicate;
+            MaxRetries = maxRetries;
+            GetDelay = getDelay;
+            ShouldRetry = shouldRetry;
         }
     }
 }

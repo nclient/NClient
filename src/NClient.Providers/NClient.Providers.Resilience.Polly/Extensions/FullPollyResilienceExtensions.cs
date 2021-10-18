@@ -22,7 +22,9 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithFullResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -36,7 +38,9 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithFullResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         // TODO: doc
@@ -84,7 +88,9 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithFullResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
         
         /// <summary>
@@ -98,7 +104,9 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithFullResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
     }
 }

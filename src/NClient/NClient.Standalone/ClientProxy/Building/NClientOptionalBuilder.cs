@@ -165,10 +165,9 @@ namespace NClient.Standalone.ClientProxy.Building
                     .OrderByDescending(x => x is IOrderedClientHandler)
                     .ThenBy(x => (x as IOrderedClientHandler)?.Order)
                     .ToArray(),
-                new MethodResiliencePolicyProviderDecorator<TRequest, TResponse>(
-                    _context.AllMethodsResiliencePolicyProvider 
-                    ?? new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(new StubResiliencePolicyProvider<TRequest, TResponse>()), 
-                    _context.MethodsWithResiliencePolicy),
+                new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
+                    new StubResiliencePolicyProvider<TRequest, TResponse>(), 
+                    _context.MethodsWithResiliencePolicy.Reverse()),
                 _context.ResultBuilderProviders
                     .OrderByDescending(x => x is IOrderedResultBuilderProvider)
                     .ThenBy(x => (x as IOrderedResultBuilderProvider)?.Order)

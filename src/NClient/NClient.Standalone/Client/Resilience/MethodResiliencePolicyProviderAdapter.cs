@@ -1,35 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
-using NClient.Core.Helpers;
+using NClient.Standalone.ClientProxy.Building.Context;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Resilience
 {
-    public class MethodResiliencePolicyProviderAdapter<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
+    internal class MethodResiliencePolicyProviderAdapter<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
     {
         private readonly IResiliencePolicyProvider<TRequest, TResponse>? _defaultResiliencePolicyProvider;
-        private readonly IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>> _resiliencePolicyProviders;
+        private readonly IReadOnlyCollection<ResiliencePolicyPredicate<TRequest, TResponse>> _resiliencePolicyPredicates;
 
         public MethodResiliencePolicyProviderAdapter(
             IResiliencePolicyProvider<TRequest, TResponse> defaultResiliencePolicyProvider,
-            IReadOnlyDictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>? specificResiliencePolicyProviders = null)
+            IEnumerable<ResiliencePolicyPredicate<TRequest, TResponse>>? resiliencePolicyPredicates = null)
         {
             _defaultResiliencePolicyProvider = defaultResiliencePolicyProvider;
-            _resiliencePolicyProviders = specificResiliencePolicyProviders is null
-                ? new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(
-                    new MethodInfoEqualityComparer())
-                : new Dictionary<MethodInfo, IResiliencePolicyProvider<TRequest, TResponse>>(
-                    specificResiliencePolicyProviders.ToDictionary(x => x.Key, x => x.Value),
-                    new MethodInfoEqualityComparer());
+            _resiliencePolicyPredicates = resiliencePolicyPredicates?.ToArray() ?? Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
         }
 
         public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest)
         {
-            _resiliencePolicyProviders.TryGetValue(methodInfo, out var provider);
-            return provider?.Create() ?? _defaultResiliencePolicyProvider!.Create();
+            var resiliencePolicyPredicate = _resiliencePolicyPredicates.FirstOrDefault(x => x.Predicate(methodInfo, httpRequest));
+            return resiliencePolicyPredicate?.Provider.Create() ?? _defaultResiliencePolicyProvider!.Create();
         }
     }
 }

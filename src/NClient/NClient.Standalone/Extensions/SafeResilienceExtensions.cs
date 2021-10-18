@@ -1,7 +1,7 @@
 ﻿using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
-using NClient.Resilience;
+using NClient.Core.Extensions;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -16,7 +16,11 @@ namespace NClient
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return clientOptionalBuilder.WithCustomResilience(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(otherMethodProvider)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .Use(safeMethodProvider));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(
@@ -26,7 +30,11 @@ namespace NClient
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return factoryOptionalBuilder.WithCustomResilience(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(otherMethodProvider)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .Use(safeMethodProvider));
         }
     }
 }
