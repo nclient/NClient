@@ -54,7 +54,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = _returnClient.GetHttpResponse(id);
+            var result = _returnClient.GetIHttpResponse(id);
 
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(entity);
