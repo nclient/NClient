@@ -131,29 +131,44 @@ namespace NClient.Standalone.Client
         
         public async Task<IHttpResponse> GetHttpResponseAsync(IHttpRequest httpRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var httpResponse = await GetHttpResponseAsync(httpRequest, resiliencePolicy)
+            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, httpResponse);
+            var httpResponse = await _httpMessageBuilder
+                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .ConfigureAwait(false);
+            
+            var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);
             return BuildResponseWithData(dataObject, dataType, httpResponse);
         }
         
         public async Task<IHttpResponse> GetHttpResponseWithErrorAsync(IHttpRequest httpRequest, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var httpResponse = await GetHttpResponseAsync(httpRequest, resiliencePolicy)
+            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var errorObject = TryGetErrorObject(errorType, httpResponse);
+            var httpResponse = await _httpMessageBuilder
+                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .ConfigureAwait(false);
+            
+            var errorObject = TryGetErrorObject(errorType, httpResponse.Content.ToString(), responseContext);
             return BuildResponseWithError(errorObject, errorType, httpResponse);
         }
         
         public async Task<IHttpResponse> GetHttpResponseWithDataAndErrorAsync(IHttpRequest httpRequest, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var httpResponse = await GetHttpResponseAsync(httpRequest, resiliencePolicy)
+            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, httpResponse);
-            var errorObject = TryGetErrorObject(errorType, httpResponse);
+            var httpResponse = await _httpMessageBuilder
+                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .ConfigureAwait(false);
+            
+            var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);
+            var errorObject = TryGetErrorObject(errorType, httpResponse.Content.ToString(), responseContext);
             return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, httpResponse);
         }
 
@@ -199,19 +214,17 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(request, response);
         }
         
-        private object? TryGetDataObject(Type dataType, IHttpResponse response)
+        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> responseContext)
         {
-            // TODO: should use response validator
-            return response.IsSuccessful
-                ? _serializer.Deserialize(response.Content.ToString(), dataType)
+            return _responseValidator.IsValid(responseContext)
+                ? _serializer.Deserialize(data, dataType)
                 : null;
         }
 
-        private object? TryGetErrorObject(Type errorType, IHttpResponse response)
+        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> responseContext)
         {
-            // TODO: надо использовать валидатор
-            return !response.IsSuccessful
-                ? _serializer.Deserialize(response.Content.ToString(), errorType)
+            return !_responseValidator.IsValid(responseContext)
+                ? _serializer.Deserialize(data, errorType)
                 : null;
         }
         
