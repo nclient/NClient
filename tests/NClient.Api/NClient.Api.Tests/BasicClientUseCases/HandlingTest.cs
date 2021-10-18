@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Abstractions.Building;
@@ -43,6 +42,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
+                .WithoutHandling()
                 .WithCustomHandling(new CustomHandler(), new CustomHandler())
                 .Build();
             
@@ -51,16 +51,32 @@ namespace NClient.Api.Tests.BasicClientUseCases
             response.Should().Be(id);
         }
         
-        [Test, Ignore("Not Implemented")]
-        public Task NClientBuilder_WithAdditionalSingleCustomHandler_NotThrow()
+        [Test]
+        public async Task NClientBuilder_WithAdditionalSingleCustomHandler_NotThrow()
         {
-            throw new NotImplementedException();
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithCustomHandling(new CustomHandler())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
         }
         
-        [Test, Ignore("Not Implemented")]
-        public Task NClientBuilder_WithAdditionalCollectionOfCustomHandlers_NotThrow()
+        [Test]
+        public async Task NClientBuilder_WithAdditionalCollectionOfCustomHandlers_NotThrow()
         {
-            throw new NotImplementedException();
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithCustomHandling(new CustomHandler(), new CustomHandler())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
         }
     }
 }

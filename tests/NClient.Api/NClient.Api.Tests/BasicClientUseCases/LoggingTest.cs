@@ -75,5 +75,21 @@ namespace NClient.Api.Tests.BasicClientUseCases
 
             response.Should().Be(id);
         }
+        
+        [Test]
+        public async Task NClientBuilder_WithMultipleCustomLoggers_NotThrow()
+        {
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var customLogger = new CustomLogger();
+            var client = _optionalBuilder
+                .WithLogging(customLogger)
+                .WithLogging(customLogger)
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
+        }
     }
 }

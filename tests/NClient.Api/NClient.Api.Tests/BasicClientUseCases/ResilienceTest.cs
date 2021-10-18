@@ -5,6 +5,7 @@ using FluentAssertions;
 using NClient.Abstractions.Building;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -99,22 +100,50 @@ namespace NClient.Api.Tests.BasicClientUseCases
             response.Should().Be(id);
         }
         
-        [Test, Ignore("Not Implemented")]
-        public Task NClientBuilder_IdempotentResilienceExceptSelectedMethod_NotThrow()
+        [Test]
+        public async Task NClientBuilder_IdempotentResilienceExceptSelectedMethod_NotThrow()
         {
-            throw new NotImplementedException();
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
+                .WithCustomResilience(x => x
+                    .ForMethod(client => (Func<BasicEntity, Task>)client.PostAsync).DoNotUse())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
         }
         
-        [Test, Ignore("Not Implemented")]
-        public Task NClientBuilder_CustomResilienceForMethodsByCondition_NotThrow()
+        [Test]
+        public async Task NClientBuilder_CustomResilienceForMethodsByCondition_NotThrow()
         {
-            throw new NotImplementedException();
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithCustomResilience(x => x
+                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Post).DoNotUse())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
         }
         
-        [Test, Ignore("Not Implemented")]
-        public Task NClientBuilder_CustomResilienceForPostMethods_NotThrow()
+        [Test]
+        public async Task NClientBuilder_CustomResilienceForPostMethods_NotThrow()
         {
-            throw new NotImplementedException();
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithCustomResilience(x => x
+                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Post).Use())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
         }
     }
 }

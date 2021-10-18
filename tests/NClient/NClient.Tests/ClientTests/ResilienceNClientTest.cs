@@ -162,6 +162,26 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
+        public void WithFullResilience_ExceptPostRequestToFlakyInternalServerError_ThrowClientRequestException()
+        {
+            var entity = new BasicEntity { Id = 1 };
+            using var api = _returnApiMockFactory.MockFlakyPostMethod(entity);
+            api.AllowPartialMapping();
+            var returnClient = NClientGallery.Clients
+                .GetBasic()
+                .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
+                .WithFullResilience(getDelay: _ => 0.Seconds())
+                .WithCustomResilience(x => x
+                    .ForMethod(client => (Action<BasicEntity>)client.Post)
+                    .DoNotUse())
+                .Build();
+
+            returnClient.Invoking(x => x.Post(entity))
+                .Should()
+                .ThrowExactly<ClientRequestException>();
+        }
+        
+        [Test]
         public void WithSafeResilience_GetRequestToInternalServerError_NotThrow()
         {
             const int id = 1;

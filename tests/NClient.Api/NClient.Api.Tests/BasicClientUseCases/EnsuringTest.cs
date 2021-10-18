@@ -37,7 +37,22 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_EnsuringSuccessWithCustomSettings_NotThrow()
+        public async Task NClientBuilder_ReplaceEnsuringSuccessWithCustomSettings_NotThrow()
+        {
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .NotEnsuringSuccess()
+                .EnsuringCustomSuccess(new CustomEnsuringSettings())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
+        }
+        
+        [Test]
+        public async Task NClientBuilder_AddEnsuringSuccessWithCustomSettings_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
@@ -51,7 +66,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_EnsuringCustomSuccess_NotThrow()
+        public async Task NClientBuilder_AddEnsuringCustomSuccess_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
