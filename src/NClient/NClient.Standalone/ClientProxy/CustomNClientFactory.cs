@@ -24,7 +24,7 @@ namespace NClient
         public TClient Create<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext).Build();
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithHost(host)).Build();
         }
     }
 }
