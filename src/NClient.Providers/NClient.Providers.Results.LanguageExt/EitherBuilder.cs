@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using NClient.Abstractions.HttpClients;
@@ -17,16 +18,16 @@ namespace NClient.Providers.Results.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public object? Build(Type resultType, IHttpResponse response, ISerializer serializer)
+        public Task<object?> BuildAsync(Type resultType, IHttpResponse response, ISerializer serializer)
         {
             if (response.IsSuccessful)
             {
                 var value = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[1]);
-                return BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value);
+                return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
             }
             
             var error = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[0]);
-            return BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null);
+            return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
         }
 
         private object? BuildEither(Type leftType, object? left, Type rightType, object? right)

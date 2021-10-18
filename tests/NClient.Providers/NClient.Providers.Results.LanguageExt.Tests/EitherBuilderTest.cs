@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
@@ -16,7 +17,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
     public class EitherBuilderTest
     {
         [Test]
-        public void Build_SuccessHttpResponse_EitherWithRight()
+        public async Task Build_SuccessHttpResponse_EitherWithRight()
         {
             var expectedValue = new BasicEntity { Id = 1, Value = 2 };
             var eitherBuilder = new EitherBuilder();
@@ -29,13 +30,13 @@ namespace NClient.Providers.Results.LanguageExt.Tests
                 StatusCode = HttpStatusCode.OK
             };
 
-            var actualResult = eitherBuilder.Build(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
+            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Right<string, BasicEntity>(expectedValue) }));
         }
         
         [Test]
-        public void Build_FailureHttpResponse_EitherWithLeft()
+        public async Task Build_FailureHttpResponse_EitherWithLeft()
         {
             const string expectedError = "Error message.";
             var eitherBuilder = new EitherBuilder();
@@ -48,7 +49,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
                 StatusCode = HttpStatusCode.NotFound
             };
 
-            var actualResult = eitherBuilder.Build(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
+            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Left<string, BasicEntity>(expectedError) }));
         }

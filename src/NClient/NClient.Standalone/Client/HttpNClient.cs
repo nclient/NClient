@@ -115,14 +115,18 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
 
             if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext.Response)) is { } typedResultBuilder)
-                return typedResultBuilder.Build(dataType, responseContext.Response, _serializer);
+                return await typedResultBuilder
+                    .BuildAsync(dataType, responseContext.Response, _serializer)
+                    .ConfigureAwait(false);
             
             var httpResponse = await _httpMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
 
             if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
-                return resultBuilder.Build(dataType, httpResponse, _serializer);
+                return await resultBuilder
+                    .BuildAsync(dataType, httpResponse, _serializer)
+                    .ConfigureAwait(false);
             
             _responseValidator.Ensure(responseContext);
             
