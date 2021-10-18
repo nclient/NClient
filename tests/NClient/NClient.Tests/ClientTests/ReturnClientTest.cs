@@ -17,7 +17,7 @@ namespace NClient.Tests.ClientTests
         public void Setup()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(port: 5011);
-            _returnClient = NClientGallery.NativeClients
+            _returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())
                 .Build();
@@ -54,7 +54,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = _returnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = _returnClient.GetHttpResponse(id);
+            var result = _returnClient.GetIHttpResponse(id);
 
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(entity);

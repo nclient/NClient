@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
-using NClient.Providers.Resilience.Polly;
 using NUnit.Framework;
 using Polly;
 
@@ -42,7 +41,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
-                    .WithForceResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
+                    .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
@@ -55,7 +54,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddNClient<ITestClientWithMetadata>(
                 host: "http://localhost:5000", builder => builder
-                    .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                    .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
                     .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();

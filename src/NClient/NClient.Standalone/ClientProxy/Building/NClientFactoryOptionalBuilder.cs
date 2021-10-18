@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
@@ -11,7 +11,6 @@ using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
-using NClient.Resilience;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.ClientGeneration;
@@ -37,7 +36,7 @@ namespace NClient.Standalone.ClientProxy.Building
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings)
         {
             Ensure.IsNotNull(ensuringSettings, nameof(ensuringSettings));
             
@@ -83,34 +82,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            Ensure.IsNotNull(provider, nameof(provider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider)));
-        }
-        
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(idempotentMethodProvider, nameof(idempotentMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new IdempotentMethodResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodProvider, otherMethodProvider)));
-        }
-
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience(
-            IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithResiliencePolicy(new SafeMethodResiliencePolicyProvider<TRequest, TResponse>(safeMethodProvider, otherMethodProvider)));
-        }
-
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider)
         {
             Ensure.IsNotNull(methodResiliencePolicyProvider, nameof(methodResiliencePolicyProvider));
@@ -123,9 +94,9 @@ namespace NClient.Standalone.ClientProxy.Building
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
-            var builderContextModificator = new BuilderContextModificator<TRequest, TResponse>();
-            configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(builderContextModificator));
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModificator.Invoke(_context));
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(builderContextModifier));
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModifier.Invoke(_context));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResilience()
@@ -160,12 +131,12 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(loggerFactory));
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(ILogger logger)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(params ILogger[] loggers)
         {
-            Ensure.IsNotNull(logger, nameof(logger));
+            Ensure.IsNotNull(loggers, nameof(loggers));
             
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithLogging(logger));
+                .WithLogging(loggers));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutLogging()

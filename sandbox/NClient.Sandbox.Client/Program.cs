@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Resilience;
-using NClient.Providers.Resilience.Polly;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.FileService.Facade;
 using NClient.Sandbox.ProxyService.Facade;
@@ -62,7 +61,7 @@ namespace NClient.Sandbox.Client
             var fileClientLogger = serviceProvider.GetRequiredService<ILogger<IFileClient>>();
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            _weatherForecastClient = NClientGallery.NativeClients
+            _weatherForecastClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IWeatherForecastClient>(host: "http://localhost:5000")
                 .WithCustomHandling(new LoggingClientHandler(handlerLogger))
@@ -72,7 +71,7 @@ namespace NClient.Sandbox.Client
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
 
-            _fileClient = NClientGallery.NativeClients
+            _fileClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IFileClient>(host: "http://localhost:5002")
                 .WithCustomHandling(new LoggingClientHandler(handlerLogger))

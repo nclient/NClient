@@ -3,14 +3,14 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INativeNClientFactoryGallery
+    public interface IClientFactoryGallery
     {
         IBasicNClientFactoryBuilder GetBasic();
         IStandardNClientFactoryBuilder GetStandard();
         INClientFactoryBuilder GetCustom();
     }
     
-    public class NativeNClientFactoryGallery : INativeNClientFactoryGallery
+    public class ClientFactoryGallery : IClientFactoryGallery
     {
         public IBasicNClientFactoryBuilder GetBasic() => new BasicNClientFactoryBuilder();
         public IStandardNClientFactoryBuilder GetStandard() => new StandardNClientFactoryBuilder();

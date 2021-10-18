@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 

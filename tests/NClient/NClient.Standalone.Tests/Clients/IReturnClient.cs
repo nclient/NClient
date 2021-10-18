@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
@@ -17,7 +18,10 @@ namespace NClient.Standalone.Tests.Clients
         new Task<BasicEntity> GetAsync(int id);
 
         [GetMethod]
-        IHttpResponse<BasicEntity> GetHttpResponse(int id);
+        IHttpResponse<BasicEntity> GetIHttpResponse(int id);
+        
+        [GetMethod]
+        HttpResponseMessage GetHttpResponseMessage(int id);
 
         [PostMethod]
         new void Post(BasicEntity entity);
