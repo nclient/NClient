@@ -48,7 +48,7 @@ namespace NClient.Providers.HttpClient.System
             return Task.FromResult(httpRequestMessage);
         }
 
-        public async Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, HttpResponseMessage response)
+        public async Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, HttpRequestMessage request, HttpResponseMessage response)
         {
             var exception = TryGetException(response);
             

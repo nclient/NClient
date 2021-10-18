@@ -80,7 +80,7 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             return await _httpMessageBuilder
-                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
         }
 
@@ -118,7 +118,7 @@ namespace NClient.Standalone.Client
                 return typedResultBuilder.Build(dataType, responseContext.Response, _serializer);
             
             var httpResponse = await _httpMessageBuilder
-                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
 
             if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
@@ -136,7 +136,7 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var httpResponse = await _httpMessageBuilder
-                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);
@@ -150,7 +150,7 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var httpResponse = await _httpMessageBuilder
-                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
             var errorObject = TryGetErrorObject(errorType, httpResponse.Content.ToString(), responseContext);
@@ -164,7 +164,7 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var httpResponse = await _httpMessageBuilder
-                .BuildResponseAsync(httpRequest, responseContext.Response)
+                .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);

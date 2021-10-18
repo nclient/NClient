@@ -58,7 +58,7 @@ namespace NClient.Providers.HttpClient.RestSharp
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IRestResponse response)
+        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IRestRequest request, IRestResponse response)
         {
             var finalRequest = _finalHttpRequestBuilder.Build(httpRequest, response.Request);
             

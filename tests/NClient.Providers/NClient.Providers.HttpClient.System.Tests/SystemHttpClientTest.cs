@@ -47,7 +47,7 @@ namespace NClient.Providers.HttpClient.System.Tests
 
             var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);
             var response = await httpClient.ExecuteAsync(request);
-            var httpResponse = await httpMessageBuilder.BuildResponseAsync(httpRequest, response);
+            var httpResponse = await httpMessageBuilder.BuildResponseAsync(httpRequest, request, response);
             
             httpResponse.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
             httpResponse.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
