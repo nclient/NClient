@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.HttpClients;
 using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.System;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

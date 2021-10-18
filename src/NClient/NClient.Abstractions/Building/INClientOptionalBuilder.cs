@@ -8,14 +8,14 @@ using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.Builders
+namespace NClient.Abstractions.Building
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
         #region MyRegion
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings);
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
         
         // TODO: doc
         public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
@@ -50,12 +50,7 @@ namespace NClient.Abstractions.Builders
         #endregion
 
         #region Resilience
-
-        // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-
+        
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
@@ -88,18 +83,12 @@ namespace NClient.Abstractions.Builders
         /// </summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory);
-        
-        /// <summary>
-        /// Sets instances of <see cref="ILogger"/>.
-        /// </summary>
-        /// <param name="logger">The logger for a client.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger<TClient> logger);
 
         /// <summary>
         /// Sets instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(params ILogger[] loggers);
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();

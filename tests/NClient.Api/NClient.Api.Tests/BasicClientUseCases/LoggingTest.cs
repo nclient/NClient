@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Api.Tests.Helpers;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
@@ -22,7 +22,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public void SetUp()
         {
             _api = new BasicApiMockFactory(5025);
-            _optionalBuilder = NClientGallery.NativeClients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
+            _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         
         [Test]
@@ -68,6 +68,22 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var customLogger = new CustomLogger();
             var client = _optionalBuilder
+                .WithLogging(customLogger)
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
+        }
+        
+        [Test]
+        public async Task NClientBuilder_WithMultipleCustomLoggers_NotThrow()
+        {
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var customLogger = new CustomLogger();
+            var client = _optionalBuilder
+                .WithLogging(customLogger)
                 .WithLogging(customLogger)
                 .Build();
             

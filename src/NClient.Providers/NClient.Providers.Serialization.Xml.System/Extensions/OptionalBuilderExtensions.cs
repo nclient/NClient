@@ -1,11 +1,11 @@
 ﻿using System.Xml;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization.Xml.System;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Serialization.System
+namespace NClient
 {
     public static class OptionalBuilderExtensions
     {

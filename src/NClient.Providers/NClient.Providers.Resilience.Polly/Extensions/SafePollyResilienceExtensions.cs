@@ -1,11 +1,13 @@
 ﻿using System;
-using NClient.Abstractions.Builders;
+using System.Net.Http;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
+using NClient.Providers.Resilience.Polly;
 using Polly;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Resilience.Polly
+namespace NClient
 {
     public static class SafePollyResilienceExtensions
     {
@@ -21,14 +23,14 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
-                (
-                    retryCount: 0,
-                    sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ShouldRetry
-                )));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                    maxRetries: 0,
+                    getDelay: _ => TimeSpan.FromSeconds(0), 
+                    shouldRetry: settings.ShouldRetry)))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -42,14 +44,14 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings), 
-                otherMethodProvider: new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>
-                (
-                    retryCount: 0,
-                    sleepDuration: _ => TimeSpan.FromSeconds(0),
-                    resultPredicate: settings.ShouldRetry
-                )));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                    maxRetries: 0,
+                    getDelay: _ => TimeSpan.FromSeconds(0), 
+                    shouldRetry: settings.ShouldRetry)))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         // TODO: doc
@@ -97,9 +99,11 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy), 
-                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
         
         /// <summary>
@@ -114,9 +118,12 @@ namespace NClient.Providers.Resilience.Polly
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithSafeResilience(
-                safeMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy), 
-                otherMethodProvider: new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy));
+            // TODO: use extension: httpRequest.Method == HttpMethod.Get...
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
     }
 }

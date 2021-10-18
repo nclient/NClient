@@ -3,10 +3,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
-using NClient.Providers.HttpClient.RestSharp;
-using NClient.Providers.HttpClient.System;
-using NClient.Providers.Resilience.Polly;
-using NClient.Providers.Serialization.Newtonsoft;
 using NUnit.Framework;
 using Polly;
 using RestSharp;
@@ -52,7 +48,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestSharpHttpClient()
                 .UsingNewtonsoftJsonSerializer()
-                .WithForcePollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
+                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();

@@ -1,11 +1,11 @@
-﻿using NClient.Abstractions.Builders;
+﻿using NClient.Abstractions.Building;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization.Json.Newtonsoft;
 using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Serialization.Newtonsoft
+namespace NClient
 {
     public static class SerializerBuilderExtensions
     {

@@ -1,4 +1,6 @@
-﻿using NClient.Abstractions.Ensuring;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Resilience;
 
 namespace NClient.Standalone.Client.Validation
@@ -11,24 +13,29 @@ namespace NClient.Standalone.Client.Validation
     
     internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
-        private readonly IEnsuringSettings<TRequest, TResponse> _ensuringSettings;
+        private readonly IReadOnlyCollection<IEnsuringSettings<TRequest, TResponse>> _ensuringSettings;
         
-        public ResponseValidator(IEnsuringSettings<TRequest, TResponse> ensuringSettings)
+        public ResponseValidator(IEnumerable<IEnsuringSettings<TRequest, TResponse>> ensuringSettings)
         {
-            _ensuringSettings = ensuringSettings;
+            _ensuringSettings = ensuringSettings.ToArray();
         }
 
         public bool IsValid(IResponseContext<TRequest, TResponse> responseContext)
         {
-            return _ensuringSettings.IsSuccess(responseContext);
+            return _ensuringSettings.All(x => x.IsSuccess(responseContext));
         }
         
         public IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext)
         {
-            if (_ensuringSettings.IsSuccess(responseContext))
+            foreach (var ensuringSetting in _ensuringSettings)
+            {
+                if (ensuringSetting.IsSuccess(responseContext))
+                    continue;
+                
+                ensuringSetting.OnFailure(responseContext);
                 return responseContext;
+            }
             
-            _ensuringSettings.OnFailure(responseContext);
             return responseContext;
         }
     }

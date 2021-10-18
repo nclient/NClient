@@ -1,10 +1,11 @@
 ﻿using System;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
+using NClient.Providers.Resilience.Polly;
 using Polly;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Resilience.Polly
+namespace NClient
 {
     public static class ResiliencePolicyProviderSetterExtensions
     {

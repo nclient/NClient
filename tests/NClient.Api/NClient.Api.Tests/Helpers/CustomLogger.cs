@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using NClient.Standalone.Client.Logging;
 
 namespace NClient.Api.Tests.Helpers
 {
@@ -17,7 +18,7 @@ namespace NClient.Api.Tests.Helpers
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            throw new NotImplementedException();
+            return new DisposableDecorator(Array.Empty<IDisposable>());
         }
     }
 }

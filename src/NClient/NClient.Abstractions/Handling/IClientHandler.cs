@@ -21,4 +21,9 @@ namespace NClient.Abstractions.Handling
         /// <returns></returns>
         Task<TResponse> HandleResponseAsync(TResponse response);
     }
+
+    public interface IOrderedClientHandler
+    {
+        public int Order { get; }
+    }
 }

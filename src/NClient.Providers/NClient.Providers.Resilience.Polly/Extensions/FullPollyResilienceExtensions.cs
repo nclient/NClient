@@ -1,27 +1,30 @@
 ﻿using System;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
+using NClient.Providers.Resilience.Polly;
 using Polly;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Resilience.Polly
+namespace NClient
 {
-    public static class ForcePollyResilienceExtensions
+    public static class FullPollyResilienceExtensions
     {
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
         /// <param name="clientOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithForcePollyResilience<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullPollyResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             IResiliencePolicySettings<TRequest, TResponse> settings)
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithForceResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -29,13 +32,15 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="factoryOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithForcePollyResilience<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullPollyResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
             IResiliencePolicySettings<TRequest, TResponse> settings)
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithForceResilience(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         // TODO: doc
@@ -44,14 +49,14 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="clientOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithForcePollyResilience<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullPollyResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithForcePollyResilience(
+            return clientOptionalBuilder.WithFullPollyResilience(
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
         }
         
@@ -61,13 +66,13 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="factoryOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithForcePollyResilience<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullPollyResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
             int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithForcePollyResilience(
+            return factoryOptionalBuilder.WithFullPollyResilience(
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
         }
 
@@ -76,14 +81,16 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="clientOptionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithForcePollyResilience<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullPollyResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithForceResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
+            return clientOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
         
         /// <summary>
@@ -91,13 +98,15 @@ namespace NClient.Providers.Resilience.Polly
         /// </summary>
         /// <param name="factoryOptionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithForcePollyResilience<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullPollyResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            return factoryOptionalBuilder.WithForceResilience(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy));
+            return factoryOptionalBuilder.WithCustomResilience(x => x
+                .ForAllMethods()
+                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
     }
 }

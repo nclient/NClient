@@ -17,7 +17,7 @@ namespace NClient.Tests.ClientTests
         public void Setup()
         {
             _restApiMockFactory = new RestApiMockFactory(port: 5010);
-            _restClient = NClientGallery.NativeClients
+            _restClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
                 .Build();

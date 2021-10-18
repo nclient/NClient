@@ -48,7 +48,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                         new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
                     Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
                     Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
-                    new ResponseValidator<IHttpRequest, IHttpResponse>(new StubEnsuringSettings<IHttpRequest, IHttpResponse>()));
+                    new ResponseValidator<IHttpRequest, IHttpResponse>(new[] { new StubEnsuringSettings<IHttpRequest, IHttpResponse>() }));
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

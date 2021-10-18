@@ -1,8 +1,9 @@
-﻿using NClient.Abstractions.Builders;
+﻿using NClient.Abstractions.Building;
+using NClient.Providers.HttpClient.System;
 using RestSharp;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.HttpClient.System
+namespace NClient
 {
     public static class EnsuringSuccessExtensions
     {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NClient.Abstractions.Configuration.Resilience;
+using NClient.Abstractions.HttpClients;
 using NClient.Core.Helpers;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -8,29 +10,43 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
 {
     internal class NClientFactoryResilienceMethodSelector<TRequest, TResponse> : INClientFactoryResilienceMethodSelector<TRequest, TResponse>
     {
-        private readonly BuilderContextModificator<TRequest, TResponse> _builderContextModificator;
+        private readonly MethodInfoEqualityComparer _methodInfoEqualityComparer = new();
+        private readonly BuilderContextModifier<TRequest, TResponse> _builderContextModifier;
         
-        public NClientFactoryResilienceMethodSelector(BuilderContextModificator<TRequest, TResponse> builderContextModificator)
+        public NClientFactoryResilienceMethodSelector(BuilderContextModifier<TRequest, TResponse> builderContextModifier)
         {
-            _builderContextModificator = builderContextModificator;
+            _builderContextModifier = builderContextModifier;
         }
 
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethods()
         {
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethods: null);
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(
+                _builderContextModifier, 
+                methodPredicate: (_, _) => true);
         }
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethodsOf<TClient>()
         {
-            var selectedMethods = typeof(TClient).GetInterfaceMethods();
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethods);
+            // TODO: test it
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(
+                _builderContextModifier, 
+                methodPredicate: (methodInfo, _) => methodInfo.DeclaringType == typeof(TClient));
         }
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector)
         {
             var func = methodSelector.Compile();
             var selectedMethod = func.Invoke(default!).Method;
-            return new NClientFactoryResilienceSetter<TRequest, TResponse>(_builderContextModificator, selectedMethod);
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(
+                _builderContextModifier, 
+                methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
+        }
+        
+        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IHttpRequest, bool> predicate)
+        {
+            return new NClientFactoryResilienceSetter<TRequest, TResponse>(
+                _builderContextModifier, 
+                predicate);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
         {
             _genericApiMockFactory = new GenericApiMockFactory(port: 5021);
 
-            _genericClient = NClientGallery.NativeClients
+            _genericClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IGenericClientWithMetadata>(_genericApiMockFactory.ApiUri.ToString())
                 .Build();

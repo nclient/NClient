@@ -8,14 +8,14 @@ using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
 
-namespace NClient.Abstractions.Builders
+namespace NClient.Abstractions.Building
 {
     public interface INClientFactoryOptionalBuilder<TRequest, TResponse>
     {
         #region MyRegion
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            IEnsuringSettings<TRequest, TResponse> ensuringSettings);
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
         
         // TODO: doc
         public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
@@ -50,12 +50,7 @@ namespace NClient.Abstractions.Builders
         #endregion
 
         #region Resilience
-
-        // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithForceResilience(IResiliencePolicyProvider<TRequest, TResponse> provider);
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience(IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience(IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider);
-
+        
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
         /// </summary>
@@ -97,7 +92,7 @@ namespace NClient.Abstractions.Builders
         /// Sets instances of <see cref="ILogger"/>.
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(ILogger logger);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(params ILogger[] loggers);
         
         // TODO: doc
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutLogging();

@@ -3,7 +3,6 @@ using System.Net.Http;
 using NClient.Abstractions.Configuration.Resilience;
 using NClient.Abstractions.Resilience;
 using NClient.Providers.HttpClient.System;
-using NClient.Providers.Resilience.Polly;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Builders;
-using NClient.Providers.Serialization.Newtonsoft;
+using NClient.Abstractions.Building;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public void SetUp()
         {
             _api = new BasicApiMockFactory(5027);
-            _optionalBuilder = NClientGallery.NativeClients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
+            _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         
         [Test]

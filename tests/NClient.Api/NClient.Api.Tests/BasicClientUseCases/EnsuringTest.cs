@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Builders;
+using NClient.Abstractions.Building;
 using NClient.Api.Tests.Helpers;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
@@ -19,7 +19,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public void SetUp()
         {
             _api = new BasicApiMockFactory(5023);
-            _optionalBuilder = NClientGallery.NativeClients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
+            _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         
         [Test]
@@ -37,7 +37,22 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_EnsuringSuccessWithCustomSettings_NotThrow()
+        public async Task NClientBuilder_ReplaceEnsuringSuccessWithCustomSettings_NotThrow()
+        {
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .NotEnsuringSuccess()
+                .EnsuringCustomSuccess(new CustomEnsuringSettings())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
+        }
+        
+        [Test]
+        public async Task NClientBuilder_AddEnsuringSuccessWithCustomSettings_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
@@ -51,7 +66,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_EnsuringCustomSuccess_NotThrow()
+        public async Task NClientBuilder_AddEnsuringCustomSuccess_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);

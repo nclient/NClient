@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Builders;
+﻿using NClient.Abstractions.Building;
 using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building.Context;
