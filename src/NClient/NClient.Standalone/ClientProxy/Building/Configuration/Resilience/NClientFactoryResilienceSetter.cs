@@ -9,7 +9,6 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
 {
-    // TODO: Need tests
     internal class NClientFactoryResilienceSetter<TRequest, TResponse> : INClientFactoryResilienceSetter<TRequest, TResponse>
     {
         private readonly BuilderContextModifier<TRequest, TResponse> _builderContextModifier;

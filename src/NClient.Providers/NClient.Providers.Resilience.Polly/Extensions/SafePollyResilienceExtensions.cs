@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Net.Http;
 using NClient.Abstractions.Building;
 using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
+using NClient.Core.Extensions;
 using NClient.Providers.Resilience.Polly;
 using Polly;
 
@@ -29,7 +29,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0), 
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -50,7 +50,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0), 
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -102,7 +102,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
         
@@ -118,11 +118,10 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            // TODO: use extension: httpRequest.Method == HttpMethod.Get...
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Get || httpRequest.Method == HttpMethod.Head || httpRequest.Method == HttpMethod.Options)
+                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
     }
