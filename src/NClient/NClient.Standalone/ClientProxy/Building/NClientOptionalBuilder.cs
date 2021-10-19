@@ -79,14 +79,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithHandlers(providers));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
-        {
-            Ensure.IsNotNull(handlers, nameof(handlers));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithHandlers(handlers));
-        }
-        
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
