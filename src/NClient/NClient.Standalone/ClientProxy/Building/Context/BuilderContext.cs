@@ -9,7 +9,6 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
-using NClient.Standalone.Client.Handling;
 using NClient.Standalone.ClientProxy.Building.Models;
 using NClient.Standalone.Exceptions.Factories;
 
@@ -101,13 +100,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
                 SerializerProvider = serializerProvider
             };
         }
-        
-        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(
-            Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
-        {
-            return WithEnsuringSetting(new[] { new EnsuringSettings<TRequest, TResponse>(successCondition, onFailure) });
-        }
-        
+
         public BuilderContext<TRequest, TResponse> WithEnsuringSetting(IEnumerable<IEnsuringSettings<TRequest, TResponse>> ensuringSettings)
         {
             return new BuilderContext<TRequest, TResponse>(this)
@@ -129,16 +122,6 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 ClientHandlerProviders = ClientHandlerProviders.Concat(clientHandlerProviders).ToList()
-            };
-        }
-
-        public BuilderContext<TRequest, TResponse> WithHandlers(IEnumerable<IClientHandler<TRequest, TResponse>> clientHandlers)
-        {
-            return new BuilderContext<TRequest, TResponse>(this)
-            {
-                ClientHandlerProviders = ClientHandlerProviders.Concat(clientHandlers
-                        .Select(x => new ClientHandlerProvider<TRequest, TResponse>(x)))
-                    .ToList()
             };
         }
 

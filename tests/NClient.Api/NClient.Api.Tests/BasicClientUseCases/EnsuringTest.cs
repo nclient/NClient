@@ -72,7 +72,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .EnsuringCustomSuccess(
-                    successCondition: _ => true, 
+                    isSuccess: _ => true, 
                     onFailure: _ =>
                     {
                     })

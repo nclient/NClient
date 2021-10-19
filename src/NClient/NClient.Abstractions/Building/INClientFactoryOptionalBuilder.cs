@@ -12,20 +12,6 @@ namespace NClient.Abstractions.Building
 {
     public interface INClientFactoryOptionalBuilder<TRequest, TResponse>
     {
-        #region MyRegion
-
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
-        
-        // TODO: doc
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            Predicate<IResponseContext<TRequest, TResponse>> successCondition,
-            Action<IResponseContext<TRequest, TResponse>> onFailure);
-        
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> NotEnsuringSuccess();
-
-        #endregion
-        
         #region Serializer
         
         /// <summary>
@@ -36,6 +22,15 @@ namespace NClient.Abstractions.Building
 
         #endregion
         
+        #region Ensuring
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
+            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> NotEnsuringSuccess();
+
+        #endregion
+
         #region Handling
 
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers);

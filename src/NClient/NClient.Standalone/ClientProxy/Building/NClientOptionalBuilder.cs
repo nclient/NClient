@@ -46,17 +46,7 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithEnsuringSetting(ensuringSettings));
         }
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            Predicate<IResponseContext<TRequest, TResponse>> successCondition, Action<IResponseContext<TRequest, TResponse>> onFailure)
-        {
-            Ensure.IsNotNull(successCondition, nameof(successCondition));
-            Ensure.IsNotNull(onFailure, nameof(onFailure));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithEnsuringSetting(successCondition, onFailure));
-        }
-        
+
         public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
