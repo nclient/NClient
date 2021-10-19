@@ -38,12 +38,14 @@ namespace NClient.Abstractions.Building
         
         #region Handling
 
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers);
+        
         /// <summary>
         /// Sets collection of <see cref="IClientHandler{TRequest,TResponse}"/> used to handle HTTP requests and responses />.
         /// </summary>
         /// <param name="handlers">The collection of handlers.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers);
-        
+
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
         

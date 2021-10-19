@@ -67,6 +67,14 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithSerializer(serializerProvider));
         }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers)
+        {
+            Ensure.IsNotNull(providers, nameof(providers));
+            
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithHandlers(providers));
+        }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
         {

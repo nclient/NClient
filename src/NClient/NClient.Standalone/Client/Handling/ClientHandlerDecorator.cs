@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Handling;
@@ -14,7 +15,10 @@ namespace NClient.Standalone.Client.Handling
             IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
             ILogger<TClient>? logger)
         {
-            _clientHandlers = clientHandlers;
+            _clientHandlers = clientHandlers
+                .OrderByDescending(x => x is IOrderedClientHandler)
+                .ThenBy(x => (x as IOrderedClientHandler)?.Order)
+                .ToArray();
             _logger = logger;
         }
 

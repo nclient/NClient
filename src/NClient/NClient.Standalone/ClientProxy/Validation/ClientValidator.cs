@@ -43,7 +43,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubSerializerProvider(),
                     new StubHttpClientProvider(),
                     new StubHttpMessageBuilderProvider(),
-                    new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
+                    new[] { new StubClientHandlerProvider<IHttpRequest, IHttpResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
                         new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
                     Array.Empty<IResultBuilderProvider<IHttpResponse>>(),

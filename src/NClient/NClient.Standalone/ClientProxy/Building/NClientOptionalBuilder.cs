@@ -70,6 +70,14 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithSerializer(serializerProvider));
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers)
+        {
+            Ensure.IsNotNull(providers, nameof(providers));
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithHandlers(providers));
+        }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
         {
@@ -161,10 +169,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.SerializerProvider,
                 _context.HttpClientProvider,
                 _context.HttpMessageBuilderProvider,
-                _context.ClientHandlers
-                    .OrderByDescending(x => x is IOrderedClientHandler)
-                    .ThenBy(x => (x as IOrderedClientHandler)?.Order)
-                    .ToArray(),
+                _context.ClientHandlerProviders,
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy.Reverse()),

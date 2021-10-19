@@ -20,7 +20,7 @@ namespace NClient.Standalone.Client
         private readonly ISerializerProvider _serializerProvider;
         private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
-        private readonly IClientHandler<TRequest, TResponse> _clientHandler;
+        private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
         private readonly IEnumerable<IResultBuilderProvider<IHttpResponse>> _resultBuilderProviders;
         private readonly IEnumerable<IResultBuilderProvider<TResponse>> _typedResultBuilderProviders;
@@ -31,7 +31,7 @@ namespace NClient.Standalone.Client
             ISerializerProvider serializerProvider,
             IHttpClientProvider<TRequest, TResponse> httpClientProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
-            IClientHandler<TRequest, TResponse> clientHandler,
+            IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
@@ -41,7 +41,7 @@ namespace NClient.Standalone.Client
             _serializerProvider = serializerProvider;
             _httpClientProvider = httpClientProvider;
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
-            _clientHandler = clientHandler;
+            _clientHandlerProvider = clientHandlerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _resultBuilderProviders = resultBuilderProviders;
             _typedResultBuilderProviders = typedResultBuilderProviders;
@@ -57,7 +57,7 @@ namespace NClient.Standalone.Client
                 serializer,
                 _httpClientProvider.Create(serializer),
                 _httpMessageBuilderProvider.Create(serializer),
-                _clientHandler,
+                _clientHandlerProvider.Create(),
                 _resiliencePolicyProvider.Create(),
                 _resultBuilderProviders.Select(x => x.Create()),
                 _typedResultBuilderProviders.Select(x => x.Create()),
