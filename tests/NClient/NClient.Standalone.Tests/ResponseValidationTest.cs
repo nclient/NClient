@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests
 {
     [Parallelizable]
-    public class EnsuringSuccessTest
+    public class ResponseValidationTest
     {
         private INClientOptionalBuilder<IRestClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _preConfiguredBasicClient = null!;
         private RestApiMockFactory _restApiMockFactory = null!;
@@ -27,13 +27,13 @@ namespace NClient.Standalone.Tests
         }
         
         [Test]
-        public async Task NotEnsuringSuccess_GetIntAsync_Id()
+        public async Task NotResponseValidation_GetIntAsync_Id()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockIntGetMethod(id);
 
             var result = await _preConfiguredBasicClient
-                .NotEnsuringSuccess()
+                .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
 
@@ -41,13 +41,13 @@ namespace NClient.Standalone.Tests
         }
         
         [Test]
-        public async Task NotEnsuringSuccess_GetStringAsync_Id()
+        public async Task NotResponseValidation_GetStringAsync_Id()
         {
             const string id = "1";
             using var api = _restApiMockFactory.MockStringGetMethod(id);
 
             var result = await _preConfiguredBasicClient
-                .NotEnsuringSuccess()
+                .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
 
@@ -55,13 +55,13 @@ namespace NClient.Standalone.Tests
         }
         
         [Test]
-        public async Task EnsuringSuccess_GetIntAsync_Id()
+        public async Task ResponseValidation_GetIntAsync_Id()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockIntGetMethod(id);
 
             var result = await _preConfiguredBasicClient
-                .EnsuringSystemSuccess()
+                .WithSystemResponseValidation()
                 .Build()
                 .GetAsync(id);
 
@@ -69,13 +69,13 @@ namespace NClient.Standalone.Tests
         }
         
         [Test]
-        public async Task EnsuringSuccess_GetStringAsync_Id()
+        public async Task ResponseValidation_GetStringAsync_Id()
         {
             const string id = "1";
             using var api = _restApiMockFactory.MockStringGetMethod(id);
 
             var result = await _preConfiguredBasicClient
-                .EnsuringSystemSuccess()
+                .WithSystemResponseValidation()
                 .Build()
                 .GetAsync(id);
 
@@ -83,50 +83,50 @@ namespace NClient.Standalone.Tests
         }
 
         [Test]
-        public async Task NotEnsuringSuccess_GetNotFoundInt_ThrowClientRequestException()
+        public async Task NotResponseValidation_GetNotFoundInt_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x.NotEnsuringSuccess()
+            await _preConfiguredBasicClient.Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
         }
         
         [Test, Ignore("it doesn't work with a string")]
-        public async Task NotEnsuringSuccess_GetNotFoundString_ThrowClientRequestException()
+        public async Task NotResponseValidation_GetNotFoundString_ThrowClientRequestException()
         {
             const string id = "1";
             using var api = _restApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x.NotEnsuringSuccess()
+            await _preConfiguredBasicClient.Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
         }
         
         [Test]
-        public async Task EnsuringSystemSuccess_GetIntAsync_ThrowClientRequestException()
+        public async Task SystemResponseValidation_GetIntAsync_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = _restApiMockFactory.MockNotFoundIntGetMethod(id);
 
             await _preConfiguredBasicClient.Invoking(async x => await x
-                    .EnsuringSystemSuccess()
+                    .WithSystemResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
         }
         
         [Test]
-        public async Task EnsuringSystemSuccess_GetStringAsync_ThrowClientRequestException()
+        public async Task SystemResponseValidation_GetStringAsync_ThrowClientRequestException()
         {
             const string id = "1";
             using var api = _restApiMockFactory.MockNotFoundStringGetMethod(id);
 
             await _preConfiguredBasicClient.Invoking(async x => await x
-                    .EnsuringSystemSuccess()
+                    .WithSystemResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();

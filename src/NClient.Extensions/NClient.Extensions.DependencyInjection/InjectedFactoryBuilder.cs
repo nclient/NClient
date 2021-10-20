@@ -32,7 +32,7 @@ namespace NClient.Extensions.DependencyInjection
                 .For(factoryName)
                 .UsingSystemHttpClient(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
-                .EnsuringSuccess()
+                .WithResponseValidation()
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithLogging(loggerFactory);

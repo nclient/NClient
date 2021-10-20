@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Validation;
 
 namespace NClient.Abstractions.Building
 {
@@ -22,17 +22,24 @@ namespace NClient.Abstractions.Building
 
         #endregion
         
-        #region Ensuring
+        #region ResponseValidation
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings);
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> NotEnsuringSuccess();
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators);
+
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorProvider<TRequest, TResponse>[] responseValidatorProviders);
+
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResponseValidation();
 
         #endregion
 
         #region Handling
 
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerSettings<TRequest, TResponse>[] clientHandlerSettings);
+
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers);
+        
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers);
 
         // TODO: doc

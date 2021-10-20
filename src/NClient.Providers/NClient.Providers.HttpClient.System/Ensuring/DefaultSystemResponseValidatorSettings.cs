@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Exceptions;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Validation;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.HttpClient.System
 {
-    public class DefaultSystemEnsuringSettings : IEnsuringSettings<HttpRequestMessage, HttpResponseMessage>
+    public class DefaultSystemResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {
         public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
         public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
         
-        public DefaultSystemEnsuringSettings() : this(
+        public DefaultSystemResponseValidatorSettings() : this(
             isSuccess: x => x.Response.IsSuccessStatusCode,
             onFailure: x =>
             {
@@ -28,7 +28,7 @@ namespace NClient.Providers.HttpClient.System
         {
         }
         
-        public DefaultSystemEnsuringSettings(
+        public DefaultSystemResponseValidatorSettings(
             Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
             Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
         {

@@ -3,6 +3,8 @@ using NClient.Abstractions.HttpClients;
 
 namespace NClient.Abstractions.Resilience
 {
+    // TODO: rename
+    // TODO: TRequest support
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="IResiliencePolicy"/> instances for specific method.
     /// </summary>

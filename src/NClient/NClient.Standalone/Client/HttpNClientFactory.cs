@@ -6,7 +6,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
-using NClient.Standalone.Client.Validation;
+using NClient.Abstractions.Validation;
 
 namespace NClient.Standalone.Client
 {
@@ -24,7 +24,7 @@ namespace NClient.Standalone.Client
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
         private readonly IEnumerable<IResultBuilderProvider<IHttpResponse>> _resultBuilderProviders;
         private readonly IEnumerable<IResultBuilderProvider<TResponse>> _typedResultBuilderProviders;
-        private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
+        private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly ILogger? _logger;
 
         public HttpNClientFactory(
@@ -35,7 +35,7 @@ namespace NClient.Standalone.Client
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
-            IResponseValidator<TRequest, TResponse> responseValidator,
+            IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
             ILogger? logger)
         {
             _serializerProvider = serializerProvider;
@@ -45,7 +45,7 @@ namespace NClient.Standalone.Client
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _resultBuilderProviders = resultBuilderProviders;
             _typedResultBuilderProviders = typedResultBuilderProviders;
-            _responseValidator = responseValidator;
+            _responseValidatorProvider = responseValidatorProvider;
             _logger = logger;
         }
 
@@ -61,7 +61,7 @@ namespace NClient.Standalone.Client
                 _resiliencePolicyProvider.Create(),
                 _resultBuilderProviders.Select(x => x.Create()),
                 _typedResultBuilderProviders.Select(x => x.Create()),
-                _responseValidator,
+                _responseValidatorProvider.Create(),
                 _logger);
         }
     }

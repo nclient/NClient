@@ -29,7 +29,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
             var client = _optionalBuilder
                 .UsingRestSharpHttpClient()
                 .UsingJsonSerializer()
-                .EnsuringRestSharpSuccess()
+                .WithRestSharpResponseValidation()
                 .Build();
             
             var response = await client.GetAsync(id);

@@ -1,15 +1,17 @@
 ﻿using System;
 using NClient.Abstractions.Resilience;
 
-namespace NClient.Abstractions.Ensuring
+namespace NClient.Abstractions.Validation
 {
-    public interface IEnsuringSettings<TRequest, TResponse>
+    // TODO: folder for providers
+    // TODO: HttpRequest support
+    public interface IResponseValidatorSettings<TRequest, TResponse>
     {
         Predicate<IResponseContext<TRequest, TResponse>> IsSuccess { get; }
         Action<IResponseContext<TRequest, TResponse>> OnFailure { get; }
     }
     
-    public interface IOrderedEnsuringSettings
+    public interface IOrderedResponseValidationSettings
     {
         public int Order { get; }
     }

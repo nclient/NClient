@@ -8,7 +8,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
-using NClient.Standalone.Client.Validation;
+using NClient.Abstractions.Validation;
 
 namespace NClient.Standalone.Client
 {
@@ -105,7 +105,7 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            _responseValidator.Ensure(responseContext);
+            await _responseValidator.OnFailureAsync(responseContext).ConfigureAwait(false);
         }
 
         public async Task<object?> GetResultAsync(IHttpRequest httpRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
@@ -128,7 +128,7 @@ namespace NClient.Standalone.Client
                     .BuildAsync(dataType, httpResponse, _serializer)
                     .ConfigureAwait(false);
             
-            _responseValidator.Ensure(responseContext);
+            await _responseValidator.OnFailureAsync(responseContext).ConfigureAwait(false);
             
             return _serializer.Deserialize(httpResponse.Content.ToString(), dataType);
         }
@@ -220,14 +220,14 @@ namespace NClient.Standalone.Client
         
         private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> responseContext)
         {
-            return _responseValidator.IsValid(responseContext)
+            return _responseValidator.IsSuccess(responseContext)
                 ? _serializer.Deserialize(data, dataType)
                 : null;
         }
 
         private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> responseContext)
         {
-            return !_responseValidator.IsValid(responseContext)
+            return !_responseValidator.IsSuccess(responseContext)
                 ? _serializer.Deserialize(data, errorType)
                 : null;
         }

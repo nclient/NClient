@@ -4,19 +4,19 @@ using NClient.Abstractions.Building;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class EnsuringSuccessExtensions
+    public static class ResponseValidationExtensions
     {
-        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> EnsuringSuccess<TClient>(
+        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithResponseValidation<TClient>(
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.EnsuringSystemSuccess();
+            return factoryOptionalBuilder.WithSystemResponseValidation();
         }
         
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> EnsuringSuccess(
+        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.EnsuringSystemSuccess();
+            return factoryOptionalBuilder.WithSystemResponseValidation();
         }
     }
 }

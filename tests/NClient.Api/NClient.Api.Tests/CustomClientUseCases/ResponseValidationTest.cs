@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace NClient.Api.Tests.CustomClientUseCases
 {
     [Parallelizable]
-    public class EnsuringTest
+    public class ResponseValidationTest
     {
         private INClientHttpClientBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
@@ -21,14 +21,14 @@ namespace NClient.Api.Tests.CustomClientUseCases
         }
         
         [Test]
-        public async Task CustomNClientBuilder_WithEnsuringRestSharpSuccess_NotThrow()
+        public async Task CustomNClientBuilder_WithRestSharpResponseValidation_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .UsingRestSharpHttpClient()
                 .UsingJsonSerializer()
-                .EnsuringRestSharpSuccess()
+                .WithRestSharpResponseValidation()
                 .Build();
             
             var response = await client.GetAsync(id);

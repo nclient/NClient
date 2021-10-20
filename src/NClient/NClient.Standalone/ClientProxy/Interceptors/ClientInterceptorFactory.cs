@@ -7,6 +7,7 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Validation;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
@@ -34,7 +35,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
-            IResponseValidator<TRequest, TResponse> responseValidator,
+            IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             ILogger<TClient>? logger = null);
     }
 
@@ -82,7 +83,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders,
             IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
-            IResponseValidator<TRequest, TResponse> responseValidator,
+            IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             ILogger<TClient>? logger = null)
         {
             return new ClientInterceptor<TClient, TRequest, TResponse>(
@@ -95,11 +96,11 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                     serializerProvider,
                     httpClientProvider,
                     httpMessageBuilderProvider,
-                    new ClientHandlerProviderDecorator<TClient, TRequest, TResponse>(clientHandlerProviders, logger),
+                    new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
                     resultBuilderProviders,
                     typedResultBuilderProviders,
-                    responseValidator,
+                    new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
                     logger),
                 methodResiliencePolicyProvider,
                 _clientRequestExceptionFactory,

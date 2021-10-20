@@ -7,7 +7,6 @@ using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Results;
 using NClient.Exceptions;
 using NClient.Resilience;
-using NClient.Standalone.Client.Ensuring;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.HttpClients;
 using NClient.Standalone.Client.Resilience;
@@ -48,7 +47,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                         new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
                     Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
                     Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
-                    new ResponseValidator<IHttpRequest, IHttpResponse>(new[] { new StubEnsuringSettings<IHttpRequest, IHttpResponse>() }));
+                    new[] { new StubResponseValidatorProvider<IHttpRequest, IHttpResponse>() });
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

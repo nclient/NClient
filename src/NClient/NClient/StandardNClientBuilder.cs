@@ -21,7 +21,7 @@ namespace NClient
                 .For<TClient>(host)
                 .UsingHttpClient()
                 .UsingJsonSerializer()
-                .EnsuringSuccess()
+                .WithResponseValidation()
                 .WithoutHandling()
                 .WithIdempotentResilience()
                 .WithResults()

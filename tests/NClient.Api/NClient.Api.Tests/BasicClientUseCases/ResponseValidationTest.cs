@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace NClient.Api.Tests.BasicClientUseCases
 {
     [Parallelizable]
-    public class EnsuringTest
+    public class ResponseValidationTest
     {
         private INClientOptionalBuilder<IBasicClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
@@ -23,12 +23,12 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_NoEnsuringSuccess_NotThrow()
+        public async Task NClientBuilder_NoResponseValidation_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .NotEnsuringSuccess()
+                .WithoutResponseValidation()
                 .Build();
 
             var response = await client.GetAsync(id);
@@ -37,27 +37,13 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_ReplaceEnsuringSuccessWithCustomSettings_NotThrow()
+        public async Task NClientBuilder_ReplaceResponseValidationWithCustomSettings_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .NotEnsuringSuccess()
-                .EnsuringCustomSuccess(new CustomEnsuringSettings())
-                .Build();
-            
-            var response = await client.GetAsync(id);
-
-            response.Should().Be(id);
-        }
-        
-        [Test]
-        public async Task NClientBuilder_AddEnsuringSuccessWithCustomSettings_NotThrow()
-        {
-            const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
-                .EnsuringCustomSuccess(new CustomEnsuringSettings())
+                .WithoutResponseValidation()
+                .WithCustomResponseValidation(new CustomResponseValidatorSettings())
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -66,12 +52,26 @@ namespace NClient.Api.Tests.BasicClientUseCases
         }
         
         [Test]
-        public async Task NClientBuilder_AddEnsuringCustomSuccess_NotThrow()
+        public async Task NClientBuilder_AddResponseValidationWithCustomSettings_NotThrow()
         {
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .EnsuringCustomSuccess(
+                .WithCustomResponseValidation(new CustomResponseValidatorSettings())
+                .Build();
+            
+            var response = await client.GetAsync(id);
+
+            response.Should().Be(id);
+        }
+        
+        [Test]
+        public async Task NClientBuilder_AddCustomResponseValidation_NotThrow()
+        {
+            const int id = 1;
+            using var api = _api.MockGetMethod(id);
+            var client = _optionalBuilder
+                .WithResponseValidation(
                     isSuccess: _ => true, 
                     onFailure: _ =>
                     {

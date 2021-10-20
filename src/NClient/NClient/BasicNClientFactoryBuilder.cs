@@ -19,7 +19,7 @@ namespace NClient
                 .For(factoryName)
                 .UsingHttpClient()
                 .UsingJsonSerializer()
-                .EnsuringSuccess()
+                .WithResponseValidation()
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithResults()

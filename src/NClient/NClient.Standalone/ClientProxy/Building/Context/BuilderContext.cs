@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Validation;
 using NClient.Standalone.ClientProxy.Building.Models;
 using NClient.Standalone.Exceptions.Factories;
 
@@ -25,7 +25,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
-        public IReadOnlyCollection<IEnsuringSettings<TRequest, TResponse>> EnsuringSettings { get; private set; }
+        public IReadOnlyCollection<IResponseValidatorProvider<TRequest, TResponse>> ResponseValidatorProviders { get; private set; }
 
         public IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> ClientHandlerProviders { get; private set; }
 
@@ -40,7 +40,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public BuilderContext()
         {
-            EnsuringSettings = Array.Empty<IEnsuringSettings<TRequest, TResponse>>();
+            ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicatePair<TRequest, TResponse>>();
             ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
@@ -60,7 +60,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             SerializerProvider = builderContext.SerializerProvider;
 
-            EnsuringSettings = builderContext.EnsuringSettings.ToArray();
+            ResponseValidatorProviders = builderContext.ResponseValidatorProviders.ToArray();
 
             ClientHandlerProviders = builderContext.ClientHandlerProviders.ToArray();
 
@@ -101,19 +101,19 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
 
-        public BuilderContext<TRequest, TResponse> WithEnsuringSetting(IEnumerable<IEnsuringSettings<TRequest, TResponse>> ensuringSettings)
+        public BuilderContext<TRequest, TResponse> WithResponseValidation(IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                EnsuringSettings = EnsuringSettings.Concat(ensuringSettings).ToArray()
+                ResponseValidatorProviders = ResponseValidatorProviders.Concat(responseValidatorProviders).ToArray()
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithoutEnsuringSetting()
+        public BuilderContext<TRequest, TResponse> WithoutResponseValidation()
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                EnsuringSettings = Array.Empty<IEnsuringSettings<TRequest, TResponse>>()
+                ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>()
             };
         }
         

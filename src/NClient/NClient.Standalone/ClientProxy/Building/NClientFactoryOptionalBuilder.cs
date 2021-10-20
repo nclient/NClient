@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions;
 using NClient.Abstractions.Building;
 using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.Ensuring;
 using NClient.Abstractions.Handling;
 using NClient.Abstractions.HttpClients;
 using NClient.Abstractions.Resilience;
 using NClient.Abstractions.Results;
 using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Validation;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
+using NClient.Standalone.Client.Handling;
+using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.ClientGeneration;
@@ -34,20 +37,35 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
             _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
         }
-
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> EnsuringCustomSuccess(
-            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings)
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings)
         {
-            Ensure.IsNotNull(ensuringSettings, nameof(ensuringSettings));
-            
-            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithEnsuringSetting(ensuringSettings));
+            return WithCustomResponseValidation(responseValidatorSettings
+                .Select(x => new ResponseValidator<TRequest, TResponse>(x))
+                .Cast<IResponseValidator<TRequest, TResponse>>()
+                .ToArray());
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators)
+        {
+            return WithCustomResponseValidation(responseValidators
+                .Select(x => new ResponseValidatorProvider<TRequest, TResponse>(x))
+                .Cast<IResponseValidatorProvider<TRequest, TResponse>>()
+                .ToArray());
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> NotEnsuringSuccess()
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorProvider<TRequest, TResponse>[] responseValidatorProviders)
+        {
+            Ensure.IsNotNull(responseValidatorProviders, nameof(responseValidatorProviders));
+            
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithResponseValidation(responseValidatorProviders));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResponseValidation()
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithoutEnsuringSetting());
+                .WithoutResponseValidation());
         }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider)
@@ -56,6 +74,26 @@ namespace NClient.Standalone.ClientProxy.Building
             
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithSerializer(serializerProvider));
+        }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerSettings<TRequest, TResponse>[] clientHandlerSettings)
+        {
+            return WithCustomHandling(clientHandlerSettings
+                .Select(x => new ClientHandler<TRequest, TResponse>(x))
+                .Cast<IClientHandler<TRequest, TResponse>>()
+                .ToArray());
+        }
+        
+        /// <summary>
+        /// Sets collection of <see cref="IClientHandler{TRequest,TResponse}"/> used to handle HTTP requests and responses />.
+        /// </summary>
+        /// <param name="handlers">The collection of handlers.</param>
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
+        {
+            return WithCustomHandling(handlers
+                .Select(x => new ClientHandlerProvider<TRequest, TResponse>(x))
+                .Cast<IClientHandlerProvider<TRequest, TResponse>>()
+                .ToArray());
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers)

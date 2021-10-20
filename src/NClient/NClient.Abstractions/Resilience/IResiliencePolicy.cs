@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace NClient.Abstractions.Resilience
 {
+    // TODO: HttpRequest support
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates.
     /// </summary>

@@ -2,6 +2,7 @@
 
 namespace NClient.Abstractions.Handling
 {
+    // TODO: HttpRequest support
     /// <summary>
     /// Provides custom functionality to handling HTTP requests and responses.
     /// </summary>

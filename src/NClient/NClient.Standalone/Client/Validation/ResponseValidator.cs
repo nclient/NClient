@@ -1,42 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NClient.Abstractions.Ensuring;
+﻿using System.Threading.Tasks;
 using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {
-    internal interface IResponseValidator<TRequest, TResponse>
+    public class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
-        bool IsValid(IResponseContext<TRequest, TResponse> responseContext);
-        IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext);
-    }
-    
-    internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
-    {
-        private readonly IReadOnlyCollection<IEnsuringSettings<TRequest, TResponse>> _ensuringSettings;
+        private readonly IResponseValidatorSettings<TRequest, TResponse> _responseValidatorSettings;
         
-        public ResponseValidator(IEnumerable<IEnsuringSettings<TRequest, TResponse>> ensuringSettings)
+        public ResponseValidator(IResponseValidatorSettings<TRequest, TResponse> responseValidatorSettings)
         {
-            _ensuringSettings = ensuringSettings.ToArray();
+            _responseValidatorSettings = responseValidatorSettings;
+        }
+        
+        public bool IsSuccess(IResponseContext<TRequest, TResponse> responseContext)
+        {
+            return _responseValidatorSettings.IsSuccess(responseContext);
         }
 
-        public bool IsValid(IResponseContext<TRequest, TResponse> responseContext)
+        public Task OnFailureAsync(IResponseContext<TRequest, TResponse> responseContext)
         {
-            return _ensuringSettings.All(x => x.IsSuccess(responseContext));
-        }
-        
-        public IResponseContext<TRequest, TResponse> Ensure(IResponseContext<TRequest, TResponse> responseContext)
-        {
-            foreach (var ensuringSetting in _ensuringSettings)
-            {
-                if (ensuringSetting.IsSuccess(responseContext))
-                    continue;
-                
-                ensuringSetting.OnFailure(responseContext);
-                return responseContext;
-            }
-            
-            return responseContext;
+            _responseValidatorSettings.OnFailure(responseContext);
+            return Task.CompletedTask;
         }
     }
 }
