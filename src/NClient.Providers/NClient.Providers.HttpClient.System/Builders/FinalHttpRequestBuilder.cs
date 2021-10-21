@@ -3,8 +3,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 
 namespace NClient.Providers.HttpClient.System.Builders
 {

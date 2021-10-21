@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.Resilience;
 
 namespace NClient.Standalone.Client.Resilience
 {

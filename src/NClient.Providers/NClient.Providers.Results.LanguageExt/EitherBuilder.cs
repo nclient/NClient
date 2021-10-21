@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Results;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Results;
+using NClient.Abstractions.Providers.Serialization;
 
 namespace NClient.Providers.Results.LanguageExt
 {

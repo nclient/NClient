@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;

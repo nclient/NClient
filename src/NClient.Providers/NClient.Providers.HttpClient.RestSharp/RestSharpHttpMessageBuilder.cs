@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Providers.HttpClient.RestSharp.Builders;
 using NClient.Providers.HttpClient.RestSharp.Helpers;
 using ParameterType = RestSharp.ParameterType;

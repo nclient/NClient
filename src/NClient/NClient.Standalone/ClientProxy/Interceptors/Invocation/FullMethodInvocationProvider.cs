@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NClient.Abstractions.Clients;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
 {

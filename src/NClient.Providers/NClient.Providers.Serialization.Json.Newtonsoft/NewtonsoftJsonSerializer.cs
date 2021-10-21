@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
 using Newtonsoft.Json;
 

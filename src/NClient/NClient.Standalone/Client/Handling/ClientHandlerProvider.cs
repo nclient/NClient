@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Handling;
+﻿using NClient.Abstractions.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {

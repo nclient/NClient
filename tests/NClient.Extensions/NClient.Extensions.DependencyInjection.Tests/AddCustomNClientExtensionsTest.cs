@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
 using NUnit.Framework;
 using Polly;

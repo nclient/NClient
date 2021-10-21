@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NClient.Abstractions.Handling;
+using NClient.Abstractions.Providers.Handling;
 
 namespace NClient.Api.Tests.Helpers
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Building.Configuration.Resilience;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Resilience;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 

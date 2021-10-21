@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using RestSharp;
 using RestSharp.Authenticators;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Providers.HttpClient.RestSharp.Helpers;
 using RestSharp;
 

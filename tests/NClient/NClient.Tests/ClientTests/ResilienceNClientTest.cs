@@ -3,7 +3,7 @@ using System.Net.Http;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Extensions;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.Resilience;
 using NClient.Exceptions;
 using NClient.Providers.Resilience.Polly;
 using NClient.Standalone.Tests.Clients;

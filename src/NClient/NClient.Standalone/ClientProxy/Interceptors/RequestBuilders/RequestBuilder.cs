@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Annotations.Parameters;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;

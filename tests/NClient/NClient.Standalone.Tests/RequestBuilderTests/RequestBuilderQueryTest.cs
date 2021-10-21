@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using FluentAssertions;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Exceptions;

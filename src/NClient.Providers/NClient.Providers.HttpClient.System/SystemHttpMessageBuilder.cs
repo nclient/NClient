@@ -5,8 +5,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Providers.HttpClient.System.Builders;
 
 namespace NClient.Providers.HttpClient.System

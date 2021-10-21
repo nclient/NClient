@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System.Stubs;
 
@@ -37,7 +37,7 @@ namespace NClient.Providers.HttpClient.System
         /// <summary>
         /// Creates the System.Net.Http based HTTP client provider.
         /// </summary>
-        /// <param name="httpClient">The system <see cref="System.Net.Http.HttpClient"/>.</param>
+        /// <param name="httpClient">The system <see cref="HttpClient"/>.</param>
         public SystemHttpClientProvider(global::System.Net.Http.HttpClient httpClient)
         {
             Ensure.IsNotNull(httpClient, nameof(httpClient));
@@ -48,8 +48,8 @@ namespace NClient.Providers.HttpClient.System
         /// <summary>
         /// Creates the System.Net.Http based HTTP client provider.
         /// </summary>
-        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="System.Net.Http.HttpClient"/> instances.</param>
-        /// <param name="httpClientName">The logical name of <see cref="System.Net.Http.HttpClient"/> to create.</param>
+        /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
+        /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
         public SystemHttpClientProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));

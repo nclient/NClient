@@ -1,5 +1,5 @@
 ﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.Results;
+using NClient.Abstractions.Providers.Results;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

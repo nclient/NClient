@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Validation;
+﻿using NClient.Abstractions.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {

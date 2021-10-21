@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.HttpClients;
+﻿using NClient.Abstractions.Providers.HttpClient;
 
 namespace NClient.Abstractions.Building
 {

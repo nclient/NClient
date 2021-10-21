@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Results;
-using NClient.Abstractions.Serialization;
-using NClient.Abstractions.Validation;
+using NClient.Abstractions.Providers.Handling;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Resilience;
+using NClient.Abstractions.Providers.Results;
+using NClient.Abstractions.Providers.Serialization;
+using NClient.Abstractions.Providers.Validation;
 
 namespace NClient.Standalone.Client
 {

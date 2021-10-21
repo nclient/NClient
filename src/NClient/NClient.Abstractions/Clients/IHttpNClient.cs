@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Resilience;
 
 namespace NClient.Abstractions.Clients
 {

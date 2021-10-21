@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Testing.Common.Entities;

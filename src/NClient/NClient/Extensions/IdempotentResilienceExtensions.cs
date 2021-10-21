@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using NClient.Abstractions.Building;
-using NClient.Abstractions.Resilience;
+using NClient.Abstractions.Providers.Resilience;
 using NClient.Common.Helpers;
 using NClient.Providers.HttpClient.System;
 

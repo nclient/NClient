@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Building.Configuration.Resilience;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Core.Helpers;
 using NClient.Standalone.ClientProxy.Building.Context;
 

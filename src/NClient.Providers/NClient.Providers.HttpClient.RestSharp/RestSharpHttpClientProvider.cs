@@ -1,5 +1,5 @@
-﻿using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Serialization;
+﻿using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -7,7 +7,7 @@ using RestSharp.Authenticators;
 namespace NClient.Providers.HttpClient.RestSharp
 {
     /// <summary>
-    /// The RestSharp based provider for a component that can create <see cref="IHttpClient"/> instances.
+    /// The RestSharp based provider for a component that can create <see cref="IHttpClient{TRequest,TResponse}"/> instances.
     /// </summary>
     public class RestSharpHttpClientProvider : IHttpClientProvider<IRestRequest, IRestResponse>
     {

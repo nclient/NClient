@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Validation;
+using NClient.Abstractions.Providers.Resilience;
+using NClient.Abstractions.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {

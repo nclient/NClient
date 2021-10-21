@@ -1,5 +1,5 @@
 ﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building.Context;
 

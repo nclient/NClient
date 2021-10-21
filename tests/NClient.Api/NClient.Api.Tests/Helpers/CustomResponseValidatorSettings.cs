@@ -1,5 +1,5 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions.Validation;
+using NClient.Abstractions.Providers.Validation;
 
 namespace NClient.Api.Tests.Helpers
 {

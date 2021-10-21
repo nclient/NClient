@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NClient.Abstractions.Handling;
+using NClient.Abstractions.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {

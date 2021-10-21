@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using NClient.Abstractions.HttpClients;
+using NClient.Abstractions.Providers.HttpClient;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.HttpClient.System
