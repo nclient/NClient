@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     public class HttpResponseHeaderContainer : IHttpResponseHeaderContainer
     {

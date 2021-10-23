@@ -1,5 +1,5 @@
-﻿using NClient.Abstractions.Providers.HttpClient;
-using NClient.Abstractions.Providers.Results;
+﻿using NClient.Abstractions.Providers.Results;
+using NClient.Abstractions.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {

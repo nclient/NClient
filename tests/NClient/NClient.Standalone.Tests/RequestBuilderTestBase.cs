@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using FluentAssertions;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;

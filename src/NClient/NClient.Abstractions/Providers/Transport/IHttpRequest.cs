@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     public interface IHttpRequest
     {

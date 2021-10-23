@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     /// <summary>
     /// Response content.

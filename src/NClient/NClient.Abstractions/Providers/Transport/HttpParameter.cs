@@ -1,6 +1,6 @@
 ﻿using NClient.Common.Helpers;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     /// <summary>
     /// The container for HTTP header data.

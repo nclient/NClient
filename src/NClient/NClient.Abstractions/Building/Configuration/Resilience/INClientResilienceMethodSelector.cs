@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 
 namespace NClient.Abstractions.Building.Configuration.Resilience
 {

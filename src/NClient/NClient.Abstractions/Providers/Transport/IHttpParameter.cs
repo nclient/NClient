@@ -1,4 +1,4 @@
-﻿namespace NClient.Abstractions.Providers.HttpClient
+﻿namespace NClient.Abstractions.Providers.Transport
 {
     public interface IHttpParameter
     {

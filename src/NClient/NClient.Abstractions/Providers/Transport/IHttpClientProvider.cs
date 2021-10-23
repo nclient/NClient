@@ -1,6 +1,6 @@
 ﻿using NClient.Abstractions.Providers.Serialization;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="IHttpClient"/> instances.

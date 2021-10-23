@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 
 namespace NClient.Abstractions.Providers.Resilience
 {

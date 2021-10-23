@@ -3,14 +3,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Results;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Exceptions;
 using NClient.Resilience;
 using NClient.Standalone.Client.Handling;
-using NClient.Standalone.Client.HttpClient;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Serialization;
+using NClient.Standalone.Client.Transport;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Interceptors;
 

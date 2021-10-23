@@ -1,4 +1,4 @@
-﻿namespace NClient.Abstractions.Providers.HttpClient
+﻿namespace NClient.Abstractions.Providers.Transport
 {
     public interface IHttpResponseWithError<TValue, TError> : IHttpResponseWithError<TError>, IHttpResponse<TValue>
     {

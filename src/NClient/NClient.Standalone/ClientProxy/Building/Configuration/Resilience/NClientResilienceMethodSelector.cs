@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using NClient.Abstractions.Building.Configuration.Resilience;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Core.Helpers;
 using NClient.Standalone.ClientProxy.Building.Context;
 

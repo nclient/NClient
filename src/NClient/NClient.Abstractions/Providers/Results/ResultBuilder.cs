@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
+using NClient.Abstractions.Providers.Transport;
 
 namespace NClient.Abstractions.Providers.Results
 {

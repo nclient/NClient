@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 
-namespace NClient.Standalone.Client.HttpClient
+namespace NClient.Standalone.Client.Transport
 {
     internal class StubHttpClient : IHttpClient<IHttpRequest, IHttpResponse>
     {

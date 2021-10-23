@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Testing.Common.Clients;

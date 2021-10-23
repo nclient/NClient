@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     /// <summary>
     /// Invoker of HTTP requests.

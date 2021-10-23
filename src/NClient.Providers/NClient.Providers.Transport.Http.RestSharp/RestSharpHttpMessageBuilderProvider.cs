@@ -1,5 +1,5 @@
-﻿using NClient.Abstractions.Providers.HttpClient;
-using NClient.Abstractions.Providers.Serialization;
+﻿using NClient.Abstractions.Providers.Serialization;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NClient.Abstractions;
-using NClient.Abstractions.Providers.HttpClient;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;

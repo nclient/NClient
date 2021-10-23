@@ -2,10 +2,10 @@
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Abstractions.Providers.Handling;
-using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Resilience;
 using NClient.Abstractions.Providers.Results;
 using NClient.Abstractions.Providers.Serialization;
+using NClient.Abstractions.Providers.Transport;
 using NClient.Abstractions.Providers.Validation;
 
 namespace NClient.Standalone.Client

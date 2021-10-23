@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     public interface IHttpResponse<TValue> : IHttpResponse
     {

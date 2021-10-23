@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace NClient.Abstractions.Providers.HttpClient
+namespace NClient.Abstractions.Providers.Transport
 {
     // TODO: doc
     public interface IHttpMessageBuilder<TRequest, TResponse>
