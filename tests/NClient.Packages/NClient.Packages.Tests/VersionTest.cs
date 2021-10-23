@@ -34,11 +34,11 @@ namespace NClient.Packages.Tests
 
         [Test]
         public void NClient_Providers_HttpClient_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.System").Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.System").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_HttpClient_RestSharp() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.HttpClient.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Resilience_Polly() =>

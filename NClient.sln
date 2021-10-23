@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Standalone", "src\N
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "providers", "providers", "{DCB997FD-29F4-48D9-8348-093761DA42E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Providers.HttpClient.RestSharp", "src\NClient.Providers\NClient.Providers.HttpClient.RestSharp\NClient.Providers.HttpClient.RestSharp.csproj", "{C42DB132-AFCE-4283-83AF-7E271580C0B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Providers.Transport.Http.RestSharp", "src\NClient.Providers\NClient.Providers.Transport.Http.RestSharp\NClient.Providers.Transport.Http.RestSharp.csproj", "{C42DB132-AFCE-4283-83AF-7E271580C0B2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Providers.Resilience.Polly", "src\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj", "{6B4E7185-DF75-483F-BC12-2AE38F50CAB8}"
 EndProject
@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Sandbox.ProxyServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Sandbox.ThirdPartyService", "sandbox\NClient.Sandbox.ThirdPartyService\NClient.Sandbox.ThirdPartyService.csproj", "{9CE4CE94-010D-4755-9A9E-43A6E444395F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.HttpClient.System", "src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj", "{47A43396-24E7-41E3-BA94-041EC1F82494}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Transport.Http.System", "src\NClient.Providers\NClient.Providers.Transport.Http.System\NClient.Providers.Transport.Http.System.csproj", "{47A43396-24E7-41E3-BA94-041EC1F82494}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Json.System", "src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj", "{66DF531E-A4A7-4645-A99E-3C9BC78F6000}"
 EndProject

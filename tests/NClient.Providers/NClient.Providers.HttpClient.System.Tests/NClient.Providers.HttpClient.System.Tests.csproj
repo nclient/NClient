@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Transport.Http.System\NClient.Providers.Transport.Http.System.csproj" />
         <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj" />
     </ItemGroup>
     
