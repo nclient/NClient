@@ -6,8 +6,8 @@ using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using Moq;
-using NClient.Abstractions.Providers.Serialization;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

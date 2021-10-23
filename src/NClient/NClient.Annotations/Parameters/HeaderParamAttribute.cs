@@ -1,6 +1,4 @@
-﻿using NClient.Annotations.Abstractions;
-
-namespace NClient.Annotations.Parameters
+﻿namespace NClient.Annotations.Parameters
 {
     /// <summary>
     /// Specifies that a parameter should be bound using the request headers.

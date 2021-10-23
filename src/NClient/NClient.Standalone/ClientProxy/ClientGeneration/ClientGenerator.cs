@@ -1,5 +1,4 @@
 ﻿using Castle.DynamicProxy;
-using NClient.Abstractions.Clients;
 
 namespace NClient.Standalone.ClientProxy.ClientGeneration
 {

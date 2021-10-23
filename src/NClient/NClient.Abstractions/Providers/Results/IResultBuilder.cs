@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Serialization;
+using NClient.Providers.Serialization;
 
-namespace NClient.Abstractions.Providers.Results
+namespace NClient.Providers.Results
 {
     public interface IResultBuilder<TResponse>
     {

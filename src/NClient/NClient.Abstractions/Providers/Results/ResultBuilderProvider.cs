@@ -1,6 +1,9 @@
-﻿using NClient.Abstractions.Providers.Transport;
+﻿
 
-namespace NClient.Abstractions.Providers.Results
+
+using NClient.Providers.Transport;
+
+namespace NClient.Providers.Results
 {
     public class ResultBuilderProvider : IResultBuilderProvider<IHttpResponse>
     {

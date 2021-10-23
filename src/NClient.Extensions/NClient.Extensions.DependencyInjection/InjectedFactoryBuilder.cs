@@ -2,7 +2,6 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Building;
 
 namespace NClient.Extensions.DependencyInjection
 {

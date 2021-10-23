@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using NClient.Common.Helpers;
 
-namespace NClient.Abstractions.Providers.Transport
+namespace NClient.Providers.Transport
 {
     /// <summary>
     /// The container for data used to make requests.

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Transport;
 
-namespace NClient.Abstractions.Providers.Resilience
+namespace NClient.Providers.Resilience
 {
     // TODO: rename
     // TODO: TRequest support

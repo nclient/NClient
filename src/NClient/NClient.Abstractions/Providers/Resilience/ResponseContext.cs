@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Resilience
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Resilience
 {
     public class ResponseContext<TRequest, TResponse> : IResponseContext<TRequest, TResponse>
     {

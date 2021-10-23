@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace NClient.Abstractions.Providers.Handling
+namespace NClient.Providers.Handling
 {
     /// <summary>
     /// Provides custom functionality to handling HTTP requests and responses.

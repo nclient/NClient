@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Transport;
 
-namespace NClient.Abstractions.Building.Configuration.Resilience
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     // TODO: doc
     public interface INClientResilienceMethodSelector<TClient, TRequest, TResponse>

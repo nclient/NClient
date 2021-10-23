@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Abstractions.Providers.Serialization
+namespace NClient.Providers.Serialization
 {
     /// <summary>
     /// Provides functionality to serialize objects or value types to serialized string and to deserialize serialized string into objects or value types.

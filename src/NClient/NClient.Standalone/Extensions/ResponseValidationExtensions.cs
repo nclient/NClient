@@ -1,7 +1,6 @@
 ﻿using System;
-using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Validation;
+using NClient.Providers.Resilience;
+using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

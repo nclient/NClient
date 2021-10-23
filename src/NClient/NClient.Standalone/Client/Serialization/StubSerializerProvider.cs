@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Providers.Serialization;
+﻿using NClient.Providers.Serialization;
 
 namespace NClient.Standalone.Client.Serialization
 {

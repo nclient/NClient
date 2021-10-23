@@ -1,7 +1,7 @@
 ﻿using System;
-using NClient.Abstractions.Providers.Resilience;
+using NClient.Providers.Resilience;
 
-namespace NClient.Abstractions.Providers.Validation
+namespace NClient.Providers.Validation
 {
     public interface IResponseValidatorSettings<TRequest, TResponse>
     {

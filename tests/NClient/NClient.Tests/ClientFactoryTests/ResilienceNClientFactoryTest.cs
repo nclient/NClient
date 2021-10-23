@@ -3,7 +3,6 @@ using System.Net.Http;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Extensions;
-using NClient.Abstractions.Building;
 using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;

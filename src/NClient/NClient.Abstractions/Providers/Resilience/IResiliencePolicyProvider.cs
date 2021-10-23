@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Resilience
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Resilience
 {
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="IResiliencePolicy"/> instances.

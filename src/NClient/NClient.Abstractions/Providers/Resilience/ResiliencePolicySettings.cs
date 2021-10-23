@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Abstractions.Providers.Resilience
+namespace NClient.Providers.Resilience
 {
     public class ResiliencePolicySettings<TRequest, TResponse> : IResiliencePolicySettings<TRequest, TResponse>
     {

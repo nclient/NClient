@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Building.Configuration.Resilience;
-using NClient.Abstractions.Providers.Handling;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Results;
-using NClient.Abstractions.Providers.Serialization;
-using NClient.Abstractions.Providers.Transport;
-using NClient.Abstractions.Providers.Validation;
+using NClient.Providers.Handling;
+using NClient.Providers.Resilience;
+using NClient.Providers.Results;
+using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
+using NClient.Providers.Validation;
 
-namespace NClient.Abstractions.Building
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
@@ -50,9 +50,9 @@ namespace NClient.Abstractions.Building
         #region Resilience
         
         /// <summary>
-        /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
+        /// Sets custom <see cref="IMethodResiliencePolicyProvider{TRequest,TResponse}"/> used to create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.
         /// </summary>
-        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
+        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         // TODO: doc

@@ -1,5 +1,4 @@
 ﻿using System;
-using NClient.Annotations.Abstractions;
 
 namespace NClient.Annotations.Parameters
 {

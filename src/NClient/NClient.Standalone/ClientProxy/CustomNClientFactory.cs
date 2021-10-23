@@ -1,5 +1,4 @@
-﻿using NClient.Abstractions;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building;
 using NClient.Standalone.ClientProxy.Building.Context;
 

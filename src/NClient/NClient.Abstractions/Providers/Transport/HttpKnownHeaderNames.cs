@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace NClient.Abstractions.Providers.Transport
+namespace NClient.Providers.Transport
 {
     public static class HttpKnownHeaderNames
     {

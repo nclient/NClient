@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Providers.Handling;
+using NClient.Providers.Handling;
 
 namespace NClient.Sandbox.Client.ClientHandlers
 {

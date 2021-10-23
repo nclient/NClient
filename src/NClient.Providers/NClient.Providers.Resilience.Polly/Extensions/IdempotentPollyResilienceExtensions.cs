@@ -1,8 +1,7 @@
 ﻿using System;
-using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Resilience;
 using NClient.Common.Helpers;
 using NClient.Core.Extensions;
+using NClient.Providers.Resilience;
 using NClient.Providers.Resilience.Polly;
 using Polly;
 

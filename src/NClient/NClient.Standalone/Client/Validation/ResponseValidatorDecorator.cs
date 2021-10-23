@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Validation;
+using NClient.Providers.Resilience;
+using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {

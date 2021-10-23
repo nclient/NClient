@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Serialization
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Serialization
 {
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="ISerializer"/> instances.

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using NClient.Abstractions.Providers.Resilience;
+using NClient.Providers.Resilience;
 
-namespace NClient.Abstractions.Clients
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     // TODO: doc
     public interface IResilienceNClient<T>

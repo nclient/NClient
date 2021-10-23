@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Transport;
 using RestSharp;
 using RestSharp.Authenticators;
 

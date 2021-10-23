@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NClient.Abstractions.Providers.Validation;
+using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {

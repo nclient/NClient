@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Building;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NUnit.Framework;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NClient.Annotations.Abstractions;
+using NClient.Annotations;
 using NClient.Annotations.Parameters;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;

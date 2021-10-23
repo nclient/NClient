@@ -1,6 +1,5 @@
-﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Serialization;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

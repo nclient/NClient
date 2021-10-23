@@ -1,5 +1,4 @@
 ﻿using System;
-using NClient.Abstractions.Providers.Resilience;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly

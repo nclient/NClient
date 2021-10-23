@@ -1,6 +1,5 @@
-﻿using NClient.Abstractions.Providers.Serialization;
-using NClient.Abstractions.Providers.Transport;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
 using RestSharp;
 using RestSharp.Authenticators;
 

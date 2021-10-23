@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Results
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Results
 {
     public interface IResult<TValue, TError>
     {

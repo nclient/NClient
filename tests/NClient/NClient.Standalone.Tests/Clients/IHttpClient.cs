@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Transport;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using IHttpClient = NClient.Testing.Common.Clients.IHttpClient;
 

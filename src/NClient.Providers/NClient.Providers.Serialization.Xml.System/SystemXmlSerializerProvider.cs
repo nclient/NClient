@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Xml;
-using NClient.Abstractions.Providers.Serialization;
 
 namespace NClient.Providers.Serialization.Xml.System
 {

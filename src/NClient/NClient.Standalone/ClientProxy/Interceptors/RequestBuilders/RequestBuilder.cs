@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.Abstractions.Providers.Transport;
 using NClient.Annotations.Parameters;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
 using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders.Models;
 using NClient.Standalone.Exceptions.Factories;

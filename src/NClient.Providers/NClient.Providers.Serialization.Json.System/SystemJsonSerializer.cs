@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.Json.System

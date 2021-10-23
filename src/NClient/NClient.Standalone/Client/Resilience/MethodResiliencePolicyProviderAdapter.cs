@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Models;
 
 // ReSharper disable once CheckNamespace

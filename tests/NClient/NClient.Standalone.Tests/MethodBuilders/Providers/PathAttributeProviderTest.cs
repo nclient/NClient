@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using NClient.Abstractions.Exceptions;
 using NClient.Annotations;
 using NClient.Core.Mappers;
+using NClient.Exceptions;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;

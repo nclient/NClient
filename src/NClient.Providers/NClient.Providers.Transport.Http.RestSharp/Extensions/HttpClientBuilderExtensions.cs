@@ -1,6 +1,5 @@
-﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Transport;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
+using NClient.Providers.Transport;
 using NClient.Providers.Transport.Http.RestSharp;
 using RestSharp;
 using RestSharp.Authenticators;

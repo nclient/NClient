@@ -1,4 +1,6 @@
-﻿namespace NClient.Annotations.Abstractions
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Annotations
 {
     public interface INameProviderAttribute
     {

@@ -1,5 +1,5 @@
-﻿using NClient.Abstractions.Exceptions;
-using NClient.Core.Helpers.ObjectMemberManagers.Factories;
+﻿using NClient.Core.Helpers.ObjectMemberManagers.Factories;
+using NClient.Exceptions;
 
 namespace NClient.AspNetCore.Exceptions.Factories
 {

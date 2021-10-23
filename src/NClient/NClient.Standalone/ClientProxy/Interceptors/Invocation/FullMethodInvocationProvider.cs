@@ -3,8 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Clients;
-using NClient.Abstractions.Providers.Resilience;
+using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
 {

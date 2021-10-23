@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace NClient.Abstractions.Providers.Resilience
+namespace NClient.Providers.Resilience
 {
     /// <summary>
     /// Transient exception handling policies that can be applied to asynchronous delegates.

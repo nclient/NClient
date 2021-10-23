@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Resilience;
 using NClient.Common.Helpers;
 using Polly;
 

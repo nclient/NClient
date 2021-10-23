@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
-using NClient.Abstractions.Providers.Resilience;
+using NClient.Providers.Resilience;
 using NUnit.Framework;
 using Polly;
 using RestSharp;

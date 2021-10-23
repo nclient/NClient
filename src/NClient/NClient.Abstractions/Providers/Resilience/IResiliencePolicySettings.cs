@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Abstractions.Providers.Resilience
+namespace NClient.Providers.Resilience
 {
     //TODO: doc
     /// <summary>

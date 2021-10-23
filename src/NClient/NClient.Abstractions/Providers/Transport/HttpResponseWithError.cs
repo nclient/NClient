@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Transport
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Transport
 {
     /// <summary>
     /// The container for HTTP response data with deserialized body including error.

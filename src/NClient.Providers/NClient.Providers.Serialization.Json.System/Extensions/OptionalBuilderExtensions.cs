@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 
 // ReSharper disable once CheckNamespace

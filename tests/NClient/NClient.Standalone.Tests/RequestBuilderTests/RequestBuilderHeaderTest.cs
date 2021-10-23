@@ -2,11 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using FluentAssertions;
-using NClient.Abstractions.Providers.Transport;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
 using NClient.Annotations.Parameters;
 using NClient.Exceptions;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

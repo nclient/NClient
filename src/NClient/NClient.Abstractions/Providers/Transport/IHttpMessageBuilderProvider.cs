@@ -1,6 +1,9 @@
-﻿using NClient.Abstractions.Providers.Serialization;
+﻿
 
-namespace NClient.Abstractions.Providers.Transport
+
+using NClient.Providers.Serialization;
+
+namespace NClient.Providers.Transport
 {
     public interface IHttpMessageBuilderProvider<TRequest, TResponse>
     {

@@ -1,6 +1,5 @@
-﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.Providers.Transport;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building

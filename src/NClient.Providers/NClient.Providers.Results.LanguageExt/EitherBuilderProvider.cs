@@ -1,5 +1,4 @@
-﻿using NClient.Abstractions.Providers.Results;
-using NClient.Abstractions.Providers.Transport;
+﻿using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {

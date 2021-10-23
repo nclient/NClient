@@ -1,6 +1,6 @@
 ﻿using System;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Validation;
+using NClient.Providers.Resilience;
+using NClient.Providers.Validation;
 using RestSharp;
 
 // ReSharper disable once CheckNamespace

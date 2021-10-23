@@ -1,6 +1,5 @@
 ﻿using System.Net.Http;
-using NClient.Abstractions.Providers.Serialization;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.System.Builders;
 
 namespace NClient.Providers.Transport.Http.System

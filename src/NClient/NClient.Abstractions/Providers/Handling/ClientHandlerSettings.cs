@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Abstractions.Providers.Handling
+namespace NClient.Providers.Handling
 {
     public class ClientHandlerSettings<TRequest, TResponse> : IClientHandlerSettings<TRequest, TResponse>
     {

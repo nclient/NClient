@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Transport;
 
 namespace NClient.Standalone.Client.Transport
 {

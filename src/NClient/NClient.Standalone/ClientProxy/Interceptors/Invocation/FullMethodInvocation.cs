@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using NClient.Abstractions.Invocation;
-using NClient.Abstractions.Providers.Resilience;
+using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
 {

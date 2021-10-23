@@ -1,6 +1,7 @@
-﻿using NClient.Abstractions.Providers.Resilience;
+﻿using NClient.Providers.Resilience;
 
-namespace NClient.Abstractions.Building.Configuration.Resilience
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     // TODO: doc
     public interface INClientResilienceSetter<TClient, TRequest, TResponse>

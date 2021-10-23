@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Building.Models
 {

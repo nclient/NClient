@@ -1,4 +1,6 @@
-﻿namespace NClient.Abstractions.Providers.Transport
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Providers.Transport
 {
     public interface IHttpHeader
     {

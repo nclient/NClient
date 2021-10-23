@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using NClient.Abstractions.Providers.Resilience;
-using NClient.Abstractions.Providers.Transport;
+using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 
-namespace NClient.Abstractions.Clients
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     // TODO: doc
     public interface IHttpNClient<T>
