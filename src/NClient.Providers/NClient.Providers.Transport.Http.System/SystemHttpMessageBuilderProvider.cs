@@ -1,9 +1,9 @@
 ﻿using System.Net.Http;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
-using NClient.Providers.HttpClient.System.Builders;
+using NClient.Providers.Transport.Http.System.Builders;
 
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.System
 {
     public class SystemHttpMessageBuilderProvider : IHttpMessageBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {

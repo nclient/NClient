@@ -4,7 +4,7 @@ using NClient.Common.Helpers;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace NClient.Providers.HttpClient.RestSharp
+namespace NClient.Providers.Transport.Http.RestSharp
 {
     /// <summary>
     /// The RestSharp based provider for a component that can create <see cref="IHttpClient{TRequest,TResponse}"/> instances.

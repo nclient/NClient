@@ -3,9 +3,9 @@ using System.Net.Http;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
 using NClient.Common.Helpers;
-using NClient.Providers.HttpClient.System.Stubs;
+using NClient.Providers.Transport.Http.System.Stubs;
 
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.System
 {
     /// <summary>
     /// The System.Net.Http based provider for a component that can create <see cref="IHttpClient"/> instances.

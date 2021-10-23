@@ -1,10 +1,10 @@
 ﻿using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
-using NClient.Providers.HttpClient.RestSharp.Builders;
-using NClient.Providers.HttpClient.RestSharp.Helpers;
+using NClient.Providers.Transport.Http.RestSharp.Builders;
+using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
 
-namespace NClient.Providers.HttpClient.RestSharp
+namespace NClient.Providers.Transport.Http.RestSharp
 {
     public class RestSharpHttpMessageBuilderProvider : IHttpMessageBuilderProvider<IRestRequest, IRestResponse>
     {

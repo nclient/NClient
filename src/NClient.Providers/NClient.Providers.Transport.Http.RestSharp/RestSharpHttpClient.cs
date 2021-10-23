@@ -3,7 +3,7 @@ using NClient.Abstractions.Providers.HttpClient;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace NClient.Providers.HttpClient.RestSharp
+namespace NClient.Providers.Transport.Http.RestSharp
 {
     internal class RestSharpHttpClient : IHttpClient<IRestRequest, IRestResponse>
     {

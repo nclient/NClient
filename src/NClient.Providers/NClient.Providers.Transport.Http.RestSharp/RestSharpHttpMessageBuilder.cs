@@ -4,15 +4,15 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
-using NClient.Providers.HttpClient.RestSharp.Builders;
-using NClient.Providers.HttpClient.RestSharp.Helpers;
+using NClient.Providers.Transport.Http.RestSharp.Builders;
+using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using ParameterType = RestSharp.ParameterType;
 using DataFormat = RestSharp.DataFormat;
 using RestRequest = RestSharp.RestRequest;
 using IRestRequest = RestSharp.IRestRequest;
 using IRestResponse = RestSharp.IRestResponse;
 
-namespace NClient.Providers.HttpClient.RestSharp
+namespace NClient.Providers.Transport.Http.RestSharp
 {
     internal class RestSharpHttpMessageBuilder : IHttpMessageBuilder<IRestRequest, IRestResponse>
     {

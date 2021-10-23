@@ -13,7 +13,6 @@
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
-        <RootNamespace>NClient.Providers.HttpClient.RestSharp</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>

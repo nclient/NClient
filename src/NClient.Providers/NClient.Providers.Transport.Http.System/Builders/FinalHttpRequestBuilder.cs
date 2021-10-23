@@ -6,7 +6,7 @@ using System.Web;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
 
-namespace NClient.Providers.HttpClient.System.Builders
+namespace NClient.Providers.Transport.Http.System.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {

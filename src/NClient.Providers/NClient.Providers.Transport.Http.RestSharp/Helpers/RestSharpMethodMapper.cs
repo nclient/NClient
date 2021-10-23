@@ -2,7 +2,7 @@
 using System.Net.Http;
 using RestSharp;
 
-namespace NClient.Providers.HttpClient.RestSharp.Helpers
+namespace NClient.Providers.Transport.Http.RestSharp.Helpers
 {
     public interface IRestSharpMethodMapper
     {

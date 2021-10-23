@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.System
 {
     internal class SystemHttpClient : IHttpClient<HttpRequestMessage, HttpResponseMessage>
     {

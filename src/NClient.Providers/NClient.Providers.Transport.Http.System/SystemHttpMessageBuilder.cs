@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
-using NClient.Providers.HttpClient.System.Builders;
+using NClient.Providers.Transport.Http.System.Builders;
 
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.System
 {
     internal class SystemHttpMessageBuilder : IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage>
     {

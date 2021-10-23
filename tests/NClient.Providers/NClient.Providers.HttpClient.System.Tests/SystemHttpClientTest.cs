@@ -9,6 +9,7 @@ using FluentAssertions;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
+using NClient.Providers.Transport.Http.System;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 using WireMock.Matchers;

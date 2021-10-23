@@ -2,10 +2,10 @@
 using System.Linq;
 using NClient.Abstractions.Providers.HttpClient;
 using NClient.Abstractions.Providers.Serialization;
-using NClient.Providers.HttpClient.RestSharp.Helpers;
+using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
 
-namespace NClient.Providers.HttpClient.RestSharp.Builders
+namespace NClient.Providers.Transport.Http.RestSharp.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
