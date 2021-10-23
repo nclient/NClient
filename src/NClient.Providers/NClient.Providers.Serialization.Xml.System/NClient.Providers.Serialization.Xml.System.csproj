@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;SOAP;XML;System</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Srialization;HttpClient;Api;WebApi;SOAP;XML;System</PackageTags>
         <Description>System.Xml.XmlSerializer based serialization provider for NClient.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>

@@ -31,18 +31,14 @@ namespace NClient.Packages.Tests
         [Test]
         public void NClient_AspNetProxy() =>
             PackagesVersionProvider.GetCurrent("NClient.AspNetCore").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_Providers_HttpClient_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.System").Should().Be(PackagesVersionProvider.GetNew());
-
-        [Test]
-        public void NClient_Providers_HttpClient_RestSharp() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
-
+        
         [Test]
         public void NClient_Providers_Resilience_Polly() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Providers_Results_HttpResults() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Results.HttpResults").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Results_LanguageExt() =>
@@ -59,6 +55,14 @@ namespace NClient.Packages.Tests
         [Test]
         public void NClient_Providers_Serialization_Xml_System() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Xml.System").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Providers_Transport_Http_System() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.System").Should().Be(PackagesVersionProvider.GetNew());
+
+        [Test]
+        public void NClient_Providers_Transport_Http_RestSharp() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Extensions_DependencyInjection() =>

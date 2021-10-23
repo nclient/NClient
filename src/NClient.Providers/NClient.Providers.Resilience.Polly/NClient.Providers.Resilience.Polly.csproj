@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Resilience;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
         <Description>Polly based resilience policy provider for NClient.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>

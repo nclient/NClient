@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.LanguageExt.Tests", "tests\NClient.Providers\NClient.Providers.Results.LanguageExt.Tests\NClient.Providers.Results.LanguageExt.Tests.csproj", "{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.HttpResults", "src\NClient.Providers\NClient.Providers.Results.HttpResults\NClient.Providers.Results.HttpResults.csproj", "{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -252,6 +254,11 @@ Global
 		{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,6 +294,7 @@ Global
 		{462BFC4C-79D6-4998-BE77-A8F6C52AE131} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 		{B1102158-3E63-46B5-A112-8BD0942D3EA3} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
 		{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
+		{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {244A4C58-8FA7-496C-ABCF-72F333149A20}

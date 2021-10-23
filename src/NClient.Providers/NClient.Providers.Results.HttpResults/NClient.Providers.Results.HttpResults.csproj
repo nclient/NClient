@@ -8,12 +8,11 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Srialization;HttpClient;Api;WebApi;Rest;Json;Newtonsoft</PackageTags>
-        <Description>Newtonsoft.Json based serialization provider for NClient.</Description>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Results;Http;Response;Result;Service;Api;WebApi</PackageTags>
+        <Description>LanguageExt based results provider for NClient.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
-        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -22,16 +21,8 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Debug;Release</Configurations>
+        <Configurations>Debug;Release;ReleaseTest</Configurations>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
