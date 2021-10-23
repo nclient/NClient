@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 
-
 namespace NClient.Providers.Transport
 {
     public interface IHttpResponse<TValue> : IHttpResponse

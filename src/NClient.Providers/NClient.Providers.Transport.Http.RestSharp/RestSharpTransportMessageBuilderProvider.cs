@@ -5,18 +5,18 @@ using RestSharp;
 
 namespace NClient.Providers.Transport.Http.RestSharp
 {
-    public class RestSharpHttpMessageBuilderProvider : IHttpMessageBuilderProvider<IRestRequest, IRestResponse>
+    public class RestSharpTransportMessageBuilderProvider : ITransportMessageBuilderProvider<IRestRequest, IRestResponse>
     {
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
 
-        public RestSharpHttpMessageBuilderProvider()
+        public RestSharpTransportMessageBuilderProvider()
         {
             _restSharpMethodMapper = new RestSharpMethodMapper();
         }
         
-        public IHttpMessageBuilder<IRestRequest, IRestResponse> Create(ISerializer serializer)
+        public ITransportMessageBuilder<IRestRequest, IRestResponse> Create(ISerializer serializer)
         {
-            return new RestSharpHttpMessageBuilder(
+            return new RestSharpTransportMessageBuilder(
                 serializer,
                 _restSharpMethodMapper,
                 new FinalHttpRequestBuilder(serializer, _restSharpMethodMapper));

@@ -13,7 +13,7 @@ using IRestResponse = RestSharp.IRestResponse;
 
 namespace NClient.Providers.Transport.Http.RestSharp
 {
-    internal class RestSharpHttpMessageBuilder : IHttpMessageBuilder<IRestRequest, IRestResponse>
+    internal class RestSharpTransportMessageBuilder : ITransportMessageBuilder<IRestRequest, IRestResponse>
     {
         private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
 
@@ -21,7 +21,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
 
-        public RestSharpHttpMessageBuilder(
+        public RestSharpTransportMessageBuilder(
             ISerializer serializer,
             IRestSharpMethodMapper restSharpMethodMapper,
             IFinalHttpRequestBuilder finalHttpRequestBuilder)

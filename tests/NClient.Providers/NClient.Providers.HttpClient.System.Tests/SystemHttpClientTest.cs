@@ -44,7 +44,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpTransportProvider().Create(Serializer);
-            var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
+            var httpMessageBuilder = new SystemHttpTransportMessageBuilderProvider().Create(Serializer);
 
             var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);
             var response = await httpClient.ExecuteAsync(request);

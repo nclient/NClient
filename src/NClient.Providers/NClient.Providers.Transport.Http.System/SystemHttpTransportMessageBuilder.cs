@@ -10,12 +10,12 @@ using NClient.Providers.Transport.Http.System.Builders;
 
 namespace NClient.Providers.Transport.Http.System
 {
-    internal class SystemHttpMessageBuilder : IHttpMessageBuilder<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemHttpTransportMessageBuilder : ITransportMessageBuilder<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly ISerializer _serializer;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
 
-        public SystemHttpMessageBuilder(
+        public SystemHttpTransportMessageBuilder(
             ISerializer serializer,
             IFinalHttpRequestBuilder finalHttpRequestBuilder)
         {

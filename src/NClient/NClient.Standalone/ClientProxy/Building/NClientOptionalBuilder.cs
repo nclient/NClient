@@ -185,7 +185,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 new Uri(_context.Host),
                 _context.SerializerProvider,
                 _context.TransportProvider,
-                _context.HttpMessageBuilderProvider,
+                _context.TransportMessageBuilderProvider,
                 _context.ClientHandlerProviders,
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 

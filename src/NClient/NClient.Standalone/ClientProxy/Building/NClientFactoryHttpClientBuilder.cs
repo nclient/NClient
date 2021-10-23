@@ -15,13 +15,13 @@ namespace NClient.Standalone.ClientProxy.Building
         
         public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
+            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
         {
             Ensure.IsNotNull(transportProvider, nameof(transportProvider));
-            Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
+            Ensure.IsNotNull(transportMessageBuilderProvider, nameof(transportMessageBuilderProvider));
             
             return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
-                .WithHttpClientProvider(transportProvider, httpMessageBuilderProvider));
+                .WithHttpClientProvider(transportProvider, transportMessageBuilderProvider));
         }
     }
 }

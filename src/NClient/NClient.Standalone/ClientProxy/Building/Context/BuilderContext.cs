@@ -21,7 +21,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public string Host { get; private set; } = null!;
 
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
-        public IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider { get; private set; } = null!;
+        public ITransportMessageBuilderProvider<TRequest, TResponse> TransportMessageBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
@@ -56,7 +56,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             Host = builderContext.Host;
             
             TransportProvider = builderContext.TransportProvider;
-            HttpMessageBuilderProvider = builderContext.HttpMessageBuilderProvider;
+            TransportMessageBuilderProvider = builderContext.TransportMessageBuilderProvider;
 
             SerializerProvider = builderContext.SerializerProvider;
 
@@ -84,12 +84,12 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
             ITransportProvider<TRequest, TResponse> transportProvider,
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
+            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 TransportProvider = transportProvider,
-                HttpMessageBuilderProvider = httpMessageBuilderProvider
+                TransportMessageBuilderProvider = transportMessageBuilderProvider
             };
         }
 
@@ -224,7 +224,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
-            if (TransportProvider is null || HttpMessageBuilderProvider is null)
+            if (TransportProvider is null || TransportMessageBuilderProvider is null)
                 throw _clientBuildExceptionFactory.HttpClientIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();

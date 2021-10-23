@@ -31,7 +31,7 @@ namespace NClient.Standalone.Client
     {
         private readonly ISerializer _serializer;
         private readonly ITransport<TRequest, TResponse> _transport;
-        private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
+        private readonly ITransportMessageBuilder<TRequest, TResponse> _transportMessageBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
         private readonly IEnumerable<IResultBuilder<TResponse>> _typedResultBuilders;
@@ -42,7 +42,7 @@ namespace NClient.Standalone.Client
         public HttpNClient(
             ISerializer serializer,
             ITransport<TRequest, TResponse> transport,
-            IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
+            ITransportMessageBuilder<TRequest, TResponse> transportMessageBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
             IEnumerable<IResultBuilder<IHttpResponse>> resultBuilders,
@@ -52,7 +52,7 @@ namespace NClient.Standalone.Client
         {
             _serializer = serializer;
             _transport = transport;
-            _httpMessageBuilder = httpMessageBuilder;
+            _transportMessageBuilder = transportMessageBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
             _typedResultBuilders = typedResultBuilders;
@@ -79,7 +79,7 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            return await _httpMessageBuilder
+            return await _transportMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
         }
@@ -119,7 +119,7 @@ namespace NClient.Standalone.Client
                     .BuildAsync(dataType, responseContext.Response, _serializer)
                     .ConfigureAwait(false);
             
-            var httpResponse = await _httpMessageBuilder
+            var httpResponse = await _transportMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
 
@@ -139,7 +139,7 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _httpMessageBuilder
+            var httpResponse = await _transportMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
@@ -153,7 +153,7 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _httpMessageBuilder
+            var httpResponse = await _transportMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
@@ -167,7 +167,7 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(httpRequest))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _httpMessageBuilder
+            var httpResponse = await _transportMessageBuilder
                 .BuildResponseAsync(httpRequest, responseContext.Request, responseContext.Response)
                 .ConfigureAwait(false);
             
@@ -192,7 +192,7 @@ namespace NClient.Standalone.Client
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", httpRequest.Id);
-                request = await _httpMessageBuilder
+                request = await _transportMessageBuilder
                     .BuildRequestAsync(httpRequest)
                     .ConfigureAwait(false);
                 

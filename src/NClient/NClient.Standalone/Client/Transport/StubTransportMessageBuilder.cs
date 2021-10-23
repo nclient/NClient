@@ -3,7 +3,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.Client.Transport
 {
-    internal class StubHttpMessageBuilder : IHttpMessageBuilder<IHttpRequest, IHttpResponse>
+    internal class StubTransportMessageBuilder : ITransportMessageBuilder<IHttpRequest, IHttpResponse>
     {
         public Task<IHttpRequest> BuildRequestAsync(IHttpRequest httpRequest)
         {

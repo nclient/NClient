@@ -21,7 +21,7 @@ namespace NClient
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpTransportProvider(),
-                new RestSharpHttpMessageBuilderProvider());
+                new RestSharpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -35,7 +35,7 @@ namespace NClient
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpTransportProvider(),
-                new RestSharpHttpMessageBuilderProvider());
+                new RestSharpTransportMessageBuilderProvider());
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace NClient
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpTransportProvider(authenticator),
-                new RestSharpHttpMessageBuilderProvider());
+                new RestSharpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -68,7 +68,7 @@ namespace NClient
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new RestSharpTransportProvider(authenticator),
-                new RestSharpHttpMessageBuilderProvider());
+                new RestSharpTransportMessageBuilderProvider());
         }
     }
 }

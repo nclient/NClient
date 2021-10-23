@@ -41,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                     FakeHost,
                     new StubSerializerProvider(),
                     new StubTransportProvider(),
-                    new StubHttpMessageBuilderProvider(),
+                    new StubTransportMessageBuilderProvider(),
                     new[] { new StubClientHandlerProvider<IHttpRequest, IHttpResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
                         new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),

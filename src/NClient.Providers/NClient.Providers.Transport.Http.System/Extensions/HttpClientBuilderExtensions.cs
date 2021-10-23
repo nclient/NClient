@@ -20,7 +20,7 @@ namespace NClient
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -34,7 +34,7 @@ namespace NClient
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -53,7 +53,7 @@ namespace NClient
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -71,7 +71,7 @@ namespace NClient
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace NClient
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
         
         /// <summary>
@@ -106,7 +106,7 @@ namespace NClient
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
                 new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpMessageBuilderProvider());
+                new SystemHttpTransportMessageBuilderProvider());
         }
     }
 }

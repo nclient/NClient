@@ -9,9 +9,9 @@ namespace NClient
         /// Sets custom <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instances of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="transportProvider">The provider that can create instances of <see cref="ITransport{TRequest,TResponse}"/>.</param>
-        /// <param name="httpMessageBuilderProvider">The provider that can create instances of <see cref="IHttpMessageBuilder{TRequest,TResponse}"/>.</param>
+        /// <param name="transportMessageBuilderProvider">The provider that can create instances of <see cref="ITransportMessageBuilder{TRequest,TResponse}"/>.</param>
         INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider,
-            IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider);
+            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider);
     }
 }
