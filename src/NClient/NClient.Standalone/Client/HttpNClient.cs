@@ -30,7 +30,7 @@ namespace NClient.Standalone.Client
     internal class HttpNClient<TRequest, TResponse> : IHttpNClient<TRequest, TResponse>
     {
         private readonly ISerializer _serializer;
-        private readonly IHttpClient<TRequest, TResponse> _httpClient;
+        private readonly ITransport<TRequest, TResponse> _transport;
         private readonly IHttpMessageBuilder<TRequest, TResponse> _httpMessageBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
@@ -41,7 +41,7 @@ namespace NClient.Standalone.Client
 
         public HttpNClient(
             ISerializer serializer,
-            IHttpClient<TRequest, TResponse> httpClient,
+            ITransport<TRequest, TResponse> transport,
             IHttpMessageBuilder<TRequest, TResponse> httpMessageBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
@@ -51,7 +51,7 @@ namespace NClient.Standalone.Client
             ILogger? logger)
         {
             _serializer = serializer;
-            _httpClient = httpClient;
+            _transport = transport;
             _httpMessageBuilder = httpMessageBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
@@ -200,7 +200,7 @@ namespace NClient.Standalone.Client
                     .HandleRequestAsync(request)
                     .ConfigureAwait(false);
                 
-                response = await _httpClient.ExecuteAsync(request).ConfigureAwait(false);
+                response = await _transport.ExecuteAsync(request).ConfigureAwait(false);
 
                 response = await _clientHandler
                     .HandleResponseAsync(response)

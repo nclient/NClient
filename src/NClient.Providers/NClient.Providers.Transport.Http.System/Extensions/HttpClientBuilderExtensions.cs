@@ -9,7 +9,7 @@ namespace NClient
     public static class HttpClientBuilderExtensions
     {
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpClient<TClient>(
@@ -19,12 +19,12 @@ namespace NClient
             Ensure.IsNotNull(clientHttpClientBuilder, nameof(clientHttpClientBuilder));
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(), 
+                new SystemHttpTransportProvider(), 
                 new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
         public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpClient(
@@ -33,12 +33,12 @@ namespace NClient
             Ensure.IsNotNull(factoryHttpClientBuilder, nameof(factoryHttpClientBuilder));
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(), 
+                new SystemHttpTransportProvider(), 
                 new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
@@ -52,12 +52,12 @@ namespace NClient
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(httpClientFactory, httpClientName), 
+                new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
                 new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
@@ -70,12 +70,12 @@ namespace NClient
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(httpClientFactory, httpClientName), 
+                new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
                 new SystemHttpMessageBuilderProvider());
         }
 
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
@@ -88,12 +88,12 @@ namespace NClient
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(httpMessageHandler), 
+                new SystemHttpTransportProvider(httpMessageHandler), 
                 new SystemHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets System.Net.Http based <see cref="IHttpClientProvider"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
@@ -105,7 +105,7 @@ namespace NClient
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
-                new SystemHttpClientProvider(httpMessageHandler), 
+                new SystemHttpTransportProvider(httpMessageHandler), 
                 new SystemHttpMessageBuilderProvider());
         }
     }

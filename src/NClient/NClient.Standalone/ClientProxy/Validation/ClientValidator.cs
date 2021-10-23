@@ -40,7 +40,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .Create<TClient, IHttpRequest, IHttpResponse>(
                     FakeHost,
                     new StubSerializerProvider(),
-                    new StubHttpClientProvider(),
+                    new StubTransportProvider(),
                     new StubHttpMessageBuilderProvider(),
                     new[] { new StubClientHandlerProvider<IHttpRequest, IHttpResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(

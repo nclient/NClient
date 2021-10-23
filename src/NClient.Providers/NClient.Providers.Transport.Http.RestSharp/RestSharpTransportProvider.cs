@@ -6,9 +6,9 @@ using RestSharp.Authenticators;
 namespace NClient.Providers.Transport.Http.RestSharp
 {
     /// <summary>
-    /// The RestSharp based provider for a component that can create <see cref="IHttpClient{TRequest,TResponse}"/> instances.
+    /// The RestSharp based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
     /// </summary>
-    public class RestSharpHttpClientProvider : IHttpClientProvider<IRestRequest, IRestResponse>
+    public class RestSharpTransportProvider : ITransportProvider<IRestRequest, IRestResponse>
     {
         private readonly IAuthenticator? _authenticator;
 
@@ -16,16 +16,16 @@ namespace NClient.Providers.Transport.Http.RestSharp
         /// Creates the RestSharp based HTTP client provider.
         /// </summary>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public RestSharpHttpClientProvider(IAuthenticator? authenticator = null)
+        public RestSharpTransportProvider(IAuthenticator? authenticator = null)
         {
             _authenticator = authenticator;
         }
 
-        public IHttpClient<IRestRequest, IRestResponse> Create(ISerializer serializer)
+        public ITransport<IRestRequest, IRestResponse> Create(ISerializer serializer)
         {
             Ensure.IsNotNull(serializer, nameof(serializer));
 
-            return new RestSharpHttpClient(_authenticator);
+            return new RestSharpTransport(_authenticator);
         }
     }
 }

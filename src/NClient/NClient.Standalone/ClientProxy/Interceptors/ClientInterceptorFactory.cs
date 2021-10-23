@@ -29,7 +29,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         IAsyncInterceptor Create<TClient, TRequest, TResponse>(
             Uri host,
             ISerializerProvider serializerProvider,
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            ITransportProvider<TRequest, TResponse> transportProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -77,7 +77,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
             Uri host,
             ISerializerProvider serializerProvider,
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            ITransportProvider<TRequest, TResponse> transportProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -94,7 +94,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                 _requestBuilder,
                 new HttpNClientFactory<TRequest, TResponse>(
                     serializerProvider,
-                    httpClientProvider,
+                    transportProvider,
                     httpMessageBuilderProvider,
                     new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),

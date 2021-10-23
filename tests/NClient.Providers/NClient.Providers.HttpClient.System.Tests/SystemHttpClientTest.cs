@@ -43,7 +43,7 @@ namespace NClient.Providers.HttpClient.System.Tests
         public async Task Test(IHttpRequest httpRequest, IHttpResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var httpClient = new SystemHttpClientProvider().Create(Serializer);
+            var httpClient = new SystemHttpTransportProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpMessageBuilderProvider().Create(Serializer);
 
             var request = await httpMessageBuilder.BuildRequestAsync(httpRequest);

@@ -4,7 +4,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.Client.Transport
 {
-    internal class StubHttpClient : IHttpClient<IHttpRequest, IHttpResponse>
+    internal class StubTransport : ITransport<IHttpRequest, IHttpResponse>
     {
         public Task<IHttpResponse> ExecuteAsync(IHttpRequest request)
         {

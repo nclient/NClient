@@ -3,14 +3,14 @@
 namespace NClient.Providers.Transport
 {
     /// <summary>
-    /// Invoker of HTTP requests.
+    /// Invoker of requests.
     /// </summary>
-    public interface IHttpClient<TRequest, TResponse>
+    public interface ITransport<TRequest, TResponse>
     {
         /// <summary>
-        /// Executes HTTP requests.
+        /// Executes requests.
         /// </summary>
-        /// <param name="request">The container for HTTP request data.</param>
+        /// <param name="request">The container for request data.</param>
         Task<TResponse> ExecuteAsync(TRequest request);
     }
 }

@@ -5,12 +5,12 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Transport.Http.System
 {
-    internal class SystemHttpClient : IHttpClient<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemHttpTransport : ITransport<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _httpClientName;
 
-        public SystemHttpClient(IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemHttpTransport(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientName = httpClientName ?? Options.DefaultName;

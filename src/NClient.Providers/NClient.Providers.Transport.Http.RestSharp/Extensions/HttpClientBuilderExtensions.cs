@@ -10,7 +10,7 @@ namespace NClient
     public static class HttpClientBuilderExtensions
     {
         /// <summary>
-        /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         public static INClientSerializerBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpHttpClient<TClient>(
@@ -20,12 +20,12 @@ namespace NClient
             Ensure.IsNotNull(clientHttpClientBuilder, nameof(clientHttpClientBuilder));
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
-                new RestSharpHttpClientProvider(),
+                new RestSharpTransportProvider(),
                 new RestSharpHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
         public static INClientFactorySerializerBuilder<IRestRequest, IRestResponse> UsingRestSharpHttpClient(
@@ -34,12 +34,12 @@ namespace NClient
             Ensure.IsNotNull(factoryHttpClientBuilder, nameof(factoryHttpClientBuilder));
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
-                new RestSharpHttpClientProvider(),
+                new RestSharpTransportProvider(),
                 new RestSharpHttpMessageBuilderProvider());
         }
 
         /// <summary>
-        /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientHttpClientBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
@@ -51,12 +51,12 @@ namespace NClient
             Ensure.IsNotNull(clientHttpClientBuilder, nameof(clientHttpClientBuilder));
 
             return clientHttpClientBuilder.UsingCustomHttpClient(
-                new RestSharpHttpClientProvider(authenticator),
+                new RestSharpTransportProvider(authenticator),
                 new RestSharpHttpMessageBuilderProvider());
         }
         
         /// <summary>
-        /// Sets RestSharp based <see cref="IHttpClientProvider{TRequest,TResponse}"/> used to create instance of <see cref="IHttpClient"/>.
+        /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryHttpClientBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
@@ -67,7 +67,7 @@ namespace NClient
             Ensure.IsNotNull(factoryHttpClientBuilder, nameof(factoryHttpClientBuilder));
 
             return factoryHttpClientBuilder.UsingCustomHttpClient(
-                new RestSharpHttpClientProvider(authenticator),
+                new RestSharpTransportProvider(authenticator),
                 new RestSharpHttpMessageBuilderProvider());
         }
     }

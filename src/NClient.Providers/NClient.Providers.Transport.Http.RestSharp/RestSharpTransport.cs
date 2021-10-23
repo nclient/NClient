@@ -4,11 +4,11 @@ using RestSharp.Authenticators;
 
 namespace NClient.Providers.Transport.Http.RestSharp
 {
-    internal class RestSharpHttpClient : IHttpClient<IRestRequest, IRestResponse>
+    internal class RestSharpTransport : ITransport<IRestRequest, IRestResponse>
     {
         private readonly IAuthenticator? _authenticator;
 
-        public RestSharpHttpClient(IAuthenticator? authenticator = null)
+        public RestSharpTransport(IAuthenticator? authenticator = null)
         {
             _authenticator = authenticator;
         }

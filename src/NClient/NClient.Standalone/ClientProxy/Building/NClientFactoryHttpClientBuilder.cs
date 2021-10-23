@@ -14,14 +14,14 @@ namespace NClient.Standalone.ClientProxy.Building
         }
         
         public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider, 
+            ITransportProvider<TRequest, TResponse> transportProvider, 
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
-            Ensure.IsNotNull(httpClientProvider, nameof(httpClientProvider));
+            Ensure.IsNotNull(transportProvider, nameof(transportProvider));
             Ensure.IsNotNull(httpMessageBuilderProvider, nameof(httpMessageBuilderProvider));
             
             return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
-                .WithHttpClientProvider(httpClientProvider, httpMessageBuilderProvider));
+                .WithHttpClientProvider(transportProvider, httpMessageBuilderProvider));
         }
     }
 }

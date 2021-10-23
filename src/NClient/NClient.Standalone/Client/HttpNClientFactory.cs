@@ -18,7 +18,7 @@ namespace NClient.Standalone.Client
     internal class HttpNClientFactory<TRequest, TResponse> : IHttpNClientFactory<TRequest, TResponse>
     {
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IHttpClientProvider<TRequest, TResponse> _httpClientProvider;
+        private readonly ITransportProvider<TRequest, TResponse> _transportProvider;
         private readonly IHttpMessageBuilderProvider<TRequest, TResponse> _httpMessageBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
@@ -29,7 +29,7 @@ namespace NClient.Standalone.Client
 
         public HttpNClientFactory(
             ISerializerProvider serializerProvider,
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            ITransportProvider<TRequest, TResponse> transportProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
@@ -39,7 +39,7 @@ namespace NClient.Standalone.Client
             ILogger? logger)
         {
             _serializerProvider = serializerProvider;
-            _httpClientProvider = httpClientProvider;
+            _transportProvider = transportProvider;
             _httpMessageBuilderProvider = httpMessageBuilderProvider;
             _clientHandlerProvider = clientHandlerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
@@ -55,7 +55,7 @@ namespace NClient.Standalone.Client
             
             return new HttpNClient<TRequest, TResponse>(
                 serializer,
-                _httpClientProvider.Create(serializer),
+                _transportProvider.Create(serializer),
                 _httpMessageBuilderProvider.Create(serializer),
                 _clientHandlerProvider.Create(),
                 _resiliencePolicyProvider.Create(),

@@ -184,7 +184,7 @@ namespace NClient.Standalone.ClientProxy.Building
             var interceptor = _clientInterceptorFactory.Create(
                 new Uri(_context.Host),
                 _context.SerializerProvider,
-                _context.HttpClientProvider,
+                _context.TransportProvider,
                 _context.HttpMessageBuilderProvider,
                 _context.ClientHandlerProviders,
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(

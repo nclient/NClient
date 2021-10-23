@@ -20,7 +20,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public string Host { get; private set; } = null!;
 
-        public IHttpClientProvider<TRequest, TResponse> HttpClientProvider { get; private set; } = null!;
+        public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public IHttpMessageBuilderProvider<TRequest, TResponse> HttpMessageBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
@@ -55,7 +55,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             
             Host = builderContext.Host;
             
-            HttpClientProvider = builderContext.HttpClientProvider;
+            TransportProvider = builderContext.TransportProvider;
             HttpMessageBuilderProvider = builderContext.HttpMessageBuilderProvider;
 
             SerializerProvider = builderContext.SerializerProvider;
@@ -83,12 +83,12 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         }
 
         public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
-            IHttpClientProvider<TRequest, TResponse> httpClientProvider,
+            ITransportProvider<TRequest, TResponse> transportProvider,
             IHttpMessageBuilderProvider<TRequest, TResponse> httpMessageBuilderProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                HttpClientProvider = httpClientProvider,
+                TransportProvider = transportProvider,
                 HttpMessageBuilderProvider = httpMessageBuilderProvider
             };
         }
@@ -224,7 +224,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
-            if (HttpClientProvider is null || HttpMessageBuilderProvider is null)
+            if (TransportProvider is null || HttpMessageBuilderProvider is null)
                 throw _clientBuildExceptionFactory.HttpClientIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();
