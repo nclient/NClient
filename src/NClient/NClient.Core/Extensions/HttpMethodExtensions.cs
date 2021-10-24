@@ -17,9 +17,9 @@ namespace NClient.Core.Extensions
         {
             return requestType switch
             {
+                RequestType.Info => true,
+                RequestType.Check => true,
                 RequestType.Read => true,
-                RequestType.Head => true,
-                RequestType.Options => true,
                 _ => false
             };
         }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Operations;
 using NClient.Core.Mappers;
 using NClient.Standalone.Exceptions.Factories;
 
@@ -10,7 +10,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
 {
     internal interface IMethodAttributeProvider
     {
-        MethodAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
+        OperationAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class MethodAttributeProvider : IMethodAttributeProvider
@@ -26,13 +26,13 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public MethodAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
+        public OperationAttribute Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
         {
             return Find(method) ?? overridingMethods.Select(Find).FirstOrDefault()
-                ?? throw _clientValidationExceptionFactory.MethodAttributeNotFound(nameof(MethodAttribute));
+                ?? throw _clientValidationExceptionFactory.MethodAttributeNotFound(nameof(OperationAttribute));
         }
 
-        private MethodAttribute? Find(MethodInfo method)
+        private OperationAttribute? Find(MethodInfo method)
         {
             var attributes = method
                 .GetCustomAttributes()
@@ -44,8 +44,8 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
             var methodAttributes = method
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is MethodAttribute)
-                .Cast<MethodAttribute>()
+                .Where(x => x is OperationAttribute)
+                .Cast<OperationAttribute>()
                 .ToArray();
             if (methodAttributes.Length > 1)
                 throw _clientValidationExceptionFactory.MultipleMethodAttributeNotSupported();

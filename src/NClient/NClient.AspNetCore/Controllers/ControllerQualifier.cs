@@ -2,6 +2,7 @@
 using System.Linq;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Operations;
 using NClient.Annotations.Parameters;
 
 namespace NClient.AspNetCore.Controllers
@@ -41,7 +42,7 @@ namespace NClient.AspNetCore.Controllers
             return type.IsDefined(typeof(FacadeAttribute), inherit: true)
                 || type.IsDefined(typeof(ApiAttribute), inherit: true)
                 || type.IsDefined(typeof(PathAttribute), inherit: true)
-                || type.GetMethods().Any(x => x.IsDefined(typeof(MethodAttribute), inherit: true))
+                || type.GetMethods().Any(x => x.IsDefined(typeof(OperationAttribute), inherit: true))
                 || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));
         }
     }

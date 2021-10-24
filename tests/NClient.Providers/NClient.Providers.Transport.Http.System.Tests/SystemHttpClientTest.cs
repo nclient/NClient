@@ -53,7 +53,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
 
         private static TestCaseData ExecutionHeadRequestTestCase()
         {
-            const RequestType method = RequestType.Head;
+            const RequestType method = RequestType.Check;
             var request = new Request(RequestId, Resource, method)
             {
                 Data = null,

@@ -31,7 +31,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Head);
+                RequestType.Check);
         }
 
         private interface IPostMethod {[PostMethod] int Method(); }
@@ -79,7 +79,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Options);
+                RequestType.Info);
         }
 
         private interface IPatchMethod {[PatchMethod] int Method(); }
@@ -91,7 +91,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Patch);
+                RequestType.PartialUpdate);
         }
     }
 }

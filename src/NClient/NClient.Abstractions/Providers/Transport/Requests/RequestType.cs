@@ -3,20 +3,15 @@
 
 namespace NClient.Providers.Transport
 {
-    public enum RequestType : byte
+    public enum RequestType
     {
-        Read,
-        Update,
-        Delete,
-        Create,
-        Head,
-        Trace,
-        Patch,
-        Connect,
-        Options,
-
         Custom,
-
-        None = byte.MaxValue
+        Info,
+        Read,
+        Check,
+        Create,
+        Update,
+        PartialUpdate,
+        Delete
     }
 }

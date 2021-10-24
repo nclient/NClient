@@ -69,7 +69,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             _requestBuilder = new RequestBuilder(
                 new RouteTemplateProvider(clientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, clientArgumentExceptionFactory, clientValidationExceptionFactory),
-                new TransportMethodProvider(clientValidationExceptionFactory),
+                new RequestTypeProvider(clientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
                 clientValidationExceptionFactory);
         }

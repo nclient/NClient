@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using NClient.Exceptions;
 
 namespace NClient.Providers.Transport.Http.System.Helpers
 {
@@ -14,16 +15,15 @@ namespace NClient.Providers.Transport.Http.System.Helpers
     {
         private static readonly Dictionary<RequestType, HttpMethod> HttpMethodByRequestTypes = new()
         {
+            [RequestType.Info] = HttpMethod.Options,
+            [RequestType.Check] = HttpMethod.Head,
             [RequestType.Read] = HttpMethod.Get,
             [RequestType.Create] = HttpMethod.Post,
             [RequestType.Update] = HttpMethod.Put,
-            [RequestType.Delete] = HttpMethod.Delete,
-            [RequestType.Head] = HttpMethod.Head,
-            [RequestType.Options] = HttpMethod.Options,
-            [RequestType.Trace] = HttpMethod.Trace,
             #if !NETSTANDARD2_0
-            [RequestType.Patch] = HttpMethod.Patch
+            [RequestType.PartialUpdate] = HttpMethod.Patch,
             #endif
+            [RequestType.Delete] = HttpMethod.Delete
         };
         
         private static readonly Dictionary<HttpMethod, RequestType> RequestTypesByHttpMethod = HttpMethodByRequestTypes
@@ -31,12 +31,16 @@ namespace NClient.Providers.Transport.Http.System.Helpers
         
         public HttpMethod Map(RequestType requestType)
         {
-            return HttpMethodByRequestTypes[requestType];
+            if (HttpMethodByRequestTypes.TryGetValue(requestType, out var method))
+                return method;
+            throw new ClientValidationException($"The request type '{requestType}' is not supported by the selected transport implementation.");
         }
         
         public RequestType Map(HttpMethod method)
         {
-            return RequestTypesByHttpMethod[method];
+            if (RequestTypesByHttpMethod.TryGetValue(method, out var requestType))
+                return requestType;
+            throw new ClientValidationException($"The HTTP method '{method}' is not supported by the selected transport implementation.");
         }
     }
 }

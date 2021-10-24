@@ -41,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
 
         public IRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
         {
-            var httpMethod = _transportMethodProvider.Get(method.Attribute);
+            var httpMethod = _transportMethodProvider.Get(method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(method);
             var methodParameters = method.Params
                 .Select((methodParam, index) => new MethodParameter(

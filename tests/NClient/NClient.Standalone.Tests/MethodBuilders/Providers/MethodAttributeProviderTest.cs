@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Operations;
 using NClient.Core.Mappers;
 using NClient.Exceptions;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
@@ -30,7 +31,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
 
         private interface IOtherAndMethod { [Other, GetMethod] void Method(); }
         private interface INotSupported { [NotSupported] void Method(); }
-        private interface IMNotSupportedWithTemplate { [NotSupported("template")] void Method(); }
+        private interface IMNotSupportedWithTemplate { [NotSupported] void Method(); }
 
         public static IEnumerable ValidTestCases = new[]
         {
@@ -56,7 +57,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
                 .SetName("With other and method attribute"),
             new TestCaseData(GetMethodInfo<INotSupported>(), new NotSupportedAttribute())
                 .SetName("With not supported attribute"),
-            new TestCaseData(GetMethodInfo<IMNotSupportedWithTemplate>(), new NotSupportedAttribute("template"))
+            new TestCaseData(GetMethodInfo<IMNotSupportedWithTemplate>(), new NotSupportedAttribute())
                 .SetName("With not supported method attribute with template")
         };
 
@@ -85,7 +86,7 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         }
 
         [TestCaseSource(nameof(ValidTestCases))]
-        public void Get_ValidTestCase_MethodAttribute(MethodInfo methodInfo, MethodAttribute expectedAttribute)
+        public void Get_ValidTestCase_MethodAttribute(MethodInfo methodInfo, OperationAttribute expectedAttribute)
         {
             var actualAttribute = _methodAttributeProvider.Get(methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
@@ -108,11 +109,8 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
 
         private class OtherAttribute : Attribute { }
 
-        private class NotSupportedAttribute : MethodAttribute
+        private class NotSupportedAttribute : OperationAttribute
         {
-            public NotSupportedAttribute(string? template = null) : base(template)
-            {
-            }
         }
     }
 }

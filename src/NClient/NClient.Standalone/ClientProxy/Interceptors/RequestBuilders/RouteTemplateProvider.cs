@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Standalone.AspNetRouting;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
@@ -24,7 +25,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
         public RouteTemplate Get(Method method)
         {
             var baseTemplate = method.PathAttribute?.Template ?? "";
-            var methodTemplate = method.Attribute.Template ?? "";
+            var methodTemplate = (method.Operation as ITemplateProviderAttribute)?.Template ?? "";
             var fullTemplate = Path.IsPathRooted(methodTemplate)
                 ? methodTemplate
                 : UriHelper.Combine(baseTemplate, methodTemplate);

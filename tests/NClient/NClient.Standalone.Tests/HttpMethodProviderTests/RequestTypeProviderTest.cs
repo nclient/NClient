@@ -2,6 +2,7 @@
 using System.Collections;
 using FluentAssertions;
 using NClient.Annotations.Methods;
+using NClient.Annotations.Operations;
 using NClient.Common.Helpers;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
@@ -11,62 +12,59 @@ using NUnit.Framework;
 namespace NClient.Standalone.Tests.HttpMethodProviderTests
 {
     [Parallelizable]
-    public class HttpMethodProviderTest
+    public class RequestTypeProviderTest
     {
         private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
 
         public static IEnumerable ValidTestCases = new[]
         {
+            new TestCaseData(new OptionsMethodAttribute(), RequestType.Info),
+            new TestCaseData(new HeadMethodAttribute(), RequestType.Check),
             new TestCaseData(new GetMethodAttribute(), RequestType.Read),
-            new TestCaseData(new HeadMethodAttribute(), RequestType.Head),
             new TestCaseData(new PostMethodAttribute(), RequestType.Create),
             new TestCaseData(new PutMethodAttribute(), RequestType.Update),
-            new TestCaseData(new DeleteMethodAttribute(), RequestType.Delete),
-            new TestCaseData(new OptionsMethodAttribute(), RequestType.Options),
-            new TestCaseData(new PatchMethodAttribute(), RequestType.Patch)
+            new TestCaseData(new PatchMethodAttribute(), RequestType.PartialUpdate),
+            new TestCaseData(new DeleteMethodAttribute(), RequestType.Delete)
         };
 
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(null,
-                EnsureExceptionFactory.CreateArgumentNullException("methodAttribute")),
+                EnsureExceptionFactory.CreateArgumentNullException("operationAttribute")),
             new TestCaseData(new NotSupportedAttribute(),
                 ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(NotSupportedAttribute)))
         };
 
-        private TransportMethodProvider _transportMethodProvider = null!;
+        private RequestTypeProvider _requestTypeProvider = null!;
 
         [SetUp]
         public void SetUp()
         {
             var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
-            _transportMethodProvider = new TransportMethodProvider(clientRequestExceptionFactory);
+            _requestTypeProvider = new RequestTypeProvider(clientRequestExceptionFactory);
         }
 
         [TestCaseSource(nameof(ValidTestCases))]
-        public void Get_MethodAttribute_HttpMethod(MethodAttribute methodAttribute, RequestType expectedHttpMethod)
+        public void Get_OperationAttribute_RequestType(OperationAttribute operationAttribute, RequestType expectedHttpMethod)
         {
-            var httpMethod = _transportMethodProvider.Get(methodAttribute);
+            var requestType = _requestTypeProvider.Get(operationAttribute);
 
-            httpMethod.Should().Be(expectedHttpMethod);
+            requestType.Should().Be(expectedHttpMethod);
         }
 
         [TestCaseSource(nameof(InvalidTestCases))]
-        public void Get_MethodAttribute_ThrowException(MethodAttribute methodAttribute, Exception exception)
+        public void Get_OperationAttribute_ThrowException(OperationAttribute operationAttribute, Exception exception)
         {
-            _transportMethodProvider
-                .Invoking(x => x.Get(methodAttribute))
+            _requestTypeProvider
+                .Invoking(x => x.Get(operationAttribute))
                 .Should()
                 .Throw<Exception>()
                 .Where(x => x.GetType() == exception.GetType())
                 .WithMessage(exception.Message);
         }
 
-        private class NotSupportedAttribute : MethodAttribute
+        private class NotSupportedAttribute : OperationAttribute
         {
-            public NotSupportedAttribute() : base(null)
-            {
-            }
         }
     }
 }

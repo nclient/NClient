@@ -1,6 +1,6 @@
 ﻿using System;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Operations;
 using NClient.Annotations.Versioning;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models
@@ -10,17 +10,17 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models
     {
         public string Name { get; }
         public string ClientName { get; }
-        public MethodAttribute Attribute { get; }
+        public OperationAttribute Operation { get; }
         public PathAttribute? PathAttribute { get; set; }
         public UseVersionAttribute? UseVersionAttribute { get; set; }
         public HeaderAttribute[] HeaderAttributes { get; set; }
         public MethodParam[] Params { get; }
 
-        public Method(string name, string clientName, MethodAttribute attribute, MethodParam[] @params)
+        public Method(string name, string clientName, OperationAttribute operation, MethodParam[] @params)
         {
             Name = name;
             ClientName = clientName;
-            Attribute = attribute;
+            Operation = operation;
             Params = @params;
             HeaderAttributes = Array.Empty<HeaderAttribute>();
         }

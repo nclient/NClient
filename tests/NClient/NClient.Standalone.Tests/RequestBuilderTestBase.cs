@@ -35,7 +35,7 @@ namespace NClient.Standalone.Tests
             RequestBuilder = new RequestBuilder(
                 new RouteTemplateProvider(ClientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, ClientValidationExceptionFactory),
-                new TransportMethodProvider(ClientValidationExceptionFactory),
+                new RequestTypeProvider(ClientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory),
                 ClientValidationExceptionFactory);
 
