@@ -4,42 +4,48 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using NClient.Providers.Serialization;
+using NClient.Providers.Transport.Http.System.Helpers;
 
 namespace NClient.Providers.Transport.Http.System.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        Task<IHttpRequest> BuildAsync(IHttpRequest httpRequest, HttpRequestMessage httpRequestMessage);
+        Task<IRequest> BuildAsync(IRequest transportRequest, HttpRequestMessage httpRequestMessage);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
     {
         private readonly ISerializer _serializer;
-        
-        public FinalHttpRequestBuilder(ISerializer serializer)
+        private readonly ISystemHttpMethodMapper _systemHttpMethodMapper;
+
+        public FinalHttpRequestBuilder(
+            ISerializer serializer,
+            ISystemHttpMethodMapper systemHttpMethodMapper)
         {
             _serializer = serializer;
+            _systemHttpMethodMapper = systemHttpMethodMapper;
         }
         
-        public async Task<IHttpRequest> BuildAsync(IHttpRequest httpRequest, HttpRequestMessage httpRequestMessage)
+        public async Task<IRequest> BuildAsync(IRequest transportRequest, HttpRequestMessage httpRequestMessage)
         {
             var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
+            var method = _systemHttpMethodMapper.Map(httpRequestMessage.Method);
             var content = httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var finalRequest = new HttpRequest(httpRequest.Id, resource, httpRequestMessage.Method)
+            var finalRequest = new Request(transportRequest.Id, resource, method)
             {
                 Content = content,
-                Data = content is not null && httpRequest.Data is not null 
-                    ? _serializer.Deserialize(content, httpRequest.Data.GetType()) 
+                Data = content is not null && transportRequest.Data is not null 
+                    ? _serializer.Deserialize(content, transportRequest.Data.GetType()) 
                     : null
             };
 
             var headers = httpRequestMessage.Headers?
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<IHttpHeader>();
+                .Select(x => new Header(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<IHeader>();
             var contentHeaders = httpRequestMessage.Content?.Headers
-                .Select(x => new HttpHeader(x.Key!, x.Value?.FirstOrDefault() ?? ""))
-                .ToArray() ?? Array.Empty<IHttpHeader>();
+                .Select(x => new Header(x.Key!, x.Value?.FirstOrDefault() ?? ""))
+                .ToArray() ?? Array.Empty<IHeader>();
             foreach (var header in headers.Concat(contentHeaders))
             {
                 finalRequest.AddHeader(header.Name, header.Value);

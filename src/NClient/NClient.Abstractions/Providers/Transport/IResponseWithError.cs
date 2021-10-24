@@ -2,11 +2,11 @@
 
 namespace NClient.Providers.Transport
 {
-    public interface IHttpResponseWithError<TValue, TError> : IHttpResponseWithError<TError>, IHttpResponse<TValue>
+    public interface IResponseWithError<TValue, TError> : IResponseWithError<TError>, IResponse<TValue>
     {
     }
     
-    public interface IHttpResponseWithError<TError> : IHttpResponse
+    public interface IResponseWithError<TError> : IResponse
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.

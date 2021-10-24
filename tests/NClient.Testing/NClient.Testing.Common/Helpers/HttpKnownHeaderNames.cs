@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace NClient.Providers.Transport
+namespace NClient.Testing.Common.Helpers
 {
     public static class HttpKnownHeaderNames
     {

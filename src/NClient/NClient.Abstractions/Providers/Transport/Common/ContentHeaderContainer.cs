@@ -5,9 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    public class HttpResponseContentHeaderContainer : IHttpResponseContentHeaderContainer
+    public class ContentHeaderContainer : IContentHeaderContainer
     {
         private readonly HttpContentHeaders _httpContentHeaders;
 
@@ -24,12 +25,12 @@ namespace NClient.Providers.Transport
         public DateTimeOffset? Expires => _httpContentHeaders.Expires;
         public DateTimeOffset? LastModified => _httpContentHeaders.LastModified;
         
-        public HttpResponseContentHeaderContainer(HttpContentHeaders httpContentHeaders)
+        public ContentHeaderContainer(HttpContentHeaders httpContentHeaders)
         {
             _httpContentHeaders = httpContentHeaders;
         }
         
-        public HttpResponseContentHeaderContainer(IEnumerable<IHttpHeader> httpHeaders)
+        public ContentHeaderContainer(IEnumerable<IHeader> httpHeaders)
         {
             var fakeHttpContent = new ByteArrayContent(Array.Empty<byte>());
             foreach (var headerValues in httpHeaders.GroupBy(x => x.Name))

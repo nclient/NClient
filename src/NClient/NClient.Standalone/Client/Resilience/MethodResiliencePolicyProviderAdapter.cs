@@ -22,9 +22,9 @@ namespace NClient.Resilience
             _resiliencePolicyPredicates = resiliencePolicyPredicates?.ToArray() ?? Array.Empty<ResiliencePolicyPredicatePair<TRequest, TResponse>>();
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest)
+        public IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IRequest transportRequest)
         {
-            var resiliencePolicyPredicate = _resiliencePolicyPredicates.FirstOrDefault(x => x.Predicate(methodInfo, httpRequest));
+            var resiliencePolicyPredicate = _resiliencePolicyPredicates.FirstOrDefault(x => x.Predicate(methodInfo, transportRequest));
             return resiliencePolicyPredicate?.Provider.Create() ?? _defaultResiliencePolicyProvider!.Create();
         }
     }

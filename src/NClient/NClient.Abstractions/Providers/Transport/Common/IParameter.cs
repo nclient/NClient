@@ -2,7 +2,7 @@
 
 namespace NClient.Providers.Transport
 {
-    public interface IHttpParameter
+    public interface IParameter
     {
         string Name { get; }
         object? Value { get; }

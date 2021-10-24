@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Net;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.Transport
 {
     /// <summary>
-    /// The container for HTTP response data with deserialized body.
+    /// The container for response data with deserialized body.
     /// </summary>
-    public class HttpResponse<TData> : HttpResponse, IHttpResponse<TData>
+    public class Response<TData> : Response, IResponse<TData>
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
@@ -15,21 +14,21 @@ namespace NClient.Providers.Transport
         public TData? Data { get; }
 
         /// <summary>
-        /// Creates the container for HTTP response data.
+        /// Creates the container for response data.
         /// </summary>
-        /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
-        /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
+        /// <param name="response">The response used as base HTTP response.</param>
+        /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
-        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TData? data)
-            : base(httpResponse, httpRequest)
+        public Response(IResponse response, IRequest request, TData? data)
+            : base(response, request)
         {
             Data = data;
         }
 
         /// <summary>
-        /// Throws an exception if the IsSuccessful property for the HTTP response is false.
+        /// Throws an exception if the IsSuccessful property for the response is false.
         /// </summary>
-        public new HttpResponse<TData> EnsureSuccess()
+        public new Response<TData> EnsureSuccess()
         {
             base.EnsureSuccess();
             return this;
@@ -37,22 +36,22 @@ namespace NClient.Providers.Transport
     }
 
     /// <summary>
-    /// The container for HTTP response data.
+    /// The container for response data.
     /// </summary>
-    public class HttpResponse : IHttpResponse
+    public class Response : IResponse
     {
         /// <summary>
-        /// The HTTP request that the response belongs to.
+        /// The request that the response belongs to.
         /// </summary>
-        public IHttpRequest Request { get; }
+        public IRequest Request { get; }
         /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        public IHttpResponseContent Content { get; set; }
+        public IContent Content { get; set; }
         /// <summary>
-        /// Gets HTTP response status code.
+        /// Gets response status code.
         /// </summary>
-        public HttpStatusCode StatusCode { get; set; }
+        public int StatusCode { get; set; }
         /// <summary>
         /// Gets description of HTTP status returned.
         /// </summary>
@@ -64,7 +63,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        public IHttpResponseHeaderContainer Headers { get; set; }
+        public IHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -81,39 +80,40 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets information about the success of the request.
         /// </summary>
-        public bool IsSuccessful => (int)StatusCode >= 200 && (int)StatusCode <= 299;
+        public bool IsSuccessful { get; set; }
 
         /// <summary>
         /// Creates the container for HTTP response data.
         /// </summary>
-        /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
-        public HttpResponse(IHttpRequest httpRequest)
+        /// <param name="transportRequest">The HTTP request that the response belongs to.</param>
+        public Response(IRequest transportRequest)
         {
-            Ensure.IsNotNull(httpRequest, nameof(httpRequest));
+            Ensure.IsNotNull(transportRequest, nameof(transportRequest));
 
-            Request = httpRequest;
-            Content = new HttpResponseContent();
-            Headers = new HttpResponseHeaderContainer(Array.Empty<IHttpHeader>());
+            Request = transportRequest;
+            Content = new Content();
+            Headers = new HeaderContainer(Array.Empty<IHeader>());
         }
 
-        internal HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest) : this(httpRequest)
+        internal Response(IResponse response, IRequest request) : this(request)
         {
-            Ensure.IsNotNull(httpResponse, nameof(httpResponse));
+            Ensure.IsNotNull(response, nameof(response));
             
-            Content = httpResponse.Content;
-            StatusCode = httpResponse.StatusCode;
-            StatusDescription = httpResponse.StatusDescription;
-            ResponseUri = httpResponse.ResponseUri;
-            Headers = httpResponse.Headers;
-            ErrorMessage = httpResponse.ErrorMessage;
-            ErrorException = httpResponse.ErrorException;
-            ProtocolVersion = httpResponse.ProtocolVersion;
+            Content = response.Content;
+            StatusCode = response.StatusCode;
+            StatusDescription = response.StatusDescription;
+            ResponseUri = response.ResponseUri;
+            Headers = response.Headers;
+            ErrorMessage = response.ErrorMessage;
+            ErrorException = response.ErrorException;
+            ProtocolVersion = response.ProtocolVersion;
+            IsSuccessful = response.IsSuccessful;
         }
 
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
         /// </summary>
-        public IHttpResponse EnsureSuccess()
+        public IResponse EnsureSuccess()
         {
             if (!IsSuccessful)
                 throw ErrorException!;

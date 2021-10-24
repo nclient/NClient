@@ -14,7 +14,7 @@ namespace NClient.Providers.Resilience
         /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
         /// </summary>
         /// <param name="methodInfo">The method to apply the policy to.</param>
-        /// <param name="httpRequest">The HTTP request to apply the policy to.</param>
-        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IHttpRequest httpRequest);
+        /// <param name="transportRequest">The request to apply the policy to.</param>
+        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IRequest transportRequest);
     }
 }

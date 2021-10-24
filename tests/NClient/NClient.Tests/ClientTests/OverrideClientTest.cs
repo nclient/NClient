@@ -34,7 +34,7 @@ namespace NClient.Tests.ClientTests
             var result = await _overriddenClient.GetAsync(id);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
             result.Data.Should().Be(1);
         }
 
@@ -47,7 +47,7 @@ namespace NClient.Tests.ClientTests
             var result = await _overriddenClient.PostAsync(entity);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 
         [Test]

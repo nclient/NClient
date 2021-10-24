@@ -1,15 +1,14 @@
-﻿using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NClient.Providers.Transport;
 
 namespace NClient.Standalone.Client.Transport
 {
-    internal class StubTransport : ITransport<IHttpRequest, IHttpResponse>
+    internal class StubTransport : ITransport<IRequest, IResponse>
     {
-        public Task<IHttpResponse> ExecuteAsync(IHttpRequest request)
+        public Task<IResponse> ExecuteAsync(IRequest request)
         {
-            var response = new HttpResponse(request) { StatusCode = HttpStatusCode.OK };
-            return Task.FromResult<IHttpResponse>(response);
+            var response = new Response(request) { StatusCode = 200 };
+            return Task.FromResult<IResponse>(response);
         }
     }
 }

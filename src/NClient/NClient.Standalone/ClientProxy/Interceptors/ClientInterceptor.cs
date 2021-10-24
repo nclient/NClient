@@ -70,7 +70,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
             FullMethodInvocation<TRequest, TResponse>? fullMethodInvocation = null;
-            IHttpRequest? httpRequest = null;
+            IRequest? httpRequest = null;
             try
             {
                 fullMethodInvocation = _fullMethodInvocationProvider
@@ -101,7 +101,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                 e.MethodInfo = invocation.Method;
                 throw;
             }
-            catch (HttpClientException<TRequest, TResponse> e)
+            catch (TransportException<TRequest, TResponse> e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", httpRequest!.Id);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), fullMethodInvocation!.MethodInfo, e);
@@ -114,47 +114,47 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             }
         }
         
-        private async Task<object?> ExecuteHttpResponseAsync(IHttpRequest httpRequest, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
+        private async Task<object?> ExecuteHttpResponseAsync(IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
         {
             if (resultType == typeof(TResponse))
                 return await _httpNClientFactory
                     .Create()
-                    .GetOriginalResponseAsync(httpRequest, resiliencePolicy)
+                    .GetOriginalResponseAsync(request, resiliencePolicy)
                     .ConfigureAwait(false);
 
-            if (resultType == typeof(IHttpResponse))
+            if (resultType == typeof(IResponse))
                 return await _httpNClientFactory
                     .Create()
-                    .GetHttpResponseAsync(httpRequest, resiliencePolicy)
+                    .GetHttpResponseAsync(request, resiliencePolicy)
                     .ConfigureAwait(false);
 
-            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>).GetGenericTypeDefinition())
+            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponse<>).GetGenericTypeDefinition())
                 return await _httpNClientFactory
                     .Create()
-                    .GetHttpResponseAsync(httpRequest, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy)
+                    .GetHttpResponseAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy)
                     .ConfigureAwait(false);
 
-            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<>).GetGenericTypeDefinition())
+            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<>).GetGenericTypeDefinition())
                 return await _httpNClientFactory
                     .Create()
-                    .GetHttpResponseWithErrorAsync(httpRequest, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy)
+                    .GetHttpResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy)
                     .ConfigureAwait(false);
 
-            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>).GetGenericTypeDefinition())
+            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<,>).GetGenericTypeDefinition())
                 return await _httpNClientFactory
                     .Create()
-                    .GetHttpResponseWithDataAndErrorAsync(httpRequest, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy)
+                    .GetHttpResponseWithDataAndErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType != typeof(void))
                 return await _httpNClientFactory
                     .Create()
-                    .GetResultAsync(httpRequest, resultType, resiliencePolicy)
+                    .GetResultAsync(request, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
             
             await _httpNClientFactory
                 .Create()
-                .GetResultAsync(httpRequest, resiliencePolicy)
+                .GetResultAsync(request, resiliencePolicy)
                 .ConfigureAwait(false);
             return null;
         }

@@ -5,7 +5,7 @@ namespace NClient.Providers.Transport
     // TODO: doc
     public interface ITransportMessageBuilder<TRequest, TResponse>
     {
-        Task<TRequest> BuildRequestAsync(IHttpRequest httpRequest);
-        Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, TRequest request, TResponse response);
+        Task<TRequest> BuildTransportRequestAsync(IRequest request);
+        Task<IResponse> BuildResponseAsync(IRequest transportRequest, TRequest request, TResponse response);
     }
 }

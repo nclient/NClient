@@ -16,7 +16,7 @@ namespace NClient.Providers.HttpClient.System
             isSuccess: responseContext => 
                 responseContext.Response.IsSuccessful,
             onFailure: responseContext => 
-                throw new HttpClientException<IRestRequest, IRestResponse>(responseContext.Request, responseContext.Response, responseContext.Response.ErrorMessage, responseContext.Response.ErrorException!))
+                throw new TransportException<IRestRequest, IRestResponse>(responseContext.Request, responseContext.Response, responseContext.Response.ErrorMessage, responseContext.Response.ErrorException!))
         {
         }
         

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Net;
 
 namespace NClient.Providers.Transport
 {
-    public interface IHttpResponse<TValue> : IHttpResponse
+    public interface IResponse<TValue> : IResponse
     {
         /// <summary>
         /// The object obtained as a result of deserialization of the body.
@@ -11,20 +10,20 @@ namespace NClient.Providers.Transport
         TValue? Data { get; }
     }
     
-    public interface IHttpResponse
+    public interface IResponse
     {
         /// <summary>
         /// The HTTP request that the response belongs to.
         /// </summary>
-        IHttpRequest Request { get; }
+        IRequest Request { get; }
         /// <summary>
         /// Gets string representation of response content.
         /// </summary>
-        IHttpResponseContent Content { get; set; }
+        IContent Content { get; set; }
         /// <summary>
         /// Gets HTTP response status code.
         /// </summary>
-        HttpStatusCode StatusCode { get; set; }
+        int StatusCode { get; set; }
         /// <summary>
         /// Gets description of HTTP status returned.
         /// </summary>
@@ -36,7 +35,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets headers returned by server with the response.
         /// </summary>
-        IHttpResponseHeaderContainer Headers { get; set; }
+        IHeaderContainer Headers { get; set; }
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -52,10 +51,10 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets information about the success of the request.
         /// </summary>
-        bool IsSuccessful { get; }
+        bool IsSuccessful { get; set; }
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
         /// </summary>
-        IHttpResponse EnsureSuccess();
+        IResponse EnsureSuccess();
     }
 }

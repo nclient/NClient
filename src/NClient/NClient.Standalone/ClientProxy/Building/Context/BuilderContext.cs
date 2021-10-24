@@ -32,7 +32,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public IReadOnlyCollection<ResiliencePolicyPredicatePair<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
-        public IReadOnlyCollection<IResultBuilderProvider<IHttpResponse>> ResultBuilderProviders { get; private set; }
+        public IReadOnlyCollection<IResultBuilderProvider<IResponse>> ResultBuilderProviders { get; private set; }
         public IReadOnlyCollection<IResultBuilderProvider<TResponse>> TypedResultBuilderProviders { get; private set; }
 
         public IReadOnlyCollection<ILogger> Loggers { get; private set; }
@@ -43,7 +43,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicatePair<TRequest, TResponse>>();
-            ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>();
+            ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IResponse>>();
             TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>();
             Loggers = Array.Empty<ILogger>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
@@ -141,7 +141,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
 
-        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(Func<MethodInfo, IHttpRequest, bool> predicate, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(Func<MethodInfo, IRequest, bool> predicate, IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -151,7 +151,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IEnumerable<Func<MethodInfo, IHttpRequest, bool>> predicates, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IEnumerable<Func<MethodInfo, IRequest, bool>> predicates, IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -170,7 +170,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<IHttpResponse>> resultBuilderProviders)
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<IResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -190,7 +190,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
+                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IResponse>>(),
                 TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>()
             };
         }

@@ -1,25 +1,37 @@
-﻿using System.Net.Http;
+﻿using NClient.Providers.Transport;
 
 namespace NClient.Core.Extensions
 {
     public static class HttpMethodExtensions
     {
-        public static bool IsIdempotentMethod(this HttpMethod httpMethod)
+        // TODO: может привести к ошибкам
+        public static bool IsIdempotentMethod(this RequestType? transportMethod)
         {
-            return httpMethod switch
+            return transportMethod.HasValue && IsIdempotentMethod(transportMethod.Value);
+        }
+        
+        public static bool IsIdempotentMethod(this RequestType requestType)
+        {
+            return requestType switch
             {
-                { } x when x == HttpMethod.Post => false,
+                RequestType.Post => false,
                 _ => true
             };
         }
         
-        public static bool IsSafeMethod(this HttpMethod httpMethod)
+        // TODO: может привести к ошибкам
+        public static bool IsSafeMethod(this RequestType? transportMethod)
         {
-            return httpMethod switch
+            return transportMethod.HasValue && IsSafeMethod(transportMethod.Value);
+        }
+
+        public static bool IsSafeMethod(this RequestType requestType)
+        {
+            return requestType switch
             {
-                { } x when x == HttpMethod.Get => true,
-                { } x when x == HttpMethod.Head => true,
-                { } x when x == HttpMethod.Options => true,
+                RequestType.Get => true,
+                RequestType.Head => true,
+                RequestType.Options => true,
                 _ => false
             };
         }

@@ -16,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<INClientHttpClientBuilder<TClient>, TClient> implementationFactory)
+            string host, Func<INClientTransportBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -35,7 +35,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientHttpClientBuilder<TClient>, TClient> implementationFactory)
+            string host, Func<IServiceProvider, INClientTransportBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));

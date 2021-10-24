@@ -5,9 +5,9 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results
 {
-    public class ResultBuilder : IResultBuilder<IHttpResponse>
+    public class ResultBuilder : IResultBuilder<IResponse>
     {
-        public bool CanBuild(Type resultType, IHttpResponse response)
+        public bool CanBuild(Type resultType, IResponse response)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -16,7 +16,7 @@ namespace NClient.Providers.Results
                 || resultType.GetGenericTypeDefinition() == typeof(Result<,>);
         }
         
-        public Task<object?> BuildAsync(Type resultType, IHttpResponse response, ISerializer serializer)
+        public Task<object?> BuildAsync(Type resultType, IResponse response, ISerializer serializer)
         {
             var genericResultType = typeof(Result<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 

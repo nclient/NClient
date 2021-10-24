@@ -12,6 +12,6 @@ namespace NClient
         INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethods();
         INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethodsOf<TClient>();
         INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector);
-        INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IHttpRequest, bool> predicate);
+        INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate);
     }
 }

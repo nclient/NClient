@@ -7,9 +7,9 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {
-    public class EitherBuilder : IResultBuilder<IHttpResponse>
+    public class EitherBuilder : IResultBuilder<IResponse>
     {
-        public bool CanBuild(Type resultType, IHttpResponse response)
+        public bool CanBuild(Type resultType, IResponse response)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -17,7 +17,7 @@ namespace NClient.Providers.Results.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public Task<object?> BuildAsync(Type resultType, IHttpResponse response, ISerializer serializer)
+        public Task<object?> BuildAsync(Type resultType, IResponse response, ISerializer serializer)
         {
             if (response.IsSuccessful)
             {

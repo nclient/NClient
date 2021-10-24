@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.Transport
@@ -8,10 +7,10 @@ namespace NClient.Providers.Transport
     /// <summary>
     /// The container for data used to make requests.
     /// </summary>
-    public class HttpRequest : IHttpRequest
+    public class Request : IRequest
     {
-        private readonly List<IHttpParameter> _parameters = new();
-        private readonly List<IHttpHeader> _headers = new();
+        private readonly List<IParameter> _parameters = new();
+        private readonly List<IHeader> _headers = new();
 
         /// <summary>
         /// Gets the request id.
@@ -24,7 +23,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets HTTP method type.
         /// </summary>
-        public HttpMethod Method { get; }
+        public RequestType? Method { get; }
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
@@ -36,11 +35,11 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
-        public IReadOnlyCollection<IHttpParameter> Parameters => _parameters;
+        public IReadOnlyCollection<IParameter> Parameters => _parameters;
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        public IReadOnlyCollection<IHttpHeader> Headers => _headers;
+        public IReadOnlyCollection<IHeader> Headers => _headers;
 
         /// <summary>
         /// Creates container for HTTP request data.
@@ -48,7 +47,7 @@ namespace NClient.Providers.Transport
         /// <param name="id">The request id.</param>
         /// <param name="resource">The request URI (without parameters).</param>
         /// <param name="method">The request HTTP method type.</param>
-        public HttpRequest(Guid id, Uri resource, HttpMethod method)
+        public Request(Guid id, Uri resource, RequestType method)
         {
             Ensure.IsNotNull(resource, nameof(resource));
             Ensure.IsNotNull(method, nameof(method));
@@ -68,7 +67,7 @@ namespace NClient.Providers.Transport
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
 
-            _parameters.Add(new HttpParameter(name, value));
+            _parameters.Add(new Parameter(name, value));
         }
 
         /// <summary>
@@ -81,7 +80,7 @@ namespace NClient.Providers.Transport
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
 
-            _headers.Add(new HttpHeader(name, value));
+            _headers.Add(new Header(name, value));
         }
     }
 }

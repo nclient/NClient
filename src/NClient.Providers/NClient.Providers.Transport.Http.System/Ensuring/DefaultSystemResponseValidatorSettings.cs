@@ -22,7 +22,7 @@ namespace NClient.Providers.HttpClient.System
                 }
                 catch (HttpRequestException e)
                 {
-                    throw new HttpClientException<HttpRequestMessage, HttpResponseMessage>(x.Request, x.Response, e.Message, e);
+                    throw new TransportException<HttpRequestMessage, HttpResponseMessage>(x.Request, x.Response, e.Message, e);
                 }
             })
         {

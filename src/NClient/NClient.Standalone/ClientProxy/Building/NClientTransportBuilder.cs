@@ -4,23 +4,24 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientFactoryHttpClientBuilder : INClientFactoryHttpClientBuilder
+    internal class NClientTransportBuilder<TClient> : INClientTransportBuilder<TClient> where TClient : class
     {
-        private readonly string _factoryName;
+        private readonly string _host;
         
-        public NClientFactoryHttpClientBuilder(string factoryName)
+        public NClientTransportBuilder(string host)
         {
-            _factoryName = factoryName;
+            _host = host;
         }
         
-        public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomHttpClient<TRequest, TResponse>(
+        public INClientSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
         {
             Ensure.IsNotNull(transportProvider, nameof(transportProvider));
             Ensure.IsNotNull(transportMessageBuilderProvider, nameof(transportMessageBuilderProvider));
             
-            return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
+            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
+                .WithHost(_host)
                 .WithHttpClientProvider(transportProvider, transportMessageBuilderProvider));
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using NClient.Annotations.Methods;
+using NClient.Providers.Transport;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests.RequestBuilderTests
@@ -19,7 +19,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get);
+                RequestType.Get);
         }
 
         private interface IHeadMethod {[HeadMethod] int Method(); }
@@ -31,7 +31,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Head);
+                RequestType.Head);
         }
 
         private interface IPostMethod {[PostMethod] int Method(); }
@@ -43,7 +43,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Post);
+                RequestType.Post);
         }
 
         private interface IPutMethod {[PutMethod] int Method(); }
@@ -55,7 +55,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Put);
+                RequestType.Put);
         }
 
         private interface IDeleteMethod {[DeleteMethod] int Method(); }
@@ -67,7 +67,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Delete);
+                RequestType.Delete);
         }
 
         private interface IOptionsMethod {[OptionsMethod] int Method(); }
@@ -79,7 +79,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Options);
+                RequestType.Options);
         }
 
         private interface IPatchMethod {[PatchMethod] int Method(); }
@@ -91,7 +91,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Patch);
+                RequestType.Patch);
         }
     }
 }

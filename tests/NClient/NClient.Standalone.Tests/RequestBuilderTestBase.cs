@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using FluentAssertions;
 using NClient.Core.Helpers.ObjectMemberManagers;
@@ -36,7 +35,7 @@ namespace NClient.Standalone.Tests
             RequestBuilder = new RequestBuilder(
                 new RouteTemplateProvider(ClientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, ClientValidationExceptionFactory),
-                new HttpMethodProvider(ClientValidationExceptionFactory),
+                new TransportMethodProvider(ClientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory),
                 ClientValidationExceptionFactory);
 
@@ -59,28 +58,28 @@ namespace NClient.Standalone.Tests
             return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());
         }
 
-        internal IHttpRequest BuildRequest(Method method, params object[] arguments)
+        internal IRequest BuildRequest(Method method, params object[] arguments)
         {
             return BuildRequest(host: "http://localhost:5000", method, arguments);
         }
 
-        internal IHttpRequest BuildRequest(string host, Method method, params object[] arguments)
+        internal IRequest BuildRequest(string host, Method method, params object[] arguments)
         {
             return RequestBuilder.Build(RequestId, host: new Uri(host), method, arguments);
         }
 
         protected static void AssertHttpRequest(
-            IHttpRequest actualRequest,
+            IRequest actualRequest,
             Uri uri,
-            HttpMethod httpMethod,
-            IEnumerable<IHttpParameter>? parameters = null,
-            IEnumerable<IHttpHeader>? headers = null,
+            RequestType httpMethod,
+            IEnumerable<IParameter>? parameters = null,
+            IEnumerable<IHeader>? headers = null,
             object? body = null)
         {
             actualRequest.Resource.Should().Be(uri);
             actualRequest.Method.Should().Be(httpMethod);
-            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IHttpParameter>(), config => config.WithoutStrictOrdering());
-            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHttpHeader>(), config => config.WithoutStrictOrdering());
+            actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
+            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHeader>(), config => config.WithoutStrictOrdering());
             actualRequest.Data.Should().BeEquivalentTo(body);
         }
     }

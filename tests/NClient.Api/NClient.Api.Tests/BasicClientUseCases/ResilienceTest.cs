@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Providers.Transport;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
@@ -122,7 +123,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .WithCustomResilience(x => x
-                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Post).DoNotUse())
+                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == RequestType.Post).DoNotUse())
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -137,7 +138,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .WithCustomResilience(x => x
-                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == HttpMethod.Post).Use())
+                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == RequestType.Post).Use())
                 .Build();
             
             var response = await client.GetAsync(id);

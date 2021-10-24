@@ -9,10 +9,10 @@ namespace NClient
     /// </summary>
     public class CustomNClientFactoryBuilder : INClientFactoryBuilder
     {
-        public INClientFactoryHttpClientBuilder For(string factoryName)
+        public INClientFactoryTransportBuilder For(string factoryName)
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
-            return new NClientFactoryHttpClientBuilder(factoryName);
+            return new NClientFactoryTransportBuilder(factoryName);
         }
     }
 }

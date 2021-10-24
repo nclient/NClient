@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations.Methods;
 using NClient.Common.Helpers;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
@@ -17,13 +17,13 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
 
         public static IEnumerable ValidTestCases = new[]
         {
-            new TestCaseData(new GetMethodAttribute(), HttpMethod.Get),
-            new TestCaseData(new HeadMethodAttribute(), HttpMethod.Head),
-            new TestCaseData(new PostMethodAttribute(), HttpMethod.Post),
-            new TestCaseData(new PutMethodAttribute(), HttpMethod.Put),
-            new TestCaseData(new DeleteMethodAttribute(), HttpMethod.Delete),
-            new TestCaseData(new OptionsMethodAttribute(), HttpMethod.Options),
-            new TestCaseData(new PatchMethodAttribute(), HttpMethod.Patch)
+            new TestCaseData(new GetMethodAttribute(), RequestType.Get),
+            new TestCaseData(new HeadMethodAttribute(), RequestType.Head),
+            new TestCaseData(new PostMethodAttribute(), RequestType.Post),
+            new TestCaseData(new PutMethodAttribute(), RequestType.Put),
+            new TestCaseData(new DeleteMethodAttribute(), RequestType.Delete),
+            new TestCaseData(new OptionsMethodAttribute(), RequestType.Options),
+            new TestCaseData(new PatchMethodAttribute(), RequestType.Patch)
         };
 
         public static IEnumerable InvalidTestCases = new[]
@@ -34,19 +34,19 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
                 ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(NotSupportedAttribute)))
         };
 
-        private HttpMethodProvider _httpMethodProvider = null!;
+        private TransportMethodProvider _transportMethodProvider = null!;
 
         [SetUp]
         public void SetUp()
         {
             var clientRequestExceptionFactory = new ClientValidationExceptionFactory();
-            _httpMethodProvider = new HttpMethodProvider(clientRequestExceptionFactory);
+            _transportMethodProvider = new TransportMethodProvider(clientRequestExceptionFactory);
         }
 
         [TestCaseSource(nameof(ValidTestCases))]
-        public void Get_MethodAttribute_HttpMethod(MethodAttribute methodAttribute, HttpMethod expectedHttpMethod)
+        public void Get_MethodAttribute_HttpMethod(MethodAttribute methodAttribute, RequestType expectedHttpMethod)
         {
-            var httpMethod = _httpMethodProvider.Get(methodAttribute);
+            var httpMethod = _transportMethodProvider.Get(methodAttribute);
 
             httpMethod.Should().Be(expectedHttpMethod);
         }
@@ -54,7 +54,7 @@ namespace NClient.Standalone.Tests.HttpMethodProviderTests
         [TestCaseSource(nameof(InvalidTestCases))]
         public void Get_MethodAttribute_ThrowException(MethodAttribute methodAttribute, Exception exception)
         {
-            _httpMethodProvider
+            _transportMethodProvider
                 .Invoking(x => x.Get(methodAttribute))
                 .Should()
                 .Throw<Exception>()

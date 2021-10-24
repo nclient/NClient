@@ -33,7 +33,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
                 methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
         }
         
-        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IHttpRequest, bool> predicate)
+        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate)
         {
             return new NClientResilienceSetter<TClient, TRequest, TResponse>(
                 _builderContextModifier, 

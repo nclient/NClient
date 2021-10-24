@@ -1,19 +1,19 @@
 ﻿using NClient.Common.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
     /// <summary>
     /// The container for HTTP header data.
     /// </summary>
-    public record HttpHeader : IHttpHeader
+    public class Parameter : IParameter
     {
         public string Name { get; }
-        public string Value { get; }
+        public object? Value { get; }
 
-        public HttpHeader(string name, string value)
+        public Parameter(string name, object? value)
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
-            Ensure.IsNotNullOrEmpty(value, nameof(value));
 
             Name = name;
             Value = value;

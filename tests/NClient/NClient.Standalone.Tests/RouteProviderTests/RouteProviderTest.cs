@@ -39,7 +39,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().BeEmpty();
@@ -54,7 +54,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("api");
@@ -69,7 +69,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("My");
@@ -84,7 +84,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyclient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("Myclient");
@@ -99,7 +99,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyController",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("My");
@@ -114,7 +114,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMycontroller",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("Mycontroller");
@@ -129,7 +129,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "MyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("My");
@@ -144,7 +144,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "Myclient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("Myclient");
@@ -159,7 +159,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "MyController",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("My");
@@ -174,7 +174,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "Mycontroller",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("Mycontroller");
@@ -189,7 +189,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("api/My");
@@ -204,7 +204,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("Method");
@@ -219,7 +219,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("api/Method");
@@ -234,7 +234,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: null);
 
             route.Should().Be("api/My/Method");
@@ -250,7 +250,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 routeTemplate,
                 clientName: "IMyClient",
                 methodName: "Method",
-                parameters: Array.Empty<Parameter>(),
+                parameters: Array.Empty<MethodParameter>(),
                 useVersionAttribute: new UseVersionAttribute(version));
 
             route.Should().Be(version);
@@ -268,7 +268,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", intValue.GetType(), intValue, new RouteParamAttribute())
+                    new MethodParameter("id", intValue.GetType(), intValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -287,7 +287,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", intValue.GetType(), intValue, new RouteParamAttribute())
+                    new MethodParameter("id", intValue.GetType(), intValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -307,7 +307,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", stringValue.GetType(), stringValue, new RouteParamAttribute())
+                    new MethodParameter("id", stringValue.GetType(), stringValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -326,7 +326,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", decimalValue.GetType(), decimalValue, new RouteParamAttribute())
+                    new MethodParameter("id", decimalValue.GetType(), decimalValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -345,7 +345,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", guidValue.GetType(), guidValue, new RouteParamAttribute())
+                    new MethodParameter("id", guidValue.GetType(), guidValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -364,7 +364,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", enumValue.GetType(), enumValue, new RouteParamAttribute())
+                    new MethodParameter("id", enumValue.GetType(), enumValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -382,7 +382,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
+                    new MethodParameter("id", typeof(int), 1, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -400,7 +400,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
+                    new MethodParameter("id", typeof(int), 1, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -418,7 +418,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
+                    new MethodParameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -437,7 +437,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new BodyParamAttribute())
+                    new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new BodyParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -456,7 +456,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomJsonName { Id = id, Value = 2 }, new BodyParamAttribute())
+                    new MethodParameter("entity", typeof(BasicEntity), new BasicEntityWithCustomJsonName { Id = id, Value = 2 }, new BodyParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -475,7 +475,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
+                        new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -495,7 +495,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
+                        new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new BodyParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -515,7 +515,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new QueryParamAttribute())
+                    new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -534,7 +534,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
+                    new MethodParameter("entity", typeof(BasicEntity), new BasicEntityWithCustomQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -553,7 +553,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("entity", typeof(BasicEntity), new BasicEntityWithCustomFromQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
+                    new MethodParameter("entity", typeof(BasicEntity), new BasicEntityWithCustomFromQueryName { Id = id, Value = 2 }, new QueryParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -572,7 +572,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
+                        new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -592,7 +592,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
+                        new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new QueryParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -610,7 +610,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     routeTemplate,
                     clientName: "IClient",
                     methodName: "Method",
-                    parameters: Array.Empty<Parameter>(),
+                    parameters: Array.Empty<MethodParameter>(),
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
@@ -628,7 +628,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                 methodName: "Method",
                 parameters: new[]
                 {
-                    new Parameter("id", typeof(int), 1, new RouteParamAttribute())
+                    new MethodParameter("id", typeof(int), 1, new RouteParamAttribute())
                 },
                 useVersionAttribute: null);
 
@@ -645,7 +645,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     routeTemplate,
                     clientName: "IMyClient",
                     methodName: "Method",
-                    parameters: Array.Empty<Parameter>(),
+                    parameters: Array.Empty<MethodParameter>(),
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
@@ -662,7 +662,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     routeTemplate,
                     clientName: "IMyClient",
                     methodName: "Method",
-                    parameters: Array.Empty<Parameter>(),
+                    parameters: Array.Empty<MethodParameter>(),
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
@@ -681,7 +681,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), 1, new RouteParamAttribute())
+                        new MethodParameter("id", typeof(int), 1, new RouteParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -701,7 +701,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
+                        new MethodParameter("id", typeof(int), int.MaxValue, new RouteParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -721,7 +721,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     methodName: "Method",
                     parameters: new[]
                     {
-                        new Parameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new RouteParamAttribute())
+                        new MethodParameter("entity", typeof(BasicEntity), new BasicEntity { Id = 1, Value = 2 }, new RouteParamAttribute())
                     },
                     useVersionAttribute: null))
                 .Should()
@@ -739,7 +739,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     routeTemplate,
                     clientName: "IMyClient",
                     methodName: "Method",
-                    parameters: Array.Empty<Parameter>(),
+                    parameters: Array.Empty<MethodParameter>(),
                     useVersionAttribute: null))
                 .Should()
                 .Throw<ClientValidationException>()
@@ -757,7 +757,7 @@ namespace NClient.Standalone.Tests.RouteProviderTests
                     routeTemplate,
                     clientName: "IMyClient",
                     methodName: "Method",
-                    parameters: Array.Empty<Parameter>(),
+                    parameters: Array.Empty<MethodParameter>(),
                     useVersionAttribute: new UseVersionAttribute(version)))
                 .Should()
                 .Throw<ClientValidationException>()

@@ -11,14 +11,14 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
     internal class NClientFactoryResilienceSetter<TRequest, TResponse> : INClientFactoryResilienceSetter<TRequest, TResponse>
     {
         private readonly BuilderContextModifier<TRequest, TResponse> _builderContextModifier;
-        private readonly IEnumerable<Func<MethodInfo, IHttpRequest, bool>> _methodPredicates;
+        private readonly IEnumerable<Func<MethodInfo, IRequest, bool>> _methodPredicates;
         
-        public NClientFactoryResilienceSetter(BuilderContextModifier<TRequest, TResponse> builderContextModifier, Func<MethodInfo, IHttpRequest, bool> methodPredicate) 
+        public NClientFactoryResilienceSetter(BuilderContextModifier<TRequest, TResponse> builderContextModifier, Func<MethodInfo, IRequest, bool> methodPredicate) 
             : this(builderContextModifier, new[] { methodPredicate })
         {
         }
         
-        public NClientFactoryResilienceSetter(BuilderContextModifier<TRequest, TResponse> builderContextModifier, IEnumerable<Func<MethodInfo, IHttpRequest, bool>> methodPredicates)
+        public NClientFactoryResilienceSetter(BuilderContextModifier<TRequest, TResponse> builderContextModifier, IEnumerable<Func<MethodInfo, IRequest, bool>> methodPredicates)
         {
             _builderContextModifier = builderContextModifier;
             _methodPredicates = methodPredicates;

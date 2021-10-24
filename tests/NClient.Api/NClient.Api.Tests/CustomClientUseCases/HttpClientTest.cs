@@ -9,7 +9,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
     [Parallelizable]
     public class HttpClientTest
     {
-        private INClientHttpClientBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
+        private INClientTransportBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
 
         [SetUp]

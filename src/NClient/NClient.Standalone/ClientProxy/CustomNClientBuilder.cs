@@ -9,10 +9,10 @@ namespace NClient
     /// </summary>
     public class CustomNClientBuilder : INClientBuilder
     {
-        public INClientHttpClientBuilder<TClient> For<TClient>(string host) where TClient : class
+        public INClientTransportBuilder<TClient> For<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            return new NClientHttpClientBuilder<TClient>(host);
+            return new NClientTransportBuilder<TClient>(host);
         }
     }
 }

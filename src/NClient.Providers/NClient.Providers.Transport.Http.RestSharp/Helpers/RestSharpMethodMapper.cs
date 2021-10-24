@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Net.Http;
 using RestSharp;
 
 namespace NClient.Providers.Transport.Http.RestSharp.Helpers
 {
     public interface IRestSharpMethodMapper
     {
-        Method Map(HttpMethod httpMethod);
-        HttpMethod Map(Method method);
+        Method Map(RequestType requestType);
+        RequestType Map(Method method);
     }
     
     public class RestSharpMethodMapper : IRestSharpMethodMapper
     {
-        public Method Map(HttpMethod httpMethod)
+        public Method Map(RequestType requestType)
         {
-            Enum.TryParse(httpMethod.ToString(), out Method method);
+            Enum.TryParse(requestType.ToString(), out Method method);
             return method;
         }
         
-        public HttpMethod Map(Method method)
+        public RequestType Map(Method method)
         {
-            return new HttpMethod(method.ToString());
+            // TODO: обработать результат TryParse
+            Enum.TryParse(method.ToString(), ignoreCase: true, out RequestType transportMethod);
+            return transportMethod;
         }
     }
 }

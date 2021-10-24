@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    public interface IHttpResponseHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    public interface IHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
     {
         ICollection<string> AcceptRanges { get; }
         TimeSpan? Age { get; }

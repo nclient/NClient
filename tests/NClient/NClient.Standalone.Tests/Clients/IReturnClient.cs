@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests.Clients
         new Task<BasicEntity> GetAsync(int id);
 
         [GetMethod]
-        IHttpResponse<BasicEntity> GetIHttpResponse(int id);
+        IResponse<BasicEntity> GetIHttpResponse(int id);
         
         [GetMethod]
         HttpResponseMessage GetHttpResponseMessage(int id);
@@ -30,6 +30,6 @@ namespace NClient.Standalone.Tests.Clients
         new Task PostAsync(BasicEntity entity);
 
         [PostMethod]
-        IHttpResponse PostHttpResponse(BasicEntity entity);
+        IResponse PostHttpResponse(BasicEntity entity);
     }
 }

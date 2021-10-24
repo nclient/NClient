@@ -6,12 +6,12 @@ namespace NClient.Exceptions
     /// <summary>
     /// Represents exceptions thrown by NClient client during the processing of the HTTP request.
     /// </summary>
-    public class HttpClientException : NClientException
+    public class TransportException : NClientException
     {
-        public HttpClientException(string message) : base(message)
+        public TransportException(string message) : base(message)
         {
         }
-        public HttpClientException(string message, Exception innerException) : base(message, innerException)
+        public TransportException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
@@ -19,7 +19,7 @@ namespace NClient.Exceptions
     /// <summary>
     /// Represents exceptions thrown by NClient client during the processing of the HTTP request.
     /// </summary>
-    public class HttpClientException<TRequest, TResponse> : HttpClientException
+    public class TransportException<TRequest, TResponse> : TransportException
     {
         /// <summary>
         /// The HTTP request that the response belongs to.
@@ -31,13 +31,13 @@ namespace NClient.Exceptions
         /// </summary>
         public TResponse Response { get; }
 
-        public HttpClientException(TRequest request, TResponse response, string errorMessage) : base(errorMessage)
+        public TransportException(TRequest request, TResponse response, string errorMessage) : base(errorMessage)
         {
             Request = request;
             Response = response;
         }
         
-        public HttpClientException(TRequest request, TResponse response, string errorMessage, Exception innerException) : base(errorMessage, innerException)
+        public TransportException(TRequest request, TResponse response, string errorMessage, Exception innerException) : base(errorMessage, innerException)
         {
             Request = request;
             Response = response;

@@ -3,9 +3,9 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.Client.Transport
 {
-    internal class StubTransportProvider : ITransportProvider<IHttpRequest, IHttpResponse>
+    internal class StubTransportProvider : ITransportProvider<IRequest, IResponse>
     {
-        public ITransport<IHttpRequest, IHttpResponse> Create(ISerializer? serializer = null)
+        public ITransport<IRequest, IResponse> Create(ISerializer? serializer = null)
         {
             return new StubTransport();
         }

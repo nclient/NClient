@@ -2,9 +2,9 @@
 
 namespace NClient.Providers.Results.LanguageExt
 {
-    public class EitherBuilderProvider : IResultBuilderProvider<IHttpResponse>
+    public class EitherBuilderProvider : IResultBuilderProvider<IResponse>
     {
-        public IResultBuilder<IHttpResponse> Create()
+        public IResultBuilder<IResponse> Create()
         {
             return new EitherBuilder();
         }

@@ -2,7 +2,7 @@
 
 namespace NClient.Providers.Transport
 {
-    public interface IHttpResponseContent
+    public interface IContent
     {
         /// <summary>
         /// Gets byte representation of response content.
@@ -11,6 +11,6 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets headers returned by server with the response content.
         /// </summary>
-        IHttpResponseContentHeaderContainer Headers { get; }
+        IContentHeaderContainer Headers { get; }
     }
 }

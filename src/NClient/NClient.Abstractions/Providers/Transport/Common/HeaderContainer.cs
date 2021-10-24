@@ -5,9 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    public class HttpResponseHeaderContainer : IHttpResponseHeaderContainer
+    public class HeaderContainer : IHeaderContainer
     {
         private readonly HttpResponseHeaders _httpResponseHeaders;
 
@@ -32,12 +33,12 @@ namespace NClient.Providers.Transport
         public ICollection<ViaHeaderValue> Via => _httpResponseHeaders.Via;
         public ICollection<WarningHeaderValue> Warning => _httpResponseHeaders.Warning;
         
-        public HttpResponseHeaderContainer(HttpResponseHeaders httpResponseHeaders)
+        public HeaderContainer(HttpResponseHeaders httpResponseHeaders)
         {
             _httpResponseHeaders = httpResponseHeaders;
         }
 
-        public HttpResponseHeaderContainer(IEnumerable<IHttpHeader> httpHeaders)
+        public HeaderContainer(IEnumerable<IHeader> httpHeaders)
         {
             var fakeHttpResponseMessage = new HttpResponseMessage();
             foreach (var headerValues in httpHeaders.GroupBy(x => x.Name))

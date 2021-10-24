@@ -28,7 +28,10 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0), 
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, httpRequest) =>
+                {
+                    return httpRequest.Method.IsSafeMethod();
+                })
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         

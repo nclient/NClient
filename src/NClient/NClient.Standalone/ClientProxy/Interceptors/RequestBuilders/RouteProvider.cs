@@ -19,7 +19,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             RouteTemplate routeTemplate,
             string clientName,
             string methodName,
-            Parameter[] parameters,
+            MethodParameter[] parameters,
             UseVersionAttribute? useVersionAttribute);
     }
 
@@ -44,7 +44,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             RouteTemplate routeTemplate,
             string clientName,
             string methodName,
-            Parameter[] parameters,
+            MethodParameter[] parameters,
             UseVersionAttribute? useVersionAttribute)
         {
             var unusedRouteParamNames = parameters
@@ -86,7 +86,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             return versionAttribute.Version;
         }
 
-        private string GetValueForToken(TemplatePart templatePart, Parameter[] parameters)
+        private string GetValueForToken(TemplatePart templatePart, MethodParameter[] parameters)
         {
             var (objectName, memberPath) = _objectMemberManager.ParseNextPath(templatePart.Name!);
             return memberPath is null
@@ -94,7 +94,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
                 : GetCustomParameterValue(objectName, memberPath, parameters);
         }
 
-        private string GetParameterValue(string name, Parameter[] parameters)
+        private string GetParameterValue(string name, MethodParameter[] parameters)
         {
             var parameter = GetRouteParameter(name, parameters);
             if (!parameter.Value!.GetType().IsPrimitive())
@@ -103,7 +103,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             return parameter.Value.ToString() ?? "";
         }
 
-        private string GetCustomParameterValue(string objectName, string memberPath, Parameter[] parameters)
+        private string GetCustomParameterValue(string objectName, string memberPath, MethodParameter[] parameters)
         {
             var parameter = GetRouteParameter(objectName, parameters);
 
@@ -116,7 +116,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             })?.ToString() ?? "";
         }
 
-        private Parameter GetRouteParameter(string name, IEnumerable<Parameter> parameters)
+        private MethodParameter GetRouteParameter(string name, IEnumerable<MethodParameter> parameters)
         {
             var parameterValue = parameters.SingleOrDefault(x => x.Name == name);
             if (parameterValue is null)

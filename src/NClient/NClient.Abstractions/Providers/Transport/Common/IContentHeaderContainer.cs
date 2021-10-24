@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    public interface IHttpResponseContentHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
+    public interface IContentHeaderContainer : IEnumerable<KeyValuePair<string, IEnumerable<string>>>
     {
         ICollection<string> Allow { get; }
         ContentDispositionHeaderValue ContentDisposition { get; }

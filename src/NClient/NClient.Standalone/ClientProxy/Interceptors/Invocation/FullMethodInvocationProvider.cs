@@ -60,7 +60,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
         {
             if (typeof(IResilienceNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
-            if (typeof(IHttpNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
+            if (typeof(ITransportNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
 
             return false;

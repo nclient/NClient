@@ -31,39 +31,40 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
 
-        public Task<IRestRequest> BuildRequestAsync(IHttpRequest httpRequest)
+        public Task<IRestRequest> BuildTransportRequestAsync(IRequest request)
         {
-            var method = _restSharpMethodMapper.Map(httpRequest.Method);
-            var restRequest = new RestRequest(httpRequest.Resource, method, DataFormat.Json);
+            // TODO: как быть?
+            var method = _restSharpMethodMapper.Map(request.Method.Value);
+            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
 
-            foreach (var param in httpRequest.Parameters)
+            foreach (var param in request.Parameters)
             {
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
             restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType).ToString());
             
-            foreach (var header in httpRequest.Headers)
+            foreach (var header in request.Headers)
             {
                 restRequest.AddHeader(header.Name, header.Value);
             }
 
-            if (httpRequest.Data is not null)
+            if (request.Data is not null)
             {
-                var body = _serializer.Serialize(httpRequest.Data);
+                var body = _serializer.Serialize(request.Data);
                 restRequest.AddParameter(_serializer.ContentType, body, ParameterType.RequestBody);
             }
 
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<IHttpResponse> BuildResponseAsync(IHttpRequest httpRequest, IRestRequest request, IRestResponse response)
+        public Task<IResponse> BuildResponseAsync(IRequest transportRequest, IRestRequest restRequest, IRestResponse restResponse)
         {
-            var finalRequest = _finalHttpRequestBuilder.Build(httpRequest, response.Request);
+            var finalRequest = _finalHttpRequestBuilder.Build(transportRequest, restResponse.Request);
             
-            var allHeaders = response.Headers
+            var allHeaders = restResponse.Headers
                 .Where(x => x.Name != null)
-                .Select(x => new HttpHeader(x.Name!, x.Value?.ToString() ?? ""))
+                .Select(x => new Header(x.Name!, x.Value?.ToString() ?? ""))
                 .ToArray();
             var responseHeaders = allHeaders
                 .Where(x => !ContentHeaderNames.Contains(x.Name))
@@ -72,18 +73,20 @@ namespace NClient.Providers.Transport.Http.RestSharp
                 .Where(x => ContentHeaderNames.Contains(x.Name))
                 .ToArray();
             
-            var httpResponse = new HttpResponse(finalRequest)
+            var response
+                = new Response(finalRequest)
             {
-                Content = new HttpResponseContent(response.RawBytes, new HttpResponseContentHeaderContainer(contentHeaders)),
-                StatusCode = response.StatusCode,
-                ResponseUri = response.ResponseUri,
-                Headers = new HttpResponseHeaderContainer(responseHeaders),
-                ErrorMessage = response.ErrorMessage,
-                ErrorException = response.ErrorException,
-                ProtocolVersion = response.ProtocolVersion
+                Content = new Content(restResponse.RawBytes, new ContentHeaderContainer(contentHeaders)),
+                StatusCode = (int)restResponse.StatusCode,
+                ResponseUri = restResponse.ResponseUri,
+                Headers = new HeaderContainer(responseHeaders),
+                ErrorMessage = restResponse.ErrorMessage,
+                ErrorException = restResponse.ErrorException,
+                ProtocolVersion = restResponse.ProtocolVersion,
+                IsSuccessful = restResponse.IsSuccessful
             };
 
-            return Task.FromResult<IHttpResponse>(httpResponse);
+            return Task.FromResult<IResponse>(response);
         }
     }
 }

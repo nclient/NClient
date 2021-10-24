@@ -14,47 +14,47 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
 {
     internal interface IRequestBuilder
     {
-        IHttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
+        IRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments);
     }
 
     internal class RequestBuilder : IRequestBuilder
     {
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
-        private readonly IHttpMethodProvider _httpMethodProvider;
+        private readonly ITransportMethodProvider _transportMethodProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public RequestBuilder(
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
-            IHttpMethodProvider httpMethodProvider,
+            ITransportMethodProvider transportMethodProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IClientValidationExceptionFactory clientValidationExceptionFactory)
         {
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
-            _httpMethodProvider = httpMethodProvider;
+            _transportMethodProvider = transportMethodProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public IHttpRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
+        public IRequest Build(Guid requestId, Uri host, Method method, IEnumerable<object> arguments)
         {
-            var httpMethod = _httpMethodProvider.Get(method.Attribute);
+            var httpMethod = _transportMethodProvider.Get(method.Attribute);
             var routeTemplate = _routeTemplateProvider.Get(method);
-            var paramValuePairs = method.Params
-                .Select((methodParam, index) => new Parameter(
+            var methodParameters = method.Params
+                .Select((methodParam, index) => new MethodParameter(
                     methodParam.Name,
                     methodParam.Type,
                     arguments.ElementAtOrDefault(index),
                     methodParam.Attribute))
                 .ToArray();
             var route = _routeProvider
-                .Build(routeTemplate, method.ClientName, method.Name, paramValuePairs, method.UseVersionAttribute);
+                .Build(routeTemplate, method.ClientName, method.Name, methodParameters, method.UseVersionAttribute);
 
             var uri = UriHelper.Combine(host, route);
-            var request = new HttpRequest(requestId, uri, httpMethod);
+            var request = new Request(requestId, uri, httpMethod);
 
             var headerAttributes = method.HeaderAttributes;
             foreach (var headerAttribute in headerAttributes)
@@ -62,7 +62,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
                 request.AddHeader(headerAttribute.Name, headerAttribute.Value);
             }
 
-            var urlParams = paramValuePairs
+            var urlParams = methodParameters
                 .Where(x => x.Attribute is QueryParamAttribute && x.Value != null);
             foreach (var uriParam in urlParams)
             {
@@ -74,7 +74,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
                 }
             }
 
-            var headerParams = paramValuePairs
+            var headerParams = methodParameters
                 .Where(x => x.Attribute is HeaderParamAttribute && x.Value != null);
             foreach (var headerParam in headerParams)
             {
@@ -83,7 +83,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
                 request.AddHeader(headerParam.Name, headerParam.Value!.ToString());
             }
 
-            var bodyParams = paramValuePairs
+            var bodyParams = methodParameters
                 .Where(x => x.Attribute is BodyParamAttribute && x.Value != null)
                 .ToArray();
             if (bodyParams.Length > 1)

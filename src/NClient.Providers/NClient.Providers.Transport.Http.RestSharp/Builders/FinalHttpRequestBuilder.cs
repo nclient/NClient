@@ -8,7 +8,7 @@ namespace NClient.Providers.Transport.Http.RestSharp.Builders
 {
     internal interface IFinalHttpRequestBuilder
     {
-        IHttpRequest Build(IHttpRequest httpRequest, IRestRequest restRequest);
+        IRequest Build(IRequest request, IRestRequest restRequest);
     }
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
@@ -24,13 +24,13 @@ namespace NClient.Providers.Transport.Http.RestSharp.Builders
             _restSharpMethodMapper = restSharpMethodMapper;
         }
         
-        public IHttpRequest Build(IHttpRequest httpRequest, IRestRequest restRequest)
+        public IRequest Build(IRequest request, IRestRequest restRequest)
         {
             var resource = new Uri(restRequest.Resource);
             var method = _restSharpMethodMapper.Map(restRequest.Method);
             var content = restRequest.Body is null ? null : _serializer.Serialize(restRequest.Body.Value);
 
-            var finalRequest = new HttpRequest(httpRequest.Id, resource, method)
+            var finalRequest = new Request(request.Id, resource, method)
             {
                 Data = restRequest.Body?.Value,
                 Content = content

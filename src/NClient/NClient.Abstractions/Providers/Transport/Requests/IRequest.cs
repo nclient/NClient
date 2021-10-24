@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace NClient.Providers.Transport
 {
-    public interface IHttpRequest
+    public interface IRequest
     {
         /// <summary>
         /// Gets the request id.
         /// </summary>
         Guid Id { get; }
         /// <summary>
-        /// Gets the <see cref="T:System.Uri" /> used for the HTTP request. Should not include query.
+        /// Gets the <see cref="T:System.Uri" /> used for the request. Should not include query.
         /// </summary>
         Uri Resource { get; }
         /// <summary>
         /// Gets HTTP method type.
         /// </summary>
-        HttpMethod Method { get; }
+        RequestType? Method { get; }
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
@@ -29,11 +28,11 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
-        IReadOnlyCollection<IHttpParameter> Parameters { get; }
+        IReadOnlyCollection<IParameter> Parameters { get; }
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
-        IReadOnlyCollection<IHttpHeader> Headers { get; }
+        IReadOnlyCollection<IHeader> Headers { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>

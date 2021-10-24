@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
@@ -25,8 +24,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("id", "1") });
+                RequestType.Get,
+                headers: new[] { new Header("id", "1") });
         }
 
         private interface IStringHeader { [GetMethod] int Get([HeaderParam] string str); }
@@ -38,8 +37,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("str", "value") });
+                RequestType.Get,
+                headers: new[] { new Header("str", "value") });
         }
 
         private interface IMultiplyPrimitiveHeaders { [GetMethod] int Get([HeaderParam] int id, [HeaderParam] string value); }
@@ -51,8 +50,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("id", "1"), new HttpHeader("value", "val") });
+                RequestType.Get,
+                headers: new[] { new Header("id", "1"), new Header("value", "val") });
         }
 
         private interface ICustomTypeHeader { [GetMethod] int Get([HeaderParam] BasicEntity entity); }
@@ -60,7 +59,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_CustomTypeHeader_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<ICustomTypeHeader>(), new BasicEntity { Id = 1 });
 
             buildRequestFunc
@@ -75,7 +74,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultiplyCustomTypeHeader_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyCustomTypeHeader>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -94,8 +93,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("id", "1") });
+                RequestType.Get,
+                headers: new[] { new Header("id", "1") });
         }
 
         [Header("id", "1")] private interface IDuplicateInClientAndMethodHeaders { [GetMethod, Header("id", "2")] int Get(); }
@@ -107,8 +106,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("id", "2") });
+                RequestType.Get,
+                headers: new[] { new Header("id", "2") });
         }
 
         private interface IMethodHeader { [GetMethod, Header("id", "1")] int Get(); }
@@ -120,8 +119,8 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
-                headers: new[] { new HttpHeader("id", "1") });
+                RequestType.Get,
+                headers: new[] { new Header("id", "1") });
         }
 
         [Header("id", "1")] private interface IDuplicateInClientAndParamHeaders { [GetMethod] int Get([HeaderParam] int id); }
@@ -129,7 +128,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_DuplicateInClientAndParamHeaders_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInClientAndParamHeaders>(), 2);
 
             buildRequestFunc
@@ -144,7 +143,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_DuplicateInMethodAndParamHeaders_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IDuplicateInMethodAndParamHeaders>(), 2);
 
             buildRequestFunc

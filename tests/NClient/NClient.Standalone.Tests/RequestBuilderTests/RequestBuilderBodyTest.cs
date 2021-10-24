@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using FluentAssertions;
 using NClient.Annotations;
 using NClient.Annotations.Methods;
@@ -27,7 +26,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
+                RequestType.Get,
                 body: basicEntity);
         }
 
@@ -36,7 +35,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultipleBodyParameters_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParameters>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -57,7 +56,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
+                RequestType.Get,
                 body: basicEntity);
         }
 
@@ -66,7 +65,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultipleBodyParametersWithoutAttributes_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultipleBodyParametersWithoutAttributes>(), new BasicEntity { Id = 1 }, new BasicEntity { Id = 2 });
 
             buildRequestFunc
@@ -87,7 +86,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                HttpMethod.Get,
+                RequestType.Get,
                 body: id);
         }
 
@@ -96,7 +95,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
         [Test]
         public void Build_MultiplyPrimitiveBodyParameters_ThrowClientValidationException()
         {
-            Func<IHttpRequest> buildRequestFunc = () => BuildRequest(
+            Func<IRequest> buildRequestFunc = () => BuildRequest(
                 BuildMethod<IMultiplyPrimitiveBodyParameters>(), 1, "val");
 
             buildRequestFunc

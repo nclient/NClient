@@ -3,12 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
     /// <summary>
     /// Response content.
     /// </summary>
-    public class HttpResponseContent : IHttpResponseContent
+    public class Content : IContent
     {
         /// <summary>
         /// Gets byte representation of response content.
@@ -17,13 +18,13 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets headers returned by server with the response content.
         /// </summary>
-        public IHttpResponseContentHeaderContainer Headers { get; }
+        public IContentHeaderContainer Headers { get; }
 
         [SuppressMessage("ReSharper", "UnusedVariable")]
-        public HttpResponseContent(byte[]? bytes = null, IHttpResponseContentHeaderContainer? headerContainer = null)
+        public Content(byte[]? bytes = null, IContentHeaderContainer? headerContainer = null)
         {
             Bytes = bytes ?? Array.Empty<byte>();
-            Headers = headerContainer ?? new HttpResponseContentHeaderContainer(Array.Empty<IHttpHeader>());
+            Headers = headerContainer ?? new ContentHeaderContainer(Array.Empty<IHeader>());
             
             // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
             // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.

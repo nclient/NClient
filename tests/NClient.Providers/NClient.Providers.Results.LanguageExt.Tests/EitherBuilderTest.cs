@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
@@ -25,9 +24,10 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedValue);        
-            var httpResponse = new HttpResponse(new HttpRequest(Guid.Empty, new Uri("http://localhost"), HttpMethod.Get))
+            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Get))
             {
-                StatusCode = HttpStatusCode.OK
+                StatusCode = (int)HttpStatusCode.OK,
+                IsSuccessful = true
             };
 
             var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
@@ -44,9 +44,10 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedError);        
-            var httpResponse = new HttpResponse(new HttpRequest(Guid.Empty, new Uri("http://localhost"), HttpMethod.Get))
+            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Get))
             {
-                StatusCode = HttpStatusCode.NotFound
+                StatusCode = (int)HttpStatusCode.NotFound,
+                IsSuccessful = false
             };
 
             var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);

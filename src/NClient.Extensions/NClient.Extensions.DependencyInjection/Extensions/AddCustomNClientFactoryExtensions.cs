@@ -18,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
+            Func<INClientFactoryTransportBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -37,7 +37,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
+            Func<IServiceProvider, INClientFactoryTransportBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));

@@ -13,12 +13,12 @@ namespace NClient
             return (IResilienceNClient<T>)client;
         }
 
-        public static IHttpNClient<T> AsHttp<T>(this T client) where T : class, INClient
+        public static ITransportNClient<T> AsHttp<T>(this T client) where T : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));
-            Ensure.IsCompatibleWith<IHttpNClient<T>>(client, nameof(client));
+            Ensure.IsCompatibleWith<ITransportNClient<T>>(client, nameof(client));
 
-            return (IHttpNClient<T>)client;
+            return (ITransportNClient<T>)client;
         }
     }
 }
