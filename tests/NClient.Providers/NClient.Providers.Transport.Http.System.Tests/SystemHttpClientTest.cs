@@ -7,17 +7,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
-using NClient.Providers.Transport;
-using NClient.Providers.Transport.Http.System;
 using NClient.Testing.Common.Entities;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using WireMock.Matchers;
 using WireMock.Server;
-using Request = NClient.Providers.Transport.Request;
-using Response = NClient.Providers.Transport.Response;
 
-namespace NClient.Providers.HttpClient.System.Tests
+namespace NClient.Providers.Transport.Http.System.Tests
 {
     public class SystemHttpClientTest
     {
@@ -40,15 +36,15 @@ namespace NClient.Providers.HttpClient.System.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(IRequest Request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var httpClient = new SystemHttpTransportProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpTransportMessageBuilderProvider().Create(Serializer);
 
-            var httpRequestMessage = await httpMessageBuilder.BuildTransportRequestAsync(Request);
+            var httpRequestMessage = await httpMessageBuilder.BuildTransportRequestAsync(request);
             var httpResponseMessage = await httpClient.ExecuteAsync(httpRequestMessage);
-            var response = await httpMessageBuilder.BuildResponseAsync(Request, httpRequestMessage, httpResponseMessage);
+            var response = await httpMessageBuilder.BuildResponseAsync(request, httpRequestMessage, httpResponseMessage);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
             response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)

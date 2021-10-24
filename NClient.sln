@@ -71,7 +71,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Sandbox.FileService
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "providers", "providers", "{B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.HttpClient.System.Tests", "tests\NClient.Providers\NClient.Providers.HttpClient.System.Tests\NClient.Providers.HttpClient.System.Tests.csproj", "{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Transport.Http.System.Tests", "tests\NClient.Providers\NClient.Providers.Transport.Http.System.Tests\NClient.Providers.Transport.Http.System.Tests.csproj", "{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{AEC33EA4-4C52-4043-9938-A7043AE3E0FC}"
 EndProject
