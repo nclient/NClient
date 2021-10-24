@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NClient.Common.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
     /// <summary>

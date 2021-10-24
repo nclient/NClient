@@ -1,4 +1,5 @@
 ﻿// ReSharper disable ConvertToConstant.Global
+// ReSharper disable once CheckNamespace
 
 namespace NClient.Providers.Transport
 {
