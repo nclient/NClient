@@ -24,7 +24,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("id", "1") });
         }
 
@@ -37,7 +37,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("str", "value") });
         }
 
@@ -50,7 +50,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("id", "1"), new Header("value", "val") });
         }
 
@@ -93,7 +93,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("id", "1") });
         }
 
@@ -106,7 +106,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("id", "2") });
         }
 
@@ -119,7 +119,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 headers: new[] { new Header("id", "1") });
         }
 

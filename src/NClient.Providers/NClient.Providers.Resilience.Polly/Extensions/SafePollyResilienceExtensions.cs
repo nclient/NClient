@@ -28,9 +28,9 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0), 
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) =>
+                .ForMethodsThat((_, request) =>
                 {
-                    return httpRequest.Method.IsSafeMethod();
+                    return request.Type.IsSafe();
                 })
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
@@ -52,7 +52,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0), 
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -104,7 +104,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
         
@@ -123,7 +123,7 @@ namespace NClient
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
     }

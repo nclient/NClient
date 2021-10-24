@@ -92,7 +92,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                 _methodBuilder,
                 new FullMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 _requestBuilder,
-                new HttpNClientFactory<TRequest, TResponse>(
+                new TransportNClientFactory<TRequest, TResponse>(
                     serializerProvider,
                     transportProvider,
                     transportMessageBuilderProvider,

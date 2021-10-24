@@ -25,7 +25,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .UsingRestSharpHttpClient()
+                .UsingRestSharpTransport()
                 .UsingJsonSerializer()
                 .WithRestSharpResponseValidation()
                 .Build();

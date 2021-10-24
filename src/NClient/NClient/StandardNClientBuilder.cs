@@ -18,7 +18,7 @@ namespace NClient
         {
             return new CustomNClientBuilder()
                 .For<TClient>(host)
-                .UsingHttpClient()
+                .UsingHttpTransport()
                 .UsingJsonSerializer()
                 .WithResponseValidation()
                 .WithoutHandling()

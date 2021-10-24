@@ -16,7 +16,7 @@ namespace NClient
         {
             return new CustomNClientFactoryBuilder()
                 .For(factoryName)
-                .UsingHttpClient()
+                .UsingHttpTransport()
                 .UsingJsonSerializer()
                 .WithResponseValidation()
                 .WithoutHandling()

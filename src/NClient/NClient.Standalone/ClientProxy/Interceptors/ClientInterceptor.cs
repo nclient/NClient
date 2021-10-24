@@ -23,7 +23,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         private readonly IMethodBuilder _methodBuilder;
         private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
         private readonly IRequestBuilder _requestBuilder;
-        private readonly IHttpNClientFactory<TRequest, TResponse> _httpNClientFactory;
+        private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly ILogger<TClient>? _logger;
@@ -34,7 +34,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IMethodBuilder methodBuilder,
             IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
             IRequestBuilder requestBuilder,
-            IHttpNClientFactory<TRequest, TResponse> httpNClientFactory,
+            ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             ILogger<TClient>? logger = null)
@@ -44,7 +44,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             _methodBuilder = methodBuilder;
             _fullMethodInvocationProvider = fullMethodInvocationProvider;
             _requestBuilder = requestBuilder;
-            _httpNClientFactory = httpNClientFactory;
+            _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _logger = logger;
@@ -117,42 +117,42 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         private async Task<object?> ExecuteHttpResponseAsync(IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
         {
             if (resultType == typeof(TResponse))
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetOriginalResponseAsync(request, resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType == typeof(IResponse))
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetHttpResponseAsync(request, resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponse<>).GetGenericTypeDefinition())
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetHttpResponseAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<>).GetGenericTypeDefinition())
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetHttpResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<,>).GetGenericTypeDefinition())
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetHttpResponseWithDataAndErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy)
                     .ConfigureAwait(false);
 
             if (resultType != typeof(void))
-                return await _httpNClientFactory
+                return await _transportNClientFactory
                     .Create()
                     .GetResultAsync(request, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
             
-            await _httpNClientFactory
+            await _transportNClientFactory
                 .Create()
                 .GetResultAsync(request, resiliencePolicy)
                 .ConfigureAwait(false);

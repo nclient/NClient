@@ -13,7 +13,7 @@ namespace NClient.Providers.Transport
     public interface IResponse
     {
         /// <summary>
-        /// The HTTP request that the response belongs to.
+        /// The request that the response belongs to.
         /// </summary>
         IRequest Request { get; }
         /// <summary>
@@ -21,11 +21,11 @@ namespace NClient.Providers.Transport
         /// </summary>
         IContent Content { get; set; }
         /// <summary>
-        /// Gets HTTP response status code.
+        /// Gets response status code.
         /// </summary>
         int StatusCode { get; set; }
         /// <summary>
-        /// Gets description of HTTP status returned.
+        /// Gets description of status returned.
         /// </summary>
         string? StatusDescription { get; set; }
         /// <summary>
@@ -37,7 +37,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         IHeaderContainer Headers { get; set; }
         /// <summary>
-        /// Gets HTTP error generated while attempting request.
+        /// Gets error generated while attempting request.
         /// </summary>
         string? ErrorMessage { get; set; }
         /// <summary>
@@ -45,7 +45,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         Exception? ErrorException { get; set; }
         /// <summary>
-        /// Gets the HTTP protocol version (1.0, 1.1, etc).
+        /// Gets the protocol version (1.0, 1.1, etc).
         /// </summary>
         Version? ProtocolVersion { get; set; }
         /// <summary>
@@ -53,7 +53,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         bool IsSuccessful { get; set; }
         /// <summary>
-        /// Throws an exception if the IsSuccessful property for the HTTP response is false.
+        /// Throws an exception if the IsSuccessful property for the response is false.
         /// </summary>
         IResponse EnsureSuccess();
     }

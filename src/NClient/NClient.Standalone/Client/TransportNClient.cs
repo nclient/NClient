@@ -12,7 +12,7 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client
 {
-    internal interface IHttpNClient<TRequest, TResponse>
+    internal interface ITransportNClient<TRequest, TResponse>
     {
         Task<TResult> GetResultAsync<TResult>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
         Task<TResponse> GetOriginalResponseAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
@@ -27,7 +27,7 @@ namespace NClient.Standalone.Client
         Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest transportRequest, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
     }
 
-    internal class HttpNClient<TRequest, TResponse> : IHttpNClient<TRequest, TResponse>
+    internal class TransportNClient<TRequest, TResponse> : ITransportNClient<TRequest, TResponse>
     {
         private readonly ISerializer _serializer;
         private readonly ITransport<TRequest, TResponse> _transport;
@@ -39,7 +39,7 @@ namespace NClient.Standalone.Client
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
-        public HttpNClient(
+        public TransportNClient(
             ISerializer serializer,
             ITransport<TRequest, TResponse> transport,
             ITransportMessageBuilder<TRequest, TResponse> transportMessageBuilder,
@@ -185,7 +185,7 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request)
         {
-            _logger?.LogDebug("Start sending {requestMethod} request to '{requestUri}'. Request id: '{requestId}'.", request.Method, request.Resource, request.Id);
+            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Resource, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;

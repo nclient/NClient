@@ -105,7 +105,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
         
         private static TestCaseData ExecutionGetRequestTestCase()
         {
-            const RequestType method = RequestType.Get;
+            const RequestType method = RequestType.Read;
             var request = new Request(RequestId, Resource, method)
             {
                 Data = null,
@@ -163,7 +163,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
         
         private static TestCaseData ExecutionPostRequestTestCase()
         {
-            const RequestType method = RequestType.Post;
+            const RequestType method = RequestType.Create;
             var content = Serializer.Serialize(Data);
             
             var request = new Request(RequestId, Resource, method)

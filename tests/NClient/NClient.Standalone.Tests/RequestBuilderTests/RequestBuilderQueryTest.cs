@@ -24,7 +24,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("id", 1) });
         }
 
@@ -37,7 +37,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("id", 1), new Parameter("value", "val") });
         }
         
@@ -50,7 +50,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("id", 1) });
         }
 
@@ -63,7 +63,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("id", 1), new Parameter("value", "val") });
         }
 
@@ -76,7 +76,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("entity.Id", 1), new Parameter("entity.Value", 2) });
         }
 
@@ -90,7 +90,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[]
                 {
                     new Parameter("entity1.Id", 1),
@@ -111,7 +111,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("ids", 1), new Parameter("ids", 2) });
         }
 
@@ -142,7 +142,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[] { new Parameter("dict[1]", "val1"), new Parameter("dict[2]", "val2") });
         }
 
@@ -173,7 +173,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[]
                 {
                     new Parameter("entity.Id", 1),
@@ -194,7 +194,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[]
                 {
                     new Parameter("entity.Id", 1),
@@ -231,7 +231,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 parameters: new[]
                 {
                     new Parameter("entity.Id", 1),

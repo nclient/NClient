@@ -10,12 +10,12 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client
 {
-    internal interface IHttpNClientFactory<TRequest, TResponse>
+    internal interface ITransportNClientFactory<TRequest, TResponse>
     {
-        IHttpNClient<TRequest, TResponse> Create();
+        ITransportNClient<TRequest, TResponse> Create();
     }
 
-    internal class HttpNClientFactory<TRequest, TResponse> : IHttpNClientFactory<TRequest, TResponse>
+    internal class TransportNClientFactory<TRequest, TResponse> : ITransportNClientFactory<TRequest, TResponse>
     {
         private readonly ISerializerProvider _serializerProvider;
         private readonly ITransportProvider<TRequest, TResponse> _transportProvider;
@@ -27,7 +27,7 @@ namespace NClient.Standalone.Client
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly ILogger? _logger;
 
-        public HttpNClientFactory(
+        public TransportNClientFactory(
             ISerializerProvider serializerProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider,
@@ -49,11 +49,11 @@ namespace NClient.Standalone.Client
             _logger = logger;
         }
 
-        public IHttpNClient<TRequest, TResponse> Create()
+        public ITransportNClient<TRequest, TResponse> Create()
         {
             var serializer = _serializerProvider.Create();
             
-            return new HttpNClient<TRequest, TResponse>(
+            return new TransportNClient<TRequest, TResponse>(
                 serializer,
                 _transportProvider.Create(serializer),
                 _transportMessageBuilderProvider.Create(serializer),

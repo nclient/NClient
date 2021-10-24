@@ -19,7 +19,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get);
+                RequestType.Read);
         }
 
         private interface IHeadMethod {[HeadMethod] int Method(); }
@@ -43,7 +43,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Post);
+                RequestType.Create);
         }
 
         private interface IPutMethod {[PutMethod] int Method(); }
@@ -55,7 +55,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Put);
+                RequestType.Update);
         }
 
         private interface IDeleteMethod {[DeleteMethod] int Method(); }

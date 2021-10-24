@@ -18,13 +18,13 @@ namespace NClient.Providers.Transport
         /// </summary>
         public Guid Id { get; }
         /// <summary>
-        /// Gets the <see cref="T:System.Uri" /> used for the HTTP request. Should not include query.
+        /// Gets the <see cref="T:System.Uri" /> used for the request. Should not include query.
         /// </summary>
         public Uri Resource { get; }
         /// <summary>
-        /// Gets HTTP method type.
+        /// Gets request type.
         /// </summary>
-        public RequestType? Method { get; }
+        public RequestType Type { get; }
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
@@ -38,24 +38,24 @@ namespace NClient.Providers.Transport
         /// </summary>
         public IReadOnlyCollection<IParameter> Parameters => _parameters;
         /// <summary>
-        /// Gets collection of HTTP headers.
+        /// Gets collection of headers.
         /// </summary>
         public IReadOnlyCollection<IHeader> Headers => _headers;
 
         /// <summary>
-        /// Creates container for HTTP request data.
+        /// Creates container for request data.
         /// </summary>
         /// <param name="id">The request id.</param>
         /// <param name="resource">The request URI (without parameters).</param>
-        /// <param name="method">The request HTTP method type.</param>
-        public Request(Guid id, Uri resource, RequestType method)
+        /// <param name="requestType">The request type.</param>
+        public Request(Guid id, Uri resource, RequestType requestType)
         {
             Ensure.IsNotNull(resource, nameof(resource));
-            Ensure.IsNotNull(method, nameof(method));
+            Ensure.IsNotNull(requestType, nameof(requestType));
 
             Id = id;
             Resource = resource;
-            Method = method;
+            Type = requestType;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace NClient.Providers.Transport
         }
 
         /// <summary>
-        /// Adds HTTP header.
+        /// Adds header.
         /// </summary>
         /// <param name="name">The header name.</param>
         /// <param name="value">The header value.</param>

@@ -21,7 +21,7 @@ namespace NClient.Standalone.Tests
 
             _preConfiguredBasicClient = new CustomNClientBuilder()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
-                .UsingSystemHttpClient()
+                .UsingSystemHttpTransport()
                 .UsingSystemJsonSerializer();
         }
         

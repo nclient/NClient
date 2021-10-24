@@ -17,7 +17,7 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HttpNClientTest
     {
-        private static readonly Request RequestStub = new(Guid.Empty, new Uri("http://localhost:5000"), RequestType.Get);
+        private static readonly Request RequestStub = new(Guid.Empty, new Uri("http://localhost:5000"), RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
         private IReturnClientWithMetadata _returnClient = null!;

@@ -123,7 +123,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .WithCustomResilience(x => x
-                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == RequestType.Post).DoNotUse())
+                    .ForMethodsThat((_, request) => request.Type == RequestType.Create).DoNotUse())
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -138,7 +138,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .WithCustomResilience(x => x
-                    .ForMethodsThat((_, httpRequest) => httpRequest.Method == RequestType.Post).Use())
+                    .ForMethodsThat((_, request) => request.Type == RequestType.Create).Use())
                 .Build();
             
             var response = await client.GetAsync(id);

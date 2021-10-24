@@ -5,10 +5,10 @@ namespace NClient.Providers.Transport
 {
     public enum RequestType : byte
     {
-        Get,
-        Put,
+        Read,
+        Update,
         Delete,
-        Post,
+        Create,
         Head,
         Trace,
         Patch,

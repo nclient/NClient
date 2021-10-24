@@ -31,7 +31,7 @@ namespace NClient.Extensions.DependencyInjection
             
             return new CustomNClientBuilder()
                 .For<TClient>(host)
-                .UsingSystemHttpClient(httpClientFactory, _httpClientName)
+                .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
                 .WithResponseValidation()
                 .WithoutHandling()

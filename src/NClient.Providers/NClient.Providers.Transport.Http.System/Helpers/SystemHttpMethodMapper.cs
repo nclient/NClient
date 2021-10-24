@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 namespace NClient.Providers.Transport.Http.System.Helpers
@@ -12,30 +12,31 @@ namespace NClient.Providers.Transport.Http.System.Helpers
     
     public class SystemHttpMethodMapper : ISystemHttpMethodMapper
     {
-        private readonly Dictionary<string, HttpMethod> _httpMethodByNames = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<RequestType, HttpMethod> HttpMethodByRequestTypes = new()
         {
-            [HttpMethod.Get.ToString()] = HttpMethod.Get,
-            [HttpMethod.Post.ToString()] = HttpMethod.Post,
-            [HttpMethod.Put.ToString()] = HttpMethod.Put,
-            [HttpMethod.Delete.ToString()] = HttpMethod.Delete,
-            [HttpMethod.Head.ToString()] = HttpMethod.Head,
-            [HttpMethod.Options.ToString()] = HttpMethod.Options,
-            [HttpMethod.Trace.ToString()] = HttpMethod.Trace,
+            [RequestType.Read] = HttpMethod.Get,
+            [RequestType.Create] = HttpMethod.Post,
+            [RequestType.Update] = HttpMethod.Put,
+            [RequestType.Delete] = HttpMethod.Delete,
+            [RequestType.Head] = HttpMethod.Head,
+            [RequestType.Options] = HttpMethod.Options,
+            [RequestType.Trace] = HttpMethod.Trace,
             #if !NETSTANDARD2_0
-            [HttpMethod.Patch.ToString()] = HttpMethod.Patch
+            [RequestType.Patch] = HttpMethod.Patch
             #endif
         };
         
+        private static readonly Dictionary<HttpMethod, RequestType> RequestTypesByHttpMethod = HttpMethodByRequestTypes
+            .ToDictionary(x => x.Value, x => x.Key);
+        
         public HttpMethod Map(RequestType requestType)
         {
-            return _httpMethodByNames[requestType.ToString()];
+            return HttpMethodByRequestTypes[requestType];
         }
         
         public RequestType Map(HttpMethod method)
         {
-            // TODO: обработать результат TryParse
-            Enum.TryParse(method.ToString(), ignoreCase: true, out RequestType transportMethod);
-            return transportMethod;
+            return RequestTypesByHttpMethod[method];
         }
     }
 }

@@ -4,7 +4,7 @@
 namespace NClient.Providers.Transport
 {
     /// <summary>
-    /// The container for HTTP header data.
+    /// The container for header data.
     /// </summary>
     public class Parameter : IParameter
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using RestSharp;
 
 namespace NClient.Providers.Transport.Http.RestSharp.Helpers
@@ -11,17 +12,28 @@ namespace NClient.Providers.Transport.Http.RestSharp.Helpers
     
     public class RestSharpMethodMapper : IRestSharpMethodMapper
     {
+        private static readonly Dictionary<RequestType, Method> MethodByRequestTypes = new()
+        {
+            [RequestType.Read] = Method.GET,
+            [RequestType.Create] = Method.POST,
+            [RequestType.Update] = Method.PUT,
+            [RequestType.Delete] = Method.DELETE,
+            [RequestType.Head] = Method.HEAD,
+            [RequestType.Options] = Method.OPTIONS,
+            [RequestType.Patch] = Method.PATCH
+        };
+        
+        private static readonly Dictionary<Method, RequestType> RequestTypesByMethod = MethodByRequestTypes
+            .ToDictionary(x => x.Value, x => x.Key);
+        
         public Method Map(RequestType requestType)
         {
-            Enum.TryParse(requestType.ToString(), out Method method);
-            return method;
+            return MethodByRequestTypes[requestType];
         }
         
         public RequestType Map(Method method)
         {
-            // TODO: обработать результат TryParse
-            Enum.TryParse(method.ToString(), ignoreCase: true, out RequestType transportMethod);
-            return transportMethod;
+            return RequestTypesByMethod[method];
         }
     }
 }

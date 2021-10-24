@@ -23,10 +23,10 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
         {
             return methodAttribute switch
             {
-                GetMethodAttribute => RequestType.Get,
+                GetMethodAttribute => RequestType.Read,
                 HeadMethodAttribute => RequestType.Head,
-                PostMethodAttribute => RequestType.Post,
-                PutMethodAttribute => RequestType.Put,
+                PostMethodAttribute => RequestType.Create,
+                PutMethodAttribute => RequestType.Update,
                 DeleteMethodAttribute => RequestType.Delete,
                 OptionsMethodAttribute => RequestType.Options,
                 #if !NETSTANDARD2_0

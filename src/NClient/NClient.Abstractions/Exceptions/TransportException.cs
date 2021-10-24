@@ -4,7 +4,7 @@
 namespace NClient.Exceptions
 {
     /// <summary>
-    /// Represents exceptions thrown by NClient client during the processing of the HTTP request.
+    /// Represents exceptions thrown by NClient client during the processing of the transport request.
     /// </summary>
     public class TransportException : NClientException
     {
@@ -17,17 +17,17 @@ namespace NClient.Exceptions
     }
     
     /// <summary>
-    /// Represents exceptions thrown by NClient client during the processing of the HTTP request.
+    /// Represents exceptions thrown by NClient client during the processing of the transport request.
     /// </summary>
     public class TransportException<TRequest, TResponse> : TransportException
     {
         /// <summary>
-        /// The HTTP request that the response belongs to.
+        /// The transport request that the response belongs to.
         /// </summary>
         public TRequest Request { get; }
 
         /// <summary>
-        /// The HTTP response.
+        /// The transport response.
         /// </summary>
         public TResponse Response { get; }
 

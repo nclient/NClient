@@ -18,7 +18,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(otherMethodProvider)
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(safeMethodProvider));
         }
         
@@ -32,7 +32,7 @@ namespace NClient
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(otherMethodProvider)
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(safeMethodProvider));
         }
     }

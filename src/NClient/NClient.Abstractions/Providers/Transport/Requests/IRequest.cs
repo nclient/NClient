@@ -15,9 +15,9 @@ namespace NClient.Providers.Transport
         /// </summary>
         Uri Resource { get; }
         /// <summary>
-        /// Gets HTTP method type.
+        /// Gets request type.
         /// </summary>
-        RequestType? Method { get; }
+        RequestType Type { get; }
         /// <summary>
         /// Gets object used for request body.
         /// </summary>
@@ -31,7 +31,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         IReadOnlyCollection<IParameter> Parameters { get; }
         /// <summary>
-        /// Gets collection of HTTP headers.
+        /// Gets collection of headers.
         /// </summary>
         IReadOnlyCollection<IHeader> Headers { get; }
         /// <summary>
@@ -41,7 +41,7 @@ namespace NClient.Providers.Transport
         /// <param name="value">The parameter value.</param>
         void AddParameter(string name, object value);
         /// <summary>
-        /// Adds HTTP header.
+        /// Adds header.
         /// </summary>
         /// <param name="name">The header name.</param>
         /// <param name="value">The header value.</param>

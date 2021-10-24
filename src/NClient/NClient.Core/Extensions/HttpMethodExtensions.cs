@@ -2,34 +2,22 @@
 
 namespace NClient.Core.Extensions
 {
-    public static class HttpMethodExtensions
+    public static class RequestTypeExtensions
     {
-        // TODO: может привести к ошибкам
-        public static bool IsIdempotentMethod(this RequestType? transportMethod)
-        {
-            return transportMethod.HasValue && IsIdempotentMethod(transportMethod.Value);
-        }
-        
-        public static bool IsIdempotentMethod(this RequestType requestType)
+        public static bool IsIdempotent(this RequestType requestType)
         {
             return requestType switch
             {
-                RequestType.Post => false,
+                RequestType.Create => false,
                 _ => true
             };
         }
-        
-        // TODO: может привести к ошибкам
-        public static bool IsSafeMethod(this RequestType? transportMethod)
-        {
-            return transportMethod.HasValue && IsSafeMethod(transportMethod.Value);
-        }
 
-        public static bool IsSafeMethod(this RequestType requestType)
+        public static bool IsSafe(this RequestType requestType)
         {
             return requestType switch
             {
-                RequestType.Get => true,
+                RequestType.Read => true,
                 RequestType.Head => true,
                 RequestType.Options => true,
                 _ => false

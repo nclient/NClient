@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
-using ParameterType = RestSharp.ParameterType;
-using DataFormat = RestSharp.DataFormat;
-using RestRequest = RestSharp.RestRequest;
-using IRestRequest = RestSharp.IRestRequest;
-using IRestResponse = RestSharp.IRestResponse;
+using RestSharp;
 
 namespace NClient.Providers.Transport.Http.RestSharp
 {
@@ -33,8 +29,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
 
         public Task<IRestRequest> BuildTransportRequestAsync(IRequest request)
         {
-            // TODO: как быть?
-            var method = _restSharpMethodMapper.Map(request.Method.Value);
+            var method = _restSharpMethodMapper.Map(request.Type);
             var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
 
             foreach (var param in request.Parameters)
@@ -73,8 +68,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
                 .Where(x => ContentHeaderNames.Contains(x.Name))
                 .ToArray();
             
-            var response
-                = new Response(finalRequest)
+            var response = new Response(finalRequest)
             {
                 Content = new Content(restResponse.RawBytes, new ContentHeaderContainer(contentHeaders)),
                 StatusCode = (int)restResponse.StatusCode,

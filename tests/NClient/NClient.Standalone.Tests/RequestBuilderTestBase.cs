@@ -71,13 +71,13 @@ namespace NClient.Standalone.Tests
         protected static void AssertHttpRequest(
             IRequest actualRequest,
             Uri uri,
-            RequestType httpMethod,
+            RequestType requestType,
             IEnumerable<IParameter>? parameters = null,
             IEnumerable<IHeader>? headers = null,
             object? body = null)
         {
             actualRequest.Resource.Should().Be(uri);
-            actualRequest.Method.Should().Be(httpMethod);
+            actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHeader>(), config => config.WithoutStrictOrdering());
             actualRequest.Data.Should().BeEquivalentTo(body);

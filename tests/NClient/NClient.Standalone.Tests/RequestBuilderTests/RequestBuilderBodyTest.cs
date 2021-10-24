@@ -26,7 +26,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 body: basicEntity);
         }
 
@@ -56,7 +56,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 body: basicEntity);
         }
 
@@ -86,7 +86,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
-                RequestType.Get,
+                RequestType.Read,
                 body: id);
         }
 

@@ -29,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection
             
             return new CustomNClientFactoryBuilder()
                 .For(factoryName)
-                .UsingSystemHttpClient(httpClientFactory, _httpClientName)
+                .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
                 .WithResponseValidation()
                 .WithoutHandling()

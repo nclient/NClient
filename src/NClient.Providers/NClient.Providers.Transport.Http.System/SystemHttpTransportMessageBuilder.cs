@@ -35,8 +35,7 @@ namespace NClient.Providers.Transport.Http.System
 
             var httpRequestMessage = new HttpRequestMessage
             {
-                // TODO: как быть?
-                Method = _systemHttpMethodMapper.Map(request.Method.Value), 
+                Method = _systemHttpMethodMapper.Map(request.Type), 
                 RequestUri = uri
             };
 

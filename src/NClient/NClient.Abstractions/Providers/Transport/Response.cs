@@ -16,7 +16,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Creates the container for response data.
         /// </summary>
-        /// <param name="response">The response used as base HTTP response.</param>
+        /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         public Response(IResponse response, IRequest request, TData? data)
@@ -53,7 +53,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         public int StatusCode { get; set; }
         /// <summary>
-        /// Gets description of HTTP status returned.
+        /// Gets description of status returned.
         /// </summary>
         public string? StatusDescription { get; set; }
         /// <summary>
@@ -65,7 +65,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         public IHeaderContainer Headers { get; set; }
         /// <summary>
-        /// Gets HTTP error generated while attempting request.
+        /// Gets error generated while attempting request.
         /// </summary>
         public string? ErrorMessage { get; set; }
         /// <summary>
@@ -73,7 +73,7 @@ namespace NClient.Providers.Transport
         /// </summary>
         public Exception? ErrorException { get; set; }
         /// <summary>
-        /// Gets the HTTP protocol version (1.0, 1.1, etc).
+        /// Gets the protocol version (1.0, 1.1, etc).
         /// </summary>
         public Version? ProtocolVersion { get; set; }
 
@@ -83,9 +83,9 @@ namespace NClient.Providers.Transport
         public bool IsSuccessful { get; set; }
 
         /// <summary>
-        /// Creates the container for HTTP response data.
+        /// Creates the container for response data.
         /// </summary>
-        /// <param name="transportRequest">The HTTP request that the response belongs to.</param>
+        /// <param name="transportRequest">The request that the response belongs to.</param>
         public Response(IRequest transportRequest)
         {
             Ensure.IsNotNull(transportRequest, nameof(transportRequest));
@@ -111,7 +111,7 @@ namespace NClient.Providers.Transport
         }
 
         /// <summary>
-        /// Throws an exception if the IsSuccessful property for the HTTP response is false.
+        /// Throws an exception if the IsSuccessful property for the response is false.
         /// </summary>
         public IResponse EnsureSuccess()
         {

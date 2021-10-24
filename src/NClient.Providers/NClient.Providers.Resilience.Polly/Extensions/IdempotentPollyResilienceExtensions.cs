@@ -28,7 +28,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0),
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsIdempotentMethod())
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -49,7 +49,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0),
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsIdempotentMethod())
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -101,7 +101,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsIdempotentMethod())
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
         
@@ -120,7 +120,7 @@ namespace NClient
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsIdempotentMethod())
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
     }

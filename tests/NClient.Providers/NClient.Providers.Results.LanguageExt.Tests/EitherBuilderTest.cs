@@ -24,7 +24,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedValue);        
-            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Get))
+            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Read))
             {
                 StatusCode = (int)HttpStatusCode.OK,
                 IsSuccessful = true
@@ -44,7 +44,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedError);        
-            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Get))
+            var httpResponse = new Response(new Request(Guid.Empty, new Uri("http://localhost"), RequestType.Read))
             {
                 StatusCode = (int)HttpStatusCode.NotFound,
                 IsSuccessful = false
