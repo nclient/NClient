@@ -5,13 +5,13 @@ using RestSharp;
 
 namespace NClient.Providers.Transport.Http.RestSharp.Helpers
 {
-    public interface IRestSharpMethodMapper
+    internal interface IRestSharpMethodMapper
     {
         Method Map(RequestType requestType);
         RequestType Map(Method method);
     }
     
-    public class RestSharpMethodMapper : IRestSharpMethodMapper
+    internal class RestSharpMethodMapper : IRestSharpMethodMapper
     {
         private static readonly Dictionary<RequestType, Method> MethodByRequestTypes = new()
         {

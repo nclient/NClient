@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
 
 // ReSharper disable once CheckNamespace
@@ -15,30 +14,23 @@ namespace NClient.Providers.Transport
         /// Gets byte representation of response content.
         /// </summary>
         public byte[] Bytes { get; }
+        
         /// <summary>
-        /// Gets headers returned by server with the response content.
+        /// Gets response content encoding.
         /// </summary>
-        public IContentHeaderContainer Headers { get; }
+        public Encoding? Encoding { get; }
+        
+        /// <summary>
+        /// Gets metadata returned by server with the response content.
+        /// </summary>
+        public IMetadataContainer Metadatas { get; }
 
         [SuppressMessage("ReSharper", "UnusedVariable")]
-        public Content(byte[]? bytes = null, IContentHeaderContainer? headerContainer = null)
+        public Content(byte[]? bytes = null, string? encoding = null, IMetadataContainer? headerContainer = null)
         {
             Bytes = bytes ?? Array.Empty<byte>();
-            Headers = headerContainer ?? new ContentHeaderContainer(Array.Empty<IHeader>());
-            
-            // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
-            // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.
-            var unusedAllow = Headers.Allow;
-            var unusedContentLength = Headers.ContentLength;
-            var unusedContentDisposition = Headers.ContentDisposition;
-            var unusedContentEncoding = Headers.ContentEncoding;
-            var unusedContentLanguage = Headers.ContentLanguage;
-            var unusedContentLocation = Headers.ContentLocation;
-            var unusedContentRange = Headers.ContentRange;
-            var unusedContentType = Headers.ContentType;
-            var unusedLastModified = Headers.LastModified;
-            var unusedContentMd5 = Headers.ContentMD5;
-            var unusedExpires = Headers.Expires;
+            Encoding = string.IsNullOrEmpty(encoding) ? null : Encoding.GetEncoding(encoding);
+            Metadatas = headerContainer ?? new MetadataContainer(Array.Empty<IMetadata>());
         }
 
         /// <summary>
@@ -46,13 +38,9 @@ namespace NClient.Providers.Transport
         /// </summary>
         public override string ToString()
         {
-            if (Headers.ContentEncoding.Count == 0 || string.IsNullOrEmpty(Headers.ContentEncoding.First()))
-                return AsString(Bytes, Encoding.UTF8);
-
             try
             {
-                var encoding = Encoding.GetEncoding(Headers.ContentEncoding.First());
-                return AsString(Bytes, encoding);
+                return AsString(Bytes, Encoding ?? Encoding.UTF8);
             }
             catch (ArgumentException)
             {

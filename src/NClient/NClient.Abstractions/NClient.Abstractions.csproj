@@ -76,7 +76,6 @@
 
     <ItemGroup>
       <Folder Include="Providers" />
-      <Folder Include="Providers\Transport\Responses" />
     </ItemGroup>
 
 </Project>

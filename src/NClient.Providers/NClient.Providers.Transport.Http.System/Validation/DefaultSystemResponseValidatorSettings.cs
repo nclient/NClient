@@ -5,7 +5,7 @@ using NClient.Providers.Resilience;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.System
 {
     public class DefaultSystemResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {

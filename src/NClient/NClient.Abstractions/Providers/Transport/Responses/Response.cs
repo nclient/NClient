@@ -1,6 +1,7 @@
 ﻿using System;
 using NClient.Common.Helpers;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
     /// <summary>
@@ -59,11 +60,11 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets the URL that actually responded to the content (different from request if redirected).
         /// </summary>
-        public Uri? ResponseUri { get; set; }
+        public string? Resource { get; set; }
         /// <summary>
-        /// Gets headers returned by server with the response.
+        /// Gets metadata returned by server with the response.
         /// </summary>
-        public IHeaderContainer Headers { get; set; }
+        public IMetadataContainer Metadatas { get; set; }
         /// <summary>
         /// Gets error generated while attempting request.
         /// </summary>
@@ -92,7 +93,7 @@ namespace NClient.Providers.Transport
 
             Request = transportRequest;
             Content = new Content();
-            Headers = new HeaderContainer(Array.Empty<IHeader>());
+            Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
         }
 
         internal Response(IResponse response, IRequest request) : this(request)
@@ -102,8 +103,8 @@ namespace NClient.Providers.Transport
             Content = response.Content;
             StatusCode = response.StatusCode;
             StatusDescription = response.StatusDescription;
-            ResponseUri = response.ResponseUri;
-            Headers = response.Headers;
+            Resource = response.Resource;
+            Metadatas = response.Metadatas;
             ErrorMessage = response.ErrorMessage;
             ErrorException = response.ErrorException;
             ProtocolVersion = response.ProtocolVersion;

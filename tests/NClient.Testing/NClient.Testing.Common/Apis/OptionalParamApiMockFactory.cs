@@ -38,7 +38,7 @@ namespace NClient.Testing.Common.Apis
             api.Given(Request.Create()
                     .WithPath("/api/optionalParam")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()

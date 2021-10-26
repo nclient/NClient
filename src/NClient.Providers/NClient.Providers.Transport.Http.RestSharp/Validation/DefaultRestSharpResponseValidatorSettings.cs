@@ -5,7 +5,7 @@ using NClient.Providers.Validation;
 using RestSharp;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.HttpClient.System
+namespace NClient.Providers.Transport.Http.RestSharp
 {
     public class DefaultRestSharpResponseValidatorSettings : IResponseValidatorSettings<IRestRequest, IRestResponse>
     {

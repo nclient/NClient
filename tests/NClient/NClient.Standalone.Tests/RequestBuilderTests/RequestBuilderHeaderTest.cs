@@ -25,7 +25,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("id", "1") });
+                metadatas: new[] { new Metadata("id", "1") });
         }
 
         private interface IStringHeader { [GetMethod] int Get([HeaderParam] string str); }
@@ -38,7 +38,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("str", "value") });
+                metadatas: new[] { new Metadata("str", "value") });
         }
 
         private interface IMultiplyPrimitiveHeaders { [GetMethod] int Get([HeaderParam] int id, [HeaderParam] string value); }
@@ -51,7 +51,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("id", "1"), new Header("value", "val") });
+                metadatas: new[] { new Metadata("id", "1"), new Metadata("value", "val") });
         }
 
         private interface ICustomTypeHeader { [GetMethod] int Get([HeaderParam] BasicEntity entity); }
@@ -94,7 +94,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("id", "1") });
+                metadatas: new[] { new Metadata("id", "1") });
         }
 
         [Header("id", "1")] private interface IDuplicateInClientAndMethodHeaders { [GetMethod, Header("id", "2")] int Get(); }
@@ -107,7 +107,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("id", "2") });
+                metadatas: new[] { new Metadata("id", "2") });
         }
 
         private interface IMethodHeader { [GetMethod, Header("id", "1")] int Get(); }
@@ -120,7 +120,7 @@ namespace NClient.Standalone.Tests.RequestBuilderTests
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                headers: new[] { new Header("id", "1") });
+                metadatas: new[] { new Metadata("id", "1") });
         }
 
         [Header("id", "1")] private interface IDuplicateInClientAndParamHeaders { [GetMethod] int Get([HeaderParam] int id); }

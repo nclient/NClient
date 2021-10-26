@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NClient.Providers.Transport.Http.RestSharp.Helpers
 {
-    public static class HttpKnownHeaderNames
+    internal static class HttpKnownHeaderNames
     {
         public const string CacheControl = "Cache-Control";
         public const string Connection = "Connection";

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
@@ -27,7 +26,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
     internal interface IClientInterceptorFactory
     {
         IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            Uri host,
+            string resourceRoot,
             ISerializerProvider serializerProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider,
@@ -44,8 +43,10 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         private readonly IProxyGenerator _proxyGenerator;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IGuidProvider _guidProvider;
-        private readonly IRequestBuilder _requestBuilder;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
+        private readonly IObjectMemberManager _objectMemberManager;
+        private readonly IClientArgumentExceptionFactory _clientArgumentExceptionFactory;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
@@ -53,29 +54,23 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
             _guidProvider = new GuidProvider();
 
-            var clientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
-            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            _clientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
+            _clientValidationExceptionFactory = new ClientValidationExceptionFactory();
             var clientObjectMemberManagerExceptionFactory = new ClientObjectMemberManagerExceptionFactory();
             var attributeMapper = new AttributeMapper();
 
             _methodBuilder = new MethodBuilder(
-                new MethodAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new HeaderAttributeProvider(clientValidationExceptionFactory),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
+                new MethodAttributeProvider(attributeMapper, _clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, _clientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, _clientValidationExceptionFactory),
+                new HeaderAttributeProvider(_clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, _clientValidationExceptionFactory)));
 
-            var objectMemberManager = new ObjectMemberManager(clientObjectMemberManagerExceptionFactory);
-            _requestBuilder = new RequestBuilder(
-                new RouteTemplateProvider(clientValidationExceptionFactory),
-                new RouteProvider(objectMemberManager, clientArgumentExceptionFactory, clientValidationExceptionFactory),
-                new RequestTypeProvider(clientValidationExceptionFactory),
-                new ObjectToKeyValueConverter(objectMemberManager, clientValidationExceptionFactory),
-                clientValidationExceptionFactory);
+            _objectMemberManager = new ObjectMemberManager(clientObjectMemberManagerExceptionFactory);
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            Uri host,
+            string resourceRoot,
             ISerializerProvider serializerProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider,
@@ -87,11 +82,18 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             ILogger<TClient>? logger = null)
         {
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                host,
+                resourceRoot,
                 _guidProvider,
                 _methodBuilder,
                 new FullMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
-                _requestBuilder,
+                //TODO: create RequestBuilderProvider
+                new RequestBuilder(
+                    serializerProvider.Create(),
+                    new RouteTemplateProvider(_clientValidationExceptionFactory),
+                    new RouteProvider(_objectMemberManager, _clientArgumentExceptionFactory, _clientValidationExceptionFactory),
+                    new RequestTypeProvider(_clientValidationExceptionFactory),
+                    new ObjectToKeyValueConverter(_objectMemberManager, _clientValidationExceptionFactory),
+                    _clientValidationExceptionFactory),
                 new TransportNClientFactory<TRequest, TResponse>(
                     serializerProvider,
                     transportProvider,

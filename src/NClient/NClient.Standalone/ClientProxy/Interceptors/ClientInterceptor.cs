@@ -18,7 +18,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
-        private readonly Uri _host;
+        private readonly string _resourceRoot;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
@@ -29,7 +29,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
         private readonly ILogger<TClient>? _logger;
 
         public ClientInterceptor(
-            Uri host,
+            string resourceRoot,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
             IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
@@ -39,7 +39,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             ILogger<TClient>? logger = null)
         {
-            _host = host;
+            _resourceRoot = resourceRoot;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
             _fullMethodInvocationProvider = fullMethodInvocationProvider;
@@ -78,7 +78,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors
                 var clientMethod = _methodBuilder
                     .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
                 
-                httpRequest = _requestBuilder.Build(requestId, _host, clientMethod, fullMethodInvocation.MethodArguments);
+                httpRequest = _requestBuilder.Build(requestId, _resourceRoot, clientMethod, fullMethodInvocation.MethodArguments);
                 var resiliencePolicy = fullMethodInvocation.ResiliencePolicyProvider?.Create()
                     ?? _methodResiliencePolicyProvider.Create(fullMethodInvocation.MethodInfo, httpRequest);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)

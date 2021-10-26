@@ -11,36 +11,31 @@ namespace NClient.Providers.Transport
     public class Request : IRequest
     {
         private readonly List<IParameter> _parameters = new();
-        private readonly List<IHeader> _headers = new();
 
         /// <summary>
         /// Gets the request id.
         /// </summary>
         public Guid Id { get; }
         /// <summary>
-        /// Gets the <see cref="T:System.Uri" /> used for the request. Should not include query.
+        /// Gets the resource used for the request. Should not include query.
         /// </summary>
-        public Uri Resource { get; }
+        public string Resource { get; }
         /// <summary>
         /// Gets request type.
         /// </summary>
         public RequestType Type { get; }
         /// <summary>
-        /// Gets object used for request body.
-        /// </summary>
-        public object? Data { get; set; }
-        /// <summary>
         /// Gets string representation of request body.
         /// </summary>
-        public string? Content { get; set; }
+        public IContent? Content { get; set; }
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
         public IReadOnlyCollection<IParameter> Parameters => _parameters;
         /// <summary>
-        /// Gets collection of headers.
+        /// Gets collection of metadata.
         /// </summary>
-        public IReadOnlyCollection<IHeader> Headers => _headers;
+        public IMetadataContainer Metadatas { get; }
 
         /// <summary>
         /// Creates container for request data.
@@ -48,7 +43,7 @@ namespace NClient.Providers.Transport
         /// <param name="id">The request id.</param>
         /// <param name="resource">The request URI (without parameters).</param>
         /// <param name="requestType">The request type.</param>
-        public Request(Guid id, Uri resource, RequestType requestType)
+        public Request(Guid id, string resource, RequestType requestType)
         {
             Ensure.IsNotNull(resource, nameof(resource));
             Ensure.IsNotNull(requestType, nameof(requestType));
@@ -56,6 +51,7 @@ namespace NClient.Providers.Transport
             Id = id;
             Resource = resource;
             Type = requestType;
+            Metadatas = new MetadataContainer();
         }
 
         /// <summary>
@@ -76,12 +72,12 @@ namespace NClient.Providers.Transport
         /// </summary>
         /// <param name="name">The header name.</param>
         /// <param name="value">The header value.</param>
-        public void AddHeader(string name, string value)
+        public void AddMetadata(string name, string value)
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNull(value, nameof(value));
 
-            _headers.Add(new Header(name, value));
+            Metadatas.Add(new Metadata(name, value));
         }
     }
 }

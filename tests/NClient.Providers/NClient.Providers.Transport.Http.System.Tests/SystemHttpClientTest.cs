@@ -18,15 +18,15 @@ namespace NClient.Providers.Transport.Http.System.Tests
     public class SystemHttpClientTest
     {
         private static readonly Uri Host = new("http://localhost:5022");
-        private static readonly Uri Resource = new(Host, "api/method");
+        private static readonly Uri ResourceUri = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
         private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create();
-        private static readonly Header AcceptHeader = new("Accept", "application/json");
-        private static readonly Header ServerHeader = new("Server", "Kestrel");
-        private static readonly Header EmptyContentLengthHeader = new("Content-Length", "0");
-        private static readonly Header ContentEncodingHeader = new("Content-Encoding", "UTF-8");
-        private static readonly Header ContentTypeHeader = new("Content-Type", "application/json; charset=utf-8");
+        private static readonly Metadata AcceptHeader = new("Accept", "application/json");
+        private static readonly Metadata ServerHeader = new("Server", "Kestrel");
+        private static readonly Metadata EmptyContentLengthMetadata = new("Content-Length", "0");
+        private static readonly Metadata ContentEncodingHeader = new("Content-Encoding", "UTF-8");
+        private static readonly Metadata ContentTypeHeader = new("Content-Type", "application/json");
         
         public static readonly IEnumerable ValidTestCases = new[]
         {
@@ -46,37 +46,33 @@ namespace NClient.Providers.Transport.Http.System.Tests
             var httpResponseMessage = await httpClient.ExecuteAsync(httpRequestMessage);
             var response = await httpMessageBuilder.BuildResponseAsync(request, httpRequestMessage, httpResponseMessage);
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Headers));
-            response.Headers.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
-                .Should().BeEquivalentTo(expectedResponse.Headers, x => x.WithoutStrictOrdering());
+            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
+            response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
+                .Should().BeEquivalentTo(expectedResponse.Metadatas, x => x.WithoutStrictOrdering());
         }
 
         private static TestCaseData ExecutionHeadRequestTestCase()
         {
             const RequestType method = RequestType.Check;
-            var request = new Request(RequestId, Resource, method)
+            var request = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = null,
                 Content = null
             };
+            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, Resource, method)
+            var finalRequest = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = null,
                 Content = null
             };
-            finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
+            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
             var response = new Response(finalRequest)
             {
-                Content = new Content(headerContainer: new ContentHeaderContainer(new[]
-                {
-                    EmptyContentLengthHeader
-                })),
+                Content = new Content(headerContainer: new MetadataContainer(Array.Empty<IMetadata>())),
                 StatusCode = (int)HttpStatusCode.OK,
                 StatusDescription = "OK",
-                ResponseUri = Resource,
-                Headers = new HeaderContainer(new[]
+                Resource = ResourceUri.ToString(),
+                Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
                 }),
@@ -90,7 +86,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(ResourceUri.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingHead())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
@@ -106,32 +102,32 @@ namespace NClient.Providers.Transport.Http.System.Tests
         private static TestCaseData ExecutionGetRequestTestCase()
         {
             const RequestType method = RequestType.Read;
-            var request = new Request(RequestId, Resource, method)
+            var request = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = null,
                 Content = null
             };
+            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, Resource, method)
+            var finalRequest = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = null,
                 Content = null
             };
-            finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
+            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
             var content = Serializer.Serialize(Data);
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new Response(finalRequest)
             {
-                Content = new Content(bytes, new ContentHeaderContainer(new[]
+                Content = new Content(bytes, ContentEncodingHeader.Value, new MetadataContainer(new[]
                 {
                     ContentTypeHeader,
-                    new Header(EmptyContentLengthHeader.Name, content.Length.ToString())
+                    ContentEncodingHeader,
+                    new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
                 })),
                 StatusCode = (int)HttpStatusCode.OK,
                 StatusDescription = "OK",
-                ResponseUri = Resource,
-                Headers = new HeaderContainer(new[]
+                Resource = ResourceUri.ToString(),
+                Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
                 }),
@@ -145,13 +141,14 @@ namespace NClient.Providers.Transport.Http.System.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(ResourceUri.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingGet())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
                         .WithStatusCode(200)
+                        .WithHeader(ContentEncodingHeader.Name, ContentEncodingHeader.Value)
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
-                        .WithHeader(EmptyContentLengthHeader.Name, content.Length.ToString())
+                        .WithHeader(EmptyContentLengthMetadata.Name, content.Length.ToString())
                         .WithHeader(ServerHeader.Name, ServerHeader.Value)
                         .WithBodyAsJson(Data));
                 return server;
@@ -166,33 +163,44 @@ namespace NClient.Providers.Transport.Http.System.Tests
             const RequestType method = RequestType.Create;
             var content = Serializer.Serialize(Data);
             
-            var request = new Request(RequestId, Resource, method)
+            var request = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = Data,
-                Content = null
+                Content = new Content(
+                    Encoding.UTF8.GetBytes(content),
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
+                    {
+                        new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
+                        new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
+                        new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
+                    }))
             };
+            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, Resource, method)
+            var finalRequest = new Request(RequestId, ResourceUri.ToString(), method)
             {
-                Data = Data,
-                Content = content
+                Content = new Content(
+                    Encoding.UTF8.GetBytes(content),
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
+                    {
+                        new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
+                        new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
+                        new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
+                    }))
             };
-            finalRequest.AddHeader(AcceptHeader.Name, AcceptHeader.Value);
-            finalRequest.AddHeader(ContentTypeHeader.Name, ContentTypeHeader.Value);
-            finalRequest.AddHeader(EmptyContentLengthHeader.Name, content.Length.ToString());
+            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
             var response = new Response(finalRequest)
             {
-                Content = new Content(headerContainer: new ContentHeaderContainer(new[]
+                Content = new Content(headerContainer: new MetadataContainer(new[]
                 {
-                    ContentTypeHeader,
-                    ContentEncodingHeader,
-                    EmptyContentLengthHeader
+                    EmptyContentLengthMetadata
                 })),
                 StatusCode = (int)HttpStatusCode.OK,
                 StatusDescription = "OK",
-                ResponseUri = Resource,
-                Headers = new HeaderContainer(new[]
+                Resource = ResourceUri.ToString(),
+                Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
                 }),
@@ -206,16 +214,14 @@ namespace NClient.Providers.Transport.Http.System.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(ResourceUri.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
                         .WithBody(new JsonMatcher(Data))
                         .UsingPost())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
                         .WithStatusCode(200)
-                        .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
-                        .WithHeader(ContentEncodingHeader.Name, ContentEncodingHeader.Value)
-                        .WithHeader(EmptyContentLengthHeader.Name, content.Length.ToString())
+                        .WithHeader(EmptyContentLengthMetadata.Name, EmptyContentLengthMetadata.Value)
                         .WithHeader(ServerHeader.Name, ServerHeader.Value));
                 return server;
             });

@@ -17,7 +17,7 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HttpNClientTest
     {
-        private static readonly Request RequestStub = new(Guid.Empty, new Uri("http://localhost:5000"), RequestType.Read);
+        private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000", RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
         private IReturnClientWithMetadata _returnClient = null!;
@@ -47,10 +47,12 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    new ContentHeaderContainer(new[]
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -73,10 +75,12 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    new ContentHeaderContainer(new[]
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -98,10 +102,12 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    new ContentHeaderContainer(new[]
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -123,10 +129,12 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    new ContentHeaderContainer(new[]
+                    Encoding.UTF8.WebName,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -147,10 +155,11 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
-                    new ContentHeaderContainer(new[]
+                    encoding: null,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "0")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "0")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -171,10 +180,11 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
-                    new ContentHeaderContainer(new[]
+                    encoding: null,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "0")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "0")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -195,10 +205,11 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
-                    new ContentHeaderContainer(new[]
+                    encoding: null,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "0")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "0")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -219,10 +230,11 @@ namespace NClient.Tests.ClientTests
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
-                    new ContentHeaderContainer(new[]
+                    encoding: null,
+                    new MetadataContainer(new[]
                     {
-                        new Header(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Header(HttpKnownHeaderNames.ContentLength, "0")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
+                        new Metadata(HttpKnownHeaderNames.ContentLength, "0")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
@@ -250,8 +262,8 @@ namespace NClient.Tests.ClientTests
         {
             return opts
                 .Excluding(x => x.Request)
-                .Excluding(x => x.Headers)
-                .Excluding(x => x.ResponseUri);
+                .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<ResponseWithError<Error>> ExcludeInessentialFields(
@@ -259,8 +271,8 @@ namespace NClient.Tests.ClientTests
         {
             return opts
                 .Excluding(x => x.Request)
-                .Excluding(x => x.Headers)
-                .Excluding(x => x.ResponseUri);
+                .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<Response<BasicEntity>> ExcludeInessentialFields(
@@ -268,8 +280,8 @@ namespace NClient.Tests.ClientTests
         {
             return opts
                 .Excluding(x => x.Request)
-                .Excluding(x => x.Headers)
-                .Excluding(x => x.ResponseUri);
+                .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<Response> ExcludeInessentialFields(
@@ -277,8 +289,8 @@ namespace NClient.Tests.ClientTests
         {
             return opts
                 .Excluding(x => x.Request)
-                .Excluding(x => x.Headers)
-                .Excluding(x => x.ResponseUri);
+                .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Resource);
         }
     }
 }

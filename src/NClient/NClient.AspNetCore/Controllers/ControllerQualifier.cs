@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
 using NClient.Annotations.Operations;
 using NClient.Annotations.Parameters;
 

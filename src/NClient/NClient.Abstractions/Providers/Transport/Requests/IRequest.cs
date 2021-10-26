@@ -11,29 +11,25 @@ namespace NClient.Providers.Transport
         /// </summary>
         Guid Id { get; }
         /// <summary>
-        /// Gets the <see cref="T:System.Uri" /> used for the request. Should not include query.
+        /// Gets the resource used for the request. Should not include query.
         /// </summary>
-        Uri Resource { get; }
+        string Resource { get; }
         /// <summary>
         /// Gets request type.
         /// </summary>
         RequestType Type { get; }
         /// <summary>
-        /// Gets object used for request body.
-        /// </summary>
-        object? Data { get; set; }
-        /// <summary>
         /// Gets string representation of request body.
         /// </summary>
-        string? Content { get; set; }
+        IContent? Content { get; set; }
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
         IReadOnlyCollection<IParameter> Parameters { get; }
         /// <summary>
-        /// Gets collection of headers.
+        /// Gets collection of metadata.
         /// </summary>
-        IReadOnlyCollection<IHeader> Headers { get; }
+        IMetadataContainer Metadatas { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>
@@ -45,6 +41,6 @@ namespace NClient.Providers.Transport
         /// </summary>
         /// <param name="name">The header name.</param>
         /// <param name="value">The header value.</param>
-        void AddHeader(string name, string value);
+        void AddMetadata(string name, string value);
     }
 }

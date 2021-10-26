@@ -1,5 +1,6 @@
 ﻿using System;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
     public interface IResponse<TValue> : IResponse
@@ -31,11 +32,11 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets the URL that actually responded to the content (different from request if redirected).
         /// </summary>
-        Uri? ResponseUri { get; set; }
+        string? Resource { get; set; }
         /// <summary>
-        /// Gets headers returned by server with the response.
+        /// Gets metadata returned by server with the response.
         /// </summary>
-        IHeaderContainer Headers { get; set; }
+        IMetadataContainer Metadatas { get; set; }
         /// <summary>
         /// Gets error generated while attempting request.
         /// </summary>

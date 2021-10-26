@@ -39,15 +39,19 @@ namespace NClient.Providers.Transport.Http.RestSharp
 
             restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType).ToString());
             
-            foreach (var header in request.Headers)
+            foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
             {
-                restRequest.AddHeader(header.Name, header.Value);
+                restRequest.AddHeader(metadata.Name, metadata.Value);
             }
 
-            if (request.Data is not null)
+            if (request.Content is not null)
             {
-                var body = _serializer.Serialize(request.Data);
-                restRequest.AddParameter(_serializer.ContentType, body, ParameterType.RequestBody);
+                restRequest.AddParameter(_serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
+
+                foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
+                {
+                    restRequest.AddHeader(metadata.Name, metadata.Value);
+                }
             }
 
             return Task.FromResult((IRestRequest)restRequest);
@@ -59,7 +63,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             
             var allHeaders = restResponse.Headers
                 .Where(x => x.Name != null)
-                .Select(x => new Header(x.Name!, x.Value?.ToString() ?? ""))
+                .Select(x => new Metadata(x.Name!, x.Value?.ToString() ?? ""))
                 .ToArray();
             var responseHeaders = allHeaders
                 .Where(x => !ContentHeaderNames.Contains(x.Name))
@@ -70,10 +74,10 @@ namespace NClient.Providers.Transport.Http.RestSharp
             
             var response = new Response(finalRequest)
             {
-                Content = new Content(restResponse.RawBytes, new ContentHeaderContainer(contentHeaders)),
+                Content = new Content(restResponse.RawBytes, restResponse.ContentEncoding, new MetadataContainer(contentHeaders)),
                 StatusCode = (int)restResponse.StatusCode,
-                ResponseUri = restResponse.ResponseUri,
-                Headers = new HeaderContainer(responseHeaders),
+                Resource = restResponse.ResponseUri.ToString(),
+                Metadatas = new MetadataContainer(responseHeaders),
                 ErrorMessage = restResponse.ErrorMessage,
                 ErrorException = restResponse.ErrorException,
                 ProtocolVersion = restResponse.ProtocolVersion,

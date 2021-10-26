@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using FluentAssertions;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Mappers;
+using NClient.Providers.Serialization;
+using NClient.Providers.Serialization.Json.System;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
@@ -22,6 +25,7 @@ namespace NClient.Standalone.Tests
 
         internal MethodBuilder MethodBuilder = null!;
         internal RequestBuilder RequestBuilder = null!;
+        internal ISerializer Serializer = null!;
         internal IClientArgumentExceptionFactory ClientArgumentExceptionFactory = null!;
         internal IClientValidationExceptionFactory ClientValidationExceptionFactory = null!;
 
@@ -30,9 +34,11 @@ namespace NClient.Standalone.Tests
         {
             var objectMemberManager = new ObjectMemberManager(new ClientObjectMemberManagerExceptionFactory());
 
+            Serializer = new SystemJsonSerializerProvider().Create();
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             ClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             RequestBuilder = new RequestBuilder(
+                Serializer,
                 new RouteTemplateProvider(ClientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, ClientValidationExceptionFactory),
                 new RequestTypeProvider(ClientValidationExceptionFactory),
@@ -65,22 +71,47 @@ namespace NClient.Standalone.Tests
 
         internal IRequest BuildRequest(string host, Method method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, host: new Uri(host), method, arguments);
+            return RequestBuilder.Build(RequestId, resourceRoot: host, method, arguments);
         }
 
-        protected static void AssertHttpRequest(
+        protected void AssertHttpRequest(
             IRequest actualRequest,
             Uri uri,
             RequestType requestType,
             IEnumerable<IParameter>? parameters = null,
-            IEnumerable<IHeader>? headers = null,
+            IEnumerable<IMetadata>? metadatas = null,
             object? body = null)
         {
-            actualRequest.Resource.Should().Be(uri);
+            var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
+            var acceptHeader = new Metadata("Accept", Serializer.ContentType);
+            
+            actualRequest.Resource.Should().Be(uri.ToString());
             actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
-            actualRequest.Headers.Should().BeEquivalentTo(headers ?? Array.Empty<IHeader>(), config => config.WithoutStrictOrdering());
-            actualRequest.Data.Should().BeEquivalentTo(body);
+            actualRequest.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(metadatas?.Concat(new[]
+            {
+                acceptHeader
+            }) ?? new[]
+            {
+                acceptHeader
+            }, config => config.WithoutStrictOrdering());
+            
+            if (body is null)
+            {
+                actualRequest.Content.Should().BeNull();   
+            }
+            else
+            {
+                actualRequest.Content.Should().NotBeNull();
+                actualRequest.Content!.Bytes.Should().BeEquivalentTo(contentBytes);
+                actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
+                actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
+                {
+                    new Metadata("Content-Encoding", Encoding.UTF8.WebName),
+                    new Metadata("Content-Type", Serializer.ContentType),
+                    new Metadata("Content-Length", contentBytes.Length.ToString())
+                }, x => x.WithStrictOrdering());
+            }
         }
     }
 }

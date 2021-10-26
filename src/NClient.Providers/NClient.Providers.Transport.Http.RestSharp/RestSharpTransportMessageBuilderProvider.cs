@@ -19,7 +19,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             return new RestSharpTransportMessageBuilder(
                 serializer,
                 _restSharpMethodMapper,
-                new FinalHttpRequestBuilder(serializer, _restSharpMethodMapper));
+                new FinalHttpRequestBuilder(_restSharpMethodMapper));
         }
     }
 }

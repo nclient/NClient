@@ -4,14 +4,14 @@
 namespace NClient.Providers.Transport
 {
     /// <summary>
-    /// The container for header data.
+    /// The metadata of the request or response.
     /// </summary>
-    public record Header : IHeader
+    public record Metadata : IMetadata
     {
         public string Name { get; }
         public string Value { get; }
 
-        public Header(string name, string value)
+        public Metadata(string name, string value)
         {
             Ensure.IsNotNullOrEmpty(name, nameof(name));
             Ensure.IsNotNullOrEmpty(value, nameof(value));

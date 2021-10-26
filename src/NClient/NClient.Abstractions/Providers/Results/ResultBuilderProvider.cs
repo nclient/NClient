@@ -1,7 +1,4 @@
-﻿
-
-
-using NClient.Providers.Transport;
+﻿using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results
 {

@@ -14,12 +14,11 @@ namespace NClient.Providers.Transport.Http.System
             _systemHttpMethodMapper = new SystemHttpMethodMapper();
         }
         
-        public ITransportMessageBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
+        public ITransportMessageBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer _)
         {
             return new SystemHttpTransportMessageBuilder(
-                serializer, 
                 _systemHttpMethodMapper, 
-                new FinalHttpRequestBuilder(serializer, _systemHttpMethodMapper));
+                new FinalHttpRequestBuilder(_systemHttpMethodMapper));
         }
     }
 }

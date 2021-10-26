@@ -85,6 +85,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>
         /// Gets collection of HTTP headers.
         /// </summary>
+        // TODO: Use container
         public IReadOnlyCollection<IHttpHeader> Headers => _headers;
 
         /// <summary>

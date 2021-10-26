@@ -2,7 +2,7 @@
 
 namespace NClient.Providers.Transport
 {
-    public interface IHeader
+    public interface IMetadata
     {
         string Name { get; }
         string Value { get; }

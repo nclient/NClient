@@ -37,7 +37,7 @@ namespace NClient.Providers.Transport.Http.System
         /// Creates the System.Net.Http based HTTP client provider.
         /// </summary>
         /// <param name="httpClient">The system <see cref="HttpClient"/>.</param>
-        public SystemHttpTransportProvider(global::System.Net.Http.HttpClient httpClient)
+        public SystemHttpTransportProvider(HttpClient httpClient)
         {
             Ensure.IsNotNull(httpClient, nameof(httpClient));
 

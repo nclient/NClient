@@ -34,7 +34,7 @@ namespace NClient.Standalone.Exceptions.Factories
             new($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
 
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
-            new($"Header parameters duplicate static headers. Header names: {string.Join(",", headerNames)}");
+            new($"Header parameters duplicate static metadatas. Header names: {string.Join(",", headerNames)}");
 
         public ClientValidationException ClientNameConsistsOnlyOfSuffixesAndPrefixes() =>
             new("The client name consists only of suffixes and/or prefixes.");

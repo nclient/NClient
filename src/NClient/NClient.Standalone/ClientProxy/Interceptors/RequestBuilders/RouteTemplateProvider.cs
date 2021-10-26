@@ -28,7 +28,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.RequestBuilders
             var methodTemplate = (method.Operation as ITemplateProviderAttribute)?.Template ?? "";
             var fullTemplate = Path.IsPathRooted(methodTemplate)
                 ? methodTemplate
-                : UriHelper.Combine(baseTemplate, methodTemplate);
+                : PathHelper.Combine(baseTemplate, methodTemplate);
 
             return Parse(fullTemplate);
         }
