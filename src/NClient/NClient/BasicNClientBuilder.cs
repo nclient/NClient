@@ -24,6 +24,7 @@ namespace NClient
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithResults()
+                .WithHttpResults()
                 .WithoutLogging();
         }
     }

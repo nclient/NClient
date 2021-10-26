@@ -23,8 +23,8 @@ namespace NClient.Providers.Results.HttpResults
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
-        public HttpResponseWithError(IHttpResponse httpResponse, IHttpRequest httpRequest, TData? data, TError? error)
-            : base(httpResponse, httpRequest, data)
+        public HttpResponseWithError(HttpResponse httpResponse, TData? data, TError? error)
+            : base(httpResponse, data)
         {
             Error = error;
         }
@@ -63,8 +63,8 @@ namespace NClient.Providers.Results.HttpResults
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
-        public HttpResponseWithError(IHttpResponse httpResponse, IHttpRequest httpRequest, TError? error)
-            : base(httpResponse, httpRequest)
+        public HttpResponseWithError(HttpResponse httpResponse, TError? error)
+            : base(httpResponse)
         {
             Error = error;
         }

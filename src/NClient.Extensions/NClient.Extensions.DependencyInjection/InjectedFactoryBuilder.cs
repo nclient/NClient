@@ -34,6 +34,8 @@ namespace NClient.Extensions.DependencyInjection
                 .WithResponseValidation()
                 .WithoutHandling()
                 .WithoutResilience()
+                .WithResults()
+                .WithHttpResults()
                 .WithLogging(loggerFactory);
         }
     }

@@ -35,4 +35,8 @@
         </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

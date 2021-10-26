@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
-using NClient.Common.Helpers;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Results.HttpResults
@@ -29,8 +30,8 @@ namespace NClient.Providers.Results.HttpResults
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
-        public HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest, TData? data)
-            : base(httpResponse, httpRequest)
+        public HttpResponse(HttpResponse httpResponse, TData? data)
+            : base(httpResponse)
         {
             Data = data;
         }
@@ -44,33 +45,18 @@ namespace NClient.Providers.Results.HttpResults
             return this;
         }
     }
-    
+
     public interface IHttpResponse
     {
-        /// <summary>
-        /// The HTTP request that the response belongs to.
-        /// </summary>
         IHttpRequest Request { get; }
-        /// <summary>
-        /// Gets string representation of response content.
-        /// </summary>
-        IHttpResponseContent Content { get; set; }
-        /// <summary>
-        /// Gets HTTP response status code.
-        /// </summary>
-        HttpStatusCode StatusCode { get; set; }
-        /// <summary>
-        /// Gets description of HTTP status returned.
-        /// </summary>
-        string? StatusDescription { get; set; }
-        /// <summary>
-        /// Gets the URL that actually responded to the content (different from request if redirected).
-        /// </summary>
-        Uri? ResponseUri { get; set; }
-        /// <summary>
-        /// Gets headers returned by server with the response.
-        /// </summary>
-        IHttpResponseHeaderContainer Headers { get; set; }
+        Version Version { get; }
+        HttpContent Content { get; }
+        HttpStatusCode StatusCode { get; }
+        string ReasonPhrase { get; }
+        HttpResponseHeaders Headers { get; }
+        #if !NETSTANDARD2_0
+        HttpResponseHeaders TrailingHeaders { get; }
+        #endif
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -80,10 +66,6 @@ namespace NClient.Providers.Results.HttpResults
         /// </summary>
         Exception? ErrorException { get; set; }
         /// <summary>
-        /// Gets the HTTP protocol version (1.0, 1.1, etc).
-        /// </summary>
-        Version? ProtocolVersion { get; set; }
-        /// <summary>
         /// Gets information about the success of the request.
         /// </summary>
         bool IsSuccessful { get; }
@@ -92,36 +74,26 @@ namespace NClient.Providers.Results.HttpResults
         /// </summary>
         IHttpResponse EnsureSuccess();
     }
-
+    
     /// <summary>
     /// The container for HTTP response data.
     /// </summary>
     public class HttpResponse : IHttpResponse
     {
-        /// <summary>
-        /// The HTTP request that the response belongs to.
-        /// </summary>
+        private readonly HttpResponseMessage _httpResponseMessage;
+
         public IHttpRequest Request { get; }
-        /// <summary>
-        /// Gets string representation of response content.
-        /// </summary>
-        public IHttpResponseContent Content { get; set; }
-        /// <summary>
-        /// Gets HTTP response status code.
-        /// </summary>
-        public HttpStatusCode StatusCode { get; set; }
-        /// <summary>
-        /// Gets description of HTTP status returned.
-        /// </summary>
-        public string? StatusDescription { get; set; }
-        /// <summary>
-        /// Gets the URL that actually responded to the content (different from request if redirected).
-        /// </summary>
-        public Uri? ResponseUri { get; set; }
-        /// <summary>
-        /// Gets headers returned by server with the response.
-        /// </summary>
-        public IHttpResponseHeaderContainer Headers { get; set; }
+
+        public Version Version => _httpResponseMessage.Version;
+        public HttpContent Content => _httpResponseMessage.Content;
+        public HttpStatusCode StatusCode => _httpResponseMessage.StatusCode;
+        public string ReasonPhrase => _httpResponseMessage.ReasonPhrase;
+        public HttpResponseHeaders Headers => _httpResponseMessage.Headers;
+
+        #if !NETSTANDARD2_0
+        public HttpResponseHeaders TrailingHeaders => _httpResponseMessage.TrailingHeaders;
+        #endif
+        
         /// <summary>
         /// Gets HTTP error generated while attempting request.
         /// </summary>
@@ -130,11 +102,7 @@ namespace NClient.Providers.Results.HttpResults
         /// Gets the exception thrown when error is encountered.
         /// </summary>
         public Exception? ErrorException { get; set; }
-        /// <summary>
-        /// Gets the HTTP protocol version (1.0, 1.1, etc).
-        /// </summary>
-        public Version? ProtocolVersion { get; set; }
-
+       
         /// <summary>
         /// Gets information about the success of the request.
         /// </summary>
@@ -144,27 +112,35 @@ namespace NClient.Providers.Results.HttpResults
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
-        public HttpResponse(IHttpRequest httpRequest)
+        public HttpResponse(
+            IHttpRequest httpRequest, 
+            HttpResponseMessage httpResponseMessage)
         {
-            Ensure.IsNotNull(httpRequest, nameof(httpRequest));
-
             Request = httpRequest;
-            Content = new HttpResponseContent();
-            Headers = new HttpResponseHeaderContainer(Array.Empty<IHttpHeader>());
-        }
-
-        internal HttpResponse(IHttpResponse httpResponse, IHttpRequest httpRequest) : this(httpRequest)
-        {
-            Ensure.IsNotNull(httpResponse, nameof(httpResponse));
             
-            Content = httpResponse.Content;
-            StatusCode = httpResponse.StatusCode;
-            StatusDescription = httpResponse.StatusDescription;
-            ResponseUri = httpResponse.ResponseUri;
-            Headers = httpResponse.Headers;
+            _httpResponseMessage = httpResponseMessage;
+        }
+        
+        public HttpResponse(
+            IHttpRequest httpRequest, 
+            HttpResponseMessage httpResponseMessage,
+            string errorMessage,
+            Exception errorException)
+        {
+            Request = httpRequest;
+            ErrorMessage = errorMessage;
+            ErrorException = errorException;
+            
+            _httpResponseMessage = httpResponseMessage;
+        }
+        
+        internal HttpResponse(HttpResponse httpResponse)
+        {
+            Request = httpResponse.Request;
             ErrorMessage = httpResponse.ErrorMessage;
             ErrorException = httpResponse.ErrorException;
-            ProtocolVersion = httpResponse.ProtocolVersion;
+            
+            _httpResponseMessage = httpResponse._httpResponseMessage;
         }
 
         /// <summary>
