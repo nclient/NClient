@@ -30,6 +30,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+        <ProjectReference Include="..\..\NClient\NClient.Core\NClient.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,6 +42,15 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Providers.Api.Rest.Tests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Standalone.Tests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 
 </Project>

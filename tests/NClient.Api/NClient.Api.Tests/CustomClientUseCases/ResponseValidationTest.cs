@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NUnit.Framework;
@@ -26,6 +27,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
                 .UsingRestSharpTransport()
+                .UsingRestApi()
                 .UsingJsonSerializer()
                 .WithRestSharpResponseValidation()
                 .Build();

@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Attributes;
 using NClient.Common.Helpers;
 
 namespace NClient.Annotations
@@ -7,7 +8,7 @@ namespace NClient.Annotations
     /// An attribute that specifies route on a controller.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-    public class PathAttribute : Attribute
+    public class PathAttribute : Attribute, IPathAttribute
     {
         /// <summary>
         /// Gets the route name. The route name can be used to generate a link using a specific route, instead

@@ -74,8 +74,4 @@
         </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Providers" />
-    </ItemGroup>
-
 </Project>

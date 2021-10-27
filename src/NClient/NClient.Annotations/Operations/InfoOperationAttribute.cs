@@ -1,6 +1,11 @@
-﻿namespace NClient.Annotations.Operations
+﻿// ReSharper disable once CheckNamespace
+
+namespace NClient.Annotations
 {
-    public class InfoOperationAttribute : OperationAttribute
+    public class InfoOperationAttribute : OperationAttribute, IInfoOperationAttribute
     {
+        public InfoOperationAttribute(string? path = null) : base(path)
+        {
+        }
     }
 }

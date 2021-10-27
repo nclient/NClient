@@ -1,5 +1,5 @@
 ﻿using NClient.Common.Helpers;
-using NClient.Standalone.ClientProxy.Building;
+using NClient.Standalone.ClientProxy.Building.Factory;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

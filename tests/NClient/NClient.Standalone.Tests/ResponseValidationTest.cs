@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Exceptions;
+using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NUnit.Framework;
@@ -22,6 +23,7 @@ namespace NClient.Standalone.Tests
             _preConfiguredBasicClient = new CustomNClientBuilder()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
                 .UsingSystemHttpTransport()
+                .UsingRestApi()
                 .UsingSystemJsonSerializer();
         }
         

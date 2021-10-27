@@ -12,6 +12,7 @@ using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Serialization;
 using NClient.Standalone.Client.Transport;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.ClientProxy.Api;
 using NClient.Standalone.ClientProxy.Interceptors;
 
 namespace NClient.Standalone.ClientProxy.Validation
@@ -40,6 +41,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .Create<TClient, IRequest, IResponse>(
                     FakeHost.ToString(),
                     new StubSerializerProvider(),
+                    new StubRequestBuilderProvider(),
                     new StubTransportProvider(),
                     new StubTransportMessageBuilderProvider(),
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },

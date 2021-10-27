@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
 using NClient.Annotations.Auth;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions.Factories;
@@ -63,7 +61,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
         }
 
-        [Api] public interface IInterfaceWithApiAttribute { }
+        [HttpFacade] public interface IInterfaceWithApiAttribute { }
         public class InterfaceWithApiAttribute : IInterfaceWithApiAttribute { }
 
         [Test]
@@ -199,7 +197,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        [Api, Path("api/[controller]")] public interface IInterfaceWithApiAndPathAttributes { }
+        [HttpFacade, Path("api/[controller]")] public interface IInterfaceWithApiAndPathAttributes { }
         public class InterfaceWithApiAndPathAttributes : IInterfaceWithApiAndPathAttributes { }
 
         [Test]

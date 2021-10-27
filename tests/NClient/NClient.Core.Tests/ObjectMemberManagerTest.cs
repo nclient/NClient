@@ -4,11 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using NClient.Annotations.Parameters;
+using NClient.Annotations.Http;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
-using NClient.Standalone.Exceptions.Factories;
+using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NUnit.Framework;
 
 namespace NClient.Core.Tests
@@ -18,7 +18,7 @@ namespace NClient.Core.Tests
     [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]
     internal class ObjectMemberManagerTest
     {
-        private static readonly ClientObjectMemberManagerExceptionFactory ExceptionFactory = new();
+        private static readonly ObjectMemberManagerExceptionFactory ExceptionFactory = new();
         private ObjectMemberManager _objectMemberManager = null!;
 
         public class TestObjWithCustomQueryPropName { [QueryParam(Name = "MyProp")] public int Prop { get; set; } = 1; }

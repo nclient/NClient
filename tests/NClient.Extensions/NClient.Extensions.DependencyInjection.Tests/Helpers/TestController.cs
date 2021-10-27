@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.Extensions.DependencyInjection.Tests.Helpers

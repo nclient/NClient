@@ -2,13 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 
 namespace NClient.Sandbox.FileService.Facade
 {
-    [Api]
+    [HttpFacade]
     [Path("api/nclient/v{version:apiVersion}/[controller]")]
     [Version("1.0"), Version("2.0"), Version("3.0")]
     public interface IFileController

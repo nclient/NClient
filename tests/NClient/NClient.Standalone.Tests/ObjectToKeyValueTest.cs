@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Exceptions;
-using NClient.Standalone.Exceptions.Factories;
-using NClient.Standalone.Helpers.ObjectToKeyValueConverters;
+using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests
@@ -14,15 +14,15 @@ namespace NClient.Standalone.Tests
     [Parallelizable]
     internal class ObjectToKeyValueTest
     {
-        private static readonly ClientObjectMemberManagerExceptionFactory ClientObjectMemberManagerExceptionFactory = new();
-        private static readonly ClientValidationExceptionFactory ClientValidationExceptionFactory = new();
+        private static readonly ObjectMemberManagerExceptionFactory ClientObjectMemberManagerExceptionFactory = new();
+        private static readonly ObjectToKeyValueConverterExceptionFactory ObjectToKeyValueConverterExceptionFactory = new();
         private ObjectToKeyValueConverter _objectToKeyValue = null!;
 
         [SetUp]
         public void SetUp()
         {
             var objectMemberManager = new ObjectMemberManager(ClientObjectMemberManagerExceptionFactory);
-            _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager, ClientValidationExceptionFactory);
+            _objectToKeyValue = new ObjectToKeyValueConverter(objectMemberManager, ObjectToKeyValueConverterExceptionFactory);
         }
 
         public static IEnumerable ConvertibleObjectSource = new[]
@@ -159,31 +159,31 @@ namespace NClient.Standalone.Tests
         public static IEnumerable NotSupportedObjectSource = new[]
         {
             new TestCaseData(new[] { new { Prop1 = 1 } },
-                    ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.ArrayWithComplexTypeNotSupported())
                 .SetName("Array of custom objects: single item"),
             new TestCaseData(new[] { new { Prop1 = 1 }, new { Prop1 = 1 } },
-                    ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.ArrayWithComplexTypeNotSupported())
                 .SetName("Array of custom objects: multiple items"),
             new TestCaseData(new { Prop1 = new[] { new { Prop2 = 1 }, new { Prop2 = 2 } } },
-                    ClientValidationExceptionFactory.ArrayWithComplexTypeNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.ArrayWithComplexTypeNotSupported())
                 .SetName("Custom object: array of custom objects property"),
             new TestCaseData(new Dictionary<int, object> { [1] = new { Prop1 = 1 } },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
                 .SetName("Dictionary of int32/custom objects: single item"),
             new TestCaseData(new Dictionary<int, object> { [1] = new { Prop1 = 1 }, [2] = new { Prop1 = 2 } },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
                 .SetName("Dictionary of int32/custom objects: multiple items"),
             new TestCaseData(new { Prop1 = new Dictionary<int, object> { [1] = new { Prop1 = 1 }, [2] = new { Prop1 = 2 } } },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported())
                 .SetName("Custom object: dictionary of int32/custom objects property"),
             new TestCaseData(new Dictionary<object, int> { [new { Prop1 = 1 }] = 1 },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
                 .SetName("Dictionary of custom objects/int32: single item"),
             new TestCaseData(new Dictionary<object, int> { [new { Prop1 = 1 }] = 1, [new { Prop1 = 2 }] = 2 },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
                 .SetName("Dictionary of custom objects/int32: multiple items"),
             new TestCaseData(new { Prop1 = new Dictionary<object, int> { [new { Prop1 = 1 }] = 1, [new { Prop1 = 2 }] = 2 } },
-                    ClientValidationExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
+                    ObjectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported())
                 .SetName("Custom object: dictionary of custom objects/int32 property")
         };
 

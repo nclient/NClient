@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.Standalone.Tests.Clients

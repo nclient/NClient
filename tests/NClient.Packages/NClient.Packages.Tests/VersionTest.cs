@@ -33,6 +33,10 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.AspNetCore").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
+        public void NClient_Providers_Api_Rest() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Api.Rest").Should().Be(PackagesVersionProvider.GetNew());
+        
+        [Test]
         public void NClient_Providers_Resilience_Polly() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
 

@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Api.Rest\NClient.Providers.Api.Rest.csproj" />
         <ProjectReference Include="..\..\NClient\NClient\NClient.csproj" />
     </ItemGroup>
 

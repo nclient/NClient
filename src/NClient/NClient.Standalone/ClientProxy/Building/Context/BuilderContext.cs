@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using NClient.Providers.Api;
 using NClient.Providers.Handling;
 using NClient.Providers.Resilience;
 using NClient.Providers.Results;
@@ -22,6 +23,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportMessageBuilderProvider<TRequest, TResponse> TransportMessageBuilderProvider { get; private set; } = null!;
+        
+        public IRequestBuilderProvider RequestBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
@@ -54,9 +57,11 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             _clientBuildExceptionFactory = builderContext._clientBuildExceptionFactory;
             
             Host = builderContext.Host;
-            
+
             TransportProvider = builderContext.TransportProvider;
             TransportMessageBuilderProvider = builderContext.TransportMessageBuilderProvider;
+            
+            RequestBuilderProvider = builderContext.RequestBuilderProvider;
 
             SerializerProvider = builderContext.SerializerProvider;
 
@@ -90,6 +95,14 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             {
                 TransportProvider = transportProvider,
                 TransportMessageBuilderProvider = transportMessageBuilderProvider
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithRequestBuilderProvider(IRequestBuilderProvider requestBuilderProvider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                RequestBuilderProvider = requestBuilderProvider
             };
         }
 

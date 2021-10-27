@@ -1,7 +1,8 @@
 ﻿using System;
 using NClient.Common.Helpers;
 
-namespace NClient.Annotations.Versioning
+// ReSharper disable once CheckNamespace
+namespace NClient.Annotations
 {
     /// <summary>
     /// Represents the metadata that describes the API version associated with a service.

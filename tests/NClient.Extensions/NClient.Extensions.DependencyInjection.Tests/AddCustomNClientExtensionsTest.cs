@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Providers.Api.Rest.Extensions;
 using NClient.Providers.Resilience;
 using NUnit.Framework;
 using Polly;
@@ -19,6 +20,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestSharpTransport()
+                .UsingRestApi()
                 .UsingNewtonsoftJsonSerializer()
                 .Build());
 
@@ -33,6 +35,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestSharpTransport()
+                .UsingRestApi()
                 .UsingNewtonsoftJsonSerializer()
                 .Build());
 
@@ -47,6 +50,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestSharpTransport()
+                .UsingRestApi()
                 .UsingNewtonsoftJsonSerializer()
                 .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
@@ -65,6 +69,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 .UsingSystemHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName: "TestClient")
+                .UsingRestApi()
                 .UsingJsonSerializer()
                 .Build());
 

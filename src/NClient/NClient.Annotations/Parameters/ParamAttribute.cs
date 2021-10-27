@@ -1,9 +1,10 @@
 ﻿using System;
 
-namespace NClient.Annotations.Parameters
+// ReSharper disable once CheckNamespace
+namespace NClient.Annotations
 {
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public abstract class ParamAttribute : Attribute
+    public abstract class ParamAttribute : Attribute, IParamAttribute
     {
     }
 }

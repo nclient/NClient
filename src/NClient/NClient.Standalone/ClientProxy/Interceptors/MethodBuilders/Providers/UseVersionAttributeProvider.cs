@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NClient.Annotations.Versioning;
+using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Standalone.Exceptions.Factories;
@@ -11,7 +11,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
 {
     internal interface IUseVersionAttributeProvider
     {
-        UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods);
+        IUseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class UseVersionAttributeProvider : IUseVersionAttributeProvider
@@ -27,25 +27,28 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods)
+        public IUseVersionAttribute? Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods)
         {
             return Find(clientType, methodInfo) ?? overridingMethods.Select(x => Find(clientType, x)).FirstOrDefault();
         }
 
-        private UseVersionAttribute? Find(Type clientType, MethodInfo methodInfo)
+        private IUseVersionAttribute? Find(Type clientType, MethodInfo methodInfo)
         {
             var useVersionAttributes = (clientType.IsInterface
                     ? clientType.GetInterfaceCustomAttributes(inherit: true)
                     : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
                 .Select(x => _attributeMapper.TryMap(x))
-                .Where(x => x is UseVersionAttribute)
-                .Cast<UseVersionAttribute>()
+                .Where(x => x is IUseVersionAttribute)
+                .Cast<IUseVersionAttribute>()
                 .ToArray();
             if (useVersionAttributes.Length > 1)
-                throw _clientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(UseVersionAttribute));
+                throw _clientValidationExceptionFactory.MultipleAttributeForClientNotSupported(nameof(IUseVersionAttribute));
             var useVersionAttribute = useVersionAttributes.SingleOrDefault();
 
-            var methodUseVersionAttribute = methodInfo.GetCustomAttribute<UseVersionAttribute>();
+            var methodUseVersionAttribute = methodInfo
+                    .GetCustomAttributes()
+                    .SingleOrDefault(x => x is IUseVersionAttribute)
+                as IUseVersionAttribute;
 
             return methodUseVersionAttribute ?? useVersionAttribute;
         }

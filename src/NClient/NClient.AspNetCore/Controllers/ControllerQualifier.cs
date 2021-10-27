@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NClient.Annotations;
-using NClient.Annotations.Operations;
-using NClient.Annotations.Parameters;
+using NClient.Annotations.Http;
 
 namespace NClient.AspNetCore.Controllers
 {
@@ -39,7 +38,7 @@ namespace NClient.AspNetCore.Controllers
                 return false;
 
             return type.IsDefined(typeof(FacadeAttribute), inherit: true)
-                || type.IsDefined(typeof(ApiAttribute), inherit: true)
+                || type.IsDefined(typeof(HttpFacadeAttribute), inherit: true)
                 || type.IsDefined(typeof(PathAttribute), inherit: true)
                 || type.GetMethods().Any(x => x.IsDefined(typeof(OperationAttribute), inherit: true))
                 || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));

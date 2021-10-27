@@ -5,12 +5,12 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
+using NClient.Providers.Api;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client;
 using NClient.Standalone.ClientProxy.Interceptors.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.RequestBuilders;
 using NClient.Standalone.Exceptions.Factories;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 

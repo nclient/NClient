@@ -5,7 +5,7 @@ using System.Reflection;
 using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
+using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders
@@ -17,20 +17,20 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders
 
     internal class MethodBuilder : IMethodBuilder
     {
-        private readonly IMethodAttributeProvider _methodAttributeProvider;
+        private readonly IOperationAttributeProvider _operationAttributeProvider;
         private readonly IUseVersionAttributeProvider _useVersionAttributeProvider;
         private readonly IPathAttributeProvider _pathAttributeProvider;
         private readonly IHeaderAttributeProvider _headerAttributeProvider;
         private readonly IMethodParamBuilder _methodParamBuilder;
 
         public MethodBuilder(
-            IMethodAttributeProvider methodAttributeProvider,
+            IOperationAttributeProvider operationAttributeProvider,
             IUseVersionAttributeProvider useVersionAttributeProvider,
             IPathAttributeProvider pathAttributeProvider,
             IHeaderAttributeProvider headerAttributeProvider,
             IMethodParamBuilder methodParamBuilder)
         {
-            _methodAttributeProvider = methodAttributeProvider;
+            _operationAttributeProvider = operationAttributeProvider;
             _useVersionAttributeProvider = useVersionAttributeProvider;
             _pathAttributeProvider = pathAttributeProvider;
             _headerAttributeProvider = headerAttributeProvider;
@@ -57,14 +57,14 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders
                     .ToArray());
             }
 
-            var methodAttribute = _methodAttributeProvider.Get(methodInfo, overridingMethods);
+            var methodAttribute = _operationAttributeProvider.Get(methodInfo, overridingMethods);
             var methodParams = _methodParamBuilder.Build(methodInfo, overridingMethods);
 
             return new Method(methodInfo.Name, clientType.Name, methodAttribute, methodParams)
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
-                HeaderAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams)
+                MetadataAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams)
             };
         }
     }

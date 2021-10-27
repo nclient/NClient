@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using NClient.Providers.Api.Rest.Extensions;
 
 namespace NClient
 {
@@ -19,6 +20,7 @@ namespace NClient
             return new CustomNClientBuilder()
                 .For<TClient>(host)
                 .UsingHttpTransport()
+                .UsingRestApi()
                 .UsingJsonSerializer()
                 .WithResponseValidation()
                 .WithoutHandling()

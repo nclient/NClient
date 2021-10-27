@@ -13,14 +13,14 @@ namespace NClient.Standalone.ClientProxy.Building
             _host = host;
         }
         
-        public INClientSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        public INClientApiBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
         {
             Ensure.IsNotNull(transportProvider, nameof(transportProvider));
             Ensure.IsNotNull(transportMessageBuilderProvider, nameof(transportMessageBuilderProvider));
             
-            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
+            return new NClientApiBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
                 .WithHost(_host)
                 .WithHttpClientProvider(transportProvider, transportMessageBuilderProvider));
         }
