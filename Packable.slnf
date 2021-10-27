@@ -3,6 +3,7 @@
     "path": "NClient.sln",
     "projects": [
       "src\\NClient.Extensions\\NClient.Extensions.DependencyInjection\\NClient.Extensions.DependencyInjection.csproj",
+      "src\\NClient.Providers\\NClient.Providers.Api.Rest\\NClient.Providers.Api.Rest.csproj",
       "src\\NClient.Providers\\NClient.Providers.Resilience.Polly\\NClient.Providers.Resilience.Polly.csproj",
       "src\\NClient.Providers\\NClient.Providers.Results.HttpResults\\NClient.Providers.Results.HttpResults.csproj",
       "src\\NClient.Providers\\NClient.Providers.Results.LanguageExt\\NClient.Providers.Results.LanguageExt.csproj",
