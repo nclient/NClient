@@ -3,16 +3,16 @@ using System.Net;
 using FluentAssertions;
 using NClient.Annotations;
 using NClient.Annotations.Http;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Exceptions;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
-using NClient.Standalone.AspNetRouting;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.Standalone.Tests.RouteProviderTests
+namespace NClient.Providers.Api.Rest.Tests.RouteProviderTests
 {
     [Parallelizable]
     public class RouteProviderTest

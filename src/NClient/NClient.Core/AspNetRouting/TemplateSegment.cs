@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NClient.Standalone.AspNetRouting
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// Represents a segment of a route template.

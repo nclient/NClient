@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Resources;
 
-namespace NClient.Standalone.AspNetRouting
+namespace NClient.Core.AspNetRouting
 {
     internal static class Resources
     {

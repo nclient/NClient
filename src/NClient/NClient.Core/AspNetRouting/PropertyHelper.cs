@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace NClient.Standalone.AspNetRouting
+namespace NClient.Core.AspNetRouting
 {
     internal class PropertyHelper
     {

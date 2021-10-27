@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace NClient.Standalone.AspNetRouting
+namespace NClient.Core.AspNetRouting
 {
     /// <summary>
     /// Represents a parameter part in a route pattern. Instances of <see cref="RoutePatternParameterPart"/>

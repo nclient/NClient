@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Helpers;
 using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
-using NClient.Standalone.AspNetRouting;
 
 namespace NClient.Providers.Api.Rest.Providers
 {

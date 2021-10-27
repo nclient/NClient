@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NClient.Annotations;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Models;
-using NClient.Standalone.AspNetRouting;
 
 namespace NClient.Providers.Api.Rest.Providers
 {

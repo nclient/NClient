@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NClient.Standalone.AspNetRouting
+namespace NClient.Core.AspNetRouting
 {
     internal static class TemplateParser
     {
