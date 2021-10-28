@@ -10,13 +10,16 @@ namespace NClient.Testing.Common.Helpers
         
         static PortsPool()
         {
-            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5100, count: 900));
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5000, count: 500));
         }
         
         public static int Get()
         {
             if (Ports.TryTake(out var port))
+            {
+                Console.WriteLine($"{nameof(PortsPool)}: Port {port} is selected.");
                 return port;
+            }
             
             throw new InvalidOperationException("The port cannot be returned. The ports in the pool have run out.");
         }
