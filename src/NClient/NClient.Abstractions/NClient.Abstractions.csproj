@@ -13,8 +13,6 @@
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
-        <Platforms>AnyCPU</Platforms>
-        <RootNamespace>NClient</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -23,7 +21,9 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <RootNamespace>NClient</RootNamespace>
         <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
