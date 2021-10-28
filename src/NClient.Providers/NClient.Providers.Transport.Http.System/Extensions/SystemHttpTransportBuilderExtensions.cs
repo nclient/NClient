@@ -12,7 +12,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
-        public static INClientApiBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder)
             where TClient : class
         {
@@ -27,7 +27,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="factoryTransportBuilder"></param>
-        public static INClientFactoryApiBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
             this INClientFactoryTransportBuilder factoryTransportBuilder)
         {
             Ensure.IsNotNull(factoryTransportBuilder, nameof(factoryTransportBuilder));
@@ -43,7 +43,7 @@ namespace NClient
         /// <param name="clientTransportBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
-        public static INClientApiBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
             where TClient : class
@@ -62,7 +62,7 @@ namespace NClient
         /// <param name="factoryTransportBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
-        public static INClientFactoryApiBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
             this INClientFactoryTransportBuilder factoryTransportBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
@@ -79,7 +79,7 @@ namespace NClient
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static INClientApiBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder,
             HttpMessageHandler httpMessageHandler)
             where TClient : class
@@ -97,7 +97,7 @@ namespace NClient
         /// </summary>
         /// <param name="factoryTransportBuilder"></param>
         /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static INClientFactoryApiBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
             this INClientFactoryTransportBuilder factoryTransportBuilder,
             HttpMessageHandler httpMessageHandler)
         {

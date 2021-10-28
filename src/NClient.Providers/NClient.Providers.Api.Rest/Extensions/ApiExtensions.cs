@@ -5,8 +5,8 @@ namespace NClient.Providers.Api.Rest.Extensions
     // TODO: doc
     public static class ApiExtensions
     {
-        public static INClientSerializerBuilder<TClient, TRequest, TResponse> UsingRestApi<TClient, TRequest, TResponse>(
-            this INClientApiBuilder<TClient, TRequest, TResponse> clientApiBuilder)
+        public static INClientTransportBuilder<TClient> UsingRestApi<TClient>(
+            this INClientApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
             Ensure.IsNotNull(clientApiBuilder, nameof(clientApiBuilder));
@@ -14,8 +14,8 @@ namespace NClient.Providers.Api.Rest.Extensions
             return clientApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
         }
         
-        public static INClientFactorySerializerBuilder<TRequest, TResponse> UsingRestApi<TRequest, TResponse>(
-            this INClientFactoryApiBuilder<TRequest, TResponse> factoryApiBuilder)
+        public static INClientFactoryTransportBuilder UsingRestApi(
+            this INClientFactoryApiBuilder factoryApiBuilder)
         {
             Ensure.IsNotNull(factoryApiBuilder, nameof(factoryApiBuilder));
             

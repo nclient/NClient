@@ -6,6 +6,6 @@
     public interface INClientFactoryBuilder
     {
         // TODO: doc
-        INClientFactoryTransportBuilder For(string factoryName);
+        INClientFactoryApiBuilder For(string factoryName);
     }
 }

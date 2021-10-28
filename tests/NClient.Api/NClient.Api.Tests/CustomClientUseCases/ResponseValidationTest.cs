@@ -10,7 +10,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
     [Parallelizable]
     public class ResponseValidationTest
     {
-        private INClientTransportBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
+        private INClientApiBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
 
         [SetUp]
@@ -26,8 +26,8 @@ namespace NClient.Api.Tests.CustomClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .UsingRestSharpTransport()
                 .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingJsonSerializer()
                 .WithRestSharpResponseValidation()
                 .Build();

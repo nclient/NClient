@@ -1,25 +1,23 @@
 ﻿using NClient.Common.Helpers;
 using NClient.Providers.Api;
-using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientApiBuilder<TClient, TRequest, TResponse> : INClientApiBuilder<TClient, TRequest, TResponse> 
+    internal class NClientApiBuilder<TClient> : INClientApiBuilder<TClient> 
         where TClient : class
     {
-        private readonly BuilderContext<TRequest, TResponse> _context;
+        private readonly string _host;
         
-        public NClientApiBuilder(BuilderContext<TRequest, TResponse> context)
+        public NClientApiBuilder(string host)
         {
-            _context = context;
+            _host = host;
         }
         
-        public INClientSerializerBuilder<TClient, TRequest, TResponse> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
+        public INClientTransportBuilder<TClient> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
         {
             Ensure.IsNotNull(requestBuilderProvider, nameof(requestBuilderProvider));
             
-            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(_context
-                .WithRequestBuilderProvider(requestBuilderProvider));
+            return new NClientTransportBuilder<TClient>(_host, requestBuilderProvider);
         }
     }
 }

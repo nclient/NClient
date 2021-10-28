@@ -18,8 +18,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddCustomNClientFactory(configure => configure
-                .UsingRestSharpTransport()
                 .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerializer()
                 .Build());
 
@@ -33,8 +33,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddCustomNClientFactory(configure => configure
-                .UsingRestSharpTransport()
                 .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerializer()
                 .Build());
 
@@ -48,8 +48,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddHttpClient().AddLogging();
 
             serviceCollection.AddCustomNClientFactory(configure => configure
-                .UsingRestSharpTransport()
                 .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerializer()
                 .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
@@ -65,10 +65,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddHttpClient("TestClient");
 
             serviceCollection.AddCustomNClientFactory((serviceProvider, configure) => configure
+                .UsingRestApi()
                 .UsingSystemHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName: "TestClient")
-                .UsingRestApi()
                 .UsingJsonSerializer()
                 .Build());
 

@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
-        INClientTransportBuilder<TClient> For<TClient>(string host)
+        INClientApiBuilder<TClient> For<TClient>(string host)
             where TClient : class;
     }
 }

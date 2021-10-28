@@ -3,9 +3,9 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INClientFactoryApiBuilder<TRequest, TResponse>
+    public interface INClientFactoryApiBuilder
     {
         // TODO: doc
-        INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider);
+        INClientFactoryTransportBuilder UsingCustomApi(IRequestBuilderProvider requestBuilderProvider);
     }
 }
