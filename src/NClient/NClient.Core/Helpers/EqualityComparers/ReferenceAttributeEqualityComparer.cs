@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NClient.Core.Helpers
+namespace NClient.Core.Helpers.EqualityComparers
 {
     internal class ReferenceAttributeEqualityComparer : IEqualityComparer<Attribute>
     {

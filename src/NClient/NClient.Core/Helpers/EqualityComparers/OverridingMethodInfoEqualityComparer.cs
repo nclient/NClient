@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace NClient.Core.Helpers
+namespace NClient.Core.Helpers.EqualityComparers
 {
     internal class OverridingMethodInfoEqualityComparer : IEqualityComparer<MethodInfo>
     {

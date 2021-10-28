@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.EqualityComparers;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 

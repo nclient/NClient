@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.EqualityComparers;
 using NClient.Exceptions;
 using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
