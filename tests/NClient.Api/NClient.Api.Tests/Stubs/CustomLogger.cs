@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NClient.Standalone.Client.Logging;
 
-namespace NClient.Api.Tests.Helpers
+namespace NClient.Api.Tests.Stubs
 {
     public class CustomLogger : ILogger
     {

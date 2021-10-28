@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using NClient.Providers.Validation;
 
-namespace NClient.Api.Tests.Helpers
+namespace NClient.Api.Tests.Stubs
 {
     public class CustomResponseValidatorSettings : ResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {

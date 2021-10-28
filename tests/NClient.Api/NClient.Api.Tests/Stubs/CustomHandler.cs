@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NClient.Providers.Handling;
 
-namespace NClient.Api.Tests.Helpers
+namespace NClient.Api.Tests.Stubs
 {
     public class CustomHandler : IClientHandler<HttpRequestMessage, HttpResponseMessage>
     {
