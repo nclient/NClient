@@ -26,7 +26,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory(port: 5013);
+            _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
             _returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(_returnApiMockFactory.ApiUri.ToString())

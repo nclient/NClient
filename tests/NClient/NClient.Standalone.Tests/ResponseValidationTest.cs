@@ -5,6 +5,7 @@ using NClient.Exceptions;
 using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests
@@ -18,7 +19,7 @@ namespace NClient.Standalone.Tests
         [SetUp]
         public void Setup()
         {
-            _restApiMockFactory = new RestApiMockFactory(port: 5030);
+            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
 
             _preConfiguredBasicClient = new CustomNClientBuilder()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())

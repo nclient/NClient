@@ -3,6 +3,7 @@ using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -16,7 +17,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(port: 5018);
+            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(PortsPool.Get());
 
             _optionalParamClient = NClientGallery.Clients
                 .GetBasic()

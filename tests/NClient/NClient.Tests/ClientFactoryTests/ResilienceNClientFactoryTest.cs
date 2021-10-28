@@ -7,6 +7,7 @@ using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientFactoryTests
@@ -21,7 +22,7 @@ namespace NClient.Tests.ClientFactoryTests
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory(port: 5032);
+            _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
             _basicReturnClientFactory = NClientGallery.ClientFactories
                 .GetBasic()
                 .For(factoryName: "TestFactory");

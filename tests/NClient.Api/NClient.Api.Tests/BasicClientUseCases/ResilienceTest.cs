@@ -6,6 +6,7 @@ using NClient.Providers.Transport;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -19,7 +20,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         [SetUp]
         public void SetUp()
         {
-            _api = new BasicApiMockFactory(5026);
+            _api = new BasicApiMockFactory(PortsPool.Get());
             _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         

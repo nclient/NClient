@@ -7,6 +7,7 @@ using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -23,7 +24,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _responseApiMockFactory = new ResponseApiMockFactory(port: 5017);
+            _responseApiMockFactory = new ResponseApiMockFactory(PortsPool.Get());
 
             _responseClient = NClientGallery.Clients
                 .GetBasic()
