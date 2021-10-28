@@ -15,6 +15,7 @@ using WireMock.Server;
 
 namespace NClient.Providers.Transport.Http.System.Tests
 {
+    [Parallelizable]
     public class SystemHttpClientTest
     {
         private static readonly Uri Host = new("http://localhost:5022");
@@ -68,7 +69,14 @@ namespace NClient.Providers.Transport.Http.System.Tests
             
             var response = new Response(finalRequest)
             {
+                #if NETFRAMEWORK
+                Content = new Content(headerContainer: new MetadataContainer(new[]
+                {
+                    EmptyContentLengthMetadata
+                })),
+                #else
                 Content = new Content(headerContainer: new MetadataContainer(Array.Empty<IMetadata>())),
+                #endif
                 StatusCode = (int)HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Resource = ResourceUri.ToString(),

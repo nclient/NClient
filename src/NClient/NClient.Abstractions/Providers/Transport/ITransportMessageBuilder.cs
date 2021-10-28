@@ -6,6 +6,6 @@ namespace NClient.Providers.Transport
     public interface ITransportMessageBuilder<TRequest, TResponse>
     {
         Task<TRequest> BuildTransportRequestAsync(IRequest request);
-        Task<IResponse> BuildResponseAsync(IRequest transportRequest, TRequest request, TResponse response);
+        Task<IResponse> BuildResponseAsync(IRequest request, TRequest transportRequest, TResponse transportResponse);
     }
 }

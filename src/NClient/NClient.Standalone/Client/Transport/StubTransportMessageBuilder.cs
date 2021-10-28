@@ -9,9 +9,9 @@ namespace NClient.Standalone.Client.Transport
         {
             return Task.FromResult(request);
         }
-        public Task<IResponse> BuildResponseAsync(IRequest transportRequest, IRequest request, IResponse response)
+        public Task<IResponse> BuildResponseAsync(IRequest request, IRequest transportRequest, IResponse transportResponse)
         {
-            return Task.FromResult(response);
+            return Task.FromResult(transportResponse);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using NClient.Providers.Transport.Http.System.Helpers;
@@ -26,7 +27,15 @@ namespace NClient.Providers.Transport.Http.System.Builders
             var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
             var method = _systemHttpMethodMapper.Map(httpRequestMessage.Method);
             
-            var contentBytes = httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            // Workaround for the framework:
+            var disposedFiled = typeof(HttpContent).GetField(name: "disposed", BindingFlags.NonPublic | BindingFlags.Instance);
+            var contentIsDisposed = httpRequestMessage.Content is not null
+                ? disposedFiled?.GetValue(httpRequestMessage.Content)
+                : null;
+
+            var contentBytes = contentIsDisposed as bool? == false
+                ? httpRequestMessage.Content is null ? null : await httpRequestMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false)
+                : request.Content?.Bytes;
             var contentEncoding = httpRequestMessage.Content?.Headers.ContentEncoding.FirstOrDefault();
             var contentHeaders = httpRequestMessage.Content?.Headers
                 .Select(x => new Metadata(x.Key!, x.Value?.FirstOrDefault() ?? ""))

@@ -5,7 +5,6 @@ using NClient.Testing.Common.Entities;
 
 namespace NClient.Standalone.Tests.Clients
 {
-    [Path("api/generic")]
     public interface IGenericClientWithMetadata : IGenericClientWithMetadataBase<BasicEntity, int>
     {
     }

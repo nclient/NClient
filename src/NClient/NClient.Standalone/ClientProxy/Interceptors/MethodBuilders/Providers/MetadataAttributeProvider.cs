@@ -43,7 +43,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
 
         private IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
         {
-            var clientHeaders = (clientType.IsInterface
+            var clientMetadatas = (clientType.IsInterface
                     ? clientType.GetInterfaceCustomAttributes(inherit: true)
                     : Array.Empty<Attribute>())
                 .Where(x => x is IMetadataAttribute)
@@ -54,7 +54,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers
                 .Where(x => x is IMetadataAttribute)
                 .Cast<IMetadataAttribute>()
                 .ToArray();
-            var metadataAttributes = methodMetadatas.Reverse().Concat(clientHeaders.Reverse()).DistinctBy(x => x.Name).ToArray();
+            var metadataAttributes = methodMetadatas.Reverse().Concat(clientMetadatas.Reverse()).DistinctBy(x => x.Name).ToArray();
 
             var metadataAttributeNames = metadataAttributes
                 .Select(x => x.Name)

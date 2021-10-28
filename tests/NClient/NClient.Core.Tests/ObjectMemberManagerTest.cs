@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 namespace NClient.Core.Tests
 {
+    [Parallelizable]
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]

@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace NClient.Providers.Serialization.Xml.System.Tests
 {
+    [Parallelizable]
     public class SystemXmlSerializerTest
     {
         public static readonly IEnumerable SerializationValidTestCases = new[]

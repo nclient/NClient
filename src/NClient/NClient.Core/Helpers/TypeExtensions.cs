@@ -7,6 +7,8 @@ namespace NClient.Core.Helpers
 {
     internal static class TypeExtensions
     {
+        private static readonly ReferenceAttributeEqualityComparer ReferenceAttributeEqualityComparer = new();
+        
         public static bool IsPrimitive(this Type type)
         {
             var typeInfo = type.GetTypeInfo();
@@ -27,7 +29,7 @@ namespace NClient.Core.Helpers
             if (inherit == false)
                 return type.GetCustomAttributes().ToArray();
 
-            var attributes = new HashSet<Attribute>(type.GetCustomAttributes());
+            var attributes = new HashSet<Attribute>(type.GetCustomAttributes(), ReferenceAttributeEqualityComparer);
             foreach (var interfaceType in type.GetDeclaredInterfaces())
             {
                 foreach (var attribute in GetInterfaceCustomAttributes(interfaceType, inherit: true))

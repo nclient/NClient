@@ -57,9 +57,9 @@ namespace NClient.Providers.Transport.Http.RestSharp
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<IResponse> BuildResponseAsync(IRequest transportRequest, IRestRequest restRequest, IRestResponse restResponse)
+        public Task<IResponse> BuildResponseAsync(IRequest request, IRestRequest restRequest, IRestResponse restResponse)
         {
-            var finalRequest = _finalHttpRequestBuilder.Build(transportRequest, restResponse.Request);
+            var finalRequest = _finalHttpRequestBuilder.Build(request, restResponse.Request);
             
             var allHeaders = restResponse.Headers
                 .Where(x => x.Name != null)

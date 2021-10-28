@@ -34,7 +34,7 @@ namespace NClient.AspNetCore.Controllers
             if (!type.IsPublic)
                 return false;
 
-            foreach (var declaredInterface in type.GetDeclaredInterfaces().Concat(new[] { type }))
+            foreach (var declaredInterface in type.GetInterfaces().Concat(new[] { type }))
             {
                 if (!type.IsPublic)
                     continue;

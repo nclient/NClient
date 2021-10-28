@@ -18,6 +18,7 @@ using NUnit.Framework;
 
 namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
 {
+    [Parallelizable]
     [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]
