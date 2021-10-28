@@ -2,8 +2,7 @@
 using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Resilience;
 using NUnit.Framework;
 using Polly;
 

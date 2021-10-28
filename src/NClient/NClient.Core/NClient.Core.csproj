@@ -21,7 +21,8 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Debug;Release;ReleaseTest</Configurations>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,7 +33,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
-        <ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -49,6 +49,9 @@
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>NClient.AspNetCore</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Providers.Api.Rest</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 
@@ -72,8 +75,11 @@
             <_Parameter1>NClient.Extensions.DependencyInjection</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Providers.Api.Rest.Tests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-
+    
 </Project>

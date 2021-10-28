@@ -1,7 +1,6 @@
-﻿using NClient.Abstractions.Building;
-using NClient.Abstractions.Resilience;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
 using NClient.Core.Extensions;
+using NClient.Providers.Resilience;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -19,7 +18,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(otherMethodProvider)
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(safeMethodProvider));
         }
         
@@ -33,7 +32,7 @@ namespace NClient
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(otherMethodProvider)
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method.IsSafeMethod())
+                .ForMethodsThat((_, request) => request.Type.IsSafe())
                 .Use(safeMethodProvider));
         }
     }

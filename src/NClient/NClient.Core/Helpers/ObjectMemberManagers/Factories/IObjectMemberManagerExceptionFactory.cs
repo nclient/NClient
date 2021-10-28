@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Exceptions;
+﻿using NClient.Exceptions;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.Factories
 {

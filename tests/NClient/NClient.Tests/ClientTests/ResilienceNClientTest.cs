@@ -3,12 +3,13 @@ using System.Net.Http;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Extensions;
-using NClient.Abstractions.Resilience;
 using NClient.Exceptions;
+using NClient.Providers.Resilience;
 using NClient.Providers.Resilience.Polly;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -21,7 +22,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory(port: 5014);
+            _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
         }
         
         [Test]

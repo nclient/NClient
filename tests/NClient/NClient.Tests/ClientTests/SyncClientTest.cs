@@ -2,6 +2,7 @@
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -15,7 +16,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _syncApiMockFactory = new SyncApiMockFactory(port: 5012);
+            _syncApiMockFactory = new SyncApiMockFactory(PortsPool.Get());
             _syncClient = NClientGallery.Clients
                 .GetBasic()
                 .For<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())

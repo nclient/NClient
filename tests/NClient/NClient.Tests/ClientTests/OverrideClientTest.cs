@@ -4,6 +4,7 @@ using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -17,7 +18,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _overriddenApiMockFactory = new OverriddenApiMockFactory(port: 5020);
+            _overriddenApiMockFactory = new OverriddenApiMockFactory(PortsPool.Get());
 
             _overriddenClient = NClientGallery.Clients
                 .GetBasic()
@@ -34,7 +35,7 @@ namespace NClient.Tests.ClientTests
             var result = await _overriddenClient.GetAsync(id);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
             result.Data.Should().Be(1);
         }
 
@@ -47,7 +48,7 @@ namespace NClient.Tests.ClientTests
             var result = await _overriddenClient.PostAsync(entity);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 
         [Test]

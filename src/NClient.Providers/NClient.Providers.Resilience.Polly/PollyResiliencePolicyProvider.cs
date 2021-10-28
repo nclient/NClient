@@ -1,5 +1,4 @@
-﻿using NClient.Abstractions.Resilience;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly

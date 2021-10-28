@@ -21,12 +21,15 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Debug;Release;ReleaseTest</Configurations>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Api.Rest\NClient.Providers.Api.Rest.csproj" />
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Results.HttpResults\NClient.Providers.Results.HttpResults.csproj" />
         <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj" />
-        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.HttpClient.System\NClient.Providers.HttpClient.System.csproj" />
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Transport.Http.System\NClient.Providers.Transport.Http.System.csproj" />
         <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj" />
         <ProjectReference Include="..\NClient.Standalone\NClient.Standalone.csproj" />
     </ItemGroup>

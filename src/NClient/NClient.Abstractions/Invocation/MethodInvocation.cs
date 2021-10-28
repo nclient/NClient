@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
 
-namespace NClient.Abstractions.Invocation
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     /// <summary>
     /// Encapsulates an information about invocation of a client method.

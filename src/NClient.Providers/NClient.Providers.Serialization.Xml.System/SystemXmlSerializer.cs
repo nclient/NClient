@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using NClient.Abstractions.Serialization;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.Xml.System

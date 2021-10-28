@@ -1,6 +1,4 @@
-﻿using NClient.Abstractions.Building;
-
-namespace NClient.Abstractions
+﻿namespace NClient
 {
     /// <summary>
     /// An builder abstraction used to create the client.
@@ -12,7 +10,7 @@ namespace NClient.Abstractions
         /// </summary>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
-        INClientHttpClientBuilder<TClient> For<TClient>(string host)
+        INClientApiBuilder<TClient> For<TClient>(string host)
             where TClient : class;
     }
 }

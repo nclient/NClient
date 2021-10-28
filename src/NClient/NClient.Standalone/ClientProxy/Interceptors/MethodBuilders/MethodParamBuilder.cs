@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NClient.Annotations.Abstractions;
-using NClient.Annotations.Parameters;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Models;
+using NClient.Annotations;
+using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders
@@ -40,7 +39,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.MethodBuilders
                 .ToArray();
         }
 
-        private static string GetParamName(ParameterInfo paramInfo, ParamAttribute? paramAttribute)
+        private static string GetParamName(ParameterInfo paramInfo, IParamAttribute? paramAttribute)
         {
             return (paramAttribute as INameProviderAttribute)?.Name ?? paramInfo.Name;
         }

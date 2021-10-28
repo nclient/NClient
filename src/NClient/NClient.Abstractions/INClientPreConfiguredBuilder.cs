@@ -1,6 +1,4 @@
-﻿using NClient.Abstractions.Building;
-
-namespace NClient.Abstractions
+﻿namespace NClient
 {
     /// <summary>
     /// An builder abstraction used to create the client.

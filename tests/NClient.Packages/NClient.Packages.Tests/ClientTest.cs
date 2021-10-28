@@ -24,14 +24,14 @@ namespace NClient.Packages.Tests
         public interface ITest : INClient
         {
             [GetMethod("[action]")]
-            public Task<string> GetAsync(int id) => Task.FromResult("result");
+            public Task<string> GetAsync(int id);
         }
 
         [Test]
         public async Task TestClient()
         {
             const int id = 1;
-            const string host = "http://localhost:5002";
+            const string host = "http://localhost:5000";
             var serviceCollection = new ServiceCollection().AddLogging();
             serviceCollection.AddNClient<ITest>(host, builder => builder
                 .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());

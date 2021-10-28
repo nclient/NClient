@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Net.Http;
-using NClient.Abstractions.Building;
-using NClient.Abstractions.Resilience;
 using NClient.Common.Helpers;
+using NClient.Core.Extensions;
+using NClient.Providers.Resilience;
 using NClient.Providers.Resilience.Polly;
 using Polly;
 
@@ -29,7 +28,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0),
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -50,7 +49,7 @@ namespace NClient
                     maxRetries: 0,
                     getDelay: _ => TimeSpan.FromSeconds(0),
                     shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
@@ -102,7 +101,7 @@ namespace NClient
             return clientOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
         
@@ -118,11 +117,10 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
             
-            // TODO: use extension: httpRequest.Method == HttpMethod.Post
             return factoryOptionalBuilder.WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, httpRequest) => httpRequest.Method != HttpMethod.Post)
+                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
     }

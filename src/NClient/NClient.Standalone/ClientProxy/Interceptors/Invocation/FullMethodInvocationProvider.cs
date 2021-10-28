@@ -3,8 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Castle.DynamicProxy;
-using NClient.Abstractions.Clients;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
 {
@@ -61,7 +60,7 @@ namespace NClient.Standalone.ClientProxy.Interceptors.Invocation
         {
             if (typeof(IResilienceNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
-            if (typeof(IHttpNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
+            if (typeof(ITransportNClient<>).GetMethods().Any(x => NClientMethodEquals(x, method)))
                 return true;
 
             return false;

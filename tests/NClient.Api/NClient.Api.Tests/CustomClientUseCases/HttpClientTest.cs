@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Building;
+using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.CustomClientUseCases
@@ -10,13 +11,13 @@ namespace NClient.Api.Tests.CustomClientUseCases
     [Parallelizable]
     public class HttpClientTest
     {
-        private INClientHttpClientBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
+        private INClientApiBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
 
         [SetUp]
         public void SetUp()
         {
-            _api = new BasicApiMockFactory(5029);
+            _api = new BasicApiMockFactory(PortsPool.Get());
             _optionalBuilder = new CustomNClientBuilder()
                 .For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
@@ -27,9 +28,10 @@ namespace NClient.Api.Tests.CustomClientUseCases
             const int id = 1;
             using var api = _api.MockGetMethod(id);
             var client = _optionalBuilder
-                .UsingRestSharpHttpClient()
+                .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingJsonSerializer()
-                .EnsuringRestSharpSuccess()
+                .WithRestSharpResponseValidation()
                 .Build();
             
             var response = await client.GetAsync(id);

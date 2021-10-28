@@ -1,4 +1,4 @@
-﻿using NClient.Abstractions.Resilience;
+﻿using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.Client.Resilience
 {

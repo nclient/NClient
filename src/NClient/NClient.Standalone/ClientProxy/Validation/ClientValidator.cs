@@ -3,16 +3,16 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Results;
 using NClient.Exceptions;
+using NClient.Providers.Results;
+using NClient.Providers.Transport;
 using NClient.Resilience;
-using NClient.Standalone.Client.Ensuring;
 using NClient.Standalone.Client.Handling;
-using NClient.Standalone.Client.HttpClients;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Serialization;
+using NClient.Standalone.Client.Transport;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.ClientProxy.Api;
 using NClient.Standalone.ClientProxy.Interceptors;
 
 namespace NClient.Standalone.ClientProxy.Validation
@@ -38,17 +38,18 @@ namespace NClient.Standalone.ClientProxy.Validation
             where TClient : class
         {
             var interceptor = clientInterceptorFactory
-                .Create<TClient, IHttpRequest, IHttpResponse>(
-                    FakeHost,
+                .Create<TClient, IRequest, IResponse>(
+                    FakeHost.ToString(),
                     new StubSerializerProvider(),
-                    new StubHttpClientProvider(),
-                    new StubHttpMessageBuilderProvider(),
-                    new[] { new StubClientHandler<IHttpRequest, IHttpResponse>() },
-                    new MethodResiliencePolicyProviderAdapter<IHttpRequest, IHttpResponse>(
-                        new StubResiliencePolicyProvider<IHttpRequest, IHttpResponse>()),
-                    Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
-                    Array.Empty<IResultBuilderProvider<IHttpResponse>>(),
-                    new ResponseValidator<IHttpRequest, IHttpResponse>(new[] { new StubEnsuringSettings<IHttpRequest, IHttpResponse>() }));
+                    new StubRequestBuilderProvider(),
+                    new StubTransportProvider(),
+                    new StubTransportMessageBuilderProvider(),
+                    new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
+                    new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
+                        new StubResiliencePolicyProvider<IRequest, IResponse>()),
+                    Array.Empty<IResultBuilderProvider<IResponse>>(),
+                    Array.Empty<IResultBuilderProvider<IResponse>>(),
+                    new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

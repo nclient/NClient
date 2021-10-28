@@ -1,5 +1,4 @@
-﻿using NClient.Abstractions;
-using NClient.Testing.Common.Entities;
+﻿using NClient.Testing.Common.Entities;
 
 namespace NClient.Testing.Common.Clients
 {

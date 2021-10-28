@@ -26,6 +26,7 @@ namespace NClient.Testing.Common.Apis
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
+                    .WithHeader("Content-Encoding", "utf-8")
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(entity));
 
@@ -42,6 +43,7 @@ namespace NClient.Testing.Common.Apis
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
+                    .WithHeader("Content-Encoding", "utf-8")
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(entity));
 
@@ -54,7 +56,7 @@ namespace NClient.Testing.Common.Apis
             api.Given(Request.Create()
                     .WithPath("/api")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -70,7 +72,7 @@ namespace NClient.Testing.Common.Apis
             api.Given(Request.Create()
                     .WithPath("/api")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -128,7 +130,7 @@ namespace NClient.Testing.Common.Apis
             api.Given(Request.Create()
                     .WithPath("/api")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .InScenario("Flaky scenario")

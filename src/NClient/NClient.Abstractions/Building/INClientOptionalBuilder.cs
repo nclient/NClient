@@ -1,31 +1,17 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.Ensuring;
-using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
-using NClient.Abstractions.Results;
-using NClient.Abstractions.Serialization;
+using NClient.Providers.Handling;
+using NClient.Providers.Resilience;
+using NClient.Providers.Results;
+using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
+using NClient.Providers.Validation;
 
-namespace NClient.Abstractions.Building
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
-        #region MyRegion
-
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            params IEnsuringSettings<TRequest, TResponse>[] ensuringSettings);
-        
-        // TODO: doc
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> EnsuringCustomSuccess(
-            Predicate<IResponseContext<TRequest, TResponse>> successCondition,
-            Action<IResponseContext<TRequest, TResponse>> onFailure);
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> NotEnsuringSuccess();
-
-        #endregion
-        
         #region Serializer
         
         /// <summary>
@@ -36,13 +22,25 @@ namespace NClient.Abstractions.Building
 
         #endregion
         
+        #region ResponseValidation
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorProvider<TRequest, TResponse>[] responseValidatorProvider);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
+
+        #endregion
+
         #region Handling
 
-        /// <summary>
-        /// Sets collection of <see cref="IClientHandler{TRequest,TResponse}"/> used to handle HTTP requests and responses />.
-        /// </summary>
-        /// <param name="handlers">The collection of handlers.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerSettings<TRequest, TResponse>[] clientHandlerSettings);
+
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers);
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
@@ -52,9 +50,9 @@ namespace NClient.Abstractions.Building
         #region Resilience
         
         /// <summary>
-        /// Sets custom <see cref="IMethodResiliencePolicyProvider"/> used to create instances of <see cref="IResiliencePolicy"/> for specific method.
+        /// Sets custom <see cref="IMethodResiliencePolicyProvider{TRequest,TResponse}"/> used to create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.
         /// </summary>
-        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy"/> for specific method.</param>
+        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         // TODO: doc
@@ -68,7 +66,7 @@ namespace NClient.Abstractions.Building
         #region Results
 
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IHttpResponse>[] resultBuilderProviders);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IResponse>[] resultBuilderProviders);
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders);
         

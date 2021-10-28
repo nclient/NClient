@@ -1,11 +1,10 @@
-﻿using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Results;
+﻿using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {
-    public class EitherBuilderProvider : IResultBuilderProvider<IHttpResponse>
+    public class EitherBuilderProvider : IResultBuilderProvider<IResponse>
     {
-        public IResultBuilder<IHttpResponse> Create()
+        public IResultBuilder<IResponse> Create()
         {
             return new EitherBuilder();
         }

@@ -1,6 +1,7 @@
-﻿using NClient.Abstractions.Serialization;
+﻿using NClient.Providers.Serialization;
 
-namespace NClient.Abstractions.Building
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public interface INClientSerializerBuilder<TClient, TRequest, TResponse> where TClient : class
     {

@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Building;
+using NClient.Providers.Api.Rest.Extensions;
 
 namespace NClient.Extensions.DependencyInjection
 {
@@ -32,9 +32,10 @@ namespace NClient.Extensions.DependencyInjection
             
             return new CustomNClientBuilder()
                 .For<TClient>(host)
-                .UsingSystemHttpClient(httpClientFactory, _httpClientName)
+                .UsingRestApi()
+                .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
-                .EnsuringSuccess()
+                .WithResponseValidation()
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithLogging(loggerFactory);

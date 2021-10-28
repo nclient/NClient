@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Resilience;Polly;Resilience;Retry;Policy;Api;WebApi</PackageTags>
         <Description>Polly based resilience policy provider for NClient.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -21,7 +21,8 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Debug;Release;ReleaseTest</Configurations>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,6 +41,9 @@
     <ItemGroup>
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
+        </Compile>
+        <Compile Include="..\..\NClient\NClient.Core\Extensions\HttpMethodExtensions.cs">
+          <Link>Core\HttpMethodExtensions.cs</Link>
         </Compile>
     </ItemGroup>
 

@@ -1,9 +1,9 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Building;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -17,7 +17,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         [SetUp]
         public void SetUp()
         {
-            _api = new BasicApiMockFactory(5027);
+            _api = new BasicApiMockFactory(PortsPool.Get());
             _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         

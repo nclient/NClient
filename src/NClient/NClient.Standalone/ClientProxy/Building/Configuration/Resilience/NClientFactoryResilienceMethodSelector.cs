@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.HttpClients;
-using NClient.Core.Helpers;
+using NClient.Core.Helpers.EqualityComparers;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
@@ -42,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
                 methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
         }
         
-        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IHttpRequest, bool> predicate)
+        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate)
         {
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 

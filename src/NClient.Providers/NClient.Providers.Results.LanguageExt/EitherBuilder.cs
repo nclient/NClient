@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Results;
-using NClient.Abstractions.Serialization;
+using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {
-    public class EitherBuilder : IResultBuilder<IHttpResponse>
+    public class EitherBuilder : IResultBuilder<IResponse>
     {
-        public bool CanBuild(Type resultType, IHttpResponse response)
+        public bool CanBuild(Type resultType, IResponse response)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -17,16 +17,16 @@ namespace NClient.Providers.Results.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public object? Build(Type resultType, IHttpResponse response, ISerializer serializer)
+        public Task<object?> BuildAsync(Type resultType, IResponse response, ISerializer serializer)
         {
             if (response.IsSuccessful)
             {
                 var value = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[1]);
-                return BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value);
+                return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
             }
             
             var error = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[0]);
-            return BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null);
+            return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
         }
 
         private object? BuildEither(Type leftType, object? left, Type rightType, object? right)

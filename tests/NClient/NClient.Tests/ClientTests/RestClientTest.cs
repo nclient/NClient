@@ -3,6 +3,7 @@ using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -16,7 +17,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _restApiMockFactory = new RestApiMockFactory(port: 5010);
+            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
             _restClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())

@@ -1,5 +1,4 @@
 ﻿using Castle.DynamicProxy;
-using NClient.Abstractions.Clients;
 
 namespace NClient.Standalone.ClientProxy.ClientGeneration
 {
@@ -21,7 +20,7 @@ namespace NClient.Standalone.ClientProxy.ClientGeneration
         {
             return (TClient)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
                 interfaceToProxy: typeof(TClient),
-                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TClient>), typeof(IHttpNClient<TClient>) },
+                additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TClient>), typeof(ITransportNClient<TClient>) },
                 interceptors: asyncInterceptor.ToInterceptor());
         }
     }

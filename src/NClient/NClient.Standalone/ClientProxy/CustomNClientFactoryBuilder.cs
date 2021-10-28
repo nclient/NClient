@@ -1,7 +1,5 @@
-﻿using NClient.Abstractions;
-using NClient.Abstractions.Building;
-using NClient.Common.Helpers;
-using NClient.Standalone.ClientProxy.Building;
+﻿using NClient.Common.Helpers;
+using NClient.Standalone.ClientProxy.Building.Factory;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -11,10 +9,10 @@ namespace NClient
     /// </summary>
     public class CustomNClientFactoryBuilder : INClientFactoryBuilder
     {
-        public INClientFactoryHttpClientBuilder For(string factoryName)
+        public INClientFactoryApiBuilder For(string factoryName)
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
-            return new NClientFactoryHttpClientBuilder(factoryName);
+            return new NClientFactoryApiBuilder(factoryName);
         }
     }
 }

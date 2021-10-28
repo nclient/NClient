@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -15,7 +16,7 @@ namespace NClient.Tests.ClientTests
         [SetUp]
         public void Setup()
         {
-            _headerApiMockFactory = new HeaderApiMockFactory(port: 5008);
+            _headerApiMockFactory = new HeaderApiMockFactory(PortsPool.Get());
 
             _headerClient = NClientGallery.Clients
                 .GetBasic()
