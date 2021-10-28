@@ -1,4 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
+// ReSharper disable once EmptyNamespace
 
 namespace NClient.Annotations.Http
 {
