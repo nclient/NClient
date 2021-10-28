@@ -1,4 +1,4 @@
-﻿namespace NClient.Attributes
+﻿namespace NClient.Annotations
 {
     public interface IPathAttribute
     {

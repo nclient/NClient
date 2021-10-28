@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP POST method.
     /// </summary>
-    public class PostMethodAttribute : CreateOperationAttribute, IOrderProviderAttribute
+    public class PostMethodAttribute : CreateOperationAttribute, IPostMethodAttribute
     {
         public int Order { get; set; }
         

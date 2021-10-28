@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP PUT method.
     /// </summary>
-    public class PutMethodAttribute : UpdateOperationAttribute, IOrderProviderAttribute
+    public class PutMethodAttribute : UpdateOperationAttribute, IPutMethodAttribute
     {
         public int Order { get; set; }
         

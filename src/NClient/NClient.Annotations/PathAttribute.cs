@@ -1,5 +1,4 @@
 ﻿using System;
-using NClient.Attributes;
 using NClient.Common.Helpers;
 
 namespace NClient.Annotations

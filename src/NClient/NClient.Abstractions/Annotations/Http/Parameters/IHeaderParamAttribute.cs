@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Specifies that a parameter should be bound using the request headers.
     /// </summary>
-    public class HeaderParamAttribute : MetadataParamAttribute, IHeaderParamAttribute
+    public interface IHeaderParamAttribute : IMetadataParamAttribute
     {
     }
 }

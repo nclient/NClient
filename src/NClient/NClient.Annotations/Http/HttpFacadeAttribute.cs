@@ -7,7 +7,7 @@ namespace NClient.Annotations.Http
     /// Controllers that implement an interface with this attribute will inherit from <see cref="T:Microsoft.AspNetCore.Mvc.ControllerBase"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
-    public class HttpFacadeAttribute : FacadeAttribute
+    public class HttpFacadeAttribute : FacadeAttribute, IHttpFacadeAttribute
     {
     }
 }

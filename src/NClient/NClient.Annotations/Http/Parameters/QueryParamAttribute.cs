@@ -7,7 +7,7 @@ namespace NClient.Annotations.Http
     /// Specifies that a parameter should be bound using the request query string.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class QueryParamAttribute : PropertyParamAttribute
+    public class QueryParamAttribute : PropertyParamAttribute, IQueryParamAttribute
     {
     }
 }

@@ -1,6 +1,4 @@
-﻿using NClient.Annotations;
-
-namespace NClient.Attributes
+﻿namespace NClient.Annotations
 {
     public interface IMetadataAttribute : INameProviderAttribute
     {

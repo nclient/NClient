@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NClient.Annotations;
-using NClient.Annotations.Http;
+using NClient.Core.Helpers;
 
 namespace NClient.AspNetCore.Controllers
 {
@@ -34,14 +34,19 @@ namespace NClient.AspNetCore.Controllers
             if (!type.IsPublic)
                 return false;
 
-            if (type.ContainsGenericParameters)
-                return false;
+            foreach (var declaredInterface in type.GetDeclaredInterfaces().Concat(new[] { type }))
+            {
+                if (!type.IsPublic)
+                    continue;
+                
+                if (declaredInterface.IsDefined(typeof(IFacadeAttribute), inherit: true)
+                    || declaredInterface.IsDefined(typeof(IPathAttribute), inherit: true)
+                    || declaredInterface.GetInterfaceMethods(inherit: true).Any(x => x.IsDefined(typeof(IOperationAttribute), inherit: true))
+                    || declaredInterface.GetInterfaceMethods(inherit: true).SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(IParamAttribute), inherit: true)))
+                    return true;
+            }
 
-            return type.IsDefined(typeof(FacadeAttribute), inherit: true)
-                || type.IsDefined(typeof(HttpFacadeAttribute), inherit: true)
-                || type.IsDefined(typeof(PathAttribute), inherit: true)
-                || type.GetMethods().Any(x => x.IsDefined(typeof(OperationAttribute), inherit: true))
-                || type.GetMethods().SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(ParamAttribute), inherit: true));
+            return false;
         }
     }
 }

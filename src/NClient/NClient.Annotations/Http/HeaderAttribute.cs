@@ -6,7 +6,7 @@ namespace NClient.Annotations.Http
     /// Specifies that a method/methods should be use the request header.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class HeaderAttribute : MetadataAttribute
+    public class HeaderAttribute : MetadataAttribute, IHeaderAttribute
     {
         /// <summary>
         /// Creates a new <see cref="HeaderAttribute"/> with the given header.

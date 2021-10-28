@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Attributes;
 using NClient.Core.Helpers;
 using NClient.Invocation;
 using NClient.Standalone.Exceptions.Factories;

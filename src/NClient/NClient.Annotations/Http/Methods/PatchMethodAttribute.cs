@@ -6,7 +6,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP PATCH method.
     /// </summary>
-    public class PatchMethodAttribute : PartialUpdateOperationAttribute, IOrderProviderAttribute
+    public class PatchMethodAttribute : PartialUpdateOperationAttribute, IPatchMethodAttribute
     {
         public int Order { get; set; }
         

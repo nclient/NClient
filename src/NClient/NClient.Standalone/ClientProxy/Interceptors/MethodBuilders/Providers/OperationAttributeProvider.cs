@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
-using NClient.Attributes;
 using NClient.Core.Mappers;
 using NClient.Standalone.Exceptions.Factories;
 

@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Specifies that a parameter should be bound using the request body.
     /// </summary>
-    public class BodyParamAttribute : ContentParamAttribute, IBodyParamAttribute
+    public interface IBodyParamAttribute : IContentParamAttribute
     {
     }
 }

@@ -498,5 +498,30 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             nameParamAttributes.Length.Should().Be(1);
             nameParamAttributes[0].Should().BeEquivalentTo(new FromBodyAttribute());
         }
+        
+        public interface IGenericInterface<T> { T Method(); }
+        public class GenericInterface : IGenericInterface<int> { public int Method() { return 1; } }
+
+        [Test]
+        public void Create_GenericInterface_MapToGenericController()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IGenericInterface<int>), typeof(GenericInterface))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            var methodInfo = virtualControllerType.GetMethod(nameof(GenericInterface.Method))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
+            methodAttributes.Should().BeEmpty();
+        }
     }
 }

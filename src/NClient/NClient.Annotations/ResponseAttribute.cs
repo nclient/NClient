@@ -8,7 +8,7 @@ namespace NClient.Annotations
     /// A filter that specifies the type of the value and status code returned by the action.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class ResponseAttribute : Attribute
+    public class ResponseAttribute : Attribute, IResponseAttribute
     {
         /// <summary>
         /// Gets or sets the type of the value returned by an action.

@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP HEAD method.
     /// </summary>
-    public class HeadMethodAttribute : CheckOperationAttribute, IOrderProviderAttribute
+    public class HeadMethodAttribute : CheckOperationAttribute, IHeadMethodAttribute
     {
         public int Order { get; set; }
         

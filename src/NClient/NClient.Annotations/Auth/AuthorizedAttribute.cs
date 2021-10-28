@@ -7,7 +7,7 @@ namespace NClient.Annotations.Auth
     /// Specifies that the class or method that this attribute is applied to requires the specified authorization.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class AuthorizedAttribute : Attribute
+    public class AuthorizedAttribute : Attribute, IAuthorizedAttribute
     {
         /// <summary>
         /// Gets the policy name that determines access to the resource.

@@ -8,7 +8,7 @@ namespace NClient.Annotations
     /// Represents the metadata that describes the API version-specific implementation of a service.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class ToVersionAttribute : Attribute
+    public class ToVersionAttribute : Attribute, IToVersionAttribute
     {
         /// <summary>
         /// Gets the API version defined by the attribute.

@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP DELETE method.
     /// </summary>
-    public class DeleteMethodAttribute : DeleteOperationAttribute, IOrderProviderAttribute
+    public class DeleteMethodAttribute : DeleteOperationAttribute, IDeleteMethodAttribute
     {
         public int Order { get; set; }
         

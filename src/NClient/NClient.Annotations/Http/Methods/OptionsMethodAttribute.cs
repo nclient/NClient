@@ -5,7 +5,7 @@ namespace NClient.Annotations.Http
     /// <summary>
     /// Identifies an action that supports the HTTP OPTIONS method.
     /// </summary>
-    public class OptionsMethodAttribute : InfoOperationAttribute, IOrderProviderAttribute
+    public class OptionsMethodAttribute : InfoOperationAttribute, IOptionsMethodAttribute
     {
         public int Order { get; set; }
         
