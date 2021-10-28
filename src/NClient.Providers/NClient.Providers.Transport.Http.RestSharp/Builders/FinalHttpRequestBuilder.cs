@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
 
@@ -11,6 +12,7 @@ namespace NClient.Providers.Transport.Http.RestSharp.Builders
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
     {
+        private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
 
         public FinalHttpRequestBuilder(IRestSharpMethodMapper restSharpMethodMapper)
@@ -21,17 +23,30 @@ namespace NClient.Providers.Transport.Http.RestSharp.Builders
         public IRequest Build(IRequest request, IRestRequest restRequest)
         {
             var method = _restSharpMethodMapper.Map(restRequest.Method);
+            
+            var allHeaders = restRequest.Parameters
+                .Where(x => x.Type == ParameterType.HttpHeader)
+                .ToArray();
+            var requestHeaders = allHeaders
+                .Where(x => x.Name is not null && !ContentHeaderNames.Contains(x.Name))
+                .Select(x => new Metadata(x.Name!, x.Value?.ToString() ?? ""))
+                .ToArray();
+            var contentHeaders = allHeaders
+                .Where(x => x.Name is not null && ContentHeaderNames.Contains(x.Name))
+                .Select(x => new Metadata(x.Name!, x.Value?.ToString() ?? ""))
+                .ToArray();
 
             var finalRequest = new Request(request.Id, restRequest.Resource, method)
             {
-                // TODO: should use content from restRequest
-                Content = request.Content
+                Content = new Content(
+                    request.Content?.Bytes.ToArray(), 
+                    encoding: request.Content?.Encoding?.WebName,
+                    headerContainer: new MetadataContainer(contentHeaders))
             };
-
-            // TODO: filter content headers
-            foreach (var header in restRequest.Parameters.Where(x => x.Type == ParameterType.HttpHeader))
+            
+            foreach (var header in requestHeaders)
             {
-                finalRequest.AddMetadata(header.Name!, header.Value?.ToString() ?? "");
+                finalRequest.AddMetadata(header.Name, header.Value);
             }
             
             foreach (var parameter in restRequest.Parameters.Where(x => x.Type == ParameterType.QueryString))

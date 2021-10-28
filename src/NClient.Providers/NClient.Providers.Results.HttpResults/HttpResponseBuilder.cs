@@ -60,9 +60,8 @@ namespace NClient.Providers.Results.HttpResults
                 var httpResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
                 return Activator.CreateInstance(httpResponseType, httpResponse, data, error);
             }
-            
-            // TODO throw exception
-            return httpResponse;
+
+            throw new ArgumentException($"Result type '{resultType.Name}' is not supported.", nameof(resultType));
         }
     }
 }
