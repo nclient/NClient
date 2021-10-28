@@ -23,7 +23,9 @@ namespace NClient.Providers.Api.Rest.Tests.HttpMethodProviderTests
             new TestCaseData(new GetMethodAttribute(), RequestType.Read),
             new TestCaseData(new PostMethodAttribute(), RequestType.Create),
             new TestCaseData(new PutMethodAttribute(), RequestType.Update),
+            #if !NETFRAMEWORK
             new TestCaseData(new PatchMethodAttribute(), RequestType.PartialUpdate),
+            #endif
             new TestCaseData(new DeleteMethodAttribute(), RequestType.Delete)
         };
 

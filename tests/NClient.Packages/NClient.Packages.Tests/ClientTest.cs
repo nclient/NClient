@@ -24,7 +24,7 @@ namespace NClient.Packages.Tests
         public interface ITest : INClient
         {
             [GetMethod("[action]")]
-            public Task<string> GetAsync(int id) => Task.FromResult("result");
+            public Task<string> GetAsync(int id);
         }
 
         [Test]

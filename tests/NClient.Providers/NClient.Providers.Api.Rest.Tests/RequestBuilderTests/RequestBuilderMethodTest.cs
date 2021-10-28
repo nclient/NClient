@@ -82,6 +82,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
                 RequestType.Info);
         }
 
+        #if !NETFRAMEWORK
         private interface IPatchMethod {[PatchMethod] int Method(); }
 
         [Test]
@@ -93,5 +94,6 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
                 new Uri("http://localhost:5000/"),
                 RequestType.PartialUpdate);
         }
+        #endif
     }
 }

@@ -39,4 +39,8 @@
       <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    </ItemGroup>
+
 </Project>
