@@ -61,7 +61,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             TransportProvider = builderContext.TransportProvider;
             TransportRequestBuilderProvider = builderContext.TransportRequestBuilderProvider;
-            RequestBuilderProvider = builderContext.RequestBuilderProvider;
+            ResponseBuilderProvider = builderContext.ResponseBuilderProvider;
             
             RequestBuilderProvider = builderContext.RequestBuilderProvider;
 
@@ -241,8 +241,10 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
-            if (TransportProvider is null || TransportRequestBuilderProvider is null)
-                throw _clientBuildExceptionFactory.HttpClientIsNotSet();
+            if (RequestBuilderProvider is null)
+                throw _clientBuildExceptionFactory.ApiIsNotSet();
+            if (TransportProvider is null || TransportRequestBuilderProvider is null || ResponseBuilderProvider is null)
+                throw _clientBuildExceptionFactory.TransportIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();
         }
