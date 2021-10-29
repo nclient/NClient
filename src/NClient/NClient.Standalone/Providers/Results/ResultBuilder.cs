@@ -4,9 +4,9 @@ using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Results
 {
-    // TODO: move to separate assembly?
     public class ResultBuilder : IResultBuilder<IRequest, IResponse>
     {
         public bool CanBuild(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
