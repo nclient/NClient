@@ -5,7 +5,7 @@ using NClient.Annotations;
 using NClient.Core.Mappers;
 using NClient.Standalone.Exceptions.Factories;
 
-namespace NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders.Providers
+namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 {
     internal interface IOperationAttributeProvider
     {

@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 
-namespace NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders
+namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
 {
     internal interface IMethodParamBuilder
     {

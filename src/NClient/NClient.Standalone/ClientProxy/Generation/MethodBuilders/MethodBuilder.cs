@@ -7,9 +7,9 @@ using NClient.Core.Helpers;
 using NClient.Core.Helpers.EqualityComparers;
 using NClient.Exceptions;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 
-namespace NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders
+namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
 {
     internal interface IMethodBuilder
     {

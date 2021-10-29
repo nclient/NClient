@@ -14,8 +14,8 @@ using NClient.Standalone.Client;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
-using NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders;
-using NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.Exceptions.Factories;
 
