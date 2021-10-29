@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Providers.Transport;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly

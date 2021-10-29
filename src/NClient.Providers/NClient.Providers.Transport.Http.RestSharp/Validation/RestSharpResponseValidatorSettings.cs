@@ -1,5 +1,4 @@
 ﻿using System;
-using NClient.Providers.Resilience;
 using NClient.Providers.Validation;
 using RestSharp;
 

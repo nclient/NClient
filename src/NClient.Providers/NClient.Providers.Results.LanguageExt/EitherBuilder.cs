@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 

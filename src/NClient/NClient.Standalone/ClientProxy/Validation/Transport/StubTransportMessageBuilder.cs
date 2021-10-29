@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport

@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;

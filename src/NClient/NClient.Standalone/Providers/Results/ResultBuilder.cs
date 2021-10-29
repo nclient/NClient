@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 

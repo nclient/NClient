@@ -1,4 +1,5 @@
 ﻿using System;
+using NClient.Providers.Transport;
 
 namespace NClient.Providers.Resilience
 {

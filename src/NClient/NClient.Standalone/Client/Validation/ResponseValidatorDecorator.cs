@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation

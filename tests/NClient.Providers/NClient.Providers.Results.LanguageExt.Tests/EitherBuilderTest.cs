@@ -5,7 +5,6 @@ using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using Moq;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;

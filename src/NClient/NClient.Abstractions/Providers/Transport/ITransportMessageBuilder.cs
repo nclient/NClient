@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NClient.Providers.Resilience;
 
 namespace NClient.Providers.Transport
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using NClient.Providers.Resilience;
 using NClient.Providers.Resilience.Polly;
+using NClient.Providers.Transport;
 using Polly;
 
 // ReSharper disable once CheckNamespace

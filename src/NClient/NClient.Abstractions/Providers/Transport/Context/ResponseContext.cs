@@ -1,6 +1,6 @@
 ﻿// ReSharper disable once CheckNamespace
 
-namespace NClient.Providers.Resilience
+namespace NClient.Providers.Transport
 {
     public class ResponseContext<TRequest, TResponse> : IResponseContext<TRequest, TResponse>
     {

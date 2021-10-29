@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Moq.Language.Flow;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 

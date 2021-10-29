@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace

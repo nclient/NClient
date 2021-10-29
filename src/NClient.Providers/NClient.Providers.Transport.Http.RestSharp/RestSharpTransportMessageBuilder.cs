@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;

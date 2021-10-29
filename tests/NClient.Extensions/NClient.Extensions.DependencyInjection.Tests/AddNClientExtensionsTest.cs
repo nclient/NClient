@@ -3,7 +3,7 @@ using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
-using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 using NUnit.Framework;
 using Polly;
 

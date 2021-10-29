@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using NClient.Providers.Resilience;
 using NClient.Providers.Transport.Http.System.Builders;
 using NClient.Providers.Transport.Http.System.Helpers;
 
