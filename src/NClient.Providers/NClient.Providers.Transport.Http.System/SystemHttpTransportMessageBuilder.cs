@@ -27,7 +27,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             var parameters = request.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
-            var uri = new Uri(QueryHelpers.AddQueryString(request.Resource, parameters));
+            var uri = new Uri(QueryHelpers.AddQueryString(request.Endpoint, parameters));
 
             var httpRequestMessage = new HttpRequestMessage
             {
@@ -77,7 +77,7 @@ namespace NClient.Providers.Transport.Http.System
                 Content = content,
                 StatusCode = (int)transportResponse.StatusCode,
                 StatusDescription = transportResponse.StatusCode.ToString(),
-                Resource = transportResponse.RequestMessage.RequestUri.ToString(),
+                Endpoint = transportResponse.RequestMessage.RequestUri.ToString(),
                 ProtocolVersion = transportResponse.Version,
                 IsSuccessful = transportResponse.IsSuccessStatusCode
             };

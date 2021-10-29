@@ -38,7 +38,7 @@ namespace NClient.Providers.Api.Rest
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public IRequest Build(Guid requestId, string resourceRoot, IMethodInvocation methodInvocation)
+        public IRequest Build(Guid requestId, string resource, IMethodInvocation methodInvocation)
         {
             var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
@@ -52,8 +52,8 @@ namespace NClient.Providers.Api.Rest
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
-            var resource = PathHelper.Combine(resourceRoot, route);
-            var request = new Request(requestId, resource, requestType);
+            var endpoint = PathHelper.Combine(resource, route);
+            var request = new Request(requestId, endpoint, requestType);
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)

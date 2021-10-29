@@ -30,7 +30,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
         public Task<IRestRequest> BuildTransportRequestAsync(IRequest request)
         {
             var method = _restSharpMethodMapper.Map(request.Type);
-            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
+            var restRequest = new RestRequest(request.Endpoint, method, DataFormat.Json);
 
             foreach (var param in request.Parameters)
             {
@@ -76,7 +76,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             {
                 Content = new Content(restResponse.RawBytes, restResponse.ContentEncoding, new MetadataContainer(contentHeaders)),
                 StatusCode = (int)restResponse.StatusCode,
-                Resource = restResponse.ResponseUri.ToString(),
+                Endpoint = restResponse.ResponseUri.ToString(),
                 Metadatas = new MetadataContainer(responseHeaders),
                 ErrorMessage = restResponse.ErrorMessage,
                 ErrorException = restResponse.ErrorException,

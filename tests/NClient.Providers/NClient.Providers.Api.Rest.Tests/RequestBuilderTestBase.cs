@@ -78,7 +78,7 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, resourceRoot: host, new MethodInvocation(method, arguments));
+            return RequestBuilder.Build(RequestId, resource: host, new MethodInvocation(method, arguments));
         }
 
         protected void AssertHttpRequest(
@@ -92,7 +92,7 @@ namespace NClient.Providers.Api.Rest.Tests
             var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
-            actualRequest.Resource.Should().Be(uri.ToString());
+            actualRequest.Endpoint.Should().Be(uri.ToString());
             actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(metadatas?.Concat(new[]

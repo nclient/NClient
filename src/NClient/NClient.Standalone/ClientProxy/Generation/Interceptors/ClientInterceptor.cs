@@ -18,7 +18,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
-        private readonly string _resourceRoot;
+        private readonly string _resource;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IExplicitInvocationProvider<TRequest, TResponse> _explicitInvocationProvider;
@@ -29,7 +29,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ILogger<TClient>? _logger;
 
         public ClientInterceptor(
-            string resourceRoot,
+            string resource,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
             IExplicitInvocationProvider<TRequest, TResponse> explicitInvocationProvider,
@@ -39,7 +39,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             ILogger<TClient>? logger = null)
         {
-            _resourceRoot = resourceRoot;
+            _resource = resource;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
             _explicitInvocationProvider = explicitInvocationProvider;
@@ -77,7 +77,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var method = _methodBuilder.Build(typeof(TClient), explicitInvocation.Method, explicitInvocation.ReturnType);
                 methodInvocation = new FullMethodInvocation<TRequest, TResponse>(method, explicitInvocation);
                 
-                httpRequest = _requestBuilder.Build(requestId, _resourceRoot, methodInvocation);
+                httpRequest = _requestBuilder.Build(requestId, _resource, methodInvocation);
                 var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create()
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)

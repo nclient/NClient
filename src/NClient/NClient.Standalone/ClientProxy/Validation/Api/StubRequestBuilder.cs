@@ -6,9 +6,9 @@ namespace NClient.Standalone.ClientProxy.Validation.Api
 {
     public class StubRequestBuilder : IRequestBuilder
     {
-        public IRequest Build(Guid requestId, string resourceRoot, IMethodInvocation methodInvocation)
+        public IRequest Build(Guid requestId, string resource, IMethodInvocation methodInvocation)
         {
-            return new Request(requestId, resourceRoot, RequestType.Custom);
+            return new Request(requestId, resource, RequestType.Custom);
         }
     }
 }

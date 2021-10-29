@@ -5,6 +5,6 @@ namespace NClient.Providers.Api
 {
     public interface IRequestBuilder
     {
-        IRequest Build(Guid requestId, string resourceRoot, IMethodInvocation methodInvocation);
+        IRequest Build(Guid requestId, string resource, IMethodInvocation methodInvocation);
     }
 }

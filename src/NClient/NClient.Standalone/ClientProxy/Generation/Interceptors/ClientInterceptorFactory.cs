@@ -24,7 +24,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
     internal interface IClientInterceptorFactory
     {
         IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resourceRoot,
+            string resource,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -62,7 +62,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resourceRoot,
+            string resource,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -75,7 +75,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ILogger<TClient>? logger = null)
         {
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                resourceRoot,
+                resource,
                 _guidProvider,
                 _methodBuilder,
                 new ExplicitInvocationProvider<TRequest, TResponse>(_proxyGenerator),
