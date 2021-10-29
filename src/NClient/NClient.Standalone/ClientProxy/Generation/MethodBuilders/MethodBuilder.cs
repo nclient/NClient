@@ -13,7 +13,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
 {
     internal interface IMethodBuilder
     {
-        Method Build(Type clientType, MethodInfo methodInfo);
+        IMethod Build(Type clientType, MethodInfo methodInfo, Type returnType);
     }
 
     internal class MethodBuilder : IMethodBuilder
@@ -38,7 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             _methodParamBuilder = methodParamBuilder;
         }
 
-        public Method Build(Type clientType, MethodInfo methodInfo)
+        public IMethod Build(Type clientType, MethodInfo methodInfo, Type returnType)
         {
             var overridingMethods = new List<MethodInfo>();
             var isOverridingMethod = methodInfo.GetCustomAttribute<OverrideAttribute>() is not null;
@@ -61,7 +61,8 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             var methodAttribute = _operationAttributeProvider.Get(methodInfo, overridingMethods);
             var methodParams = _methodParamBuilder.Build(methodInfo, overridingMethods);
 
-            return new Method(methodInfo.Name, clientType.Name, methodAttribute, methodParams)
+            return new Method(methodInfo.Name, methodInfo, clientType.Name, clientType, 
+                methodAttribute, methodParams, returnType)
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),

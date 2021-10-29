@@ -10,7 +10,7 @@ using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
-using NClient.Standalone.ClientProxy.Generation.Invocation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.Exceptions.Factories;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 
@@ -21,7 +21,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly string _resourceRoot;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
-        private readonly IFullMethodInvocationProvider<TRequest, TResponse> _fullMethodInvocationProvider;
+        private readonly IExplicitInvocationProvider<TRequest, TResponse> _explicitInvocationProvider;
         private readonly IRequestBuilder _requestBuilder;
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
@@ -32,7 +32,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             string resourceRoot,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
-            IFullMethodInvocationProvider<TRequest, TResponse> fullMethodInvocationProvider,
+            IExplicitInvocationProvider<TRequest, TResponse> explicitInvocationProvider,
             IRequestBuilder requestBuilder,
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -42,7 +42,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _resourceRoot = resourceRoot;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
-            _fullMethodInvocationProvider = fullMethodInvocationProvider;
+            _explicitInvocationProvider = explicitInvocationProvider;
             _requestBuilder = requestBuilder;
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
@@ -69,18 +69,17 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             var requestId = _guidProvider.Create();
             using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
 
-            FullMethodInvocation<TRequest, TResponse>? fullMethodInvocation = null;
+            FullMethodInvocation<TRequest, TResponse>? methodInvocation = null;
             IRequest? httpRequest = null;
             try
             {
-                fullMethodInvocation = _fullMethodInvocationProvider
-                    .Get(interfaceType: typeof(TClient), resultType, invocation);
-                var clientMethod = _methodBuilder
-                    .Build(fullMethodInvocation.ClientType, fullMethodInvocation.MethodInfo);
+                var explicitInvocation = _explicitInvocationProvider.Get(typeof(TClient), invocation, resultType);
+                var method = _methodBuilder.Build(typeof(TClient), explicitInvocation.Method, explicitInvocation.ReturnType);
+                methodInvocation = new FullMethodInvocation<TRequest, TResponse>(method, explicitInvocation);
                 
-                httpRequest = _requestBuilder.Build(requestId, _resourceRoot, clientMethod, fullMethodInvocation.MethodArguments);
-                var resiliencePolicy = fullMethodInvocation.ResiliencePolicyProvider?.Create()
-                    ?? _methodResiliencePolicyProvider.Create(fullMethodInvocation.MethodInfo, httpRequest);
+                httpRequest = _requestBuilder.Build(requestId, _resourceRoot, methodInvocation);
+                var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create()
+                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method.Info, httpRequest);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
 
@@ -104,7 +103,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             catch (TransportException<TRequest, TResponse> e)
             {
                 _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", httpRequest!.Id);
-                throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), fullMethodInvocation!.MethodInfo, e);
+                throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), methodInvocation!.Method.Info, e);
             }
             catch (Exception e)
             {

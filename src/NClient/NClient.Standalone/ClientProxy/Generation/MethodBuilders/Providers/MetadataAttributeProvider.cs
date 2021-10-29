@@ -12,7 +12,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 {
     internal interface IHeaderAttributeProvider
     {
-        IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<MethodParam> methodParams);
+        IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<IMethodParam> methodParams);
     }
 
     internal class MetadataAttributeProvider : IHeaderAttributeProvider
@@ -24,7 +24,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<MethodParam> methodParams)
+        public IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<IMethodParam> methodParams)
         {
             var returnedMetadataNames = new HashSet<string>();
 
@@ -41,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
                 .ToArray();
         }
 
-        private IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodParam> methodParams)
+        private IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<IMethodParam> methodParams)
         {
             var clientMetadatas = (clientType.IsInterface
                     ? clientType.GetInterfaceCustomAttributes(inherit: true)

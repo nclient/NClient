@@ -14,6 +14,8 @@ using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Providers.Transport;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -64,19 +66,19 @@ namespace NClient.Providers.Api.Rest.Tests
             return typeof(T).GetMethods().First();
         }
 
-        internal Method BuildMethod<T>()
+        internal IMethod BuildMethod<T>()
         {
-            return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());
+            return MethodBuilder.Build(typeof(T), GetMethodInfo<T>(), GetMethodInfo<T>().ReturnType);
         }
 
-        internal IRequest BuildRequest(Method method, params object[] arguments)
+        internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
             return BuildRequest(host: "http://localhost:5000", method, arguments);
         }
 
-        internal IRequest BuildRequest(string host, Method method, params object[] arguments)
+        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, resourceRoot: host, method, arguments);
+            return RequestBuilder.Build(RequestId, resourceRoot: host, new MethodInvocation(method, arguments));
         }
 
         protected void AssertHttpRequest(

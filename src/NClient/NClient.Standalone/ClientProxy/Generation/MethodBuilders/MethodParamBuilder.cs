@@ -9,7 +9,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
 {
     internal interface IMethodParamBuilder
     {
-        MethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
+        IMethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class MethodParamBuilder : IMethodParamBuilder
@@ -21,7 +21,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             _paramAttributeProvider = paramAttributeProvider;
         }
 
-        public MethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
+        public IMethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
         {
             return method
                 .GetParameters()
@@ -36,6 +36,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
                     var paramType = x.ParameterType;
                     return new MethodParam(paramName, paramType, paramAttribute);
                 })
+                .Cast<IMethodParam>()
                 .ToArray();
         }
 

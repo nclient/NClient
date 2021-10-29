@@ -8,31 +8,31 @@ using NClient.Standalone.ClientProxy.Generation.Interceptors;
 
 namespace NClient.Standalone.ClientProxy.Generation.Invocation
 {
-    internal interface IFullMethodInvocationProvider<TRequest, TResponse>
+    internal interface IExplicitInvocationProvider<TRequest, TResponse>
     {
-        FullMethodInvocation<TRequest, TResponse> Get(Type interfaceType, Type resultType, IInvocation invocation);
+        ExplicitInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType);
     }
 
-    internal class FullMethodInvocationProvider<TRequest, TResponse> : IFullMethodInvocationProvider<TRequest, TResponse>
+    internal class ExplicitInvocationProvider<TRequest, TResponse> : IExplicitInvocationProvider<TRequest, TResponse>
     {
         private readonly IProxyGenerator _proxyGenerator;
 
-        public FullMethodInvocationProvider(IProxyGenerator proxyGenerator)
+        public ExplicitInvocationProvider(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
         }
         
-        public FullMethodInvocation<TRequest, TResponse> Get(Type interfaceType, Type resultType, IInvocation invocation)
+        public ExplicitInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType)
         {
             if (!IsNClientMethod(invocation.Method))
-                return BuildInvocation(interfaceType, resultType, invocation, resiliencePolicyProvider: null);
+                return new ExplicitInvocation<TRequest, TResponse>(invocation, returnType);
 
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
                 throw new ArgumentNullException(invocation.Method.GetParameters()[0].Name);
 
             var keepDataInterceptor = new KeepDataInterceptor();
-            var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(interfaceType, keepDataInterceptor);
+            var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(clientType, keepDataInterceptor);
             ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
 
             var innerInvocation = keepDataInterceptor.Invocation!;
@@ -45,16 +45,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
                 ? (IResiliencePolicyProvider<TRequest, TResponse>?)invocation.Arguments[resiliencePolicyArgumentIndex.Value]
                 : null;
 
-            return BuildInvocation(interfaceType, resultType, innerInvocation, resiliencePolicyProvider);
-        }
-        
-        private static FullMethodInvocation<TRequest, TResponse> BuildInvocation(
-            Type interfaceType, Type resultType, IInvocation invocation, IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider)
-        {
-            return new FullMethodInvocation<TRequest, TResponse>(interfaceType, invocation.Method, invocation.Arguments, resultType)
-            {
-                ResiliencePolicyProvider = resiliencePolicyProvider
-            };
+            return new ExplicitInvocation<TRequest, TResponse>(innerInvocation, returnType, resiliencePolicyProvider);
         }
 
         private static bool IsNClientMethod(MethodInfo method)

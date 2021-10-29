@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using NClient.Invocation;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -10,31 +9,19 @@ namespace NClient
     public class MethodInvocation : IMethodInvocation
     {
         /// <summary>
-        /// Gets type of client interface.
+        /// Gets method information.
         /// </summary>
-        public Type ClientType { get; }
-
-        /// <summary>
-        /// Gets information about the client method. 
-        /// </summary>
-        public MethodInfo MethodInfo { get; }
+        public IMethod Method { get; }
 
         /// <summary>
         /// Gets values of the arguments in the client method call. 
         /// </summary>
-        public object[] MethodArguments { get; }
+        public object[] Arguments { get; }
 
-        /// <summary>
-        /// Gets type returned by the client method.
-        /// </summary>
-        public Type ResultType { get; }
-
-        public MethodInvocation(Type clientType, MethodInfo methodInfo, object[] methodArguments, Type resultType)
+        public MethodInvocation(IMethod method, object[] methodArguments)
         {
-            ClientType = clientType;
-            MethodInfo = methodInfo;
-            MethodArguments = methodArguments;
-            ResultType = resultType;
+            Method = method;
+            Arguments = methodArguments;
         }
     }
 }

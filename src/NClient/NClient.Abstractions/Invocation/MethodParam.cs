@@ -3,8 +3,7 @@ using NClient.Annotations;
 
 namespace NClient.Invocation
 {
-    // TODO: doc
-    public class MethodParam
+    public class MethodParam : IMethodParam
     {
         public string Name { get; }
         public Type Type { get; }

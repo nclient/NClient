@@ -59,9 +59,5 @@
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    
-    <ItemGroup>
-      <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
-    </ItemGroup>
 
 </Project>

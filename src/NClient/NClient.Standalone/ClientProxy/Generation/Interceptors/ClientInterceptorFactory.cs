@@ -78,7 +78,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 resourceRoot,
                 _guidProvider,
                 _methodBuilder,
-                new FullMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
+                new ExplicitInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 requestBuilderProvider.Create(serializerProvider.Create()),
                 new TransportNClientFactory<TRequest, TResponse>(
                     serializerProvider,
