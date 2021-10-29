@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NClient.Providers.Resilience;
 
 namespace NClient.Providers.Transport
 {
@@ -6,6 +7,6 @@ namespace NClient.Providers.Transport
     public interface ITransportMessageBuilder<TRequest, TResponse>
     {
         Task<TRequest> BuildTransportRequestAsync(IRequest request);
-        Task<IResponse> BuildResponseAsync(IRequest request, TRequest transportRequest, TResponse transportResponse);
+        Task<IResponse> BuildResponseAsync(IRequest request, IResponseContext<TRequest, TResponse> responseContext);
     }
 }

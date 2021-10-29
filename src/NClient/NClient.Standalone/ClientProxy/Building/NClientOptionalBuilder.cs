@@ -133,13 +133,13 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutResiliencePolicy());
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IResponse>[] resultBuilderProviders)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IRequest, IResponse>[] resultBuilderProviders)
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithResultBuilders(resultBuilderProviders));
         }     
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TRequest, TResponse>[] resultBuilderProviders)
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithResultBuilders(resultBuilderProviders));

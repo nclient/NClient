@@ -22,8 +22,8 @@ namespace NClient.Standalone.Client
         private readonly ITransportMessageBuilderProvider<TRequest, TResponse> _transportMessageBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
-        private readonly IEnumerable<IResultBuilderProvider<IResponse>> _resultBuilderProviders;
-        private readonly IEnumerable<IResultBuilderProvider<TResponse>> _typedResultBuilderProviders;
+        private readonly IEnumerable<IResultBuilderProvider<IRequest, IResponse>> _resultBuilderProviders;
+        private readonly IEnumerable<IResultBuilderProvider<TRequest, TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly ILogger? _logger;
 
@@ -33,8 +33,8 @@ namespace NClient.Standalone.Client
             ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
-            IEnumerable<IResultBuilderProvider<IResponse>> resultBuilderProviders,
-            IEnumerable<IResultBuilderProvider<TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders,
+            IEnumerable<IResultBuilderProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
             ILogger? logger)
         {

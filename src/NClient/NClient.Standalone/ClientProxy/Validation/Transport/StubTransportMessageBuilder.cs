@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
@@ -9,9 +10,9 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
         {
             return Task.FromResult(request);
         }
-        public Task<IResponse> BuildResponseAsync(IRequest request, IRequest transportRequest, IResponse transportResponse)
+        public Task<IResponse> BuildResponseAsync(IRequest request, IResponseContext<IRequest, IResponse> responseContext)
         {
-            return Task.FromResult(transportResponse);
+            return Task.FromResult(responseContext.Response);
         }
     }
 }

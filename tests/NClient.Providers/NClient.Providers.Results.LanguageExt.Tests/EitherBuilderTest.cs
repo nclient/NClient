@@ -5,6 +5,7 @@ using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using Moq;
+using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
@@ -23,14 +24,16 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
-                .Returns(expectedValue);        
-            var httpResponse = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
+                .Returns(expectedValue);
+            var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);
+            var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
             {
                 StatusCode = (int)HttpStatusCode.OK,
                 IsSuccessful = true
             };
+            var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
+            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Right<string, BasicEntity>(expectedValue) }));
         }
@@ -43,14 +46,16 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
-                .Returns(expectedError);        
-            var httpResponse = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
+                .Returns(expectedError);
+            var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);   
+            var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
             {
                 StatusCode = (int)HttpStatusCode.NotFound,
                 IsSuccessful = false
             };
+            var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), httpResponse, serializerMock.Object);
+            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Left<string, BasicEntity>(expectedError) }));
         }

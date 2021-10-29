@@ -13,14 +13,14 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _authenticator = authenticator;
         }
 
-        public async Task<IRestResponse> ExecuteAsync(IRestRequest request)
+        public async Task<IRestResponse> ExecuteAsync(IRestRequest transportRequest)
         {
             var restClient = new RestClient
             {
                 Authenticator = _authenticator
             };
             
-            return await restClient.ExecuteAsync(request).ConfigureAwait(false);
+            return await restClient.ExecuteAsync(transportRequest).ConfigureAwait(false);
         }
     }
 }

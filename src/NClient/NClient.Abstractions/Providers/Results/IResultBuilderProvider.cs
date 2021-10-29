@@ -2,9 +2,9 @@
 
 namespace NClient.Providers.Results
 {
-    public interface IResultBuilderProvider<TResponse>
+    public interface IResultBuilderProvider<TRequest, TResponse>
     {
-        IResultBuilder<TResponse> Create();
+        IResultBuilder<TRequest, TResponse> Create();
     }
     
     public interface IOrderedResultBuilderProvider

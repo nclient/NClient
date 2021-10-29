@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
@@ -57,11 +58,11 @@ namespace NClient.Providers.Transport.Http.RestSharp
             return Task.FromResult((IRestRequest)restRequest);
         }
         
-        public Task<IResponse> BuildResponseAsync(IRequest request, IRestRequest restRequest, IRestResponse restResponse)
+        public Task<IResponse> BuildResponseAsync(IRequest request, IResponseContext<IRestRequest, IRestResponse> responseContext)
         {
-            var finalRequest = _finalHttpRequestBuilder.Build(request, restResponse.Request);
+            var finalRequest = _finalHttpRequestBuilder.Build(request, responseContext.Response.Request);
             
-            var allHeaders = restResponse.Headers
+            var allHeaders = responseContext.Response.Headers
                 .Where(x => x.Name != null)
                 .Select(x => new Metadata(x.Name!, x.Value?.ToString() ?? ""))
                 .ToArray();
@@ -74,14 +75,14 @@ namespace NClient.Providers.Transport.Http.RestSharp
             
             var response = new Response(finalRequest)
             {
-                Content = new Content(restResponse.RawBytes, restResponse.ContentEncoding, new MetadataContainer(contentHeaders)),
-                StatusCode = (int)restResponse.StatusCode,
-                Endpoint = restResponse.ResponseUri.ToString(),
+                Content = new Content(responseContext.Response.RawBytes, responseContext.Response.ContentEncoding, new MetadataContainer(contentHeaders)),
+                StatusCode = (int)responseContext.Response.StatusCode,
+                Endpoint = responseContext.Response.ResponseUri.ToString(),
                 Metadatas = new MetadataContainer(responseHeaders),
-                ErrorMessage = restResponse.ErrorMessage,
-                ErrorException = restResponse.ErrorException,
-                ProtocolVersion = restResponse.ProtocolVersion,
-                IsSuccessful = restResponse.IsSuccessful
+                ErrorMessage = responseContext.Response.ErrorMessage,
+                ErrorException = responseContext.Response.ErrorException,
+                ProtocolVersion = responseContext.Response.ProtocolVersion,
+                IsSuccessful = responseContext.Response.IsSuccessful
             };
 
             return Task.FromResult<IResponse>(response);

@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
@@ -45,7 +47,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
 
             var httpRequestMessage = await httpMessageBuilder.BuildTransportRequestAsync(request);
             var httpResponseMessage = await systemHttpTransport.ExecuteAsync(httpRequestMessage);
-            var response = await httpMessageBuilder.BuildResponseAsync(request, httpRequestMessage, httpResponseMessage);
+            var response = await httpMessageBuilder.BuildResponseAsync(request, new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage));
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)

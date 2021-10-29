@@ -16,12 +16,12 @@ namespace NClient.Providers.Transport.Http.System
             _httpClientName = httpClientName ?? Options.DefaultName;
         }
 
-        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage request)
+        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage transportRequest)
         {
-            Ensure.IsNotNull(request, nameof(request));
+            Ensure.IsNotNull(transportRequest, nameof(transportRequest));
 
             var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            return await httpClient.SendAsync(request).ConfigureAwait(false);
+            return await httpClient.SendAsync(transportRequest).ConfigureAwait(false);
         }
     }
 }

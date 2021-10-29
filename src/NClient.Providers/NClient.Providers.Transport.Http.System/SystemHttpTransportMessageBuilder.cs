@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
+using NClient.Providers.Resilience;
 using NClient.Providers.Transport.Http.System.Builders;
 using NClient.Providers.Transport.Http.System.Helpers;
 
@@ -53,36 +54,36 @@ namespace NClient.Providers.Transport.Http.System
             return Task.FromResult(httpRequestMessage);
         }
 
-        public async Task<IResponse> BuildResponseAsync(IRequest request, HttpRequestMessage transportRequest, HttpResponseMessage transportResponse)
+        public async Task<IResponse> BuildResponseAsync(IRequest request, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {
             var finalHttpRequest = await _finalHttpRequestBuilder
-                .BuildAsync(request, transportResponse.RequestMessage)
+                .BuildAsync(request, responseContext.Response.RequestMessage)
                 .ConfigureAwait(false);
 
-            LoadLazyHeaders(transportResponse.Content?.Headers);
+            LoadLazyHeaders(responseContext.Response.Content?.Headers);
             
-            var content = transportResponse.Content is null 
+            var content = responseContext.Response.Content is null 
                 ? new Content() 
                 : new Content(
-                    await transportResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
-                    transportResponse.Content.Headers.ContentEncoding.FirstOrDefault(),
-                    new MetadataContainer(transportResponse.Content.Headers.SelectMany(header => header.Value
+                    await responseContext.Response.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
+                    responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
+                    new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));
 
             var httpResponse = new Response(finalHttpRequest)
             {
-                Metadatas = new MetadataContainer(transportResponse.Headers
+                Metadatas = new MetadataContainer(responseContext.Response.Headers
                     .SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))),
                 Content = content,
-                StatusCode = (int)transportResponse.StatusCode,
-                StatusDescription = transportResponse.StatusCode.ToString(),
-                Endpoint = transportResponse.RequestMessage.RequestUri.ToString(),
-                ProtocolVersion = transportResponse.Version,
-                IsSuccessful = transportResponse.IsSuccessStatusCode
+                StatusCode = (int)responseContext.Response.StatusCode,
+                StatusDescription = responseContext.Response.StatusCode.ToString(),
+                Endpoint = responseContext.Response.RequestMessage.RequestUri.ToString(),
+                ProtocolVersion = responseContext.Response.Version,
+                IsSuccessful = responseContext.Response.IsSuccessStatusCode
             };
             
-            var exception = TryGetException(transportResponse);
+            var exception = TryGetException(responseContext.Response);
             httpResponse.ErrorMessage = exception?.Message;
             httpResponse.ErrorException = exception;
             

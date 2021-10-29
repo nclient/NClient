@@ -2,9 +2,9 @@
 
 namespace NClient.Providers.Results
 {
-    public class ResultBuilderProvider : IResultBuilderProvider<IResponse>
+    public class ResultBuilderProvider : IResultBuilderProvider<IRequest, IResponse>
     {
-        public IResultBuilder<IResponse> Create()
+        public IResultBuilder<IRequest, IResponse> Create()
         {
             return new ResultBuilder();
         }
