@@ -79,7 +79,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 
                 httpRequest = _requestBuilder.Build(requestId, _resourceRoot, methodInvocation);
                 var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create()
-                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method.Info, httpRequest);
+                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
 

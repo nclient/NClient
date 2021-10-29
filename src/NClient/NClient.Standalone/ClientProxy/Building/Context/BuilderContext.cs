@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
+using NClient.Invocation;
 using NClient.Providers.Api;
 using NClient.Providers.Handling;
 using NClient.Providers.Resilience;
@@ -33,7 +33,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> ClientHandlerProviders { get; private set; }
 
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
-        public IReadOnlyCollection<ResiliencePolicyPredicatePair<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
+        public IReadOnlyCollection<ResiliencePolicyPredicate<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
         public IReadOnlyCollection<IResultBuilderProvider<IResponse>> ResultBuilderProviders { get; private set; }
         public IReadOnlyCollection<IResultBuilderProvider<TResponse>> TypedResultBuilderProviders { get; private set; }
@@ -45,7 +45,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
-            MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicatePair<TRequest, TResponse>>();
+            MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
             ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IResponse>>();
             TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TResponse>>();
             Loggers = Array.Empty<ILogger>();
@@ -154,22 +154,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
 
-        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(Func<MethodInfo, IRequest, bool> predicate, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(Func<IMethod, IRequest, bool> predicate, IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 MethodsWithResiliencePolicy = MethodsWithResiliencePolicy
-                    .Concat(new[] { new ResiliencePolicyPredicatePair<TRequest, TResponse>(provider, predicate) })
+                    .Concat(new[] { new ResiliencePolicyPredicate<TRequest, TResponse>(provider, predicate) })
                     .ToArray()
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IEnumerable<Func<MethodInfo, IRequest, bool>> predicates, IResiliencePolicyProvider<TRequest, TResponse> provider)
+        public BuilderContext<TRequest, TResponse> WithResiliencePolicy(IEnumerable<Func<IMethod, IRequest, bool>> predicates, IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 MethodsWithResiliencePolicy = MethodsWithResiliencePolicy
-                    .Concat(predicates.Select(predicate => new ResiliencePolicyPredicatePair<TRequest, TResponse>(provider, predicate)))
+                    .Concat(predicates.Select(predicate => new ResiliencePolicyPredicate<TRequest, TResponse>(provider, predicate)))
                     .ToArray()
             };
         }
@@ -179,7 +179,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 AllMethodsResiliencePolicyProvider = null,
-                MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicatePair<TRequest, TResponse>>()
+                MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>()
             };
         }
         
