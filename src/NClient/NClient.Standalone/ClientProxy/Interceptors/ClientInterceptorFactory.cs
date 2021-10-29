@@ -12,11 +12,11 @@ using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client;
 using NClient.Standalone.Client.Handling;
-using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Interceptors.Invocation;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
 using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Validator.Resilience;
 using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Interceptors

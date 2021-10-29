@@ -2,7 +2,7 @@
 using System.Net.Http;
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
-using NClient.Providers.Transport.Http.System.Stubs;
+using NClient.Providers.Transport.Http.System.Helpers;
 
 namespace NClient.Providers.Transport.Http.System
 {
@@ -19,7 +19,7 @@ namespace NClient.Providers.Transport.Http.System
         /// </summary>
         public SystemHttpTransportProvider()
         {
-            _httpClientFactory = () => new StubHttpClientFactory(new HttpClientHandler());
+            _httpClientFactory = () => new SystemHttpClientFactory(new HttpClientHandler());
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
 
-            _httpClientFactory = () => new StubHttpClientFactory(httpMessageHandler);
+            _httpClientFactory = () => new SystemHttpClientFactory(httpMessageHandler);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             Ensure.IsNotNull(httpClient, nameof(httpClient));
 
-            _httpClientFactory = () => new StubHttpClientFactory(httpClient);
+            _httpClientFactory = () => new SystemHttpClientFactory(httpClient);
         }
 
         /// <summary>

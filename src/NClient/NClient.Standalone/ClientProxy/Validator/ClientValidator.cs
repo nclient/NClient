@@ -7,15 +7,15 @@ using NClient.Exceptions;
 using NClient.Providers.Results;
 using NClient.Providers.Transport;
 using NClient.Resilience;
-using NClient.Standalone.Client.Handling;
-using NClient.Standalone.Client.Resilience;
-using NClient.Standalone.Client.Serialization;
-using NClient.Standalone.Client.Transport;
-using NClient.Standalone.Client.Validation;
-using NClient.Standalone.ClientProxy.Api;
 using NClient.Standalone.ClientProxy.Interceptors;
+using NClient.Standalone.ClientProxy.Validator.Api;
+using NClient.Standalone.ClientProxy.Validator.Handling;
+using NClient.Standalone.ClientProxy.Validator.Resilience;
+using NClient.Standalone.ClientProxy.Validator.Serialization;
+using NClient.Standalone.ClientProxy.Validator.Transport;
+using NClient.Standalone.ClientProxy.Validator.Validation;
 
-namespace NClient.Standalone.ClientProxy.Validation
+namespace NClient.Standalone.ClientProxy.Validator
 {
     internal interface IClientValidator
     {

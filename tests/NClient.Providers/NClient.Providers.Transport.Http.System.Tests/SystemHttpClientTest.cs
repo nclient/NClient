@@ -40,11 +40,11 @@ namespace NClient.Providers.Transport.Http.System.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var httpClient = new SystemHttpTransportProvider().Create(Serializer);
+            var systemHttpTransport = new SystemHttpTransportProvider().Create(Serializer);
             var httpMessageBuilder = new SystemHttpTransportMessageBuilderProvider().Create(Serializer);
 
             var httpRequestMessage = await httpMessageBuilder.BuildTransportRequestAsync(request);
-            var httpResponseMessage = await httpClient.ExecuteAsync(httpRequestMessage);
+            var httpResponseMessage = await systemHttpTransport.ExecuteAsync(httpRequestMessage);
             var response = await httpMessageBuilder.BuildResponseAsync(request, httpRequestMessage, httpResponseMessage);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));

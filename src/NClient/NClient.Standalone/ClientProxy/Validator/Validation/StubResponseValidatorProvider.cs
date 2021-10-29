@@ -1,6 +1,6 @@
 ﻿using NClient.Providers.Validation;
 
-namespace NClient.Standalone.Client.Validation
+namespace NClient.Standalone.ClientProxy.Validator.Validation
 {
     public class StubResponseValidatorProvider<TRequest, TResponse> : IResponseValidatorProvider<TRequest, TResponse>
     {

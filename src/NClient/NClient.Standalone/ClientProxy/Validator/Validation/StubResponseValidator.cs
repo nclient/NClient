@@ -2,7 +2,7 @@
 using NClient.Providers.Resilience;
 using NClient.Providers.Validation;
 
-namespace NClient.Standalone.Client.Validation
+namespace NClient.Standalone.ClientProxy.Validator.Validation
 {
     public class StubResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {

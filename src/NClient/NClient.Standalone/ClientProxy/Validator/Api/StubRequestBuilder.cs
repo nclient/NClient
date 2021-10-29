@@ -4,7 +4,7 @@ using NClient.Invocation;
 using NClient.Providers.Api;
 using NClient.Providers.Transport;
 
-namespace NClient.Standalone.ClientProxy.Api
+namespace NClient.Standalone.ClientProxy.Validator.Api
 {
     public class StubRequestBuilder : IRequestBuilder
     {

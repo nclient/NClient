@@ -1,22 +1,22 @@
 ﻿using System.Net.Http;
 
-namespace NClient.Providers.Transport.Http.System.Stubs
+namespace NClient.Providers.Transport.Http.System.Helpers
 {
-    internal class StubHttpClientFactory : IHttpClientFactory
+    internal class SystemHttpClientFactory : IHttpClientFactory
     {
         private readonly HttpClient _httpClient;
 
-        public StubHttpClientFactory()
+        public SystemHttpClientFactory()
         {
             _httpClient = new HttpClient(new HttpClientHandler());
         }
 
-        public StubHttpClientFactory(HttpMessageHandler httpMessageHandler)
+        public SystemHttpClientFactory(HttpMessageHandler httpMessageHandler)
         {
             _httpClient = new HttpClient(httpMessageHandler);
         }
 
-        public StubHttpClientFactory(HttpClient httpClient)
+        public SystemHttpClientFactory(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

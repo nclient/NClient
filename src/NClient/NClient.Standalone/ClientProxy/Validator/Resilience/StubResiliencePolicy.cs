@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using NClient.Providers.Resilience;
 
-namespace NClient.Standalone.Client.Resilience
+namespace NClient.Standalone.ClientProxy.Validator.Resilience
 {
     internal class StubResiliencePolicy<TRequest, TResponse> : IResiliencePolicy<TRequest, TResponse>
     {

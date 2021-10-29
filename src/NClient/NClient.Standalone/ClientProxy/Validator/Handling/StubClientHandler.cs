@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NClient.Providers.Handling;
 
-namespace NClient.Standalone.Client.Handling
+namespace NClient.Standalone.ClientProxy.Validator.Handling
 {
     internal class StubClientHandler<TRequest, TResponse> : IClientHandler<TRequest, TResponse>
     {

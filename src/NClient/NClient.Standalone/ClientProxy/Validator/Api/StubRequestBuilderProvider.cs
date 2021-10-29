@@ -1,7 +1,7 @@
 ﻿using NClient.Providers.Api;
 using NClient.Providers.Serialization;
 
-namespace NClient.Standalone.ClientProxy.Api
+namespace NClient.Standalone.ClientProxy.Validator.Api
 {
     public class StubRequestBuilderProvider : IRequestBuilderProvider
     {

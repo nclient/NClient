@@ -1,6 +1,6 @@
 ﻿using NClient.Providers.Serialization;
 
-namespace NClient.Standalone.Client.Serialization
+namespace NClient.Standalone.ClientProxy.Validator.Serialization
 {
     internal class StubSerializerProvider : ISerializerProvider
     {

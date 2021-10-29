@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NClient.Providers.Transport;
 
-namespace NClient.Standalone.Client.Transport
+namespace NClient.Standalone.ClientProxy.Validator.Transport
 {
     internal class StubTransport : ITransport<IRequest, IResponse>
     {
