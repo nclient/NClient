@@ -43,7 +43,8 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubSerializerProvider(),
                     new StubRequestBuilderProvider(),
                     new StubTransportProvider(),
-                    new StubTransportMessageBuilderProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider(),
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),

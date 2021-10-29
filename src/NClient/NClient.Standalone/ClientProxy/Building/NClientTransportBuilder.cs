@@ -18,15 +18,17 @@ namespace NClient.Standalone.ClientProxy.Building
         
         public INClientSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
-            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
+            ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
+            IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)
         {
             Ensure.IsNotNull(transportProvider, nameof(transportProvider));
-            Ensure.IsNotNull(transportMessageBuilderProvider, nameof(transportMessageBuilderProvider));
+            Ensure.IsNotNull(transportRequestBuilderProvider, nameof(transportRequestBuilderProvider));
+            Ensure.IsNotNull(responseBuilderProvider, nameof(responseBuilderProvider));
             
             return new NClientSerializerBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
                 .WithHost(_host)
                 .WithRequestBuilderProvider(_requestBuilderProvider)
-                .WithHttpClientProvider(transportProvider, transportMessageBuilderProvider));
+                .WithTransport(transportProvider, transportRequestBuilderProvider, responseBuilderProvider));
         }
     }
 }

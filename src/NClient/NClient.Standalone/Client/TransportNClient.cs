@@ -31,7 +31,8 @@ namespace NClient.Standalone.Client
     {
         private readonly ISerializer _serializer;
         private readonly ITransport<TRequest, TResponse> _transport;
-        private readonly ITransportMessageBuilder<TRequest, TResponse> _transportMessageBuilder;
+        private readonly ITransportRequestBuilder<TRequest, TResponse> _transportRequestBuilder;
+        private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
         private readonly IEnumerable<IResultBuilder<TRequest, TResponse>> _typedResultBuilders;
@@ -42,7 +43,8 @@ namespace NClient.Standalone.Client
         public TransportNClient(
             ISerializer serializer,
             ITransport<TRequest, TResponse> transport,
-            ITransportMessageBuilder<TRequest, TResponse> transportMessageBuilder,
+            ITransportRequestBuilder<TRequest, TResponse> transportRequestBuilder,
+            IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
             IEnumerable<IResultBuilder<IRequest, IResponse>> resultBuilders,
@@ -52,7 +54,8 @@ namespace NClient.Standalone.Client
         {
             _serializer = serializer;
             _transport = transport;
-            _transportMessageBuilder = transportMessageBuilder;
+            _transportRequestBuilder = transportRequestBuilder;
+            _responseBuilder = responseBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
             _typedResultBuilders = typedResultBuilders;
@@ -79,8 +82,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            return await _transportMessageBuilder
-                .BuildResponseAsync(request, transportResponseContext)
+            return await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
         }
 
@@ -119,8 +122,8 @@ namespace NClient.Standalone.Client
                     .BuildAsync(dataType, transportResponseContext, _serializer)
                     .ConfigureAwait(false);
             
-            var response = await _transportMessageBuilder
-                .BuildResponseAsync(request, transportResponseContext)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
@@ -140,8 +143,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var response = await _transportMessageBuilder
-                .BuildResponseAsync(request, transportResponseContext)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
@@ -154,8 +157,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var response = await _transportMessageBuilder
-                .BuildResponseAsync(request, transportResponseContext)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
             var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
@@ -168,8 +171,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var response = await _transportMessageBuilder
-                .BuildResponseAsync(request, transportResponseContext)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
@@ -193,8 +196,8 @@ namespace NClient.Standalone.Client
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
-                transportRequest = await _transportMessageBuilder
-                    .BuildTransportRequestAsync(request)
+                transportRequest = await _transportRequestBuilder
+                    .BuildAsync(request)
                     .ConfigureAwait(false);
                 
                 await _clientHandler

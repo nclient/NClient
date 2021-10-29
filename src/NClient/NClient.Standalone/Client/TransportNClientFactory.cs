@@ -19,7 +19,8 @@ namespace NClient.Standalone.Client
     {
         private readonly ISerializerProvider _serializerProvider;
         private readonly ITransportProvider<TRequest, TResponse> _transportProvider;
-        private readonly ITransportMessageBuilderProvider<TRequest, TResponse> _transportMessageBuilderProvider;
+        private readonly ITransportRequestBuilderProvider<TRequest, TResponse> _transportRequestBuilderProvider;
+        private readonly IResponseBuilderProvider<TRequest, TResponse> _responseBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
         private readonly IEnumerable<IResultBuilderProvider<IRequest, IResponse>> _resultBuilderProviders;
@@ -30,7 +31,8 @@ namespace NClient.Standalone.Client
         public TransportNClientFactory(
             ISerializerProvider serializerProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
-            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider,
+            ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
+            IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
             IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders,
@@ -40,7 +42,8 @@ namespace NClient.Standalone.Client
         {
             _serializerProvider = serializerProvider;
             _transportProvider = transportProvider;
-            _transportMessageBuilderProvider = transportMessageBuilderProvider;
+            _transportRequestBuilderProvider = transportRequestBuilderProvider;
+            _responseBuilderProvider = responseBuilderProvider;
             _clientHandlerProvider = clientHandlerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
             _resultBuilderProviders = resultBuilderProviders;
@@ -56,7 +59,8 @@ namespace NClient.Standalone.Client
             return new TransportNClient<TRequest, TResponse>(
                 serializer,
                 _transportProvider.Create(serializer),
-                _transportMessageBuilderProvider.Create(serializer),
+                _transportRequestBuilderProvider.Create(serializer),
+                _responseBuilderProvider.Create(serializer),
                 _clientHandlerProvider.Create(),
                 _resiliencePolicyProvider.Create(),
                 _resultBuilderProviders.Select(x => x.Create()),

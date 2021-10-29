@@ -41,12 +41,13 @@ namespace NClient.Providers.Transport.Http.System.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var systemHttpTransport = new SystemHttpTransportProvider().Create(Serializer);
-            var httpMessageBuilder = new SystemHttpTransportMessageBuilderProvider().Create(Serializer);
+            var transport = new SystemHttpTransportProvider().Create(Serializer);
+            var transportRequestBuilder = new SystemHttpTransportRequestBuilderProvider().Create(Serializer);
+            var responseBuilder = new SystemHttpResponseBuilderProvider().Create(Serializer);
 
-            var httpRequestMessage = await httpMessageBuilder.BuildTransportRequestAsync(request);
-            var httpResponseMessage = await systemHttpTransport.ExecuteAsync(httpRequestMessage);
-            var response = await httpMessageBuilder.BuildResponseAsync(request, new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage));
+            var httpRequestMessage = await transportRequestBuilder.BuildAsync(request);
+            var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage);
+            var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage));
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)

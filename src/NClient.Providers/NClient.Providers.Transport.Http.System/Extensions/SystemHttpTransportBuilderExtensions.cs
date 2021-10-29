@@ -20,7 +20,8 @@ namespace NClient
 
             return clientTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -34,7 +35,8 @@ namespace NClient
 
             return factoryTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -53,7 +55,8 @@ namespace NClient
 
             return clientTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -71,7 +74,8 @@ namespace NClient
 
             return factoryTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -89,7 +93,8 @@ namespace NClient
 
             return clientTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -106,7 +111,8 @@ namespace NClient
 
             return factoryTransportBuilder.UsingCustomTransport(
                 new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpTransportMessageBuilderProvider());
+                new SystemHttpTransportRequestBuilderProvider(),
+                new SystemHttpResponseBuilderProvider());
         }
     }
 }

@@ -3,9 +3,9 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
-    internal class StubTransportMessageBuilder : ITransportMessageBuilder<IRequest, IResponse>
+    internal class StubTransportRequestBuilder : ITransportRequestBuilder<IRequest, IResponse>
     {
-        public Task<IRequest> BuildTransportRequestAsync(IRequest request)
+        public Task<IRequest> BuildAsync(IRequest request)
         {
             return Task.FromResult(request);
         }

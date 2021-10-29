@@ -21,7 +21,8 @@ namespace NClient
 
             return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(),
-                new RestSharpTransportMessageBuilderProvider());
+                new RestSharpTransportRequestBuilderProvider(),
+                new RestSharpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -35,7 +36,8 @@ namespace NClient
 
             return factoryTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(),
-                new RestSharpTransportMessageBuilderProvider());
+                new RestSharpTransportRequestBuilderProvider(),
+                new RestSharpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -52,7 +54,8 @@ namespace NClient
 
             return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(authenticator),
-                new RestSharpTransportMessageBuilderProvider());
+                new RestSharpTransportRequestBuilderProvider(),
+                new RestSharpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -68,7 +71,8 @@ namespace NClient
 
             return factoryTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(authenticator),
-                new RestSharpTransportMessageBuilderProvider());
+                new RestSharpTransportRequestBuilderProvider(),
+                new RestSharpResponseBuilderProvider());
         }
     }
 }

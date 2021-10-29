@@ -1,59 +1,22 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
 using NClient.Providers.Transport.Http.System.Builders;
-using NClient.Providers.Transport.Http.System.Helpers;
 
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.Http.System
 {
-    internal class SystemHttpTransportMessageBuilder : ITransportMessageBuilder<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemHttpResponseBuilder : IResponseBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly ISystemHttpMethodMapper _systemHttpMethodMapper;
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
 
-        public SystemHttpTransportMessageBuilder(
-            ISystemHttpMethodMapper systemHttpMethodMapper,
-            IFinalHttpRequestBuilder finalHttpRequestBuilder)
+        public SystemHttpResponseBuilder(IFinalHttpRequestBuilder finalHttpRequestBuilder)
         {
-            _systemHttpMethodMapper = systemHttpMethodMapper;
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
-        
-        public Task<HttpRequestMessage> BuildTransportRequestAsync(IRequest request)
-        {
-            var parameters = request.Parameters
-                .ToDictionary(x => x.Name, x => x.Value!.ToString());
-            var uri = new Uri(QueryHelpers.AddQueryString(request.Endpoint, parameters));
 
-            var httpRequestMessage = new HttpRequestMessage
-            {
-                Method = _systemHttpMethodMapper.Map(request.Type), 
-                RequestUri = uri
-            };
-
-            foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
-            {
-                httpRequestMessage.Headers.Add(metadata.Name, metadata.Value);
-            }
-
-            if (request.Content is not null)
-            {
-                httpRequestMessage.Content = new ByteArrayContent(request.Content.Bytes);
-                
-                foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
-                {
-                    httpRequestMessage.Content.Headers.Add(metadata.Name, metadata.Value);
-                }
-            }
-
-            return Task.FromResult(httpRequestMessage);
-        }
-
-        public async Task<IResponse> BuildResponseAsync(IRequest request, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
+        public async Task<IResponse> BuildAsync(IRequest request, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {
             var finalHttpRequest = await _finalHttpRequestBuilder
                 .BuildAsync(request, responseContext.Response.RequestMessage)

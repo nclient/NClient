@@ -22,7 +22,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public string Host { get; private set; } = null!;
 
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
-        public ITransportMessageBuilderProvider<TRequest, TResponse> TransportMessageBuilderProvider { get; private set; } = null!;
+        public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
+        public IResponseBuilderProvider<TRequest, TResponse> ResponseBuilderProvider { get; private set; } = null!;
         
         public IRequestBuilderProvider RequestBuilderProvider { get; private set; } = null!;
         
@@ -59,7 +60,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             Host = builderContext.Host;
 
             TransportProvider = builderContext.TransportProvider;
-            TransportMessageBuilderProvider = builderContext.TransportMessageBuilderProvider;
+            TransportRequestBuilderProvider = builderContext.TransportRequestBuilderProvider;
+            RequestBuilderProvider = builderContext.RequestBuilderProvider;
             
             RequestBuilderProvider = builderContext.RequestBuilderProvider;
 
@@ -87,14 +89,16 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
 
-        public BuilderContext<TRequest, TResponse> WithHttpClientProvider(
+        public BuilderContext<TRequest, TResponse> WithTransport(
             ITransportProvider<TRequest, TResponse> transportProvider,
-            ITransportMessageBuilderProvider<TRequest, TResponse> transportMessageBuilderProvider)
+            ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
+            IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 TransportProvider = transportProvider,
-                TransportMessageBuilderProvider = transportMessageBuilderProvider
+                TransportRequestBuilderProvider = transportRequestBuilderProvider,
+                ResponseBuilderProvider = responseBuilderProvider
             };
         }
         
@@ -237,7 +241,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
-            if (TransportProvider is null || TransportMessageBuilderProvider is null)
+            if (TransportProvider is null || TransportRequestBuilderProvider is null)
                 throw _clientBuildExceptionFactory.HttpClientIsNotSet();
             if (SerializerProvider is null)
                 throw _clientBuildExceptionFactory.SerializerIsNotSet();
