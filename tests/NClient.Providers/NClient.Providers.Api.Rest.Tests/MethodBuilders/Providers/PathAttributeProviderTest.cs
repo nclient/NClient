@@ -6,7 +6,6 @@ using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Core.Mappers;
 using NClient.Exceptions;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
 

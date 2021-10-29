@@ -4,7 +4,7 @@ using System.Reflection;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
-using NClient.Standalone.ClientProxy.Validator.Resilience;
+using NClient.Standalone.ClientProxy.Validation.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
 {

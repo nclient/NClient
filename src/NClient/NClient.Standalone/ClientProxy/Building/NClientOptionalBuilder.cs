@@ -15,10 +15,10 @@ using NClient.Standalone.Client.Logging;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
-using NClient.Standalone.ClientProxy.ClientGeneration;
-using NClient.Standalone.ClientProxy.Interceptors;
-using NClient.Standalone.ClientProxy.Validator;
-using NClient.Standalone.ClientProxy.Validator.Resilience;
+using NClient.Standalone.ClientProxy.Generation;
+using NClient.Standalone.ClientProxy.Generation.Interceptors;
+using NClient.Standalone.ClientProxy.Validation;
+using NClient.Standalone.ClientProxy.Validation.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
@@ -28,14 +28,14 @@ namespace NClient.Standalone.ClientProxy.Building
         private readonly BuilderContext<TRequest, TResponse> _context;
         private readonly SingletonProxyGeneratorProvider _proxyGeneratorProvider;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
-        private readonly IClientGenerator _clientGenerator;
+        private readonly IClientProxyGenerator _clientProxyGenerator;
 
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
             _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
-            _clientGenerator = new ClientGenerator(_proxyGeneratorProvider.Value);
+            _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value);
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings)
@@ -204,7 +204,7 @@ namespace NClient.Standalone.ClientProxy.Building
                     ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
                     : _context.Loggers));
 
-            return _clientGenerator.CreateClient<TClient>(interceptor);
+            return _clientProxyGenerator.CreateClient<TClient>(interceptor);
         }
     }
 }

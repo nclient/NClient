@@ -13,8 +13,8 @@ using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
-using NClient.Standalone.ClientProxy.ClientGeneration;
-using NClient.Standalone.ClientProxy.Interceptors;
+using NClient.Standalone.ClientProxy.Generation;
+using NClient.Standalone.ClientProxy.Generation.Interceptors;
 
 namespace NClient.Standalone.ClientProxy.Building.Factory
 {
@@ -23,7 +23,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
         private readonly string _factoryName;
         private readonly BuilderContext<TRequest, TResponse> _context;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
-        private readonly IClientGenerator _clientGenerator;
+        private readonly IClientProxyGenerator _clientProxyGenerator;
 
         public NClientFactoryOptionalBuilder(string factoryName, BuilderContext<TRequest, TResponse> context)
         {
@@ -32,7 +32,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             
             var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
-            _clientGenerator = new ClientGenerator(proxyGeneratorProvider.Value);
+            _clientProxyGenerator = new ClientProxyGenerator(proxyGeneratorProvider.Value);
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings)

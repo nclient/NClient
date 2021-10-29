@@ -7,7 +7,6 @@ using FluentAssertions;
 using NClient.Annotations.Http;
 using NClient.Exceptions;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
 

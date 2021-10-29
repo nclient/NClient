@@ -8,8 +8,6 @@ using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
