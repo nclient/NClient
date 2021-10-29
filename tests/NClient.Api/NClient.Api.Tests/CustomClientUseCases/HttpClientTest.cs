@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.CustomClientUseCases
@@ -11,23 +11,12 @@ namespace NClient.Api.Tests.CustomClientUseCases
     [Parallelizable]
     public class HttpClientTest
     {
-        private INClientApiBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
-        private BasicApiMockFactory _api = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _api = new BasicApiMockFactory(PortsPool.Get());
-            _optionalBuilder = new CustomNClientBuilder()
-                .For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
-        }
-
         [Test]
         public async Task CustomNClientBuilder_WithRestSharp_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetCustom().For<IBasicClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingJsonSerializer()

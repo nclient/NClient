@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -10,27 +10,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HeaderClientTest
     {
-        private IHeaderClientWithMetadata _headerClient = null!;
-        private HeaderApiMockFactory _headerApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _headerApiMockFactory = new HeaderApiMockFactory(PortsPool.Get());
-
-            _headerClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IHeaderClientWithMetadata>(_headerApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task HeaderClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _headerApiMockFactory.MockGetMethod(id);
+            using var api = HeaderApiMockFactory.MockGetMethod(id);
 
-            var result = await _headerClient.GetAsync(id);
+            var result = await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
+                .GetAsync(id);
 
             result.Should().Be(id);
         }
@@ -40,9 +27,9 @@ namespace NClient.Tests.ClientTests
         public async Task HeaderClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
-            using var api = _headerApiMockFactory.MockDeleteMethod(id);
+            using var api = HeaderApiMockFactory.MockDeleteMethod(id);
 
-            await _headerClient
+            await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();
@@ -53,9 +40,9 @@ namespace NClient.Tests.ClientTests
         public async Task HeaderClient_DeleteAsyncWithStaticHeader_NotThrow()
         {
             const int id = 1;
-            using var api = _headerApiMockFactory.MockDeleteMethod(id);
+            using var api = HeaderApiMockFactory.MockDeleteMethod(id);
 
-            await _headerClient
+            await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync())
                 .Should()
                 .NotThrowAsync();

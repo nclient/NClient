@@ -1,5 +1,4 @@
-﻿using System;
-using NClient.Testing.Common.Entities;
+﻿using NClient.Testing.Common.Entities;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -9,16 +8,9 @@ namespace NClient.Testing.Common.Apis
 {
     public class GenericApiMockFactory
     {
-        public Uri ApiUri { get; }
-
-        public GenericApiMockFactory(int port)
+        public static IWireMockServer MockPostMethod(BasicEntity entity, int id)
         {
-            ApiUri = new UriBuilder("http", "localhost", port).Uri;
-        }
-
-        public IWireMockServer MockPostMethod(BasicEntity entity, int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/generic")
                     .WithHeader("Accept", "application/json")

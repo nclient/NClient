@@ -1,10 +1,9 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Api.Tests.Stubs;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -12,22 +11,12 @@ namespace NClient.Api.Tests.BasicClientUseCases
     [Parallelizable]
     public class HandlingTest
     {
-        private INClientOptionalBuilder<IBasicClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _optionalBuilder = null!;
-        private BasicApiMockFactory _api = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _api = new BasicApiMockFactory(PortsPool.Get());
-            _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
-        }
-        
         [Test]
         public async Task NClientBuilder_WithSingleCustomHandler_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithCustomHandling(new CustomHandler())
                 .Build();
             
@@ -40,8 +29,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithCollectionOfCustomHandlers_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithoutHandling()
                 .WithCustomHandling(new CustomHandler(), new CustomHandler())
                 .Build();
@@ -55,8 +44,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithAdditionalSingleCustomHandler_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithCustomHandling(new CustomHandler())
                 .Build();
             
@@ -69,8 +58,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithAdditionalCollectionOfCustomHandlers_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithCustomHandling(new CustomHandler(), new CustomHandler())
                 .Build();
             

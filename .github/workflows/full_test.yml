@@ -1,0 +1,51 @@
+name: Full test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ alpha-release, beta-release, release ]
+
+jobs:
+  framework_test:
+    strategy:
+      matrix:
+        os: [windows-latest]
+        dotnet: [net462, net472, net48]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.3
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      - name: Restore dependencies and build
+        run: dotnet build --configuration Release /warnaserror
+      - name: Test
+        run: dotnet test --no-build --framework ${{ matrix.dotnet }} --verbosity normal --configuration Release
+  
+  core_test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        dotnet: [netcoreapp3.1, net5.0]
+          
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - name: Setup .NET 5.0
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies and build
+        run: dotnet build --configuration Release /warnaserror
+      - name: Test
+        run: dotnet test --no-build --framework ${{ matrix.dotnet }} --verbosity normal --configuration Release

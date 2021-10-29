@@ -1,10 +1,10 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -12,27 +12,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class OverrideClientTest
     {
-        private IOverriddenClientWithMetadata _overriddenClient = null!;
-        private OverriddenApiMockFactory _overriddenApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _overriddenApiMockFactory = new OverriddenApiMockFactory(PortsPool.Get());
-
-            _overriddenClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IOverriddenClientWithMetadata>(_overriddenApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task OverriddenClient_GetAsync_SendsGetRequestAndReceivesHttpResponseWithIntContent()
         {
             const int id = 1;
-            using var api = _overriddenApiMockFactory.MockGetMethod(id);
+            using var api = OverriddenApiMockFactory.MockGetMethod(id);
 
-            var result = await _overriddenClient.GetAsync(id);
+            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+                .GetAsync(id);
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -43,9 +30,10 @@ namespace NClient.Tests.ClientTests
         public async Task OverriddenClient_PostAsync_SendsPutRequestAndReceivesHttpResponse()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _overriddenApiMockFactory.MockPostMethod(entity);
+            using var api = OverriddenApiMockFactory.MockPostMethod(entity);
 
-            var result = await _overriddenClient.PostAsync(entity);
+            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+                .PostAsync(entity);
 
             result.Should().NotBeNull();
             result.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -55,9 +43,9 @@ namespace NClient.Tests.ClientTests
         public async Task OverriddenClient_PutAsync_SendsPutWithTestHeaderAndNotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _overriddenApiMockFactory.MockPutMethod(entity);
+            using var api = OverriddenApiMockFactory.MockPutMethod(entity);
 
-            await _overriddenClient
+            await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -67,9 +55,10 @@ namespace NClient.Tests.ClientTests
         public async Task OverriddenClient_DeleteAsync_SendsIntInBodyAndReceivesOkString()
         {
             const int id = 1;
-            using var api = _overriddenApiMockFactory.MockDeleteMethod(id);
+            using var api = OverriddenApiMockFactory.MockDeleteMethod(id);
 
-            var result = await _overriddenClient.DeleteAsync(id);
+            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+                .DeleteAsync(id);
 
             result.Should().NotBeNull();
             result.Should().Be("OK");

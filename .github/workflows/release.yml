@@ -3,10 +3,7 @@ name: Release
 on:
   workflow_dispatch:
   push:
-    branches:
-      - alpha-release
-      - beta-release
-      - release
+    branches: [ alpha-release, beta-release, release ]
 
 env:
   VersionPrefix: ${{secrets.VERSION_PREFIX}}

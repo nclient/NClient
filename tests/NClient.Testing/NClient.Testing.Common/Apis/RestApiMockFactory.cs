@@ -1,5 +1,4 @@
-﻿using System;
-using NClient.Testing.Common.Entities;
+﻿using NClient.Testing.Common.Entities;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -9,16 +8,9 @@ namespace NClient.Testing.Common.Apis
 {
     public class RestApiMockFactory
     {
-        public Uri ApiUri { get; }
-
-        public RestApiMockFactory(int port)
+        public static IWireMockServer MockIntGetMethod(int id)
         {
-            ApiUri = new UriBuilder("http", "localhost", port).Uri;
-        }
-
-        public IWireMockServer MockIntGetMethod(int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath($"/api/rest/{id}")
                     .WithHeader("Accept", "application/json")
@@ -31,9 +23,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
         
-        public IWireMockServer MockNotFoundIntGetMethod(int id)
+        public static IWireMockServer MockNotFoundIntGetMethod(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath($"/api/rest/{id}")
                     .WithHeader("Accept", "application/json")
@@ -46,9 +38,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockStringGetMethod(string id)
+        public static IWireMockServer MockStringGetMethod(string id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath($"/api/rest/{id}")
                     .WithHeader("Accept", "application/json")
@@ -61,9 +53,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
         
-        public IWireMockServer MockNotFoundStringGetMethod(string id)
+        public static IWireMockServer MockNotFoundStringGetMethod(string id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath($"/api/rest/{id}")
                     .WithHeader("Accept", "application/json")
@@ -76,9 +68,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPostMethod(BasicEntity entity)
+        public static IWireMockServer MockPostMethod(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/rest")
                     .WithHeader("Accept", "application/json")
@@ -91,9 +83,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPutMethod(BasicEntity entity)
+        public static IWireMockServer MockPutMethod(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/rest")
                     .WithHeader("Accept", "application/json")
@@ -106,9 +98,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockDeleteMethod(int id)
+        public static IWireMockServer MockDeleteMethod(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath($"/api/rest/{id}")
                     .WithHeader("Accept", "application/json")

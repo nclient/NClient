@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -11,27 +11,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class BasicClientTest
     {
-        private IBasicClientWithMetadata _basicClient = null!;
-        private BasicApiMockFactory _basicApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _basicApiMockFactory = new BasicApiMockFactory(PortsPool.Get());
-
-            _basicClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IBasicClientWithMetadata>(_basicApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task BasicClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _basicApiMockFactory.MockGetMethod(id);
+            using var api = BasicApiMockFactory.MockGetMethod(id);
 
-            var result = await _basicClient.GetAsync(id);
+            var result = await NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First()).Build()
+                .GetAsync(id);
 
             result.Should().Be(id);
         }
@@ -40,9 +27,9 @@ namespace NClient.Tests.ClientTests
         public async Task BasicClient_PostAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _basicApiMockFactory.MockPostMethod(entity);
+            using var api = BasicApiMockFactory.MockPostMethod(entity);
 
-            await _basicClient
+            await NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -52,9 +39,9 @@ namespace NClient.Tests.ClientTests
         public async Task BasicClient_PutAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _basicApiMockFactory.MockPutMethod(entity);
+            using var api = BasicApiMockFactory.MockPutMethod(entity);
 
-            await _basicClient
+            await NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -64,9 +51,9 @@ namespace NClient.Tests.ClientTests
         public async Task BasicClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
-            using var api = _basicApiMockFactory.MockDeleteMethod(id);
+            using var api = BasicApiMockFactory.MockDeleteMethod(id);
 
-            await _basicClient
+            await NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();
