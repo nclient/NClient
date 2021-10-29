@@ -1,11 +1,10 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Exceptions;
 using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests
@@ -13,38 +12,17 @@ namespace NClient.Standalone.Tests
     [Parallelizable]
     public class ResponseValidationTest
     {
-        private INClientOptionalBuilder<IRestClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _preConfiguredBasicClient = null!;
-        private RestApiMockFactory _restApiMockFactory = null!;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
-        }
-        
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            PortsPool.Put(_restApiMockFactory.ApiUri.Port);
-        }
-        
-        [SetUp]
-        public void Setup()
-        {
-            _preConfiguredBasicClient = new CustomNClientBuilder()
-                .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
-                .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerializer();
-        }
-        
         [Test]
         public async Task NotResponseValidation_GetIntAsync_Id()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockIntGetMethod(id);
+            using var api = RestApiMockFactory.MockIntGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
+            var result = await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
                 .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -56,9 +34,13 @@ namespace NClient.Standalone.Tests
         public async Task NotResponseValidation_GetStringAsync_Id()
         {
             const string id = "1";
-            using var api = _restApiMockFactory.MockStringGetMethod(id);
+            using var api = RestApiMockFactory.MockStringGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
+            var result = await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
                 .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -70,9 +52,13 @@ namespace NClient.Standalone.Tests
         public async Task ResponseValidation_GetIntAsync_Id()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockIntGetMethod(id);
+            using var api = RestApiMockFactory.MockIntGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
+            var result = await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
                 .WithSystemResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -84,9 +70,13 @@ namespace NClient.Standalone.Tests
         public async Task ResponseValidation_GetStringAsync_Id()
         {
             const string id = "1";
-            using var api = _restApiMockFactory.MockStringGetMethod(id);
+            using var api = RestApiMockFactory.MockStringGetMethod(id);
 
-            var result = await _preConfiguredBasicClient
+            var result = await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
                 .WithSystemResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -98,9 +88,14 @@ namespace NClient.Standalone.Tests
         public async Task NotResponseValidation_GetNotFoundInt_ThrowClientRequestException()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockNotFoundIntGetMethod(id);
+            using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x.WithoutResponseValidation()
+            await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
+                .Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
@@ -110,9 +105,14 @@ namespace NClient.Standalone.Tests
         public async Task NotResponseValidation_GetNotFoundString_ThrowClientRequestException()
         {
             const string id = "1";
-            using var api = _restApiMockFactory.MockNotFoundStringGetMethod(id);
+            using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x.WithoutResponseValidation()
+            await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
+                .Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
@@ -122,9 +122,14 @@ namespace NClient.Standalone.Tests
         public async Task SystemResponseValidation_GetIntAsync_ThrowClientRequestException()
         {
             const int id = 1;
-            using var api = _restApiMockFactory.MockNotFoundIntGetMethod(id);
+            using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x
+            await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
+                .Invoking(async x => await x
                     .WithSystemResponseValidation()
                     .Build()
                     .GetAsync(id))
@@ -135,9 +140,14 @@ namespace NClient.Standalone.Tests
         public async Task SystemResponseValidation_GetStringAsync_ThrowClientRequestException()
         {
             const string id = "1";
-            using var api = _restApiMockFactory.MockNotFoundStringGetMethod(id);
+            using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            await _preConfiguredBasicClient.Invoking(async x => await x
+            await new CustomNClientBuilder()
+                .For<IRestClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingSystemHttpTransport()
+                .UsingSystemJsonSerializer()
+                .Invoking(async x => await x
                     .WithSystemResponseValidation()
                     .Build()
                     .GetAsync(id))

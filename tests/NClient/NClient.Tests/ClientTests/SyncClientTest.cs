@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -10,37 +10,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class SyncClientTest
     {
-        private ISyncClientWithMetadata _syncClient = null!;
-        private SyncApiMockFactory _syncApiMockFactory = null!;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            _syncApiMockFactory = new SyncApiMockFactory(PortsPool.Get());
-        }
-        
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            PortsPool.Put(_syncApiMockFactory.ApiUri.Port);
-        }
-        
-        [SetUp]
-        public void Setup()
-        {
-            _syncClient = NClientGallery.Clients
-                .GetBasic()
-                .For<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public void SyncClient_Get_IntInBody()
         {
             const int id = 1;
-            using var api = _syncApiMockFactory.MockGetMethod(id);
+            using var api = SyncApiMockFactory.MockGetMethod(id);
 
-            var result = _syncClient.Get(id);
+            var result = NClientGallery.Clients.GetBasic().For<ISyncClientWithMetadata>(api.Urls.First()).Build()
+                .Get(id);
 
             result.Should().Be(id);
         }
@@ -49,9 +26,9 @@ namespace NClient.Tests.ClientTests
         public void SyncClient_Post_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _syncApiMockFactory.MockPostMethod(entity);
+            using var api = SyncApiMockFactory.MockPostMethod(entity);
 
-            _syncClient
+            NClientGallery.Clients.GetBasic().For<ISyncClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(x => x.Post(entity))
                 .Should()
                 .NotThrow();
@@ -61,9 +38,9 @@ namespace NClient.Tests.ClientTests
         public void SyncClient_Put_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _syncApiMockFactory.MockPutMethod(entity);
+            using var api = SyncApiMockFactory.MockPutMethod(entity);
 
-            _syncClient
+            NClientGallery.Clients.GetBasic().For<ISyncClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(x => x.Put(entity))
                 .Should()
                 .NotThrow();
@@ -73,9 +50,9 @@ namespace NClient.Tests.ClientTests
         public void SyncClient_Delete_NotThrow()
         {
             const int id = 1;
-            using var api = _syncApiMockFactory.MockDeleteMethod(id);
+            using var api = SyncApiMockFactory.MockDeleteMethod(id);
 
-            _syncClient
+            NClientGallery.Clients.GetBasic().For<ISyncClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(x => x.Delete(id))
                 .Should()
                 .NotThrow();
