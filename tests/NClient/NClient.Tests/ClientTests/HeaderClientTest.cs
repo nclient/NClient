@@ -13,11 +13,21 @@ namespace NClient.Tests.ClientTests
         private IHeaderClientWithMetadata _headerClient = null!;
         private HeaderApiMockFactory _headerApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _headerApiMockFactory = new HeaderApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_headerApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _headerApiMockFactory = new HeaderApiMockFactory(PortsPool.Get());
-
             _headerClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IHeaderClientWithMetadata>(_headerApiMockFactory.ApiUri.ToString())

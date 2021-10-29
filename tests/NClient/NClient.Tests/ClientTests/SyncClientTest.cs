@@ -13,10 +13,21 @@ namespace NClient.Tests.ClientTests
         private ISyncClientWithMetadata _syncClient = null!;
         private SyncApiMockFactory _syncApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _syncApiMockFactory = new SyncApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_syncApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _syncApiMockFactory = new SyncApiMockFactory(PortsPool.Get());
             _syncClient = NClientGallery.Clients
                 .GetBasic()
                 .For<ISyncClientWithMetadata>(_syncApiMockFactory.ApiUri.ToString())

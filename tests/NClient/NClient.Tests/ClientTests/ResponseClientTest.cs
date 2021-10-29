@@ -21,11 +21,21 @@ namespace NClient.Tests.ClientTests
         private IResponseClientWithMetadata _responseClient = null!;
         private ResponseApiMockFactory _responseApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _responseApiMockFactory = new ResponseApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_responseApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _responseApiMockFactory = new ResponseApiMockFactory(PortsPool.Get());
-
             _responseClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IResponseClientWithMetadata>(_responseApiMockFactory.ApiUri.ToString())

@@ -14,11 +14,21 @@ namespace NClient.Tests.ClientTests
         private IOptionalParamWithMetadata _optionalParamClient = null!;
         private OptionalParamApiMockFactory _optionalParamApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_optionalParamApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _optionalParamApiMockFactory = new OptionalParamApiMockFactory(PortsPool.Get());
-
             _optionalParamClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IOptionalParamWithMetadata>(_optionalParamApiMockFactory.ApiUri.ToString())

@@ -14,10 +14,21 @@ namespace NClient.Tests.ClientTests
         private IQueryClientWithMetadata _queryClient = null!;
         private QueryApiMockFactory _queryApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _queryApiMockFactory = new QueryApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_queryApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _queryApiMockFactory = new QueryApiMockFactory(PortsPool.Get());
             _queryClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IQueryClientWithMetadata>(_queryApiMockFactory.ApiUri.ToString())

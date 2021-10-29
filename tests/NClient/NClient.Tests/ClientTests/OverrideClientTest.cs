@@ -15,11 +15,21 @@ namespace NClient.Tests.ClientTests
         private IOverriddenClientWithMetadata _overriddenClient = null!;
         private OverriddenApiMockFactory _overriddenApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _overriddenApiMockFactory = new OverriddenApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_overriddenApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _overriddenApiMockFactory = new OverriddenApiMockFactory(PortsPool.Get());
-
             _overriddenClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IOverriddenClientWithMetadata>(_overriddenApiMockFactory.ApiUri.ToString())

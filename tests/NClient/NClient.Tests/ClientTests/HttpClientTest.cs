@@ -16,11 +16,21 @@ namespace NClient.Tests.ClientTests
         private IHttpClientWithMetadata _httpClient = null!;
         private HttpApiMockFactory _httpApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _httpApiMockFactory = new HttpApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_httpApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _httpApiMockFactory = new HttpApiMockFactory(PortsPool.Get());
-
             _httpClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IHttpClientWithMetadata>(_httpApiMockFactory.ApiUri.ToString())

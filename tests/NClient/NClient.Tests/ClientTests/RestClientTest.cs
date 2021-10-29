@@ -14,10 +14,21 @@ namespace NClient.Tests.ClientTests
         private IRestClientWithMetadata _restClient = null!;
         private RestApiMockFactory _restApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_restApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
             _restClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())

@@ -16,11 +16,21 @@ namespace NClient.Standalone.Tests
         private INClientOptionalBuilder<IRestClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _preConfiguredBasicClient = null!;
         private RestApiMockFactory _restApiMockFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_restApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _restApiMockFactory = new RestApiMockFactory(PortsPool.Get());
-
             _preConfiguredBasicClient = new CustomNClientBuilder()
                 .For<IRestClientWithMetadata>(_restApiMockFactory.ApiUri.ToString())
                 .UsingRestApi()

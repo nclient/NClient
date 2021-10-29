@@ -10,7 +10,19 @@ namespace NClient.Testing.Common.Helpers
         
         static PortsPool()
         {
-            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5000, count: 500));
+            #if NET462
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5000, count: 9));
+            #elif NET472
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5010, count: 9));
+            #elif NET48
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5020, count: 9));
+            #elif NETCOREAPP3_1
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5030, count: 9));
+            #elif NET5_0
+            Ports = new ConcurrentBag<int>(Enumerable.Range(start: 5040, count: 9));
+            #else
+            throw new NotSupportedException();
+            #endif
         }
         
         public static int Get()

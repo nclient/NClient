@@ -18,13 +18,19 @@ namespace NClient.Tests.ClientTests
     public class ResilienceNClientTest
     {
         private ReturnApiMockFactory _returnApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
+        
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
         }
         
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_returnApiMockFactory.ApiUri.Port);
+        }
+
         [Test]
         public void AsResilientInvoke_InternalServerError_ThrowClientRequestException()
         {

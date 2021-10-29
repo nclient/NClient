@@ -19,10 +19,21 @@ namespace NClient.Tests.ClientFactoryTests
         private ReturnApiMockFactory _returnApiMockFactory = null!;
         private INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> _basicReturnClientFactory = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_returnApiMockFactory.ApiUri.Port);
+        }
+        
         [SetUp]
         public void Setup()
         {
-            _returnApiMockFactory = new ReturnApiMockFactory(PortsPool.Get());
             _basicReturnClientFactory = NClientGallery.ClientFactories
                 .GetBasic()
                 .For(factoryName: "TestFactory");

@@ -14,10 +14,21 @@ namespace NClient.Api.Tests.CustomClientUseCases
         private INClientApiBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
         private BasicApiMockFactory _api = null!;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            _api = new BasicApiMockFactory(PortsPool.Get());
+        }
+        
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            PortsPool.Put(_api.ApiUri.Port);
+        }
+        
         [SetUp]
         public void SetUp()
         {
-            _api = new BasicApiMockFactory(PortsPool.Get());
             _optionalBuilder = new CustomNClientBuilder().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
         }
         
