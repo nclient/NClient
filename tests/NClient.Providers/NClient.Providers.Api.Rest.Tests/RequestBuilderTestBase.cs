@@ -78,7 +78,10 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, resource: host, new MethodInvocation(method, arguments));
+            return RequestBuilder
+                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments))
+                .GetAwaiter()
+                .GetResult();
         }
 
         protected void AssertHttpRequest(

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
@@ -38,7 +39,7 @@ namespace NClient.Providers.Api.Rest
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public IRequest Build(Guid requestId, string resource, IMethodInvocation methodInvocation)
+        public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation)
         {
             var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
@@ -100,7 +101,7 @@ namespace NClient.Providers.Api.Rest
                 });
             }
 
-            return request;
+            return Task.FromResult<IRequest>(request);
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api
 {
     public interface IRequestBuilder
     {
-        IRequest Build(Guid requestId, string resource, IMethodInvocation methodInvocation);
+        Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation);
     }
 }

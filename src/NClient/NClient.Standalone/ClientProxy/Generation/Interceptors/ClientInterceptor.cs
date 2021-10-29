@@ -77,7 +77,9 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var method = _methodBuilder.Build(typeof(TClient), explicitInvocation.Method, explicitInvocation.ReturnType);
                 methodInvocation = new FullMethodInvocation<TRequest, TResponse>(method, explicitInvocation);
                 
-                httpRequest = _requestBuilder.Build(requestId, _resource, methodInvocation);
+                httpRequest = await _requestBuilder
+                    .BuildAsync(requestId, _resource, methodInvocation)
+                    .ConfigureAwait(false);
                 var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create()
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
