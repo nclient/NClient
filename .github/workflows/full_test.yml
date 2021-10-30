@@ -8,6 +8,8 @@ on:
 
 jobs:
   framework_test:
+    environment:
+      name: Development
     strategy:
       matrix:
         os: [windows-latest]
@@ -28,6 +30,8 @@ jobs:
         run: dotnet test --no-build --framework ${{ matrix.dotnet }} --verbosity normal --configuration Release
   
   core_test:
+    environment:
+      name: Development
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
