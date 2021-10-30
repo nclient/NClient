@@ -32,7 +32,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets the URL that actually responded to the content (different from request if redirected).
         /// </summary>
-        string? Resource { get; set; }
+        string? Endpoint { get; set; }
         /// <summary>
         /// Gets metadata returned by server with the response.
         /// </summary>

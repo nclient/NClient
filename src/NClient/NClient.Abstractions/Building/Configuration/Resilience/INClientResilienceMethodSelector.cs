@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
+using NClient.Invocation;
 using NClient.Providers.Transport;
 
 // ReSharper disable once CheckNamespace
@@ -11,6 +11,6 @@ namespace NClient
     {
         INClientResilienceSetter<TClient, TRequest, TResponse> ForAllMethods();
         INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> methodSelector);
-        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate);
+        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> predicate);
     }
 }

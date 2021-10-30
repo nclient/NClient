@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NClient.Core.Helpers.EqualityComparers;
+using NClient.Invocation;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -30,10 +30,10 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
             var selectedMethod = func.Invoke(default!).Method;
             return new NClientResilienceSetter<TClient, TRequest, TResponse>(
                 _builderContextModifier, 
-                methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
+                methodPredicate: (method, _) => _methodInfoEqualityComparer.Equals(method.Info, selectedMethod));
         }
         
-        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate)
+        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> predicate)
         {
             return new NClientResilienceSetter<TClient, TRequest, TResponse>(
                 _builderContextModifier, 

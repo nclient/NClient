@@ -14,45 +14,48 @@ namespace NClient.Standalone.Client
 {
     internal interface ITransportNClient<TRequest, TResponse>
     {
-        Task<TResult> GetResultAsync<TResult>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<TResponse> GetOriginalResponseAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponse> GetHttpResponseAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task GetResultAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<object?> GetResultAsync(IRequest transportRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponse> GetHttpResponseAsync(IRequest transportRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponse> GetHttpResponseWithErrorAsync(IRequest transportRequest, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
-        Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest transportRequest, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<TResult> GetResultAsync<TResult>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<TResponse> GetOriginalResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponse> GetHttpResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task GetResultAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<object?> GetResultAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
+        Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null);
     }
 
     internal class TransportNClient<TRequest, TResponse> : ITransportNClient<TRequest, TResponse>
     {
         private readonly ISerializer _serializer;
         private readonly ITransport<TRequest, TResponse> _transport;
-        private readonly ITransportMessageBuilder<TRequest, TResponse> _transportMessageBuilder;
+        private readonly ITransportRequestBuilder<TRequest, TResponse> _transportRequestBuilder;
+        private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
-        private readonly IEnumerable<IResultBuilder<TResponse>> _typedResultBuilders;
-        private readonly IReadOnlyCollection<IResultBuilder<IResponse>> _resultBuilders;
+        private readonly IEnumerable<IResultBuilder<TRequest, TResponse>> _typedResultBuilders;
+        private readonly IReadOnlyCollection<IResultBuilder<IRequest, IResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
         public TransportNClient(
             ISerializer serializer,
             ITransport<TRequest, TResponse> transport,
-            ITransportMessageBuilder<TRequest, TResponse> transportMessageBuilder,
+            ITransportRequestBuilder<TRequest, TResponse> transportRequestBuilder,
+            IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
-            IEnumerable<IResultBuilder<IResponse>> resultBuilders,
-            IEnumerable<IResultBuilder<TResponse>> typedResultBuilders,
+            IEnumerable<IResultBuilder<IRequest, IResponse>> resultBuilders,
+            IEnumerable<IResultBuilder<TRequest, TResponse>> typedResultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
             _serializer = serializer;
             _transport = transport;
-            _transportMessageBuilder = transportMessageBuilder;
+            _transportRequestBuilder = transportRequestBuilder;
+            _responseBuilder = responseBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
             _typedResultBuilders = typedResultBuilders;
@@ -61,119 +64,122 @@ namespace NClient.Standalone.Client
             _logger = logger;
         }
 
-        public async Task<TResult> GetResultAsync<TResult>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<TResult> GetResultAsync<TResult>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
             #pragma warning disable 8600, 8603
-            return (TResult)await GetResultAsync(transportRequest, typeof(TResult), resiliencePolicy).ConfigureAwait(false);
+            return (TResult)await GetResultAsync(request, typeof(TResult), resiliencePolicy).ConfigureAwait(false);
             #pragma warning restore 8600, 8603
         }
 
-        public async Task<TResponse> GetOriginalResponseAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<TResponse> GetOriginalResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (await ExecuteAsync(transportRequest, resiliencePolicy).ConfigureAwait(false)).Response;
+            return (await ExecuteAsync(request, resiliencePolicy).ConfigureAwait(false)).Response;
         }
         
-        public async Task<IResponse> GetHttpResponseAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponse> GetHttpResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            return await _transportMessageBuilder
-                .BuildResponseAsync(transportRequest, responseContext.Request, responseContext.Response)
+            return await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
         }
 
-        public async Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponse<TData>)await GetHttpResponseAsync(transportRequest, dataType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
+            return (IResponse<TData>)await GetHttpResponseAsync(request, dataType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
         }
 
-        public async Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponseWithError<TError>)await GetHttpResponseWithErrorAsync(transportRequest, errorType: typeof(TError), resiliencePolicy).ConfigureAwait(false);
+            return (IResponseWithError<TError>)await GetHttpResponseWithErrorAsync(request, errorType: typeof(TError), resiliencePolicy).ConfigureAwait(false);
         }
 
-        public async Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponseWithError<TData, TError>)await GetHttpResponseWithDataAndErrorAsync(transportRequest, dataType: typeof(TData), errorType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
+            return (IResponseWithError<TData, TError>)await GetHttpResponseWithDataAndErrorAsync(request, dataType: typeof(TData), errorType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
         }
         
-        public async Task GetResultAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task GetResultAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            await _responseValidator.OnFailureAsync(responseContext).ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+                await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
         }
 
-        public async Task<object?> GetResultAsync(IRequest transportRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<object?> GetResultAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
 
-            if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext.Response)) is { } typedResultBuilder)
+            if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, transportResponseContext)) is { } typedResultBuilder)
                 return await typedResultBuilder
-                    .BuildAsync(dataType, responseContext.Response, _serializer)
+                    .BuildAsync(dataType, transportResponseContext, _serializer)
                     .ConfigureAwait(false);
             
-            var httpResponse = await _transportMessageBuilder
-                .BuildResponseAsync(transportRequest, responseContext.Request, responseContext.Response)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
+            var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, httpResponse)) is { } resultBuilder)
+            if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext)) is { } resultBuilder)
                 return await resultBuilder
-                    .BuildAsync(dataType, httpResponse, _serializer)
+                    .BuildAsync(dataType, responseContext, _serializer)
                     .ConfigureAwait(false);
             
-            await _responseValidator.OnFailureAsync(responseContext).ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+                await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            return _serializer.Deserialize(httpResponse.Content.ToString(), dataType);
+            return _serializer.Deserialize(response.Content.ToString(), dataType);
         }
         
-        public async Task<IResponse> GetHttpResponseAsync(IRequest transportRequest, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _transportMessageBuilder
-                .BuildResponseAsync(transportRequest, responseContext.Request, responseContext.Response)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);
-            return BuildResponseWithData(dataObject, dataType, httpResponse);
+            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
+            return BuildResponseWithData(dataObject, dataType, response);
         }
         
-        public async Task<IResponse> GetHttpResponseWithErrorAsync(IRequest transportRequest, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _transportMessageBuilder
-                .BuildResponseAsync(transportRequest, responseContext.Request, responseContext.Response)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
-            var errorObject = TryGetErrorObject(errorType, httpResponse.Content.ToString(), responseContext);
-            return BuildResponseWithError(errorObject, errorType, httpResponse);
+            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
+            return BuildResponseWithError(errorObject, errorType, response);
         }
         
-        public async Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest transportRequest, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
+        public async Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            var responseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(() => ExecuteAttemptAsync(transportRequest))
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            var httpResponse = await _transportMessageBuilder
-                .BuildResponseAsync(transportRequest, responseContext.Request, responseContext.Response)
+            var response = await _responseBuilder
+                .BuildAsync(request, transportResponseContext)
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, httpResponse.Content.ToString(), responseContext);
-            var errorObject = TryGetErrorObject(errorType, httpResponse.Content.ToString(), responseContext);
-            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, httpResponse);
+            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
+            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy)
@@ -185,15 +191,15 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request)
         {
-            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Resource, request.Id);
+            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Endpoint, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
                 _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
-                transportRequest = await _transportMessageBuilder
-                    .BuildTransportRequestAsync(request)
+                transportRequest = await _transportRequestBuilder
+                    .BuildAsync(request)
                     .ConfigureAwait(false);
                 
                 await _clientHandler
@@ -218,36 +224,36 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
         
-        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> responseContext)
+        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
-            return _responseValidator.IsSuccess(responseContext)
+            return _responseValidator.IsSuccess(transportResponseContext)
                 ? _serializer.Deserialize(data, dataType)
                 : null;
         }
 
-        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> responseContext)
+        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
-            return !_responseValidator.IsSuccess(responseContext)
+            return !_responseValidator.IsSuccess(transportResponseContext)
                 ? _serializer.Deserialize(data, errorType)
                 : null;
         }
         
-        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse transportResponse)
+        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response)
         {
             var genericResponseType = typeof(Response<>).MakeGenericType(dataType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, transportResponse, transportResponse.Request, data);
+            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, data);
         }
         
-        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse transportResponse)
+        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<>).MakeGenericType(errorType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, transportResponse, transportResponse.Request, error);
+            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, error);
         }
         
-        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse transportResponse)
+        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, transportResponse, transportResponse.Request, data, error);
+            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace NClient.Providers.Transport.Http.System.Builders
         
         public async Task<IRequest> BuildAsync(IRequest request, HttpRequestMessage httpRequestMessage)
         {
-            var resource = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
+            var endpoint = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
             var method = _systemHttpMethodMapper.Map(httpRequestMessage.Method);
             
             // Workaround for the framework:
@@ -41,7 +41,7 @@ namespace NClient.Providers.Transport.Http.System.Builders
                 .Select(x => new Metadata(x.Key!, x.Value?.FirstOrDefault() ?? ""))
                 .ToArray() ?? Array.Empty<IMetadata>();
             
-            var finalRequest = new Request(request.Id, resource.ToString(), method)
+            var finalRequest = new Request(request.Id, endpoint.ToString(), method)
             {
                 Content = contentBytes is null
                     ? null

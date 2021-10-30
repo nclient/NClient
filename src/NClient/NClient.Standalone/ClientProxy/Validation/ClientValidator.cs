@@ -7,13 +7,13 @@ using NClient.Exceptions;
 using NClient.Providers.Results;
 using NClient.Providers.Transport;
 using NClient.Resilience;
-using NClient.Standalone.Client.Handling;
-using NClient.Standalone.Client.Resilience;
-using NClient.Standalone.Client.Serialization;
-using NClient.Standalone.Client.Transport;
-using NClient.Standalone.Client.Validation;
-using NClient.Standalone.ClientProxy.Api;
-using NClient.Standalone.ClientProxy.Interceptors;
+using NClient.Standalone.ClientProxy.Generation.Interceptors;
+using NClient.Standalone.ClientProxy.Validation.Api;
+using NClient.Standalone.ClientProxy.Validation.Handling;
+using NClient.Standalone.ClientProxy.Validation.Resilience;
+using NClient.Standalone.ClientProxy.Validation.Serialization;
+using NClient.Standalone.ClientProxy.Validation.Transport;
+using NClient.Standalone.ClientProxy.Validation.Validation;
 
 namespace NClient.Standalone.ClientProxy.Validation
 {
@@ -43,12 +43,13 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubSerializerProvider(),
                     new StubRequestBuilderProvider(),
                     new StubTransportProvider(),
-                    new StubTransportMessageBuilderProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider(),
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),
-                    Array.Empty<IResultBuilderProvider<IResponse>>(),
-                    Array.Empty<IResultBuilderProvider<IResponse>>(),
+                    Array.Empty<IResultBuilderProvider<IRequest, IResponse>>(),
+                    Array.Empty<IResultBuilderProvider<IRequest, IResponse>>(),
                     new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 

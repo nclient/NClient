@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using NClient.Invocation;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Resilience
@@ -13,8 +13,8 @@ namespace NClient.Providers.Resilience
         /// <summary>
         /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
         /// </summary>
-        /// <param name="methodInfo">The method to apply the policy to.</param>
-        /// <param name="transportRequest">The request to apply the policy to.</param>
-        IResiliencePolicy<TRequest, TResponse> Create(MethodInfo methodInfo, IRequest transportRequest);
+        /// <param name="method">The method to apply the policy to.</param>
+        /// <param name="request">The request to apply the policy to.</param>
+        IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request);
     }
 }

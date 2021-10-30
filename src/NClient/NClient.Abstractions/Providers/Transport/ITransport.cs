@@ -10,7 +10,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Executes requests.
         /// </summary>
-        /// <param name="request">The container for request data.</param>
-        Task<TResponse> ExecuteAsync(TRequest request);
+        /// <param name="transportRequest">The container for request data.</param>
+        Task<TResponse> ExecuteAsync(TRequest transportRequest);
     }
 }

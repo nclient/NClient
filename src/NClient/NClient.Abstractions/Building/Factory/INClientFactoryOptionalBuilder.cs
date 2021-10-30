@@ -70,9 +70,9 @@ namespace NClient
         #region Results
 
         // TODO: doc
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IResponse>[] resultBuilderProviders);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IRequest, IResponse>[] resultBuilderProviders);
         
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TResponse>[] resultBuilderProviders);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TRequest, TResponse>[] resultBuilderProviders);
         
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutCustomResults();
 

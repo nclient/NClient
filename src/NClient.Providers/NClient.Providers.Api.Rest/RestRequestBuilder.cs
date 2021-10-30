@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
-using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
@@ -40,24 +39,24 @@ namespace NClient.Providers.Api.Rest
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public IRequest Build(Guid requestId, string resourceRoot, Method method, IEnumerable<object> arguments)
+        public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation)
         {
-            var requestType = _transportMethodProvider.Get(method.Operation);
-            var routeTemplate = _routeTemplateProvider.Get(method);
-            var methodParameters = method.Params
+            var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
+            var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
+            var methodParameters = methodInvocation.Method.Params
                 .Select((methodParam, index) => new MethodParameter(
                     methodParam.Name,
                     methodParam.Type,
-                    arguments.ElementAtOrDefault(index),
+                    methodInvocation.Arguments.ElementAtOrDefault(index),
                     methodParam.Attribute))
                 .ToArray();
             var route = _routeProvider
-                .Build(routeTemplate, method.ClientName, method.Name, methodParameters, method.UseVersionAttribute);
+                .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
-            var resource = PathHelper.Combine(resourceRoot, route);
-            var request = new Request(requestId, resource, requestType);
+            var endpoint = PathHelper.Combine(resource, route);
+            var request = new Request(requestId, endpoint, requestType);
 
-            var headerAttributes = method.MetadataAttributes;
+            var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)
             {
                 request.AddMetadata(headerAttribute.Name, headerAttribute.Value);
@@ -102,7 +101,7 @@ namespace NClient.Providers.Api.Rest
                 });
             }
 
-            return request;
+            return Task.FromResult<IRequest>(request);
         }
     }
 }

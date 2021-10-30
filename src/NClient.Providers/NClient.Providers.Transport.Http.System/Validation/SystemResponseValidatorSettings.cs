@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using NClient.Providers.Resilience;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace

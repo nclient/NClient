@@ -8,8 +8,8 @@ using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
@@ -25,11 +25,12 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
         {
             var clientType = typeof(IBasicClient);
             var methodInfo = clientType.GetMethods().Single();
+            var returnType = methodInfo.ReturnType;
             var methodAttribute = new GetMethodAttribute();
             var useVersionAttribute = (UseVersionAttribute)null!;
             var pathAttribute = (PathAttribute)null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
-            var methodParams = Array.Empty<MethodParam>();
+            var methodParams = Array.Empty<IMethodParam>();
             var methodAttributeProviderMock = new Mock<IOperationAttributeProvider>();
             methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(methodAttribute);
@@ -52,13 +53,16 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
                 headerAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);
 
-            var actualResult = methodBuilder.Build(clientType, methodInfo);
+            var actualResult = methodBuilder.Build(clientType, methodInfo, returnType);
 
             actualResult.Should().BeEquivalentTo(new Method(
                 methodInfo.Name,
+                methodInfo,
                 clientType.Name,
+                clientType,
                 methodAttribute,
-                methodParams));
+                methodParams,
+                returnType));
         }
     }
 }

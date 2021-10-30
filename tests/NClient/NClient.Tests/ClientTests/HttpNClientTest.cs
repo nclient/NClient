@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HttpNClientTest
     {
-        private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000", RequestType.Read);
+        private static readonly Request RequestStub = new(Guid.Empty, endpoint: "http://localhost:5000", RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
         [Test]
@@ -259,7 +259,7 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Resource);
+                .Excluding(x => x.Endpoint);
         }
 
         private EquivalencyAssertionOptions<ResponseWithError<Error>> ExcludeInessentialFields(
@@ -268,7 +268,7 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Resource);
+                .Excluding(x => x.Endpoint);
         }
 
         private EquivalencyAssertionOptions<Response<BasicEntity>> ExcludeInessentialFields(
@@ -277,7 +277,7 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Resource);
+                .Excluding(x => x.Endpoint);
         }
 
         private EquivalencyAssertionOptions<Response> ExcludeInessentialFields(
@@ -286,7 +286,7 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Resource);
+                .Excluding(x => x.Endpoint);
         }
     }
 }

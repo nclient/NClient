@@ -17,9 +17,9 @@ namespace NClient.Providers.Transport
         /// </summary>
         public Guid Id { get; }
         /// <summary>
-        /// Gets the resource used for the request. Should not include query.
+        /// Gets the endpoint used for the request.
         /// </summary>
-        public string Resource { get; }
+        public string Endpoint { get; }
         /// <summary>
         /// Gets request type.
         /// </summary>
@@ -41,15 +41,15 @@ namespace NClient.Providers.Transport
         /// Creates container for request data.
         /// </summary>
         /// <param name="id">The request id.</param>
-        /// <param name="resource">The request URI (without parameters).</param>
+        /// <param name="endpoint">The request URI (without parameters).</param>
         /// <param name="requestType">The request type.</param>
-        public Request(Guid id, string resource, RequestType requestType)
+        public Request(Guid id, string endpoint, RequestType requestType)
         {
-            Ensure.IsNotNull(resource, nameof(resource));
+            Ensure.IsNotNull(endpoint, nameof(endpoint));
             Ensure.IsNotNull(requestType, nameof(requestType));
 
             Id = id;
-            Resource = resource;
+            Endpoint = endpoint;
             Type = requestType;
             Metadatas = new MetadataContainer();
         }

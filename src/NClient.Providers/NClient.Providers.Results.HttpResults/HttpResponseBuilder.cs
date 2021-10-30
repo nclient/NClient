@@ -2,12 +2,13 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using NClient.Providers.Serialization;
+using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.HttpResults
 {
-    public class HttpResponseBuilder : IResultBuilder<HttpResponseMessage>
+    public class HttpResponseBuilder : IResultBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        public bool CanBuild(Type resultType, HttpResponseMessage httpResponseMessage)
+        public bool CanBuild(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -22,11 +23,11 @@ namespace NClient.Providers.Results.HttpResults
                 || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
         }
         
-        public async Task<object?> BuildAsync(Type resultType, HttpResponseMessage httpResponseMessage, ISerializer serializer)
+        public async Task<object?> BuildAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, ISerializer serializer)
         {
-            var httpRequest = new HttpRequest(httpResponseMessage.RequestMessage);
-            var httpResponse = new HttpResponse(httpRequest, httpResponseMessage);
-            var content = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var httpRequest = new HttpRequest(responseContext.Response.RequestMessage);
+            var httpResponse = new HttpResponse(httpRequest, responseContext.Response);
+            var content = await responseContext.Response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (resultType == typeof(HttpResponse) || resultType == typeof(IHttpResponse))
                 return httpResponse;

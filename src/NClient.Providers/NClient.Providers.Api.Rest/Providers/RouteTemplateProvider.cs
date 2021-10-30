@@ -9,7 +9,7 @@ namespace NClient.Providers.Api.Rest.Providers
 {
     internal interface IRouteTemplateProvider
     {
-        RouteTemplate Get(Method method);
+        RouteTemplate Get(IMethod method);
     }
 
     internal class RouteTemplateProvider : IRouteTemplateProvider
@@ -21,7 +21,7 @@ namespace NClient.Providers.Api.Rest.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public RouteTemplate Get(Method method)
+        public RouteTemplate Get(IMethod method)
         {
             var baseTemplate = method.PathAttribute?.Template ?? "";
             var methodTemplate = method.Operation.Path ?? "";

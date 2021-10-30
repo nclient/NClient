@@ -7,9 +7,9 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Results.LanguageExt
 {
-    public class EitherBuilder : IResultBuilder<IResponse>
+    public class EitherBuilder : IResultBuilder<IRequest, IResponse>
     {
-        public bool CanBuild(Type resultType, IResponse response)
+        public bool CanBuild(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -17,15 +17,15 @@ namespace NClient.Providers.Results.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public Task<object?> BuildAsync(Type resultType, IResponse response, ISerializer serializer)
+        public Task<object?> BuildAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
         {
-            if (response.IsSuccessful)
+            if (responseContext.Response.IsSuccessful)
             {
-                var value = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[1]);
+                var value = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[1]);
                 return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
             }
             
-            var error = serializer.Deserialize(response.Content.ToString(), resultType.GetGenericArguments()[0]);
+            var error = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[0]);
             return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
         }
 

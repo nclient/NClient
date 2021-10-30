@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 
 namespace NClient.Providers.Validation
 {

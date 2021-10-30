@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Providers.Api.Rest.Extensions;
-using NClient.Providers.Resilience;
+using NClient.Providers.Transport;
 using NUnit.Framework;
 using Polly;
 using RestSharp;

@@ -58,9 +58,9 @@ namespace NClient.Providers.Transport
         /// </summary>
         public string? StatusDescription { get; set; }
         /// <summary>
-        /// Gets the URL that actually responded to the content (different from request if redirected).
+        /// Gets the endpoint that actually responded to the content (different from request if redirected).
         /// </summary>
-        public string? Resource { get; set; }
+        public string? Endpoint { get; set; }
         /// <summary>
         /// Gets metadata returned by server with the response.
         /// </summary>
@@ -103,7 +103,7 @@ namespace NClient.Providers.Transport
             Content = response.Content;
             StatusCode = response.StatusCode;
             StatusDescription = response.StatusDescription;
-            Resource = response.Resource;
+            Endpoint = response.Endpoint;
             Metadatas = response.Metadatas;
             ErrorMessage = response.ErrorMessage;
             ErrorException = response.ErrorException;

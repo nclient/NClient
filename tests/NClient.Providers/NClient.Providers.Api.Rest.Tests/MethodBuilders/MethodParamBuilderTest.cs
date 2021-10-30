@@ -7,8 +7,8 @@ using FluentAssertions;
 using Moq;
 using NClient.Annotations.Http;
 using NClient.Invocation;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
 
 namespace NClient.Providers.Api.Rest.Tests.MethodBuilders

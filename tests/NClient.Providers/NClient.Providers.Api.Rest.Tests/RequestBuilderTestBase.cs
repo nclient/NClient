@@ -14,8 +14,8 @@ using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Providers.Transport;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders;
-using NClient.Standalone.ClientProxy.Interceptors.MethodBuilders.Providers;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
+using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -66,19 +66,22 @@ namespace NClient.Providers.Api.Rest.Tests
             return typeof(T).GetMethods().First();
         }
 
-        internal Method BuildMethod<T>()
+        internal IMethod BuildMethod<T>()
         {
-            return MethodBuilder.Build(typeof(T), GetMethodInfo<T>());
+            return MethodBuilder.Build(typeof(T), GetMethodInfo<T>(), GetMethodInfo<T>().ReturnType);
         }
 
-        internal IRequest BuildRequest(Method method, params object[] arguments)
+        internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
             return BuildRequest(host: "http://localhost:5000", method, arguments);
         }
 
-        internal IRequest BuildRequest(string host, Method method, params object[] arguments)
+        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
-            return RequestBuilder.Build(RequestId, resourceRoot: host, method, arguments);
+            return RequestBuilder
+                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments))
+                .GetAwaiter()
+                .GetResult();
         }
 
         protected void AssertHttpRequest(
@@ -92,7 +95,7 @@ namespace NClient.Providers.Api.Rest.Tests
             var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
-            actualRequest.Resource.Should().Be(uri.ToString());
+            actualRequest.Endpoint.Should().Be(uri.ToString());
             actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(metadatas?.Concat(new[]

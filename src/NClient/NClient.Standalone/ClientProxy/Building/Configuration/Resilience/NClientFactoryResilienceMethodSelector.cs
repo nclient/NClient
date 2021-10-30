@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NClient.Core.Helpers.EqualityComparers;
+using NClient.Invocation;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -29,7 +29,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
             // TODO: test it
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
-                methodPredicate: (methodInfo, _) => methodInfo.DeclaringType == typeof(TClient));
+                methodPredicate: (method, _) => method.Info.DeclaringType == typeof(TClient));
         }
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector)
@@ -38,10 +38,10 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
             var selectedMethod = func.Invoke(default!).Method;
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
-                methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
+                methodPredicate: (method, _) => _methodInfoEqualityComparer.Equals(method.Info, selectedMethod));
         }
         
-        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IRequest, bool> predicate)
+        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> predicate)
         {
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
