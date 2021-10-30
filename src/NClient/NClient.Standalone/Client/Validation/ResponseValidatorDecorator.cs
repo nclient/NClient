@@ -31,7 +31,6 @@ namespace NClient.Standalone.Client.Validation
                     continue;
                 
                 responseValidator.OnFailureAsync(responseContext);
-                return Task.CompletedTask;
             }
             
             return Task.CompletedTask;

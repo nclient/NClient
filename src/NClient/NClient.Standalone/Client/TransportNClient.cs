@@ -108,7 +108,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
             
-            await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+                await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
         }
 
         public async Task<object?> GetResultAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
@@ -132,7 +133,8 @@ namespace NClient.Standalone.Client
                     .BuildAsync(dataType, responseContext, _serializer)
                     .ConfigureAwait(false);
             
-            await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+                await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
             return _serializer.Deserialize(response.Content.ToString(), dataType);
         }
