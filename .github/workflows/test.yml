@@ -7,8 +7,6 @@ on:
 
 jobs:
   test:
-    environment:
-      name: Development   
       
     runs-on: ubuntu-latest
 
