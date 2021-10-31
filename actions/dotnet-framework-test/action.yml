@@ -24,10 +24,10 @@ runs:
           echo "msbuild-version=16" >> $GITHUB_ENV
         fi
       shell: bash
-    - name: Setup MSBuild ${{env.msbuild-version}}
-      uses: microsoft/setup-msbuild@v1.0.3
+    - name: Setup .NET 5.0
+      uses: actions/setup-dotnet@v1
       with:
-        vs-version: '${{env.msbuild-version}}'
+        dotnet-version: 5.0.x
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
