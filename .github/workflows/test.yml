@@ -24,8 +24,9 @@ jobs:
     needs: build
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         target-frameworks: [netcoreapp3.1, net5.0]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
