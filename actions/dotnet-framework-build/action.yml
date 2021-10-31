@@ -28,10 +28,10 @@ runs:
       uses: microsoft/setup-msbuild@v1.0.3
       with:
         vs-version: '${{env.msbuild-version}}'
-    - name: Setup MSBuild 16.5
-      uses: microsoft/setup-msbuild@v1.0.3
+    - name: Setup .NET 5.0
+      uses: actions/setup-dotnet@v1
       with:
-        vs-version: '16.5'
+        dotnet-version: 5.0.x
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
     - name: Restore dependencies and build
