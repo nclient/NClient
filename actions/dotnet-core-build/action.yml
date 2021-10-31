@@ -20,8 +20,11 @@ runs:
     - name: Restore dependencies and build
       run: dotnet build --configuration Release /warnaserror
       shell: bash
+    - name: Compress build artifact
+      run: tar cvzf build-artifact.tar.gz bin/
+      shell: bash
     - name: Upload build artifact
       uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: bin
+        path: build-artifact.tar.gz
