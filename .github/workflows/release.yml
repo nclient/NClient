@@ -2,8 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-  push:
-    #branches: [ alpha-release, beta-release, release ]
     inputs:
       version:
         description: 'Version'     
@@ -11,6 +9,8 @@ on:
       path-version:
         description: 'Path version'     
         required: true
+  push:
+    branches: [ alpha-release, beta-release, release ]
 
 env:
   VersionPrefix: ${{ inputs.version }}
