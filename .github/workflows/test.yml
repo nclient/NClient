@@ -16,8 +16,11 @@ jobs:
       - name: Build on .NET 5.0
         uses: ./actions/dotnet-core-build
         with:
+          dotnet-version: '3.1.x'
           target-framework: 'netcoreapp3.1'
+          solution: 'Tests.slnf'
       - name: Test on .NET 5.0
         uses: ./actions/dotnet-core-test
         with:
           dotnet-version: '3.1.x'
+          solution: 'Tests.slnf'
