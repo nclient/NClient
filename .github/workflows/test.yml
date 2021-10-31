@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  build:
       
     runs-on: ubuntu-latest
 
@@ -19,6 +19,14 @@ jobs:
           dotnet-version: '3.1.x'
           target-framework: 'netcoreapp3.1'
           solution: 'Tests.slnf'
+          
+  test:
+      
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
       - name: Test on .NET 5.0
         uses: ./actions/dotnet-core-test
         with:

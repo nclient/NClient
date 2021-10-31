@@ -21,7 +21,7 @@ runs:
         with:
           name: build-artifact
     - name: Extract build artifact
-      run: tar -czvf build-artifact.tar.gz .
+      run: tar -czvf build-artifact.tar.gz ./bin
       shell: bash
     - name: Test
       run: dotnet test ${{inputs.solution}} --no-build --verbosity normal --configuration Release
