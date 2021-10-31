@@ -12,24 +12,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET Core version
-      run: |
-        if [[ "${{inputs.target-framework}}" == "netcoreapp3.1" ]]; then
-          echo "dotnet-version=3.1.x" >> $GITHUB_ENV
-        elif [[ "${{inputs.target-framework}}" == "net5.0" ]]; then
-          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
-        else
-          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
-        fi
-      shell: bash
-    - name: Setup .NET Core ${{env.dotnet-version}}
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{env.dotnet-version}}
     - name: Setup .NET 5.0
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
     - name: Restore dependencies and build
       run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release /warnaserror
       shell: bash
