@@ -1,4 +1,4 @@
-name: Test: Base
+name: 'Test: Base'
 
 on:
   workflow_dispatch:

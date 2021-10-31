@@ -1,4 +1,4 @@
-name: Test: Full
+name: 'Test: Full'
 
 on:
   workflow_dispatch:
