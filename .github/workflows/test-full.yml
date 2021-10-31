@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build with ${{ target-frameworks }}
+    name: Build with ${{ matrix.target-frameworks }}
     environment: development
     strategy:
       matrix:
@@ -17,14 +17,14 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Build with ${{ target-frameworks }}
+      - name: Build with ${{ matrix.target-frameworks }}
         uses: ./actions/dotnet-build
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'Tests.slnf'
           
   test-dotnet-core:
-    name: Test with ${{ target-frameworks }} on ${{ matrix.os }}
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     environment: development
     needs: build
     strategy:
@@ -35,14 +35,14 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Test with ${{ target-frameworks }}
+      - name: Test with ${{ matrix.target-frameworks }}
         uses: ./actions/dotnet-framework-test
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'NClient.sln'
           
   test-dotnet-framework:
-    name: Test with ${{ target-frameworks }} on ${{ matrix.os }}
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     environment: development
     needs: build
     strategy:
@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Test with ${{ target-frameworks }}
+      - name: Test with ${{ matrix.target-frameworks }}
         uses: ./actions/dotnet-core-test
         with:
           target-framework: ${{ matrix.target-frameworks }}
