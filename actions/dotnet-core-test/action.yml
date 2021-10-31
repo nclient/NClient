@@ -5,7 +5,6 @@ inputs:
   dotnet-version:
     description: '.NET Core version'
     required: true
-    default: '5.x.x'
     
 runs:
   using: "composite"
