@@ -14,11 +14,9 @@ runs:
   steps:
     - name: Setup .NET Core version
       run: |
-        if "${{inputs.target-framework}}" == "netcoreapp3.1"
-        then
+        if [["${{inputs.target-framework}}" == "netcoreapp3.1"]]; then
           echo "DotNetVersion=3.1.x" >> $GITHUB_ENV
-        elif "${{inputs.target-framework}}" == "net5.0"
-        then
+        elif [["${{inputs.target-framework}}" == "net5.0"]]; then
           echo "DotNetVersion=5.0.x" >> $GITHUB_ENV
         else
           echo "DotNetVersion=5.0.x" >> $GITHUB_ENV
