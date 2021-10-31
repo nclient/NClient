@@ -27,10 +27,10 @@ runs:
       run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release /warnaserror
       shell: bash
     - name: Compress build artifact
-      run: tar cvzf build-artifact-{{inputs.target-framework}}.tar.gz ./bin
+      run: tar cvzf build-artifact-${{inputs.target-framework}}.tar.gz ./bin
       shell: bash
     - name: Upload build artifact
       uses: actions/upload-artifact@v2
       with:
-        name: build-artifact-{{inputs.target-framework}}
-        path: build-artifact-{{inputs.target-framework}}.tar.gz
+        name: build-artifact-${{inputs.target-framework}}
+        path: build-artifact-${{inputs.target-framework}}.tar.gz
