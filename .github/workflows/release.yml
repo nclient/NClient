@@ -86,7 +86,7 @@ jobs:
   tmp-release-alpha-validation:
     #if: github.ref == 'refs/heads/alpha-release'
     if: github.ref == 'refs/heads/features/github-environments'
-    needs: release-alpha 
+    needs: tmp-release-alpha
     runs-on: ubuntu-latest
     steps:
     - name: Set version suffix
