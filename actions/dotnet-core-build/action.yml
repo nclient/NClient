@@ -2,9 +2,6 @@ name: '.NET Core build'
 description: 'Build projects with .NET Core'
 
 inputs:
-  dotnet-version:
-    description: '.NET Core version'
-    required: true
   target-framework:
     description: 'Target .NET framework'
     required: true
@@ -15,10 +12,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET Core ${{inputs.dotnet-version}}
+    - name: Setup .NET Core 3.1
+      if: ${{inputs.target-framework}} == 'netcoreapp3.1'
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{inputs.dotnet-version}}
+        dotnet-version: 3.1.x
     - name: Setup .NET 5.0
       uses: actions/setup-dotnet@v1
       with:
@@ -34,3 +32,4 @@ runs:
       with:
         name: build-artifact-${{inputs.target-framework}}
         path: build-artifact-${{inputs.target-framework}}.tar.gz
+        retention-days: 10

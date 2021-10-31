@@ -7,29 +7,34 @@ on:
 
 jobs:
   build:
-      
+    environment:
+      name: Development
+    strategy:
+      matrix:
+        target-frameworks: [netcoreapp3.1, net5.0]
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Build on .NET 5.0
         uses: ./actions/dotnet-core-build
         with:
-          dotnet-version: '3.1.x'
-          target-framework: 'netcoreapp3.1'
+          target-framework: ${{ matrix.target-frameworks }}
           solution: 'Tests.slnf'
           
   test:
-    needs: build 
+    needs: build
+    environment:
+      name: Development
+    strategy:
+      matrix:
+        target-frameworks: [netcoreapp3.1, net5.0]
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Test on .NET 5.0
         uses: ./actions/dotnet-core-test
         with:
-          dotnet-version: '3.1.x'
-          target-framework: 'netcoreapp3.1'
+          target-framework: ${{ matrix.target-frameworks }}
           solution: 'Tests.slnf'
