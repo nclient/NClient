@@ -34,6 +34,6 @@ runs:
     - name: Extract build artifact
       run: tar -xvzf build-artifact-${{ inputs.target-framework }}.tar.gz
       shell: bash
-    - name: Test with ${{ target-framework }}
+    - name: Test with ${{ inputs.target-framework }}
       run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash
