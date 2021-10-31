@@ -21,7 +21,7 @@ jobs:
   tmp-release-alpha:
     #if: github.ref == 'refs/heads/alpha-release'
     if: github.ref == 'refs/heads/features/github-environments'
-    environment: release-alpha
+    #environment: release-alpha
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -55,7 +55,7 @@ jobs:
   release-alpha:
     if: github.ref == 'refs/heads/alpha-release'
     #needs: [ test-dotnet-core, test-dotnet-framework ]
-    environment: release-alpha
+    #environment: release-alpha
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
