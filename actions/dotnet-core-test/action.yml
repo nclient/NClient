@@ -15,17 +15,17 @@ runs:
     - name: Setup .NET Core version
       run: |
         if [[ "${{inputs.target-framework}}" == "netcoreapp3.1" ]]; then
-          echo "DotNetVersion=3.1.x" >> $GITHUB_ENV
+          echo "dotnet-version=3.1.x" >> $GITHUB_ENV
         elif [[ "${{inputs.target-framework}}" == "net5.0" ]]; then
-          echo "DotNetVersion=5.0.x" >> $GITHUB_ENV
+          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
         else
-          echo "DotNetVersion=5.0.x" >> $GITHUB_ENV
+          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
         fi
       shell: bash
-    - name: Setup .NET Core ${DotNetVersion}
+    - name: Setup .NET Core ${{env.dotnet-version}}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${DotNetVersion}
+        dotnet-version: ${{env.dotnet-version}}
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
