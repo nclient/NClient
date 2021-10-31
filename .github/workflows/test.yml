@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Build on .NET 5.0
         uses: ./actions/dotnet-core-build
+        with:
+          target-framework: 'netcoreapp3.1'
       - name: Test on .NET 5.0
         uses: ./actions/dotnet-core-test
         with:
-          target-framework: 'netcoreapp3.1'
+          dotnet-version: '3.1.x'

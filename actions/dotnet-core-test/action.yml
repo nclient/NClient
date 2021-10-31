@@ -1,10 +1,12 @@
 name: '.NET Core test'
 description: 'Test projects with .NET Core'
+
 inputs:
   dotnet-version:
     description: '.NET Core version'
     required: true
     default: '5.x.x'
+    
 runs:
   using: "composite"
   steps:
