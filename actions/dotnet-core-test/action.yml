@@ -20,9 +20,9 @@ runs:
       with:
         dotnet-version: ${{inputs.dotnet-version}}
     - name: Download build artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-artifact
     - name: Extract build artifact
       run: tar -czvf build-artifact.tar.gz ./bin
       shell: bash
