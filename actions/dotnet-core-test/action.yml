@@ -24,6 +24,9 @@ runs:
       with:
         name: build-artifact-${{inputs.target-framework}}
     - name: Extract build artifact
+      run: ls
+      shell: bash
+    - name: Extract build artifact
       run: tar -xvzf build-artifact-${{inputs.target-framework}}.tar.gz .
       shell: bash
     - name: Test
