@@ -1,12 +1,14 @@
-name: Test
+name: Test: Base
 
 on:
   workflow_dispatch:
   pull_request:
+    types: assigned
     branches: [ main ]
 
 jobs:
   build:
+    name: Build with ${{ target-frameworks }}
     environment: development
     strategy:
       matrix:
@@ -15,13 +17,14 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Build on MSBuild 16.5
+      - name: Build with ${{ target-frameworks }}
         uses: ./actions/dotnet-build
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'Tests.slnf'
           
-  test-with-dotnet-core:
+  test-dotnet-core:
+    name: Test with ${{ target-frameworks }} on ${{ matrix.os }}
     environment: development
     needs: build
     strategy:
@@ -32,13 +35,14 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Test on .NET 5.0
+      - name: Test with ${{ target-frameworks }}
         uses: ./actions/dotnet-framework-test
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'NClient.sln'
           
-  test-with-dotnet-framework:
+  test-dotnet-framework:
+    name: Test with ${{ target-frameworks }} on ${{ matrix.os }}
     environment: development
     needs: build
     strategy:
@@ -49,7 +53,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - name: Test on .NET 5.0
+      - name: Test with ${{ target-frameworks }}
         uses: ./actions/dotnet-core-test
         with:
           target-framework: ${{ matrix.target-frameworks }}

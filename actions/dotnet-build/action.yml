@@ -1,18 +1,17 @@
-name: '.NET Core build'
-description: 'Build projects with .NET Core'
+name: Build .NET project
 
 inputs:
   target-framework:
     description: 'Target .NET framework'
     required: true
   solution:
-    description: 'Solution path'
+    description: 'Solution/project path'
     required: true
     
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET 5.0
+    - name: Setup latest .NET
       uses: actions/setup-dotnet@v1
     - name: Restore dependencies and build
       run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release -warnaserror
@@ -25,4 +24,3 @@ runs:
       with:
         name: build-artifact-${{inputs.target-framework}}
         path: build-artifact-${{inputs.target-framework}}.tar.gz
-        retention-days: 10

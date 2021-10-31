@@ -1,40 +1,39 @@
-name: '.NET Core test'
-description: 'Test projects with .NET Core'
+name: Test .NET Framework project
 
 inputs:
   target-framework:
     description: 'Target .NET framework'
     required: true
   solution:
-    description: 'Solution path'
+    description: 'Solution/project path'
     required: true
     
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET Core version
+    - name: Set the required terget .NET Framework version
       run: |
-        if [[ "${{inputs.target-framework}}" == "net462" ]]; then
+        if [[ "${{ inputs.target-framework }}" == "net462" ]]; then
           echo "msbuild-version=14" >> $GITHUB_ENV
-        elif [[ "${{inputs.target-framework}}" == "net472" ]]; then
+        elif [[ "${{ inputs.target-framework }}" == "net472" ]]; then
           echo "msbuild-version=15" >> $GITHUB_ENV
-        elif [[ "${{inputs.target-framework}}" == "net48" ]]; then
+        elif [[ "${{ inputs.target-framework }}" == "net48" ]]; then
           echo "msbuild-version=16" >> $GITHUB_ENV
         else
           echo "msbuild-version=16" >> $GITHUB_ENV
         fi
       shell: bash
-    - name: Setup MSBuild ${{env.msbuild-version}}
+    - name: Setup MSBuild ${{ env.msbuild-version }}
       uses: microsoft/setup-msbuild@v1.0.3
       with:
-        vs-version: '${{env.msbuild-version}}'
+        vs-version: '${{ env.msbuild-version }}'
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-artifact-${{inputs.target-framework}}
+        name: build-artifact-${{ inputs.target-framework }}
     - name: Extract build artifact
-      run: tar -xvzf build-artifact-${{inputs.target-framework}}.tar.gz
+      run: tar -xvzf build-artifact-${{ inputs.target-framework }}.tar.gz
       shell: bash
-    - name: Test
-      run: dotnet test ${{inputs.solution}} --framework ${{inputs.target-framework}} --no-build --verbosity normal --configuration Release
+    - name: Test with ${{ target-framework }}
+      run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash

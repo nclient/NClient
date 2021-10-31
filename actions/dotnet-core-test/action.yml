@@ -1,38 +1,37 @@
-name: '.NET Core test'
-description: 'Test projects with .NET Core'
+name: Test .NET Core project
 
 inputs:
   target-framework:
-    description: 'Target .NET framework'
+    description: 'Target .NET Core'
     required: true
   solution:
-    description: 'Solution path'
+    description: 'Solution/project path'
     required: true
     
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET Core version
+    - name: Set the required terget .NET Core version
       run: |
-        if [[ "${{inputs.target-framework}}" == "netcoreapp3.1" ]]; then
+        if [[ "${{ inputs.target-framework }}" == "netcoreapp3.1" ]]; then
           echo "dotnet-version=3.1.x" >> $GITHUB_ENV
-        elif [[ "${{inputs.target-framework}}" == "net5.0" ]]; then
+        elif [[ "${{ inputs.target-framework }}" == "net5.0" ]]; then
           echo "dotnet-version=5.0.x" >> $GITHUB_ENV
         else
           echo "dotnet-version=5.0.x" >> $GITHUB_ENV
         fi
       shell: bash
-    - name: Setup .NET Core ${{env.dotnet-version}}
+    - name: Setup .NET Core ${{ env.dotnet-version }}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{env.dotnet-version}}
+        dotnet-version: ${{ env.dotnet-version }}
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-artifact-${{inputs.target-framework}}
+        name: build-artifact-${{ inputs.target-framework }}
     - name: Extract build artifact
-      run: tar -xvzf build-artifact-${{inputs.target-framework}}.tar.gz
+      run: tar -xvzf build-artifact-${{ inputs.target-framework }}.tar.gz
       shell: bash
-    - name: Test
-      run: dotnet test ${{inputs.solution}} --framework ${{inputs.target-framework}} --no-build --verbosity normal --configuration Release
+    - name: Test with ${{ target-framework }}
+      run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash
