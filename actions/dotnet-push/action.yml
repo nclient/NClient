@@ -1,0 +1,47 @@
+name: Push NuGet packages
+
+inputs:
+  version-prefix:
+    description: 'Version prefix'     
+    required: true
+  version-suffix:
+    description: 'Version suffix'     
+    required: false
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Setup latest .NET
+      uses: actions/setup-dotnet@v1
+    - name: Set VersionPrefix env variable
+      run: echo "VersionPrefix=${{ inputs.version-prefix }}" >> $GITHUB_ENV
+      shell: bash
+    - name: Set VersionSuffix env variable
+      run: |
+        if [[ ${{ inputs.version-suffix }} != '' ]]; then
+          echo "VersionSuffix=${{ inputs.version-suffix }}" >> $GITHUB_ENV
+        else
+          echo "VersionSuffix=" >> $GITHUB_ENV
+        fi
+      shell: bash
+    - name: Restore dependencies and build
+      run: dotnet build --configuration Release -warnaserror
+      shell: bash
+    - name: Pack
+      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
+      shell: bash
+    #- name: Publish
+    #  run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+    #  shell: bash
+    - name: Set release tag
+      run: |
+        if [[ ${{ env.VersionSuffix }} != '' ]]; then
+          echo "ReleaseTag=$${{ env.VersionPrefix }}-${{ env.VersionSuffix }}" >> $GITHUB_ENV
+        else
+          echo "ReleaseTag=$${{ env.VersionPrefix }}" >> $GITHUB_ENV
+        fi
+      shell: bash
+    #- name: Create release tag
+    #  run: git tag ${{env.ReleaseTag}}
+    #- name: Push release tag
+    #  run: git push origin ${{env.ReleaseTag}}

@@ -6,97 +6,100 @@ on:
       version:
         description: 'Version'     
         required: true
-      path-version:
-        description: 'Path version'     
+      path-number:
+        description: 'Path number'     
         required: true
   push:
     branches: [ alpha-release, beta-release, release ]
 
 env:
-  VersionPrefix: ${{ inputs.version }}
-  VersionSuffix: unbound
-  VersionSuffixPatch: ${{ inputs.path-version }}
+  VersionPrefix: 0.10.0
+  VersionPatch: 5
       
 jobs:
-  publish:
+  build:
+    build:
+    name: Build with ${{ matrix.target-frameworks }}
+    environment: development
+    strategy:
+      matrix:
+        target-frameworks: [net462, net472, net48, netcoreapp3.1, net5.0]
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Build with ${{ matrix.target-frameworks }}
+        uses: ./actions/dotnet-build
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'Tests.slnf'
+          
+  test-dotnet-core:
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
+    environment: development
+    needs: build
+    strategy:
+      matrix:
+        os: [windows-latest]
+        target-frameworks: [net462, net472, net48]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Test with ${{ matrix.target-frameworks }}
+        uses: ./actions/dotnet-framework-test
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'NClient.sln'
+          
+  test-dotnet-framework:
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
+    environment: development
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        target-frameworks: [netcoreapp3.1, net5.0]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Test with ${{ matrix.target-frameworks }}
+        uses: ./actions/dotnet-core-test
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'NClient.sln'
+  
+  release-alpha:
+    #if: github.ref == 'refs/heads/alpha-release'
+    if: github.ref == 'refs/heads/features/github-environments'
+    needs: [ test-dotnet-core, test-dotnet-framework ]
+    environment: release-alpha
     runs-on: ubuntu-latest
     steps:
-    - name: Try set alpha version suffix
-      if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set beta version suffix
-      if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set release version suffix
-      if: github.ref == 'refs/heads/release'
-      run: |
-        echo "VersionSuffix=" >> $GITHUB_ENV
-        echo "VersionSuffixPatch=" >> $GITHUB_ENV
-    - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
-      run: exit 1
-      
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v1
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Setup latest .NET
+      uses: ./actions/dotnet-push
       with:
-        dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies and build
-      run: dotnet build --configuration Release /warnaserror
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
-    - name: Pack
-      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
-    #- name: Publish
-    #  run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
-    - name: Try set pre-release tag
-      if: env.VersionSuffix != ''
-      run: echo "ReleaseTag=v${VersionPrefix}-${VersionSuffix}" >> $GITHUB_ENV
-    - name: Try set release tag
-      if: env.VersionSuffix == ''
-      run: echo "ReleaseTag=v${VersionPrefix}" >> $GITHUB_ENV
-    #- name: Create release tag
-    #  run: git tag ${{env.ReleaseTag}}
-    #- name: Push release tag
-    #  run: git push origin ${{env.ReleaseTag}}
+        version-prefix: ${{ VersionPrefix }}-alpha.${{ VersionPatch }}
       
-  validation:
+  release-alpha-validation:
+    #if: github.ref == 'refs/heads/alpha-release'
+    if: github.ref == 'refs/heads/features/github-environments'
+    needs: release-alpha 
     runs-on: ubuntu-latest
-    needs: publish 
     steps:
-    - name: Try set alpha version suffix
-      if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set beta version suffix
-      if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set release version suffix
-      if: github.ref == 'refs/heads/release'
-      run: |
-        echo "VersionSuffix=" >> $GITHUB_ENV
-        echo "VersionSuffixPatch=" >> $GITHUB_ENV
-    - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
-      run: exit 1
-      
-    - name: Wait verification packages (5 min)
+    - name: Set version suffix
+      run: echo "VersionSuffix=alpha.${{ VersionPatch }}" >> $GITHUB_ENV
+    - name: Wait packages verification (5 min)
       uses: jakejarvis/wait-action@master
       with:
         time: '5m'
-        
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core 3.1
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Setup latest .NET
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
     - name: Restore dependencies and build
       run: dotnet build --configuration TestRelease -warnaserror
     - name: Test
