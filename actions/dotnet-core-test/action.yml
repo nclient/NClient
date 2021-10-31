@@ -22,9 +22,9 @@ runs:
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:
-        name: build-artifact
+        name: build-artifact-{{inputs.target-framework}}
     - name: Extract build artifact
-      run: tar -czvf build-artifact.tar.gz ./bin
+      run: tar -czvf build-artifact-{{inputs.target-framework}}.tar.gz -C ./bin
       shell: bash
     - name: Test
       run: dotnet test ${{inputs.solution}} --framework ${{inputs.target-framework}} --no-build --verbosity normal --configuration Release
