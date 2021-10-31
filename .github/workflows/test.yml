@@ -13,7 +13,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+      - name: Build on .NET 5.0
+        uses: ./actions/dotnet-core-build
       - name: Test on .NET 5.0
         uses: ./actions/dotnet-core-test
         with:
-          framework: 'net5.0'
+          target-framework: 'netcoreapp3.1'
