@@ -35,7 +35,7 @@ runs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
     - name: Restore dependencies and build
-      run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release /warnaserror
+      run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release -warnaserror
       shell: bash
     - name: Compress build artifact
       run: tar cvzf build-artifact-${{inputs.target-framework}}.tar.gz bin
