@@ -14,18 +14,20 @@ runs:
   steps:
     - name: Setup .NET Core version
       run: |
-        if [[ "${{inputs.target-framework}}" == "netcoreapp3.1" ]]; then
-          echo "dotnet-version=3.1.x" >> $GITHUB_ENV
-        elif [[ "${{inputs.target-framework}}" == "net5.0" ]]; then
-          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
+        if [[ "${{inputs.target-framework}}" == "net462" ]]; then
+          echo "msbuild-version=14" >> $GITHUB_ENV
+        elif [[ "${{inputs.target-framework}}" == "net472" ]]; then
+          echo "msbuild-version=15" >> $GITHUB_ENV
+        elif [[ "${{inputs.target-framework}}" == "net48" ]]; then
+          echo "msbuild-version=16" >> $GITHUB_ENV
         else
-          echo "dotnet-version=5.0.x" >> $GITHUB_ENV
+          echo "msbuild-version=16" >> $GITHUB_ENV
         fi
       shell: bash
-    - name: Setup .NET Core ${{env.dotnet-version}}
-      uses: actions/setup-dotnet@v1
+    - name: Setup MSBuild ${{env.msbuild-version}}
+      uses: microsoft/setup-msbuild@v1.0.3
       with:
-        dotnet-version: ${{env.dotnet-version}}
+        vs-version: '${{env.msbuild-version}}'
     - name: Download build artifact
       uses: actions/download-artifact@v2
       with:

@@ -6,7 +6,21 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  framework-build:
+    strategy:
+      matrix:
+        target-frameworks: [net462, net472, net48]
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Build on MSBuild 16.5
+        uses: ./actions/dotnet-framework-build
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'Tests.slnf'
+
+  core-build:
     strategy:
       matrix:
         target-frameworks: [netcoreapp3.1, net5.0]
@@ -20,7 +34,23 @@ jobs:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'Tests.slnf'
           
-  test:
+  framework-test:
+    needs: build
+    strategy:
+      matrix:
+        os: [windows-latest]
+        target-frameworks: [net462, net472, net48]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Test on .NET 5.0
+        uses: ./actions/dotnet-framework-test
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'NClient.sln'
+          
+  core-test:
     needs: build
     strategy:
       matrix:
@@ -34,4 +64,4 @@ jobs:
         uses: ./actions/dotnet-core-test
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'Tests.slnf'
+          solution: 'NClient.sln'
