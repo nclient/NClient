@@ -31,4 +31,5 @@ jobs:
         uses: ./actions/dotnet-core-test
         with:
           dotnet-version: '3.1.x'
+          target-framework: 'netcoreapp3.1'
           solution: 'Tests.slnf'

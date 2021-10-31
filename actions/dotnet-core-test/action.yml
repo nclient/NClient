@@ -5,6 +5,9 @@ inputs:
   dotnet-version:
     description: '.NET Core version'
     required: true
+  target-framework:
+    description: 'Target .NET framework'
+    required: true
   solution:
     description: 'Solution path'
     required: true
@@ -24,5 +27,5 @@ runs:
       run: tar -czvf build-artifact.tar.gz ./bin
       shell: bash
     - name: Test
-      run: dotnet test ${{inputs.solution}} --no-build --verbosity normal --configuration Release
+      run: dotnet test ${{inputs.solution}} --framework ${{inputs.target-framework}} --no-build --verbosity normal --configuration Release
       shell: bash
