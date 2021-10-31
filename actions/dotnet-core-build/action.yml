@@ -18,7 +18,7 @@ runs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies and build
-      run: dotnet build --output build --configuration Release /warnaserror
+      run: dotnet build --configuration Release /warnaserror
       shell: bash
     - name: Upload build artifact
       uses: actions/upload-artifact@v2
