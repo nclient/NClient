@@ -23,9 +23,6 @@ runs:
       uses: actions/download-artifact@v2
       with:
         name: build-artifact-${{inputs.target-framework}}
-    - name: Create bin derictory
-      run: mkdir ./bin
-      shell: bash
     - name: Extract build artifact
       run: tar -czvf build-artifact-${{inputs.target-framework}}.tar.gz .
       shell: bash
