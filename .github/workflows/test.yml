@@ -35,7 +35,7 @@ jobs:
           solution: 'Tests.slnf'
           
   framework-test:
-    needs: build
+    needs: framework-build
     strategy:
       matrix:
         os: [windows-latest]
@@ -51,7 +51,7 @@ jobs:
           solution: 'NClient.sln'
           
   core-test:
-    needs: build
+    needs: core-build
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
