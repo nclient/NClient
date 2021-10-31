@@ -81,7 +81,7 @@ jobs:
     - name: Setup latest .NET
       uses: ./actions/dotnet-push
       with:
-        version-prefix: ${{ VersionPrefix }}-alpha.${{ VersionPatch }}
+        version-prefix: ${{ env.VersionPrefix }}-alpha.${{ env.VersionPatch }}
       
   tmp-release-alpha-validation:
     #if: github.ref == 'refs/heads/alpha-release'
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set version suffix
-      run: echo "VersionSuffix=alpha.${{ VersionPatch }}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${{ env.VersionPatch }}" >> $GITHUB_ENV
     - name: Wait packages verification (5 min)
       uses: jakejarvis/wait-action@master
       with:
@@ -115,7 +115,7 @@ jobs:
     - name: Setup latest .NET
       uses: ./actions/dotnet-push
       with:
-        version-prefix: ${{ VersionPrefix }}-alpha.${{ VersionPatch }}
+        version-prefix: ${{ env.VersionPrefix }}-alpha.${{ env.VersionPatch }}
       
   release-alpha-validation:
     if: github.ref == 'refs/heads/alpha-release'
@@ -123,7 +123,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set version suffix
-      run: echo "VersionSuffix=alpha.${{ VersionPatch }}" >> $GITHUB_ENV
+      run: echo "VersionSuffix=alpha.${{ env.VersionPatch }}" >> $GITHUB_ENV
     - name: Wait packages verification (5 min)
       uses: jakejarvis/wait-action@master
       with:
