@@ -17,62 +17,10 @@ env:
   VersionPatch: 5
       
 jobs:
-  build:
-    name: Build with ${{ matrix.target-frameworks }}
-    environment: development
-    strategy:
-      matrix:
-        target-frameworks: [net462, net472, net48, netcoreapp3.1, net5.0]
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Build with ${{ matrix.target-frameworks }}
-        uses: ./actions/dotnet-build
-        with:
-          target-framework: ${{ matrix.target-frameworks }}
-          solution: 'Tests.slnf'
-          
-  test-dotnet-core:
-    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
-    environment: development
-    needs: build
-    strategy:
-      matrix:
-        os: [windows-latest]
-        target-frameworks: [net462, net472, net48]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/dotnet-framework-test
-        with:
-          target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
-          
-  test-dotnet-framework:
-    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
-    environment: development
-    needs: build
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        target-frameworks: [netcoreapp3.1, net5.0]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/dotnet-core-test
-        with:
-          target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
   
   tmp-release-alpha:
     #if: github.ref == 'refs/heads/alpha-release'
     if: github.ref == 'refs/heads/features/github-environments'
-    needs: [ test-dotnet-core, test-dotnet-framework ]
     environment: release-alpha
     runs-on: ubuntu-latest
     steps:
@@ -106,7 +54,7 @@ jobs:
   
   release-alpha:
     if: github.ref == 'refs/heads/alpha-release'
-    needs: [ test-dotnet-core, test-dotnet-framework ]
+    #needs: [ test-dotnet-core, test-dotnet-framework ]
     environment: release-alpha
     runs-on: ubuntu-latest
     steps:
