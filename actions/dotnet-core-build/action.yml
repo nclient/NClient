@@ -2,26 +2,32 @@ name: '.NET Core build'
 description: 'Build projects with .NET Core'
 
 inputs:
+  dotnet-version:
+    description: '.NET Core version'
+    required: true
   target-framework:
     description: 'Target .NET framework'
+    required: true
+  solution:
+    description: 'Solution path'
     required: true
     
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET Core 3.1
+    - name: Setup .NET Core ${{inputs.dotnet-version}}
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: ${{inputs.dotnet-version}}
     - name: Setup .NET 5.0
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies and build
-      run: dotnet build --configuration Release /warnaserror
+      run: dotnet build ${{inputs.solution}} --framework ${{inputs.target-framework}} --configuration Release /warnaserror
       shell: bash
     - name: Compress build artifact
-      run: tar cvzf build-artifact.tar.gz bin/
+      run: tar cvzf build-artifact.tar.gz .
       shell: bash
     - name: Upload build artifact
       uses: actions/upload-artifact@v2

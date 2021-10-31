@@ -5,6 +5,9 @@ inputs:
   dotnet-version:
     description: '.NET Core version'
     required: true
+  solution:
+    description: 'Solution path'
+    required: true
     
 runs:
   using: "composite"
@@ -17,6 +20,9 @@ runs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifact
+    - name: Extract build artifact
+      run: tar -czvf build-artifact.tar.gz .
+      shell: bash
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test ${{inputs.solution}} --no-build --verbosity normal --configuration Release
       shell: bash
