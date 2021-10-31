@@ -21,7 +21,7 @@ jobs:
           solution: 'Tests.slnf'
           
   test-with-dotnet-core:
-    needs: framework-build
+    needs: build
     strategy:
       matrix:
         os: [windows-latest]
@@ -37,7 +37,7 @@ jobs:
           solution: 'NClient.sln'
           
   test-with-dotnet-framework:
-    needs: core-build
+    needs: build
     strategy:
       matrix:
         os: [ubuntu-latest]
