@@ -18,7 +18,6 @@ env:
       
 jobs:
   build:
-    build:
     name: Build with ${{ matrix.target-frameworks }}
     environment: development
     strategy:
@@ -70,7 +69,7 @@ jobs:
           target-framework: ${{ matrix.target-frameworks }}
           solution: 'NClient.sln'
   
-  release-alpha:
+  tmp-release-alpha:
     #if: github.ref == 'refs/heads/alpha-release'
     if: github.ref == 'refs/heads/features/github-environments'
     needs: [ test-dotnet-core, test-dotnet-framework ]
@@ -84,9 +83,42 @@ jobs:
       with:
         version-prefix: ${{ VersionPrefix }}-alpha.${{ VersionPatch }}
       
-  release-alpha-validation:
+  tmp-release-alpha-validation:
     #if: github.ref == 'refs/heads/alpha-release'
     if: github.ref == 'refs/heads/features/github-environments'
+    needs: release-alpha 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set version suffix
+      run: echo "VersionSuffix=alpha.${{ VersionPatch }}" >> $GITHUB_ENV
+    - name: Wait packages verification (5 min)
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Setup latest .NET
+      uses: actions/setup-dotnet@v1
+    - name: Restore dependencies and build
+      run: dotnet build --configuration TestRelease -warnaserror
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --configuration TestRelease
+  
+  release-alpha:
+    if: github.ref == 'refs/heads/alpha-release'
+    needs: [ test-dotnet-core, test-dotnet-framework ]
+    environment: release-alpha
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Setup latest .NET
+      uses: ./actions/dotnet-push
+      with:
+        version-prefix: ${{ VersionPrefix }}-alpha.${{ VersionPatch }}
+      
+  release-alpha-validation:
+    if: github.ref == 'refs/heads/alpha-release'
     needs: release-alpha 
     runs-on: ubuntu-latest
     steps:
