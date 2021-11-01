@@ -9,6 +9,7 @@
         <IsPackable>false</IsPackable>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,10 +19,11 @@
         <PackageReference Include="NClient.Annotations" Version="*-*"/>
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.HttpClient.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.Http.RestSharp" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.Http.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Results.LanguageExt" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Results.HttpResults" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>

@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 using NClient.Extensions.DependencyInjection;
 using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
