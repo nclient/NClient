@@ -22,8 +22,7 @@ jobs:
   
   release-dev:
     if: ${{ github.event.inputs.version-prefix }} != '' && ${{ github.event.inputs.version-patch }} != ''
-    #needs: [ test-dotnet-core, test-dotnet-framework ]
-    #environment: release-dev
+    environment: release-dev
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -38,7 +37,6 @@ jobs:
       
   release-dev-validation:
     needs: release-dev
-    #environment: release-dev
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -55,8 +53,7 @@ jobs:
   
   release-alpha:
     if: github.ref == 'refs/heads/alpha-release'
-    #needs: [ test-dotnet-core, test-dotnet-framework ]
-    #environment: release-alpha
+    environment: release-alpha
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -70,8 +67,7 @@ jobs:
         source-api-key: ${{ secrets.NUGET_API_KEY }}
       
   release-alpha-validation:
-    needs: release-alpha 
-    #environment: release-alpha
+    needs: release-alpha
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -85,8 +81,7 @@ jobs:
 
   release-beta:
     if: github.ref == 'refs/heads/beta-release'
-    #needs: [ test-dotnet-core, test-dotnet-framework ]
-    #environment: release-beta
+    environment: release-beta
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -100,8 +95,7 @@ jobs:
         source-api-key: ${{ secrets.NUGET_API_KEY }}
       
   release-beta-validation:
-    needs: release-beta 
-    #environment: release-beta
+    needs: release-beta
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -115,8 +109,7 @@ jobs:
 
   release:
     if: github.ref == 'refs/heads/release'
-    #needs: [ test-dotnet-core, test-dotnet-framework ]
-    #environment: release
+    environment: release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -130,8 +123,7 @@ jobs:
         source-api-key: ${{ secrets.NUGET_API_KEY }}
       
   release-validation:
-    needs: release 
-    #environment: release
+    needs: release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
