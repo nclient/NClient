@@ -2,95 +2,143 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version-prefix:
+        description: 'Version'
+        required: true
+      version-patch:
+        description: 'Patch number'     
+        required: true
   push:
     branches: [ alpha-release, beta-release, release ]
 
 env:
-  VersionPrefix: ${{secrets.VERSION_PREFIX}}
-  VersionSuffix: unbound
-  VersionSuffixPatch: ${{secrets.VERSION_SUFFIX_PATH}}
+  version-prefix: 0.10.0
+  version-patch: 4
+  nuget-source: https://api.nuget.org/v3/index.json
+  github-pkgs-source: https://nuget.pkg.github.com/nclient/index.json
       
 jobs:
-  publish:
+  
+  release-dev:
+    if: ${{ github.event.inputs.version-prefix }} != '' && ${{ github.event.inputs.version-patch }} != ''
+    #needs: [ test-dotnet-core, test-dotnet-framework ]
+    #environment: release-dev
     runs-on: ubuntu-latest
     steps:
-    - name: Try set alpha version suffix
-      if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set beta version suffix
-      if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set release version suffix
-      if: github.ref == 'refs/heads/release'
-      run: |
-        echo "VersionSuffix=" >> $GITHUB_ENV
-        echo "VersionSuffixPatch=" >> $GITHUB_ENV
-    - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
-      run: exit 1
-      
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v1
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Push packaget to NuGet
+      uses: ./actions/push
       with:
-        dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies and build
-      run: dotnet build --configuration Release /warnaserror
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
-    - name: Pack
-      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
-    - name: Publish
-      run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
-    - name: Try set pre-release tag
-      if: env.VersionSuffix != ''
-      run: echo "ReleaseTag=v${VersionPrefix}-${VersionSuffix}" >> $GITHUB_ENV
-    - name: Try set release tag
-      if: env.VersionSuffix == ''
-      run: echo "ReleaseTag=v${VersionPrefix}" >> $GITHUB_ENV
-    - name: Create release tag
-      run: git tag ${{env.ReleaseTag}}
-    - name: Push release tag
-      run: git push origin ${{env.ReleaseTag}}
+        version-prefix: ${{ github.event.inputs.version-prefix }}
+        version-suffix: dev.${{ github.event.inputs.version-patch }}
+        source: ${{ env.github-pkgs-source }}
+        source-api-key: ${{ secrets.GITHUB_TOKEN }}
       
-  validation:
+  release-dev-validation:
+    needs: release-dev
+    #environment: release-dev
     runs-on: ubuntu-latest
-    needs: publish 
     steps:
-    - name: Try set alpha version suffix
-      if: github.ref == 'refs/heads/alpha-release'
-      run: echo "VersionSuffix=alpha.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set beta version suffix
-      if: github.ref == 'refs/heads/beta-release'
-      run: echo "VersionSuffix=beta.${VersionSuffixPatch}" >> $GITHUB_ENV
-    - name: Try set release version suffix
-      if: github.ref == 'refs/heads/release'
-      run: |
-        echo "VersionSuffix=" >> $GITHUB_ENV
-        echo "VersionSuffixPatch=" >> $GITHUB_ENV
-    - name: Exit because the branch is not released
-      if: env.VersionSuffix == 'unbound'
-      run: exit 1
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Test release
+      uses: ./actions/test-release
+      with:
+        version-prefix: ${{ github.event.inputs.version-prefix }}
+        version-suffix: dev.${{ github.event.inputs.version-patch }}
+        delay: 30s
+        custom-source: ${{ env.github-pkgs-source }}
+        custom-source-user: nclient
+        custom-source-password: ${{ secrets.GITHUB_TOKEN }}
+  
+  release-alpha:
+    if: github.ref == 'refs/heads/alpha-release'
+    #needs: [ test-dotnet-core, test-dotnet-framework ]
+    #environment: release-alpha
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Push packaget to NuGet
+      uses: ./actions/push
+      with:
+        version-prefix: ${{ env.version-prefix }}
+        version-suffix: alpha.${{ env.version-patch }}
+        source: ${{ env.nuget-source }}
+        source-api-key: ${{ secrets.NUGET_API_KEY }}
       
-    - name: Wait verification packages (5 min)
-      uses: jakejarvis/wait-action@master
+  release-alpha-validation:
+    needs: release-alpha 
+    #environment: release-alpha
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Test release
+      uses: ./actions/test-release
       with:
-        time: '5m'
-        
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v1
+        version-prefix: ${{ github.event.inputs.version-prefix }}
+        version-suffix: alpha.${{ github.event.inputs.version-patch }}
+        delay: 5m
+
+  release-beta:
+    if: github.ref == 'refs/heads/beta-release'
+    #needs: [ test-dotnet-core, test-dotnet-framework ]
+    #environment: release-beta
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Push packaget to NuGet
+      uses: ./actions/push
       with:
-        dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
-      uses: actions/setup-dotnet@v1
+        version-prefix: ${{ env.version-prefix }}
+        version-suffix: beta.${{ env.version-patch }}
+        source: ${{ env.nuget-source }}
+        source-api-key: ${{ secrets.NUGET_API_KEY }}
+      
+  release-beta-validation:
+    needs: release-beta 
+    #environment: release-beta
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Test release
+      uses: ./actions/test-release
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies and build
-      run: dotnet build --configuration TestRelease /warnaserror
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration TestRelease
+        version-prefix: ${{ github.event.inputs.version-prefix }}
+        version-suffix: beta.${{ github.event.inputs.version-patch }}
+        delay: 5m
+
+  release:
+    if: github.ref == 'refs/heads/release'
+    #needs: [ test-dotnet-core, test-dotnet-framework ]
+    #environment: release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Push packaget to NuGet
+      uses: ./actions/push
+      with:
+        version-prefix: ${{ env.version-prefix }}
+        version-suffix: ''
+        source: ${{ env.nuget-source }}
+        source-api-key: ${{ secrets.NUGET_API_KEY }}
+      
+  release-validation:
+    needs: release 
+    #environment: release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Test release
+      uses: ./actions/test-release
+      with:
+        version-prefix: ${{ github.event.inputs.version-prefix }}
+        version-suffix: ''
+        delay: 5m
