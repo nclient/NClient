@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     name: Build with ${{ matrix.target-frameworks }}
-    environment: development
     strategy:
       matrix:
         target-frameworks: [net48, net5.0]
@@ -24,7 +23,6 @@ jobs:
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
-    environment: development
     needs: build
     strategy:
       matrix:
@@ -42,7 +40,6 @@ jobs:
           
   test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
-    environment: development
     needs: build
     strategy:
       matrix:
