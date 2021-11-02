@@ -32,6 +32,6 @@ runs:
         if [[ "${{ inputs.release-type }}" == "release" ]]; then
           echo "::set-output name=version-suffix::"
         else
-          echo "::set-output name=version-suffix::${{ inputs.release-type }}.${{ inputs.version-suffix }}"
+          echo "::set-output name=version-suffix::${{ inputs.release-type }}.${{ inputs.version-patch }}"
         fi
       shell: bash
