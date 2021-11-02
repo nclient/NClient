@@ -14,16 +14,21 @@ namespace NClient
     {
         #region Serializer
         
+        // TODO: Add:
+        //INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomSerialization(ISerializer serializer);
+
         /// <summary>
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
+        // TODO: rename to Using*
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider);
 
         #endregion
         
         #region ResponseValidation
 
+        // TODO: For IRequest IResponse
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings);
 
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators);
