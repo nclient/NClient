@@ -44,6 +44,7 @@ jobs:
         release-type: ${{ env.release-type }}
     - name: Test release
       uses: ./actions/test-release
+      with:
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
         version-suffix: ${{ steps.release-info.outputs.version-suffix }}
         delay: 5m
