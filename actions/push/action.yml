@@ -13,17 +13,21 @@ inputs:
   source-api-key:
     description: 'Package regestry api key'     
     required: true
+  needsTag:
+    description: 'Need to create a tag'     
+    required: true
+    default: true
     
 runs:
   using: "composite"
   steps:
     - name: Setup latest .NET
       uses: actions/setup-dotnet@v1
-    - name: Set VersionPrefix env variable
+    - name: Setting VersionPrefix env variable
       run: |
         echo "VersionPrefix=${{ inputs.version-prefix }}" >> $GITHUB_ENV
       shell: bash
-    - name: Set VersionSuffix env variable
+    - name: Setting VersionSuffix env variable
       run: |
         if [[ "${{ inputs.version-suffix }}" != "" ]]; then
           echo "VersionSuffix=${{ inputs.version-suffix }}" >> $GITHUB_ENV
@@ -56,12 +60,15 @@ runs:
     - name: Publish to ${{ inputs.source }}
       run: dotnet nuget push ./nupkgs/ --source ${{ inputs.source }} --api-key ${{ inputs.source-api-key }} --skip-duplicate
       shell: bash
-    #- name: Publish
-    #  run: dotnet nuget push ./nupkgs/ --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-    #  shell: bash
-    #- name: Create release tag
-    #  run: git tag ${{ env.ReleaseTag }}
-    #  shell: bash
-    #- name: Push release tag
-    #  run: git push origin ${{ env.ReleaseTag }}
-    #  shell: bash
+    - name: Try to create release tag
+      run: |
+        if [[ "${{ inputs.needsTag }}" == "true" ]]; then
+          git tag ${{ env.ReleaseTag }}
+        fi
+      shell: bash
+    - name: Try to push release tag
+      run: |
+        if [[ "${{ inputs.needsTag }}" == "true" ]]; then
+          git push origin ${{ env.ReleaseTag }}
+        fi
+      shell: bash
