@@ -1,18 +1,18 @@
-name: 'Release'
+name: 'Release: Beta'
 
 on:
   push:
-    branches: release
+    branches: beta-release
 
 env:
-  release-type: release
+  release-type: beta
   nuget-source: https://api.nuget.org/v3/index.json
       
 jobs:
-
+  
   release:
-    if: github.ref == 'refs/heads/release'
-    environment: release
+    if: github.ref == 'refs/heads/beta-release'
+    environment: release-beta
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
@@ -32,7 +32,7 @@ jobs:
         needsTag: true
       
   validation:
-    needs: release
+    needs: release-beta
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
