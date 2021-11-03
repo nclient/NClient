@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INClientAdvTransportBuilder<TClient> : INClientTransportBuilder<TClient>
+    public interface INClientAdvancedTransportBuilder<TClient> : INClientTransportBuilder<TClient>
         where TClient : class
     {
         /// <summary>
@@ -11,7 +11,7 @@ namespace NClient
         /// </summary>
         /// <param name="transportProvider">The provider that can create instances of <see cref="ITransport{TRequest,TResponse}"/>.</param>
         /// <param name="transportRequestBuilderProvider">The provider that can create instances of <see cref="ITransportRequestBuilder{TRequest,TResponse}"/>.</param>
-        INClientAdvSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider);

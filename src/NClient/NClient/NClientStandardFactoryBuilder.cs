@@ -3,7 +3,7 @@ using NClient.Providers.Api.Rest.Extensions;
 
 namespace NClient
 {
-    public interface IStandardNClientFactoryBuilder
+    public interface INClientStandardFactoryBuilder
     {
         INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName);
     }
@@ -11,11 +11,11 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client factory.
     /// </summary>
-    public class StandardNClientFactoryBuilder : IStandardNClientFactoryBuilder
+    public class NClientStandardFactoryBuilder : INClientStandardFactoryBuilder
     {
         public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
-            return new CustomNClientFactoryBuilder()
+            return new NClientAdvancedFactoryBuilder()
                 .For(factoryName)
                 .UsingRestApi()
                 .UsingHttpTransport()

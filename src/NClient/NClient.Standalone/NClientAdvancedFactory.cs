@@ -8,13 +8,13 @@ namespace NClient
     /// <summary>
     /// The factory used to create the client with custom providers.
     /// </summary>
-    internal class CustomNClientFactory<TRequest, TResponse> : INClientFactory
+    internal class NClientAdvancedFactory<TRequest, TResponse> : INClientFactory
     {
         private readonly BuilderContext<TRequest, TResponse> _builderContext;
         
         public string Name { get; set; }
         
-        public CustomNClientFactory(string name, BuilderContext<TRequest, TResponse> builderContext)
+        public NClientAdvancedFactory(string name, BuilderContext<TRequest, TResponse> builderContext)
         {
             Name = name;
             _builderContext = builderContext;

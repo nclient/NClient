@@ -172,7 +172,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
 
         public INClientFactory Build()
         {
-            return new CustomNClientFactory<TRequest, TResponse>(_factoryName, _context);
+            return new NClientAdvancedFactory<TRequest, TResponse>(_factoryName, _context);
         }
     }
 }

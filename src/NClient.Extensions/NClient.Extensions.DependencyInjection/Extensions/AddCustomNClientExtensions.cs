@@ -23,7 +23,7 @@ namespace NClient.Extensions.DependencyInjection
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            return serviceCollection.AddSingleton(_ => implementationFactory(new CustomNClientBuilder().For<TClient>(host)));
+            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientAdvancedBuilder().For<TClient>(host)));
         }
 
         // TODO: doc
@@ -42,7 +42,7 @@ namespace NClient.Extensions.DependencyInjection
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new CustomNClientBuilder().For<TClient>(host)));
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientAdvancedBuilder().For<TClient>(host)));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
             
-            return serviceCollection.AddSingleton(_ => implementationFactory(new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientAdvancedFactoryBuilder().For(factoryName)));
         }
 
         // TODO: doc
@@ -45,7 +45,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
 
-            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientAdvancedFactoryBuilder().For(factoryName)));
         }
     }
 }

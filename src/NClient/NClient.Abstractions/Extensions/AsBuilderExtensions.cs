@@ -4,57 +4,57 @@ namespace NClient
 {
     public static class AsBuilderExtensions
     {
-        public static INClientAdvApiBuilder<TClient> AsAdvanced<TClient>(
+        public static INClientAdvancedApiBuilder<TClient> AsAdvanced<TClient>(
             this INClientApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
-            return (INClientAdvApiBuilder<TClient>)clientApiBuilder;
+            return (INClientAdvancedApiBuilder<TClient>)clientApiBuilder;
         }
         
         public static INClientApiBuilder<TClient> AsBasic<TClient>(
-            this INClientAdvApiBuilder<TClient> clientApiBuilder)
+            this INClientAdvancedApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
             return clientApiBuilder;
         }
         
-        public static INClientAdvTransportBuilder<TClient> AsAdvanced<TClient>(
+        public static INClientAdvancedTransportBuilder<TClient> AsAdvanced<TClient>(
             this INClientTransportBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
-            return (INClientAdvTransportBuilder<TClient>)clientApiBuilder;
+            return (INClientAdvancedTransportBuilder<TClient>)clientApiBuilder;
         }
         
         public static INClientTransportBuilder<TClient> AsBasic<TClient>(
-            this INClientAdvTransportBuilder<TClient> clientApiBuilder)
+            this INClientAdvancedTransportBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
             return clientApiBuilder;
         }
         
-        public static INClientAdvSerializerBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(
+        public static INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(
             this INClientSerializerBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
-            return (INClientAdvSerializerBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
+            return (INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
         }
         
         public static INClientSerializerBuilder<TClient, TRequest, TResponse> AsBasic<TClient, TRequest, TResponse>(
-            this INClientAdvSerializerBuilder<TClient, TRequest, TResponse> clientApiBuilder)
+            this INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
             return clientApiBuilder;
         }
         
-        public static INClientAdvOptionalBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(
+        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
-            return (INClientAdvOptionalBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
+            return (INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
         }
         
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> AsBasic<TClient, TRequest, TResponse>(
-            this INClientAdvOptionalBuilder<TClient, TRequest, TResponse> clientApiBuilder)
+            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
             return clientApiBuilder;

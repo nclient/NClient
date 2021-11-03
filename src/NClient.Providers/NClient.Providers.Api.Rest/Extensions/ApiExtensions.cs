@@ -5,8 +5,8 @@ namespace NClient.Providers.Api.Rest.Extensions
     // TODO: doc
     public static class ApiExtensions
     {
-        public static INClientAdvTransportBuilder<TClient> UsingRestApi<TClient>(
-            this INClientAdvApiBuilder<TClient> clientApiBuilder)
+        public static INClientAdvancedTransportBuilder<TClient> UsingRestApi<TClient>(
+            this INClientAdvancedApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
             Ensure.IsNotNull(clientApiBuilder, nameof(clientApiBuilder));

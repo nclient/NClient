@@ -7,18 +7,18 @@ using NClient.Providers.Api.Rest.Extensions;
 namespace NClient.Extensions.DependencyInjection
 {
     // TODO: doc
-    public interface IInjectedNClientBuilder
+    public interface INClientInjectedBuilder
     {
         INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class;
     }
     
-    public class InjectedNClientBuilder : IInjectedNClientBuilder
+    public class NClientInjectedBuilder : INClientInjectedBuilder
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly string? _httpClientName;
         
-        public InjectedNClientBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
+        public NClientInjectedBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
         {
             _serviceProvider = serviceProvider;
             _httpClientName = httpClientName;
@@ -30,7 +30,7 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             
-            return new CustomNClientBuilder()
+            return new NClientAdvancedBuilder()
                 .For<TClient>(host)
                 .UsingRestApi()
                 .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
