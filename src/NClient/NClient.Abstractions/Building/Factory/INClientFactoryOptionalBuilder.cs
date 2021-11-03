@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using NClient.Providers.Handling;
 using NClient.Providers.Resilience;
 using NClient.Providers.Results;
 using NClient.Providers.Serialization;
@@ -40,12 +39,8 @@ namespace NClient
         #endregion
 
         #region Handling
-
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerSettings<TRequest, TResponse>[] clientHandlerSettings);
-
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers);
         
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling(Action<INClientHandlingSetter<TRequest, TResponse>> configure);
 
         // TODO: doc
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutHandling();

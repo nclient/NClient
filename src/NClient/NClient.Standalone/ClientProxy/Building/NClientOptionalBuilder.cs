@@ -3,16 +3,15 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
-using NClient.Providers.Handling;
 using NClient.Providers.Resilience;
 using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 using NClient.Resilience;
-using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Logging;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
@@ -81,34 +80,24 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithSerializer(serializerProvider));
         }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerSettings<TRequest, TResponse>[] clientHandlerSettings)
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(Action<INClientAdvancedHandlingSetter<TRequest, TResponse>> configure)
         {
-            return WithCustomHandling(clientHandlerSettings
-                .Select(x => new ClientHandler<TRequest, TResponse>(x))
-                .Cast<IClientHandler<TRequest, TResponse>>()
-                .ToArray());
-        }
+            Ensure.IsNotNull(configure, nameof(configure));
 
-        /// <summary>
-        /// Sets collection of <see cref="IClientHandler{TRequest,TResponse}"/> used to handle HTTP requests and responses />.
-        /// </summary>
-        /// <param name="handlers">The collection of handlers.</param>
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandler<TRequest, TResponse>[] handlers)
-        {
-            return WithCustomHandling(handlers
-                .Select(x => new ClientHandlerProvider<TRequest, TResponse>(x))
-                .Cast<IClientHandlerProvider<TRequest, TResponse>>()
-                .ToArray());
-        }
-
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomHandling(params IClientHandlerProvider<TRequest, TResponse>[] providers)
-        {
-            Ensure.IsNotNull(providers, nameof(providers));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithHandlers(providers));
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientAdvancedHandlingSetter<TRequest, TResponse>(builderContextModifier));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
         
+        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(Action<INClientHandlingSetter<TRequest, TResponse>> configure)
+        {
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientHandlingSetter<TRequest, TResponse>(builderContextModifier));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
+        }
+
         public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context

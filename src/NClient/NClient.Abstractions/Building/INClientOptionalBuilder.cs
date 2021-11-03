@@ -15,6 +15,8 @@ namespace NClient
 
         #region Handling
         
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSetter<TRequest, TResponse>> configure);
+
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
         
