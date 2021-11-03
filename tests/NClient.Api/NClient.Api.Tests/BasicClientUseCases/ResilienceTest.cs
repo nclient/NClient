@@ -77,7 +77,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(selector => selector
+                .WithResilience(selector => selector
                     .ForAllMethods().DoNotUse()
                     .ForMethod(x => (Func<int, Task<int>>)x.GetAsync).Use(
                         maxRetries: 3,
@@ -97,7 +97,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForMethod(client => (Func<BasicEntity, Task>)client.PostAsync).DoNotUse())
                 .Build();
             
@@ -112,7 +112,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForMethodsThat((_, request) => request.Type == RequestType.Create).DoNotUse())
                 .Build();
             
@@ -127,7 +127,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForMethodsThat((_, request) => request.Type == RequestType.Create).Use())
                 .Build();
             

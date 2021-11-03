@@ -128,7 +128,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithResiliencePolicy(methodResiliencePolicyProvider));
         }
         
-        public INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
+        public INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
@@ -137,9 +137,9 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
+        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
         {
-            return WithCustomResilience(configure);
+            return WithResilience(configure);
         }
         
         public INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience()

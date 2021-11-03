@@ -24,7 +24,7 @@ namespace NClient
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForAllMethods()
                     .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
                         maxRetries: 0,
@@ -100,7 +100,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.AsAdvanced().WithCustomResilience(x => x
+            return clientOptionalBuilder.AsAdvanced().WithResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                 .ForMethodsThat((_, request) => request.Type.IsSafe())

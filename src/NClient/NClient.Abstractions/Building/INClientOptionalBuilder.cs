@@ -23,7 +23,7 @@ namespace NClient
         #region Resilience
         
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();

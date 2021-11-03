@@ -16,7 +16,7 @@ namespace NClient
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForAllMethods()
                     .Use(otherMethodProvider)
                     .ForMethodsThat((_, request) => request.Type.IsSafe())

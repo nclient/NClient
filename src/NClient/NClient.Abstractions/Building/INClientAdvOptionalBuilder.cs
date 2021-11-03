@@ -57,7 +57,7 @@ namespace NClient
         INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
 
         // TODO: doc
-        new INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
+        new INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
 
         // TODO: doc
         new INClientAdvOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();

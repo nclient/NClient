@@ -164,7 +164,7 @@ namespace NClient.Tests.ClientTests
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
-                .WithCustomResilience(x => x
+                .WithResilience(x => x
                     .ForMethod(client => (Action<BasicEntity>)client.Post)
                     .DoNotUse())
                 .Build();
@@ -249,7 +249,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(selector => selector
+                .WithResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
@@ -267,7 +267,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(selector => selector
+                .WithResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
@@ -286,7 +286,7 @@ namespace NClient.Tests.ClientTests
                 NClientGallery.Clients
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
-                    .WithCustomResilience(selector => selector
+                    .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                         .Use(getDelay: _ => 0.Seconds())
                         .ForMethod(x => (Action<BasicEntity>)x.Post)
@@ -301,7 +301,7 @@ namespace NClient.Tests.ClientTests
                 NClientGallery.Clients
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
-                    .WithCustomResilience(selector => selector
+                    .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                         .Use(getDelay: _ => 0.Seconds())
                         .ForMethod(x => (Action<BasicEntity>)x.Post)
@@ -325,7 +325,7 @@ namespace NClient.Tests.ClientTests
                 NClientGallery.Clients
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
-                    .WithCustomResilience(selector => selector
+                    .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                         .Use(getDelay: _ => 0.Seconds())
                         .ForMethod(x => (Action<BasicEntity>)x.Post)
@@ -340,7 +340,7 @@ namespace NClient.Tests.ClientTests
                 NClientGallery.Clients
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
-                    .WithCustomResilience(selector => selector
+                    .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>)x.Get)
                         .Use(getDelay: _ => 0.Seconds())
                         .ForMethod(x => (Action<BasicEntity>)x.Post)
@@ -360,7 +360,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(selector => selector
+                .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
@@ -377,7 +377,7 @@ namespace NClient.Tests.ClientTests
             var returnClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
-                .WithCustomResilience(selector => selector
+                .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds())
                     .ForMethod(x => (Func<int, BasicEntity>)x.Get)
