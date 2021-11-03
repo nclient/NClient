@@ -14,9 +14,10 @@ namespace NClient
             Action<IResponseContext<TRequest, TResponse>> onFailure)
             where TClient : class
         {
-            return clientOptionalBuilder.WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
-                isSuccess, 
-                onFailure));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
+                    isSuccess, 
+                    onFailure));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseValidation<TRequest, TResponse>(

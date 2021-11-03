@@ -7,9 +7,9 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client with custom providers.
     /// </summary>
-    public class CustomNClientBuilder : INClientBuilder
+    public class CustomNClientBuilder : INClientAdvancedBuilder
     {
-        public INClientApiBuilder<TClient> For<TClient>(string host) where TClient : class
+        public INClientAdvApiBuilder<TClient> For<TClient>(string host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
             return new NClientApiBuilder<TClient>(host);

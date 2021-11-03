@@ -1,14 +1,10 @@
-﻿using NClient.Providers.Serialization;
+﻿// ReSharper disable once CheckNamespace
+// ReSharper disable UnusedTypeParameter
 
-// ReSharper disable once CheckNamespace
 namespace NClient
 {
+    // TODO: rename to Serialization
     public interface INClientSerializerBuilder<TClient, TRequest, TResponse> where TClient : class
     {
-        /// <summary>
-        /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider);
     }
 }

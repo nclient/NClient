@@ -10,7 +10,8 @@ namespace NClient
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.WithCustomResponseValidation(new DefaultSystemResponseValidatorSettings());
+            return factoryOptionalBuilder.AsAdvanced()
+                .WithCustomResponseValidation(new DefaultSystemResponseValidatorSettings());
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSystemResponseValidation(

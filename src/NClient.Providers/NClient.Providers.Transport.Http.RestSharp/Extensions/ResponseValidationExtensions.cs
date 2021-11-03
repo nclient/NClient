@@ -10,7 +10,8 @@ namespace NClient
             this INClientOptionalBuilder<TClient, IRestRequest, IRestResponse> factoryOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings());
+            return factoryOptionalBuilder.AsAdvanced()
+                .WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings());
         }
         
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> WithRestSharpResponseValidation(

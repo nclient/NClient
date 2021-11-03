@@ -14,7 +14,8 @@ namespace NClient
         {
             Ensure.IsNotNull(provider, nameof(provider));
             
-            return clientOptionalBuilder.WithCustomResilience(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(

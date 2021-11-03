@@ -12,9 +12,10 @@ namespace NClient
             Func<TResponse, TResponse> afterRequest)
             where TClient : class
         {
-            return clientOptionalBuilder.WithCustomHandling(new ClientHandlerSettings<TRequest, TResponse>(
-                beforeRequest, 
-                afterRequest));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomHandling(new ClientHandlerSettings<TRequest, TResponse>(
+                    beforeRequest, 
+                    afterRequest));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomHandling<TRequest, TResponse>(

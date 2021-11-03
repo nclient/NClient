@@ -23,17 +23,15 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
-                    maxRetries: 0,
-                    getDelay: _ => TimeSpan.FromSeconds(0), 
-                    shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, request) =>
-                {
-                    return request.Type.IsSafe();
-                })
-                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                        maxRetries: 0,
+                        getDelay: _ => TimeSpan.FromSeconds(0), 
+                        shouldRetry: settings.ShouldRetry)))
+                    .ForMethodsThat((_, request) => request.Type.IsSafe())
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -102,7 +100,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
+            return clientOptionalBuilder.AsAdvanced().WithCustomResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                 .ForMethodsThat((_, request) => request.Type.IsSafe())

@@ -15,11 +15,12 @@ namespace NClient
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(otherMethodProvider)
-                .ForMethodsThat((_, request) => request.Type.IsSafe())
-                .Use(safeMethodProvider));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(otherMethodProvider)
+                    .ForMethodsThat((_, request) => request.Type.IsSafe())
+                    .Use(safeMethodProvider));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(

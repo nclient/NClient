@@ -18,7 +18,8 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
 
-            return clientOptionalBuilder.WithCustomSerialization(new SystemXmlSerializerProvider());
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomSerialization(new SystemXmlSerializerProvider());
         }
         
         /// <summary>
@@ -46,7 +47,8 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
 
-            return clientOptionalBuilder.WithCustomSerialization(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomSerialization(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
         }
         
         /// <summary>

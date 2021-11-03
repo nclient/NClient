@@ -23,14 +23,15 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
-                    maxRetries: 0,
-                    getDelay: _ => TimeSpan.FromSeconds(0),
-                    shouldRetry: settings.ShouldRetry)))
-                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                        maxRetries: 0,
+                        getDelay: _ => TimeSpan.FromSeconds(0),
+                        shouldRetry: settings.ShouldRetry)))
+                    .ForMethodsThat((_, request) => request.Type.IsIdempotent())
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -99,11 +100,12 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .ForMethodsThat((_, request) => request.Type.IsIdempotent())
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
         }
         
         /// <summary>

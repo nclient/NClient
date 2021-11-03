@@ -11,7 +11,7 @@ namespace NClient
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithCustomResults(new ResultBuilderProvider());
+            return clientOptionalBuilder.AsAdvanced().WithCustomResults(new ResultBuilderProvider());
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults<TRequest, TResponse>(
@@ -24,7 +24,7 @@ namespace NClient
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithCustomResults(new HttpResponseBuilderProvider());
+            return clientOptionalBuilder.AsAdvanced().WithCustomResults(new HttpResponseBuilderProvider());
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithHttpResults(

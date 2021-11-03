@@ -19,10 +19,11 @@ namespace NClient
         {
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientTransportBuilder.UsingCustomTransport(
-                new RestSharpTransportProvider(),
-                new RestSharpTransportRequestBuilderProvider(),
-                new RestSharpResponseBuilderProvider());
+            return clientTransportBuilder.AsAdvanced()
+                .UsingCustomTransport(
+                    new RestSharpTransportProvider(),
+                    new RestSharpTransportRequestBuilderProvider(),
+                    new RestSharpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -52,10 +53,11 @@ namespace NClient
         {
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientTransportBuilder.UsingCustomTransport(
-                new RestSharpTransportProvider(authenticator),
-                new RestSharpTransportRequestBuilderProvider(),
-                new RestSharpResponseBuilderProvider());
+            return clientTransportBuilder.AsAdvanced()
+                .UsingCustomTransport(
+                    new RestSharpTransportProvider(authenticator),
+                    new RestSharpTransportRequestBuilderProvider(),
+                    new RestSharpResponseBuilderProvider());
         }
         
         /// <summary>

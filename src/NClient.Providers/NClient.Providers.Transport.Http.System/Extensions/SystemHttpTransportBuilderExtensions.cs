@@ -18,10 +18,11 @@ namespace NClient
         {
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientTransportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
+            return clientTransportBuilder.AsAdvanced()
+                .UsingCustomTransport(
+                    new SystemHttpTransportProvider(), 
+                    new SystemHttpTransportRequestBuilderProvider(),
+                    new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -53,10 +54,11 @@ namespace NClient
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
-            return clientTransportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
+            return clientTransportBuilder.AsAdvanced()
+                .UsingCustomTransport(
+                    new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
+                    new SystemHttpTransportRequestBuilderProvider(),
+                    new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>
@@ -91,10 +93,11 @@ namespace NClient
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
             Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
 
-            return clientTransportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
+            return clientTransportBuilder.AsAdvanced()
+                .UsingCustomTransport(
+                    new SystemHttpTransportProvider(httpMessageHandler), 
+                    new SystemHttpTransportRequestBuilderProvider(),
+                    new SystemHttpResponseBuilderProvider());
         }
         
         /// <summary>

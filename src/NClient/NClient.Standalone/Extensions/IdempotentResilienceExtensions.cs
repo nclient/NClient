@@ -15,11 +15,12 @@ namespace NClient
             Ensure.IsNotNull(idempotentMethodProvider, nameof(idempotentMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(otherMethodProvider)
-                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                .Use(idempotentMethodProvider));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(otherMethodProvider)
+                    .ForMethodsThat((_, request) => request.Type.IsIdempotent())
+                    .Use(idempotentMethodProvider));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience<TRequest, TResponse>(

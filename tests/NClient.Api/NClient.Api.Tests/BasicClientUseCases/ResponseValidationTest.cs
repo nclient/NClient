@@ -31,6 +31,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+                .AsAdvanced()
                 .WithoutResponseValidation()
                 .WithCustomResponseValidation(new CustomResponseValidatorSettings())
                 .Build();
@@ -46,6 +47,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+                .AsAdvanced()
                 .WithCustomResponseValidation(new CustomResponseValidatorSettings())
                 .Build();
             

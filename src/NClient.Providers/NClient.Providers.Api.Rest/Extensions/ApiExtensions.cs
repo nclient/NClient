@@ -5,13 +5,22 @@ namespace NClient.Providers.Api.Rest.Extensions
     // TODO: doc
     public static class ApiExtensions
     {
+        public static INClientAdvTransportBuilder<TClient> UsingRestApi<TClient>(
+            this INClientAdvApiBuilder<TClient> clientApiBuilder)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientApiBuilder, nameof(clientApiBuilder));
+
+            return clientApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+        }
+        
         public static INClientTransportBuilder<TClient> UsingRestApi<TClient>(
             this INClientApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
             Ensure.IsNotNull(clientApiBuilder, nameof(clientApiBuilder));
 
-            return clientApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+            return clientApiBuilder.AsAdvanced().UsingCustomApi(new RestRequestBuilderProvider());
         }
         
         public static INClientFactoryTransportBuilder UsingRestApi(

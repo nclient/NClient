@@ -22,9 +22,10 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
         /// <summary>
@@ -88,9 +89,10 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithCustomResilience(x => x
+                    .ForAllMethods()
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
         
         /// <summary>
