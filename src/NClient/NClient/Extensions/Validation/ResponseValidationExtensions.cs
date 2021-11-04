@@ -21,7 +21,7 @@ namespace NClient
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.UseSystemResponseValidation();
+            return SystemResponseValidationExtensions.WithCustomResponseValidation(factoryOptionalBuilder);
         }
     }
 }

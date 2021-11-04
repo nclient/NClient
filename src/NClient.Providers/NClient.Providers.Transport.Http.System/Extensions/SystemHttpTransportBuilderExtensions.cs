@@ -108,58 +108,5 @@ namespace NClient
                 new SystemHttpTransportRequestBuilderProvider(),
                 new SystemHttpResponseBuilderProvider());
         }
-        
-        /// <summary>
-        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
-        /// </summary>
-        /// <param name="clientTransportBuilder"></param>
-        /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static INClientAdvancedSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
-            this INClientAdvancedTransportBuilder<TClient> clientTransportBuilder,
-            HttpMessageHandler httpMessageHandler)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
-            Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
-
-            return clientTransportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
-        }
-
-        /// <summary>
-        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
-        /// </summary>
-        /// <param name="clientTransportBuilder"></param>
-        /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
-            this INClientTransportBuilder<TClient> clientTransportBuilder,
-            HttpMessageHandler httpMessageHandler)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
-            Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
-
-            return UsingSystemHttpTransport(clientTransportBuilder.AsAdvanced(), httpMessageHandler).AsBasic();
-        }
-        
-        /// <summary>
-        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
-        /// </summary>
-        /// <param name="factoryTransportBuilder"></param>
-        /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
-            this INClientFactoryTransportBuilder factoryTransportBuilder,
-            HttpMessageHandler httpMessageHandler)
-        {
-            Ensure.IsNotNull(factoryTransportBuilder, nameof(factoryTransportBuilder));
-            Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
-
-            return factoryTransportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpMessageHandler), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
-        }
     }
 }

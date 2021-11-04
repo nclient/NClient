@@ -5,7 +5,7 @@ using NClient.Providers.Validation;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class TransportResponseExtensions
+    public static class UseTransportResponseExtensions
     {
         public static INClientResponseValidationSelector<TRequest, TResponse> Use<TRequest, TResponse>(
             this INClientTransportResponseValidationSetter<TRequest, TResponse> transportResponseValidationSetter,

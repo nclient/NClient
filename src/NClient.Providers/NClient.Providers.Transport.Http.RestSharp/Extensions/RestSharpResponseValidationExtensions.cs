@@ -15,13 +15,7 @@ namespace NClient
                     .ForTransport().Use(new DefaultRestSharpResponseValidatorSettings()))
                 .AsBasic();
         }
-        
-        public static INClientResponseValidationSelector<IRestRequest, IRestResponse> UseRestSharpResponseValidation(
-            this INClientTransportResponseValidationSetter<IRestRequest, IRestResponse> transportResponseValidationSetter)
-        {
-            return transportResponseValidationSetter.Use(new DefaultRestSharpResponseValidatorSettings());
-        }
-        
+
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> WithRestSharpResponseValidation(
             this INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> factoryOptionalBuilder)
         {

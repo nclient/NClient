@@ -19,18 +19,7 @@ namespace NClient.Providers.Transport.Http.System
         /// </summary>
         public SystemHttpTransportProvider()
         {
-            _httpClientFactory = () => new SystemHttpClientFactory(new HttpClientHandler());
-        }
-
-        /// <summary>
-        /// Creates the System.Net.Http based HTTP client provider.
-        /// </summary>
-        /// <param name="httpMessageHandler">The HTTP message handler.</param>
-        public SystemHttpTransportProvider(HttpMessageHandler httpMessageHandler)
-        {
-            Ensure.IsNotNull(httpMessageHandler, nameof(httpMessageHandler));
-
-            _httpClientFactory = () => new SystemHttpClientFactory(httpMessageHandler);
+            _httpClientFactory = () => new SystemHttpClientFactory(new HttpClient());
         }
 
         /// <summary>

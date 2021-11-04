@@ -21,7 +21,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
 
-            return clientAdvancedOptionalBuilder.WithSafePollyResilience(
+            return clientAdvancedOptionalBuilder.WithPollySafeResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
         
@@ -51,7 +51,7 @@ namespace NClient
         {
             Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
 
-            return factoryOptionalBuilder.WithSafePollyResilience(
+            return factoryOptionalBuilder.WithPollySafeResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
     }

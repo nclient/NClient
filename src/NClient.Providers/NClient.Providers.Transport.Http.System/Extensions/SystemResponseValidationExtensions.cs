@@ -16,13 +16,7 @@ namespace NClient
                 .AsBasic();
         }
 
-        public static INClientResponseValidationSelector<HttpRequestMessage, HttpResponseMessage> UseSystemResponseValidation(
-            this INClientTransportResponseValidationSetter<HttpRequestMessage, HttpResponseMessage> transportResponseValidationSetter)
-        {
-            return transportResponseValidationSetter.Use(new DefaultSystemResponseValidatorSettings());
-        }
-        
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> UseSystemResponseValidation(
+        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithCustomResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
         {
             return factoryOptionalBuilder.WithCustomResponseValidation(new DefaultSystemResponseValidatorSettings());
