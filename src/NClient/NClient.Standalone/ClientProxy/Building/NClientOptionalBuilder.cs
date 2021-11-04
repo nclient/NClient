@@ -11,9 +11,9 @@ using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 using NClient.Resilience;
 using NClient.Standalone.Client.Logging;
-using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
+using NClient.Standalone.ClientProxy.Building.Configuration.Validation;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
@@ -38,31 +38,23 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value);
         }
+
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientAdvancedResponseValidationSetter<TRequest, TResponse>> configure)
+        {
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientAdvancedResponseValidationSetter<TRequest, TResponse>(builderContextModifier));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators)
+        {
+            return WithResponseValidation(x => x
+                    .WithCustomResponseValidation(responseValidators))
+                .AsBasic();
+        }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings)
-        {
-            return WithCustomResponseValidation(responseValidatorSettings
-                .Select(x => new ResponseValidator<TRequest, TResponse>(x))
-                .Cast<IResponseValidator<TRequest, TResponse>>()
-                .ToArray());
-        }
-
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators)
-        {
-            return WithCustomResponseValidation(responseValidators
-                .Select(x => new ResponseValidatorProvider<TRequest, TResponse>(x))
-                .Cast<IResponseValidatorProvider<TRequest, TResponse>>()
-                .ToArray());
-        }
-
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorProvider<TRequest, TResponse>[] responseValidatorProvider)
-        {
-            Ensure.IsNotNull(responseValidatorProvider, nameof(responseValidatorProvider));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithResponseValidation(responseValidatorProvider));
-        }
-
         public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context

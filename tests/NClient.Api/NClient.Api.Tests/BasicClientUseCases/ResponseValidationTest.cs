@@ -33,7 +33,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
                 .WithoutResponseValidation()
-                .WithCustomResponseValidation(new CustomResponseValidatorSettings())
+                .WithResponseValidation(x => x
+                    .WithCustomResponseValidation(new CustomResponseValidatorSettings()))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -48,7 +49,8 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
-                .WithCustomResponseValidation(new CustomResponseValidatorSettings())
+                .WithResponseValidation(x => x
+                    .WithCustomResponseValidation(new CustomResponseValidatorSettings()))
                 .Build();
             
             var response = await client.GetAsync(id);

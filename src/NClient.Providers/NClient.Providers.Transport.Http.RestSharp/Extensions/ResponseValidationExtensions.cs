@@ -11,8 +11,15 @@ namespace NClient
             where TClient : class
         {
             return factoryOptionalBuilder.AsAdvanced()
-                .WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings())
+                .WithResponseValidation(x => x
+                    .WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings()))
                 .AsBasic();
+        }
+        
+        public static INClientAdvancedResponseValidationSetter<IRestRequest, IRestResponse> WithRestSharpResponseValidation(
+            this INClientAdvancedResponseValidationSetter<IRestRequest, IRestResponse> advancedResponseValidationSetter)
+        {
+            return advancedResponseValidationSetter.WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings());
         }
         
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> WithRestSharpResponseValidation(

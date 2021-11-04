@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
+using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
 // ReSharper disable UnusedTypeParameter
@@ -9,7 +10,9 @@ namespace NClient
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
         #region ResponseValidation
-        
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators);
+
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
 
         #endregion

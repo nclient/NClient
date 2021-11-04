@@ -15,10 +15,21 @@ namespace NClient
             where TClient : class
         {
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
-                    isSuccess, 
-                    onFailure))
+                .WithResponseValidation(x => x
+                    .WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
+                        isSuccess, 
+                        onFailure)))
                 .AsBasic();
+        }
+        
+        public static INClientAdvancedResponseValidationSetter<TRequest, TResponse> WithCustomResponseValidation<TRequest, TResponse>(
+            this INClientAdvancedResponseValidationSetter<TRequest, TResponse> advancedResponseValidationSetter,
+            Predicate<IResponseContext<TRequest, TResponse>> isSuccess,
+            Action<IResponseContext<TRequest, TResponse>> onFailure)
+        {
+            return advancedResponseValidationSetter.WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
+                isSuccess, 
+                onFailure));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseValidation<TRequest, TResponse>(

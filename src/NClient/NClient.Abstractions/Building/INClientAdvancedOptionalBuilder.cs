@@ -4,7 +4,6 @@ using NClient.Providers.Resilience;
 using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
-using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -23,11 +22,7 @@ namespace NClient
         
         #region ResponseValidation
 
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorSettings<TRequest, TResponse>[] responseValidatorSettings);
-
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidator<TRequest, TResponse>[] responseValidators);
-
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResponseValidation(params IResponseValidatorProvider<TRequest, TResponse>[] responseValidatorProvider);
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientAdvancedResponseValidationSetter<TRequest, TResponse>> configure);
 
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
