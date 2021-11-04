@@ -11,7 +11,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
-        public static INClientAdvancedSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
+        public static INClientAdvancedSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
             this INClientAdvancedTransportBuilder<TClient> clientAdvancedTransportBuilder)
             where TClient : class
         {
@@ -24,7 +24,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
-        public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder)
             where TClient : class
         {
@@ -37,7 +37,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
-        public static INClientFactoryAdvancedSerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
+        public static INClientFactoryAdvancedSerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
             this INClientFactoryAdvancedTransportBuilder clientAdvancedTransportBuilder)
         {
             Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
@@ -49,7 +49,7 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
-        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
+        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
             this INClientFactoryTransportBuilder clientTransportBuilder)
         {
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));

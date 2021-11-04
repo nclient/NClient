@@ -13,7 +13,7 @@ namespace NClient
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
-        public static INClientAdvancedSerializerBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
+        public static INClientAdvancedSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
             this INClientAdvancedTransportBuilder<TClient> clientAdvancedTransportBuilder)
             where TClient : class
         {
@@ -29,7 +29,7 @@ namespace NClient
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
-        public static INClientSerializerBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder)
             where TClient : class
         {
@@ -43,7 +43,7 @@ namespace NClient
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static INClientAdvancedSerializerBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
+        public static INClientAdvancedSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
             this INClientAdvancedTransportBuilder<TClient> clientAdvancedTransportBuilder,
             IAuthenticator authenticator)
             where TClient : class
@@ -61,7 +61,7 @@ namespace NClient
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static INClientSerializerBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder,
             IAuthenticator authenticator)
             where TClient : class
@@ -75,7 +75,7 @@ namespace NClient
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
-        public static INClientFactoryAdvancedSerializerBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
+        public static INClientFactoryAdvancedSerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
             this INClientFactoryAdvancedTransportBuilder clientAdvancedTransportBuilder)
         {
             Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
@@ -90,7 +90,7 @@ namespace NClient
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
-        public static INClientFactorySerializerBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
+        public static INClientFactorySerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
             this INClientFactoryTransportBuilder clientTransportBuilder)
         {
             Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
@@ -103,7 +103,7 @@ namespace NClient
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static INClientFactoryAdvancedSerializerBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
+        public static INClientFactoryAdvancedSerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
             this INClientFactoryAdvancedTransportBuilder clientAdvancedTransportBuilder,
             IAuthenticator authenticator)
         {
@@ -120,7 +120,7 @@ namespace NClient
         /// </summary>
         /// <param name="clientTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
-        public static INClientFactorySerializerBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
+        public static INClientFactorySerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
             this INClientFactoryTransportBuilder clientTransportBuilder,
             IAuthenticator authenticator)
         {

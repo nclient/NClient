@@ -16,7 +16,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _requestBuilderProvider = requestBuilderProvider;
         }
         
-        public INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        public INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)
@@ -25,7 +25,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             Ensure.IsNotNull(transportRequestBuilderProvider, nameof(transportRequestBuilderProvider));
             Ensure.IsNotNull(responseBuilderProvider, nameof(responseBuilderProvider));
             
-            return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
+            return new NClientFactorySerializationBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
                 .WithRequestBuilderProvider(_requestBuilderProvider)
                 .WithTransport(transportProvider, transportRequestBuilderProvider, responseBuilderProvider));
         }

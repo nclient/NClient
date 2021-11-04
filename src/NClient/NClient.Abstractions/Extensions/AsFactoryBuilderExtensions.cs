@@ -1,56 +1,71 @@
-// ReSharper disable once CheckNamespace
+using System;
+using NClient.Exceptions; 
 
+// ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: Add validation
     public static class AsFactoryBuilderExtensions
     {
+        private static NClientException GetExceptionForAsAdvancedMethods(Type builderType) =>
+            new($"The builder '{builderType.Name}' cannot be advanced.");
+        
+        private static NClientException GetExceptionForAsBasicMethods(Type builderType) =>
+            new($"The builder '{builderType.Name}' cannot be basic.");
+        
         public static INClientFactoryAdvancedApiBuilder AsAdvanced(
-            this INClientFactoryApiBuilder clientApiBuilder)
+            this INClientFactoryApiBuilder builder)
         {
-            return (INClientFactoryAdvancedApiBuilder)clientApiBuilder;
+            return builder as INClientFactoryAdvancedApiBuilder
+                ?? throw GetExceptionForAsAdvancedMethods(builder.GetType());
         }
         
         public static INClientFactoryApiBuilder AsBasic(
-            this INClientFactoryAdvancedApiBuilder clientApiBuilder)
+            this INClientFactoryAdvancedApiBuilder builder)
         {
-            return (INClientFactoryApiBuilder)clientApiBuilder;
+            return builder as INClientFactoryApiBuilder
+                ?? throw GetExceptionForAsBasicMethods(builder.GetType());
         }
         
         public static INClientFactoryAdvancedTransportBuilder AsAdvanced(
-            this INClientFactoryTransportBuilder clientApiBuilder)
+            this INClientFactoryTransportBuilder builder)
         {
-            return (INClientFactoryAdvancedTransportBuilder)clientApiBuilder;
+            return builder as INClientFactoryAdvancedTransportBuilder
+                ?? throw GetExceptionForAsAdvancedMethods(builder.GetType());
         }
         
         public static INClientFactoryTransportBuilder AsBasic(
-            this INClientFactoryAdvancedTransportBuilder clientApiBuilder)
+            this INClientFactoryAdvancedTransportBuilder builder)
         {
-            return (INClientFactoryTransportBuilder)clientApiBuilder;
+            return builder as INClientFactoryTransportBuilder
+                ?? throw GetExceptionForAsBasicMethods(builder.GetType());
         }
         
-        public static INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse> AsAdvanced<TRequest, TResponse>(
-            this INClientFactorySerializerBuilder<TRequest, TResponse> clientApiBuilder)
+        public static INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> AsAdvanced<TRequest, TResponse>(
+            this INClientFactorySerializationBuilder<TRequest, TResponse> builder)
         {
-            return (INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse>)clientApiBuilder;
+            return builder as INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse>
+                ?? throw GetExceptionForAsAdvancedMethods(builder.GetType());
         }
         
-        public static INClientFactorySerializerBuilder<TRequest, TResponse> AsBasic<TRequest, TResponse>(
-            this INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse> clientApiBuilder)
+        public static INClientFactorySerializationBuilder<TRequest, TResponse> AsBasic<TRequest, TResponse>(
+            this INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> builder)
         {
-            return (INClientFactorySerializerBuilder<TRequest, TResponse>)clientApiBuilder;
+            return builder as INClientFactorySerializationBuilder<TRequest, TResponse>
+                ?? throw GetExceptionForAsBasicMethods(builder.GetType());
         }
         
         public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> AsAdvanced<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientApiBuilder)
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> builder)
         {
-            return (INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse>)clientApiBuilder;
+            return builder as INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse>
+                ?? throw GetExceptionForAsAdvancedMethods(builder.GetType());
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> AsBasic<TRequest, TResponse>(
-            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientApiBuilder)
+            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> builder)
         {
-            return (INClientFactoryOptionalBuilder<TRequest, TResponse>)clientApiBuilder;
+            return builder as INClientFactoryOptionalBuilder<TRequest, TResponse>
+                ?? throw GetExceptionForAsBasicMethods(builder.GetType());
         }
     }
 }

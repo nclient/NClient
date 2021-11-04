@@ -4,13 +4,13 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Factory
 {
-    internal class NClientFactorySerializerBuilder<TRequest, TResponse> 
-        : INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse>, INClientFactorySerializerBuilder<TRequest, TResponse>
+    internal class NClientFactorySerializationBuilder<TRequest, TResponse> 
+        : INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse>, INClientFactorySerializationBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
         private readonly BuilderContext<TRequest, TResponse> _context;
         
-        public NClientFactorySerializerBuilder(string factoryName, BuilderContext<TRequest, TResponse> context)
+        public NClientFactorySerializationBuilder(string factoryName, BuilderContext<TRequest, TResponse> context)
         {
             _factoryName = factoryName;
             _context = context;

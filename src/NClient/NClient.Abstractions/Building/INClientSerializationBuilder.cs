@@ -3,8 +3,7 @@
 
 namespace NClient
 {
-    // TODO: rename to Serialization
-    public interface INClientFactorySerializerBuilder<TRequest, TResponse>
+    public interface INClientSerializationBuilder<TClient, TRequest, TResponse> where TClient : class
     {
     }
 }
