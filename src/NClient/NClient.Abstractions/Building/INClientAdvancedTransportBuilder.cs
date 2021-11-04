@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INClientAdvancedTransportBuilder<TClient> : INClientTransportBuilder<TClient>
+    public interface INClientAdvancedTransportBuilder<TClient>
         where TClient : class
     {
         /// <summary>

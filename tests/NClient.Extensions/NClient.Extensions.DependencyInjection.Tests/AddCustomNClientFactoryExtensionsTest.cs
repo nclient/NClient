@@ -20,7 +20,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
-                .UsingNewtonsoftJsonSerializer()
+                .UsingNewtonsoftJsonSerialization()
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
@@ -35,7 +35,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
-                .UsingNewtonsoftJsonSerializer()
+                .UsingNewtonsoftJsonSerialization()
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
@@ -50,8 +50,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddCustomNClientFactory(configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
-                .UsingNewtonsoftJsonSerializer()
-                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
+                .UsingNewtonsoftJsonSerialization()
+                .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

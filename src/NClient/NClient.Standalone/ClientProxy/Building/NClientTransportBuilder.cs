@@ -5,7 +5,9 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientTransportBuilder<TClient> : INClientAdvancedTransportBuilder<TClient> where TClient : class
+    internal class NClientTransportBuilder<TClient> 
+        : INClientAdvancedTransportBuilder<TClient>, INClientTransportBuilder<TClient>
+        where TClient : class
     {
         private readonly string _host;
         private readonly IRequestBuilderProvider _requestBuilderProvider;

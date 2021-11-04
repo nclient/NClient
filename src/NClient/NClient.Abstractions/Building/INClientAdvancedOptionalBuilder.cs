@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
 
 // ReSharper disable once CheckNamespace
@@ -21,7 +20,7 @@ namespace NClient
         
         #region ResponseValidation
 
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientAdvancedResponseValidationSetter<TRequest, TResponse>> configure);
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure);
 
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
@@ -30,7 +29,7 @@ namespace NClient
 
         #region Handling
 
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientAdvancedHandlingSetter<TRequest, TResponse>> configure);
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure);
         
         // TODO: doc
         // Not advanced
@@ -40,12 +39,6 @@ namespace NClient
 
         #region Resilience
         
-        /// <summary>
-        /// Sets custom <see cref="IMethodResiliencePolicyProvider{TRequest,TResponse}"/> used to create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.
-        /// </summary>
-        /// <param name="provider">The provider that can create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.</param>
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> provider);
-
         // TODO: doc
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
@@ -59,7 +52,7 @@ namespace NClient
         #region Results
         
         // TODO: doc
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(Action<INClientAdvancedResultsSetter<TRequest, TResponse>> configure);
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResults(Action<INClientResultsSelector<TRequest, TResponse>> configure);
 
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();

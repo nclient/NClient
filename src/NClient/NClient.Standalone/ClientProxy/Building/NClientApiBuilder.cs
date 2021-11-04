@@ -3,7 +3,8 @@ using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientApiBuilder<TClient> : INClientAdvancedApiBuilder<TClient> 
+    internal class NClientApiBuilder<TClient> 
+        : INClientAdvancedApiBuilder<TClient>, INClientApiBuilder<TClient>
         where TClient : class
     {
         private readonly string _host;

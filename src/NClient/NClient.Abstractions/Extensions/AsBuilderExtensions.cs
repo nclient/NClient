@@ -16,7 +16,7 @@ namespace NClient
             this INClientAdvancedApiBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
-            return clientApiBuilder;
+            return (INClientApiBuilder<TClient>)clientApiBuilder;
         }
         
         public static INClientAdvancedTransportBuilder<TClient> AsAdvanced<TClient>(
@@ -30,7 +30,7 @@ namespace NClient
             this INClientAdvancedTransportBuilder<TClient> clientApiBuilder)
             where TClient : class
         {
-            return clientApiBuilder;
+            return (INClientTransportBuilder<TClient>)clientApiBuilder;
         }
         
         public static INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(
@@ -44,7 +44,7 @@ namespace NClient
             this INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
-            return clientApiBuilder;
+            return (INClientSerializerBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
         }
         
         public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> AsAdvanced<TClient, TRequest, TResponse>(

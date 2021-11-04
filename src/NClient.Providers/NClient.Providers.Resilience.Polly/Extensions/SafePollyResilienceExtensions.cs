@@ -11,6 +11,25 @@ namespace NClient
 {
     public static class SafePollyResilienceExtensions
     {
+        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithSafePollyResilience<TClient, TRequest, TResponse>(
+            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            IResiliencePolicySettings<TRequest, TResponse> settings)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(settings, nameof(settings));
+            
+            return clientAdvancedOptionalBuilder
+                .WithResilience(x => x
+                    .ForAllMethods()
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
+                        maxRetries: 0,
+                        getDelay: _ => TimeSpan.FromSeconds(0), 
+                        shouldRetry: settings.ShouldRetry)))
+                    .ForMethodsThat((_, request) => request.Type.IsSafe())
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+        }
+        
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>
@@ -22,17 +41,9 @@ namespace NClient
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(settings, nameof(settings));
             
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResilience(x => x
-                    .ForAllMethods()
-                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(new ResiliencePolicySettings<TRequest, TResponse>(
-                        maxRetries: 0,
-                        getDelay: _ => TimeSpan.FromSeconds(0), 
-                        shouldRetry: settings.ShouldRetry)))
-                    .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)))
-                .AsBasic();
+            return WithSafePollyResilience(clientOptionalBuilder.AsAdvanced(), settings).AsBasic();
         }
         
         /// <summary>
@@ -56,6 +67,19 @@ namespace NClient
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
         
+        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithSafePollyResilience<TClient, TRequest, TResponse>(
+            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(getDelay, nameof(getDelay));
+            Ensure.IsNotNull(shouldRetry, nameof(shouldRetry));
+            
+            return clientAdvancedOptionalBuilder.WithSafePollyResilience(
+                new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
+        }
+        
         // TODO: doc
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
@@ -68,9 +92,10 @@ namespace NClient
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(getDelay, nameof(getDelay));
+            Ensure.IsNotNull(shouldRetry, nameof(shouldRetry));
             
-            return clientOptionalBuilder.WithSafePollyResilience(
-                new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
+            return WithSafePollyResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
         }
         
         /// <summary>
@@ -88,6 +113,23 @@ namespace NClient
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
         }
         
+        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithSafePollyResilience<TClient, TRequest, TResponse>(
+            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(safeMethodPolicy, nameof(safeMethodPolicy));
+            Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
+            
+            return clientAdvancedOptionalBuilder
+                .WithResilience(x => x
+                    .ForAllMethods()
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .ForMethodsThat((_, request) => request.Type.IsSafe())
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
+        }
+        
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>
@@ -100,14 +142,10 @@ namespace NClient
             where TClient : class
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(safeMethodPolicy, nameof(safeMethodPolicy));
+            Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
             
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResilience(x => x
-                    .ForAllMethods()
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                    .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)))
-                .AsBasic();
+            return WithSafePollyResilience(clientOptionalBuilder.AsAdvanced(), safeMethodPolicy, otherMethodPolicy).AsBasic();
         }
         
         /// <summary>

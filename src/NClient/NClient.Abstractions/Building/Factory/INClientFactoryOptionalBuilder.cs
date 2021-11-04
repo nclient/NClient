@@ -40,7 +40,7 @@ namespace NClient
 
         #region Handling
         
-        INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling(Action<INClientAdvancedHandlingSetter<TRequest, TResponse>> configure);
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling(Action<INClientTransportHandlingSetter<TRequest, TResponse>> configure);
 
         // TODO: doc
         INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutHandling();

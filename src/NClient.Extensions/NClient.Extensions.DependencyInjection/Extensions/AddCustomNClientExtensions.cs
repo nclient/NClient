@@ -15,8 +15,8 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<INClientApiBuilder<TClient>, TClient> implementationFactory)
+        public static IServiceCollection AddAdvancedNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<INClientAdvancedApiBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -34,8 +34,8 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientApiBuilder<TClient>, TClient> implementationFactory)
+        public static IServiceCollection AddAdvancedNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<IServiceProvider, INClientAdvancedApiBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));

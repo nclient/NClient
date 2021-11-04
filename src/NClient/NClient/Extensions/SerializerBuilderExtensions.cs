@@ -9,6 +9,19 @@ namespace NClient
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
+        /// <param name="clientAdvancedSerializerBuilder"></param>
+        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> UsingJsonSerializer<TClient, TRequest, TResponse>(
+            this INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> clientAdvancedSerializerBuilder)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientAdvancedSerializerBuilder, nameof(clientAdvancedSerializerBuilder));
+
+            return clientAdvancedSerializerBuilder.UsingSystemJsonSerialization();
+        }
+        
+        /// <summary>
+        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// </summary>
         /// <param name="clientSerializerBuilder"></param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingJsonSerializer<TClient, TRequest, TResponse>(
             this INClientSerializerBuilder<TClient, TRequest, TResponse> clientSerializerBuilder)
@@ -16,7 +29,7 @@ namespace NClient
         {
             Ensure.IsNotNull(clientSerializerBuilder, nameof(clientSerializerBuilder));
 
-            return clientSerializerBuilder.UsingSystemJsonSerializer();
+            return clientSerializerBuilder.UsingSystemJsonSerialization();
         }
         
         /// <summary>
@@ -28,7 +41,7 @@ namespace NClient
         {
             Ensure.IsNotNull(factorySerializerBuilder, nameof(factorySerializerBuilder));
 
-            return factorySerializerBuilder.UsingSystemJsonSerializer();
+            return factorySerializerBuilder.UsingSystemJsonSerialization();
         }
     }
 }

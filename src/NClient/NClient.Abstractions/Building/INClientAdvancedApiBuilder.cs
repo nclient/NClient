@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INClientAdvancedApiBuilder<TClient> : INClientApiBuilder<TClient> 
+    public interface INClientAdvancedApiBuilder<TClient>
         where TClient : class
     {
         // TODO: doc

@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public interface INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse> : INClientSerializerBuilder<TClient, TRequest, TResponse> 
+    public interface INClientAdvancedSerializerBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
         /// <summary>

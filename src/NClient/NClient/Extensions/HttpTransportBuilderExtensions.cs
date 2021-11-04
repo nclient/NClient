@@ -10,6 +10,19 @@ namespace NClient
         /// <summary>
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
+        /// <param name="clientAdvancedTransportBuilder"></param>
+        public static INClientAdvancedSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
+            this INClientAdvancedTransportBuilder<TClient> clientAdvancedTransportBuilder)
+            where TClient : class
+        {
+            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
+
+            return clientAdvancedTransportBuilder.UsingSystemHttpTransport();
+        }
+        
+        /// <summary>
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
+        /// </summary>
         /// <param name="clientTransportBuilder"></param>
         public static INClientSerializerBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> clientTransportBuilder)

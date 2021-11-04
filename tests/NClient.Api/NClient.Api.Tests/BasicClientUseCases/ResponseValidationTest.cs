@@ -34,7 +34,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
                 .AsAdvanced()
                 .WithoutResponseValidation()
                 .WithResponseValidation(x => x
-                    .WithCustomResponseValidation(new CustomResponseValidatorSettings()))
+                    .ForTransport().Use(new CustomResponseValidatorSettings()))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -50,7 +50,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
                 .WithResponseValidation(x => x
-                    .WithCustomResponseValidation(new CustomResponseValidatorSettings()))
+                    .ForTransport().Use(new CustomResponseValidatorSettings()))
                 .Build();
             
             var response = await client.GetAsync(id);

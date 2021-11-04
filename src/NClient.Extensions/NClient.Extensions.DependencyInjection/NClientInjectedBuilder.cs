@@ -35,10 +35,12 @@ namespace NClient.Extensions.DependencyInjection
                 .UsingRestApi()
                 .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
-                .WithResponseValidation()
+                .WithResponseValidation(x => x
+                    .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithLogging(loggerFactory);
+                .WithLogging(loggerFactory)
+                .AsBasic();
         }
     }
 }

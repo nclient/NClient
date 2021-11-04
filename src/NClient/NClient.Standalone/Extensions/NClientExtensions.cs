@@ -5,6 +5,7 @@ namespace NClient
 {
     public static class NClientExtensions
     {
+        // TODO: validation
         public static IResilienceNClient<T> AsResilient<T>(this T client) where T : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));

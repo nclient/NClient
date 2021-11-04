@@ -40,26 +40,26 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value);
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientAdvancedResponseValidationSetter<TRequest, TResponse>> configure)
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientAdvancedResponseValidationSetter<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientResponseValidationSelector<TRequest, TResponse>(builderContextModifier));
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResponseValidation(IResponseValidator<TRequest, TResponse> validator, params IResponseValidator<TRequest, TResponse>[] extraValidators)
         {
             return WithResponseValidation(x => x
-                    .WithCustomResponseValidation(validator, extraValidators))
+                    .ForTransport().Use(validator, extraValidators))
                 .AsBasic();
         }
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResponseValidation(IEnumerable<IResponseValidator<TRequest, TResponse>> validators)
         {
             return WithResponseValidation(x => x
-                    .WithCustomResponseValidation(validators))
+                    .ForTransport().Use(validators))
                 .AsBasic();
         }
         
@@ -82,25 +82,25 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithSerializer(provider));
         }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientAdvancedHandlingSetter<TRequest, TResponse>> configure)
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientAdvancedHandlingSetter<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientHandlingSelector<TRequest, TResponse>(builderContextModifier));
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(IClientHandler<TRequest, TResponse> handler, params IClientHandler<TRequest, TResponse>[] extraHandlers)
         {
             return WithHandling(x => x
-                    .WithCustomTransportHandling(handler, extraHandlers))
+                    .ForTransport().Use(handler, extraHandlers))
                 .AsBasic();
         }
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(IEnumerable<IClientHandler<TRequest, TResponse>> handlers)
         {
             return WithHandling(x => x
-                    .WithCustomTransportHandling(handlers))
+                    .ForTransport().Use(handlers))
                 .AsBasic();
         }
 
@@ -142,32 +142,36 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResiliencePolicy());
         }
-        
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResults(Action<INClientTransportResultsSetter<TRequest, TResponse>> configure)
+        {
+            throw new NotImplementedException();
+        }
+
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutResilience()
         {
             return WithoutResilience().AsBasic();
         }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(Action<INClientAdvancedResultsSetter<TRequest, TResponse>> configure)
+        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResults(Action<INClientResultsSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientAdvancedResultsSetter<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientResultsSelector<TRequest, TResponse>(builderContextModifier));
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithCustomResults(IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders)
+        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResults(IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders)
         {
-            return WithCustomResults(x => x
-                    .WithCustomTransportResults(builder, extraBuilders))
+            return WithResults(x => x
+                    .ForTransport().Use(builder, extraBuilders))
                 .AsBasic();
         }
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithCustomResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
+        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
         {
-            return WithCustomResults(x => x
-                    .WithCustomTransportResults(builders))
+            return WithResults(x => x
+                    .ForTransport().Use(builders))
                 .AsBasic();
         }
 

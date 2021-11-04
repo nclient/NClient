@@ -22,12 +22,15 @@ namespace NClient
                 .UsingRestApi()
                 .UsingHttpTransport()
                 .UsingJsonSerializer()
-                .WithResponseValidation()
+                .WithResponseValidation(x => x
+                    .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithResults()
-                .WithHttpResults()
-                .WithoutLogging();
+                .WithResults(x => x
+                    .ForTransport().UseHttpResults()
+                    .ForClient().UseResults())
+                .WithoutLogging()
+                .AsBasic();
         }
     }
 }

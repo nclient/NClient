@@ -20,7 +20,8 @@ namespace NClient.Api.Tests.CustomClientUseCases
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingJsonSerializer()
-                .WithRestSharpResponseValidation()
+                .WithResponseValidation(x => x
+                    .ForTransport().UseRestSharpResponseValidation())
                 .Build();
             
             var response = await client.GetAsync(id);

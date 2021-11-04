@@ -45,9 +45,9 @@ namespace NClient
         #region Results
         
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders);
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
 
