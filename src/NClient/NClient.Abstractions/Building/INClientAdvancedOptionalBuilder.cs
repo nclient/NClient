@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Resilience;
-using NClient.Providers.Results;
 using NClient.Providers.Serialization;
-using NClient.Providers.Transport;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -15,8 +14,8 @@ namespace NClient
         /// <summary>
         /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="serializerProvider">The provider that can create instances of <see cref="ISerializer"/>.</param>
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider serializerProvider);
+        /// <param name="provider">The provider that can create instances of <see cref="ISerializer"/>.</param>
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider);
 
         #endregion
         
@@ -44,8 +43,8 @@ namespace NClient
         /// <summary>
         /// Sets custom <see cref="IMethodResiliencePolicyProvider{TRequest,TResponse}"/> used to create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.
         /// </summary>
-        /// <param name="methodResiliencePolicyProvider">The provider that can create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.</param>
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider);
+        /// <param name="provider">The provider that can create instances of <see cref="IResiliencePolicy{TRequest,TResponse}"/> for specific method.</param>
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResilience(IMethodResiliencePolicyProvider<TRequest, TResponse> provider);
 
         // TODO: doc
         // Not advanced
@@ -58,12 +57,10 @@ namespace NClient
         #endregion
 
         #region Results
-
+        
         // TODO: doc
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<IRequest, IResponse>[] resultBuilderProviders);
-        
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(params IResultBuilderProvider<TRequest, TResponse>[] resultBuilderProviders);
-        
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomResults(Action<INClientAdvancedResultsSetter<TRequest, TResponse>> configure);
+
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
 
@@ -83,7 +80,9 @@ namespace NClient
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
         // Not advanced
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(params ILogger[] loggers);
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers);
+        
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers);
         
         // TODO: doc
         // Not advanced

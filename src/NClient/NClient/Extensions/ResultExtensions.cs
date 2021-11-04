@@ -12,7 +12,8 @@ namespace NClient
             where TClient : class
         {
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomResults(new ResultBuilderProvider())
+                .WithCustomResults(x => x
+                    .WithCustomResults(new ResultBuilderProvider()))
                 .AsBasic();
         }
         
@@ -27,7 +28,8 @@ namespace NClient
             where TClient : class
         {
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomResults(new HttpResponseBuilderProvider())
+                .WithCustomResults(x => x
+                    .WithCustomTransportResults(new HttpResponseBuilderProvider()))
                 .AsBasic();
         }
         

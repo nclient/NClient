@@ -1,16 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace NClient.Common.Helpers
 {
     [DebuggerStepThrough]
     internal static class Ensure
     {
-        public static T IsNotNull<T>(T? value, string paramName)
+        public static T IsNotNull<T>(T value, string paramName)
         {
             if (value == null)
                 throw EnsureExceptionFactory.CreateArgumentNullException(paramName);
             return value;
+        }
+        
+        public static IEnumerable<T> AreNotNullItems<T>(ICollection<T> collection, string paramName)
+        {
+            IsNotNull(collection, paramName);
+            
+            if (collection.Any(item => item == null))
+                throw EnsureExceptionFactory.CreateArgumentNullException(paramName);
+            return collection;
         }
 
         public static string IsNotNullOrEmpty(string value, string paramName)
