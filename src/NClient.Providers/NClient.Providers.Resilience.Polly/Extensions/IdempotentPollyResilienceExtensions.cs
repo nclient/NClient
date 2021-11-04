@@ -31,7 +31,8 @@ namespace NClient
                         getDelay: _ => TimeSpan.FromSeconds(0),
                         shouldRetry: settings.ShouldRetry)))
                     .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)))
+                .AsBasic();
         }
         
         /// <summary>
@@ -105,7 +106,8 @@ namespace NClient
                     .ForAllMethods()
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                     .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)))
+                .AsBasic();
         }
         
         /// <summary>

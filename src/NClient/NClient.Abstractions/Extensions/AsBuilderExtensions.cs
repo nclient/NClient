@@ -2,6 +2,7 @@
 
 namespace NClient
 {
+    // TODO: Add validation
     public static class AsBuilderExtensions
     {
         public static INClientAdvancedApiBuilder<TClient> AsAdvanced<TClient>(
@@ -57,7 +58,7 @@ namespace NClient
             this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientApiBuilder)
             where TClient : class
         {
-            return clientApiBuilder;
+            return (INClientOptionalBuilder<TClient, TRequest, TResponse>)clientApiBuilder;
         }
     }
 }

@@ -31,7 +31,8 @@ namespace NClient
                         getDelay: _ => TimeSpan.FromSeconds(0), 
                         shouldRetry: settings.ShouldRetry)))
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)))
+                .AsBasic();
         }
         
         /// <summary>
@@ -100,11 +101,13 @@ namespace NClient
         {
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
-            return clientOptionalBuilder.AsAdvanced().WithResilience(x => x
-                .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, request) => request.Type.IsSafe())
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithResilience(x => x
+                    .ForAllMethods()
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .ForMethodsThat((_, request) => request.Type.IsSafe())
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)))
+                .AsBasic();
         }
         
         /// <summary>

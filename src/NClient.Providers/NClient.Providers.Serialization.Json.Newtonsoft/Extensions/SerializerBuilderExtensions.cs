@@ -19,7 +19,8 @@ namespace NClient
             Ensure.IsNotNull(clientSerializerBuilder, nameof(clientSerializerBuilder));
 
             return clientSerializerBuilder.AsAdvanced()
-                .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider());
+                .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider())
+                .AsBasic();
         }
         
         /// <summary>
@@ -48,7 +49,8 @@ namespace NClient
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
 
             return clientSerializerBuilder.AsAdvanced()
-                .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
+                .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings))
+                .AsBasic();
         }
         
         /// <summary>

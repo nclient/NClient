@@ -18,7 +18,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
-                .WithCustomHandling(x => x
+                .WithHandling(x => x
                     .WithCustomTransportHandling(new CustomHandler()))
                 .Build();
             
@@ -35,7 +35,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
                 .WithoutHandling()
-                .WithCustomHandling(x => x
+                .WithHandling(x => x
                     .WithCustomTransportHandling(new CustomHandler(), new CustomHandler()))
                 .Build();
             
@@ -51,7 +51,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
-                .WithCustomHandling(x => x
+                .WithHandling(x => x
                     .WithCustomTransportHandling(new CustomHandler()))
                 .Build();
             
@@ -67,7 +67,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .AsAdvanced()
-                .WithCustomHandling(x => x
+                .WithHandling(x => x
                     .WithCustomTransportHandling(new CustomHandler(), new CustomHandler()))
                 .Build();
             

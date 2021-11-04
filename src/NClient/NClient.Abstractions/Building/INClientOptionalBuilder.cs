@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using NClient.Providers.Handling;
 
 // ReSharper disable once CheckNamespace
 // ReSharper disable UnusedTypeParameter
@@ -14,9 +15,9 @@ namespace NClient
         #endregion
 
         #region Handling
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSetter<TRequest, TResponse>> configure);
 
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling(params IClientHandler<TRequest, TResponse>[] handlers);
+            
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
         
@@ -34,7 +35,7 @@ namespace NClient
 
         #region Results
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutCustomResults();
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
 
         #endregion
         

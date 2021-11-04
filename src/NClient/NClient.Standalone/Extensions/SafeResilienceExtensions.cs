@@ -20,7 +20,8 @@ namespace NClient
                     .ForAllMethods()
                     .Use(otherMethodProvider)
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(safeMethodProvider));
+                    .Use(safeMethodProvider))
+                .AsBasic();
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(

@@ -6,25 +6,30 @@ namespace NClient
 {
     public static class HandlingExtensions
     {
-        public static INClientAdvancedHandlingSetter<TRequest, TResponse> WithTransportHandling<TRequest, TResponse>(
-            this INClientAdvancedHandlingSetter<TRequest, TResponse> advancedHandlingSetter,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             Func<TRequest, TRequest> beforeRequest,
-            Func<TResponse, TResponse> afterRequest)
+            Func<TResponse, TResponse> afterRequest) 
+            where TClient : class
         {
-            return advancedHandlingSetter.WithCustomTransportHandling(new ClientHandlerSettings<TRequest, TResponse>(
-                beforeRequest, 
-                afterRequest));
+            return clientOptionalBuilder.AsAdvanced()
+                .WithHandling(x => x
+                    .WithCustomTransportHandling(new ClientHandlerSettings<TRequest, TResponse>(
+                        beforeRequest, 
+                        afterRequest)))
+                .AsBasic();
         }
         
-        public static INClientHandlingSetter<TRequest, TResponse> WithTransportHandling<TRequest, TResponse>(
-            this INClientHandlingSetter<TRequest, TResponse> handlingSetter,
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
             Func<TRequest, TRequest> beforeRequest,
             Func<TResponse, TResponse> afterRequest)
         {
-            return handlingSetter.AsAdvanced()
-                .WithCustomTransportHandling(new ClientHandlerSettings<TRequest, TResponse>(
-                    beforeRequest, 
-                    afterRequest));
+            return factoryOptionalBuilder
+                .WithHandling(x => x
+                    .WithCustomTransportHandling(new ClientHandlerSettings<TRequest, TResponse>(
+                        beforeRequest, 
+                        afterRequest)));
         }
     }
 }

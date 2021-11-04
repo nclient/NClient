@@ -19,7 +19,8 @@ namespace NClient
             Ensure.IsNotNull(clientSerializerBuilder, nameof(clientSerializerBuilder));
 
             return clientSerializerBuilder.AsAdvanced()
-                .UsingCustomSerializer(new SystemXmlSerializerProvider());
+                .UsingCustomSerializer(new SystemXmlSerializerProvider())
+                .AsBasic();
         }
         
         /// <summary>
@@ -48,7 +49,8 @@ namespace NClient
             Ensure.IsNotNull(clientSerializerBuilder, nameof(clientSerializerBuilder));
 
             return clientSerializerBuilder.AsAdvanced()
-                .UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
+                .UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings))
+                .AsBasic();
         }
         
         /// <summary>

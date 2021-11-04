@@ -20,7 +20,8 @@ namespace NClient
                     .ForAllMethods()
                     .Use(otherMethodProvider)
                     .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                    .Use(idempotentMethodProvider));
+                    .Use(idempotentMethodProvider))
+                .AsBasic();
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience<TRequest, TResponse>(

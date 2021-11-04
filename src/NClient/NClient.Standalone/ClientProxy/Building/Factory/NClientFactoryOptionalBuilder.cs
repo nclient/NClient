@@ -72,12 +72,12 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
                 .WithSerializer(serializerProvider));
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling(Action<INClientHandlingSetter<TRequest, TResponse>> configure)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling(Action<INClientAdvancedHandlingSetter<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientHandlingSetter<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientAdvancedHandlingSetter<TRequest, TResponse>(builderContextModifier));
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModifier.Invoke(_context));
         }
 

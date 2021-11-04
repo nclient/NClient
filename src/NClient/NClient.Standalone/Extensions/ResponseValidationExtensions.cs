@@ -17,7 +17,8 @@ namespace NClient
             return clientOptionalBuilder.AsAdvanced()
                 .WithCustomResponseValidation(new ResponseValidatorSettings<TRequest, TResponse>(
                     isSuccess, 
-                    onFailure));
+                    onFailure))
+                .AsBasic();
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseValidation<TRequest, TResponse>(

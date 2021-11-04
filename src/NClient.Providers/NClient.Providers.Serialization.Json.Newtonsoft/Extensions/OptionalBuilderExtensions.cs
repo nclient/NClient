@@ -15,7 +15,8 @@ namespace NClient
             Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
+                .WithCustomSerialization(new NewtonsoftJsonSerializerProvider())
+                .AsBasic();
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithNewtonsoftJsonSerialization<TRequest, TResponse>(
@@ -35,7 +36,8 @@ namespace NClient
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
             
             return clientOptionalBuilder.AsAdvanced()
-                .WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
+                .WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings))
+                .AsBasic();
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithNewtonsoftJsonSerialization<TRequest, TResponse>(

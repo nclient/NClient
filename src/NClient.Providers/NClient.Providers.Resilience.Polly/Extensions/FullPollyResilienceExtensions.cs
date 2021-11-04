@@ -25,7 +25,8 @@ namespace NClient
             return clientOptionalBuilder.AsAdvanced()
                 .WithResilience(x => x
                     .ForAllMethods()
-                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
+                    .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)))
+                .AsBasic();
         }
         
         /// <summary>
@@ -92,7 +93,8 @@ namespace NClient
             return clientOptionalBuilder.AsAdvanced()
                 .WithResilience(x => x
                     .ForAllMethods()
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)))
+                .AsBasic();
         }
         
         /// <summary>
