@@ -28,6 +28,15 @@ namespace NClient
         
         #endregion
 
+        #region Results
+        
+        // TODO: doc
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
+
+        #endregion
+        
         #region Resilience
         
         // TODO: doc
@@ -36,15 +45,6 @@ namespace NClient
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
         
-        #endregion
-
-        #region Results
-        
-        // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
-
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
-
         #endregion
         
         #region Logging

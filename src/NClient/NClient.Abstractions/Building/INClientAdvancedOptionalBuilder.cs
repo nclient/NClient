@@ -21,8 +21,7 @@ namespace NClient
         #region ResponseValidation
 
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure);
-
-        // Not advanced
+        
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
 
         #endregion
@@ -32,20 +31,7 @@ namespace NClient
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure);
         
         // TODO: doc
-        // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
-        
-        #endregion
-
-        #region Resilience
-        
-        // TODO: doc
-        // Not advanced
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
-
-        // TODO: doc
-        // Not advanced
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
         
         #endregion
 
@@ -53,10 +39,19 @@ namespace NClient
         
         // TODO: doc
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResults(Action<INClientResultsSelector<TRequest, TResponse>> configure);
-
-        // Not advanced
+        
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
 
+        #endregion
+        
+        #region Resilience
+        
+        // TODO: doc
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
+
+        // TODO: doc
+        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
+        
         #endregion
         
         #region Logging
@@ -71,7 +66,6 @@ namespace NClient
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers);
         
         // TODO: doc
-        // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();
         
         #endregion
@@ -79,7 +73,6 @@ namespace NClient
         /// <summary>
         /// Creates <see cref="TClient"/>.
         /// </summary>
-        // Not advanced
         TClient Build();
     }
 }
