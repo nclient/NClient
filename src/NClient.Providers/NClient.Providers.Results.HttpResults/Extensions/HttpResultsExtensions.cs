@@ -17,9 +17,12 @@ namespace NClient
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithHttpResults(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResults(new HttpResponseBuilderProvider());
+            return clientOptionalBuilder.AsAdvanced()
+                .WithResults(x => x
+                    .ForTransport().Use(new HttpResponseBuilderProvider()))
+                .AsBasic();
         }
     }
 }

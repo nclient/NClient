@@ -79,7 +79,7 @@ namespace NClient.Extensions.DependencyInjection
 
         private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredBuilder(IServiceProvider serviceProvider, string factoryName, string httpClientName)
         {
-            return new NClientInjectedFactoryBuilder(serviceProvider, httpClientName).For(factoryName);
+            return new NClientFactoryInjectedBuilder(serviceProvider, httpClientName).For(factoryName);
         }
     }
 }

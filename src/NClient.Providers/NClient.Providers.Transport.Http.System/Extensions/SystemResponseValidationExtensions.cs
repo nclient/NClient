@@ -16,10 +16,13 @@ namespace NClient
                 .AsBasic();
         }
 
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithCustomResponseValidation(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
+        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSystemResponseValidation(
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResponseValidation(new DefaultSystemResponseValidatorSettings());
+            return clientOptionalBuilder.AsAdvanced()
+                .WithResponseValidation(x => x
+                    .ForTransport().Use(new DefaultSystemResponseValidatorSettings()))
+                .AsBasic();
         }
     }
 }

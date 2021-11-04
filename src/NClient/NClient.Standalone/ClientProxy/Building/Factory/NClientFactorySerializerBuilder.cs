@@ -4,7 +4,8 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Factory
 {
-    internal class NClientFactorySerializerBuilder<TRequest, TResponse> : INClientFactorySerializerBuilder<TRequest, TResponse>
+    internal class NClientFactorySerializerBuilder<TRequest, TResponse> 
+        : INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse>, INClientFactorySerializerBuilder<TRequest, TResponse>
     {
         private readonly string _factoryName;
         private readonly BuilderContext<TRequest, TResponse> _context;
@@ -15,7 +16,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _context = context;
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider)
+        public INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> UsingCustomSerializer(ISerializerProvider serializerProvider)
         {
             Ensure.IsNotNull(serializerProvider, nameof(serializerProvider));
             

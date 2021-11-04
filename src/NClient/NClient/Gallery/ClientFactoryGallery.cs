@@ -13,6 +13,6 @@ namespace NClient
     {
         public INClientBasicFactoryBuilder GetBasic() => new NClientBasicFactoryBuilder();
         public INClientStandardFactoryBuilder GetStandard() => new NClientStandardFactoryBuilder();
-        public INClientAdvancedFactoryBuilder GetCustom() => new NClientAdvancedFactoryBuilder();
+        public INClientAdvancedFactoryBuilder GetCustom() => new NClientFactoryAdvancedBuilder();
     }
 }

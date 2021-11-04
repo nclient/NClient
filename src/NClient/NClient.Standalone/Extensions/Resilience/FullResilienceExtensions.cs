@@ -1,6 +1,5 @@
 ﻿using NClient.Common.Helpers;
 using NClient.Providers.Resilience;
-using NClient.Resilience;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -32,14 +31,27 @@ namespace NClient
             return WithFullResilience(clientOptionalBuilder.AsAdvanced(), provider).AsBasic();
         }
         
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder, 
+        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
+            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
-            Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
             Ensure.IsNotNull(provider, nameof(provider));
             
-            return factoryOptionalBuilder.WithCustomResilience(new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(provider));
+            return clientAdvancedOptionalBuilder
+                .WithResilience(x => x
+                    .ForAllMethods()
+                    .Use(provider));
+        }
+        
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder, 
+            IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(provider, nameof(provider));
+
+            return WithFullResilience(clientOptionalBuilder.AsAdvanced(), provider).AsBasic();
         }
     }
 }

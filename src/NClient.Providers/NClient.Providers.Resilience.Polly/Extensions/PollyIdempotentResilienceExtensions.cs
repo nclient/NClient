@@ -44,23 +44,37 @@ namespace NClient
             return WithPollyIdempotentResilience(clientOptionalBuilder.AsAdvanced(), idempotentMethodPolicy, otherMethodPolicy).AsBasic();
         }
         
+        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithPollyIdempotentResilience<TRequest, TResponse>(
+            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+            IAsyncPolicy<IResponseContext<TRequest, TResponse>> idempotentMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
+        {
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(idempotentMethodPolicy, nameof(idempotentMethodPolicy));
+            Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
+            
+            return clientAdvancedOptionalBuilder
+                .WithResilience(x => x
+                    .ForAllMethods()
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .ForMethodsThat((_, request) => request.Type.IsIdempotent())
+                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
+        }
+        
         /// <summary>
         /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
         /// </summary>
-        /// <param name="factoryOptionalBuilder"></param>
+        /// <param name="clientOptionalBuilder"></param>
         /// <param name="idempotentMethodPolicy">The settings for resilience policy provider for idempotent methods.</param>
         /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollyIdempotentResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> idempotentMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
         {
-            Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(idempotentMethodPolicy, nameof(idempotentMethodPolicy));
+            Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
             
-            return factoryOptionalBuilder.WithCustomResilience(x => x
-                .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
-                .ForMethodsThat((_, request) => request.Type.IsIdempotent())
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(idempotentMethodPolicy)));
+            return WithPollyIdempotentResilience(clientOptionalBuilder.AsAdvanced(), idempotentMethodPolicy, otherMethodPolicy).AsBasic();
         }
     }
 }

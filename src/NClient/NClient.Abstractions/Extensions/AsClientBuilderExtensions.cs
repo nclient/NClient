@@ -3,7 +3,7 @@
 namespace NClient
 {
     // TODO: Add validation
-    public static class AsBuilderExtensions
+    public static class AsClientBuilderExtensions
     {
         public static INClientAdvancedApiBuilder<TClient> AsAdvanced<TClient>(
             this INClientApiBuilder<TClient> clientApiBuilder)

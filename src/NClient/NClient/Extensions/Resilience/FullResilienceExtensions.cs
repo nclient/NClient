@@ -36,19 +36,29 @@ namespace NClient
             return WithFullResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
         }
         
+        public static INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithFullResilience(
+            this INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
+        {
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            
+            return clientAdvancedOptionalBuilder.WithPollyFullResilience(
+                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+        }
+        
+        // TODO: doc
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
-        /// <param name="factoryOptionalBuilder"></param>
+        /// <param name="clientOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithFullResilience(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder,
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
-
-            return factoryOptionalBuilder.WithPollyFullResilience(
-                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            
+            return WithFullResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
         }
     }
 }

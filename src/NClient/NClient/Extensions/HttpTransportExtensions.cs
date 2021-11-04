@@ -5,7 +5,7 @@ using NClient.Providers.Transport;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class HttpTransportBuilderExtensions
+    public static class HttpTransportExtensions
     {
         /// <summary>
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
@@ -36,13 +36,25 @@ namespace NClient
         /// <summary>
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
-        /// <param name="factoryTransportBuilder"></param>
-        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
-            this INClientFactoryTransportBuilder factoryTransportBuilder)
+        /// <param name="clientAdvancedTransportBuilder"></param>
+        public static INClientFactoryAdvancedSerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
+            this INClientFactoryAdvancedTransportBuilder clientAdvancedTransportBuilder)
         {
-            Ensure.IsNotNull(factoryTransportBuilder, nameof(factoryTransportBuilder));
+            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
 
-            return factoryTransportBuilder.UsingSystemHttpTransport();
+            return clientAdvancedTransportBuilder.UsingSystemHttpTransport();
+        }
+        
+        /// <summary>
+        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
+        /// </summary>
+        /// <param name="clientTransportBuilder"></param>
+        public static INClientFactorySerializerBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
+            this INClientFactoryTransportBuilder clientTransportBuilder)
+        {
+            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
+
+            return clientTransportBuilder.UsingSystemHttpTransport();
         }
     }
 }

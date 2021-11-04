@@ -15,11 +15,14 @@ namespace NClient
                     .ForTransport().Use(new DefaultRestSharpResponseValidatorSettings()))
                 .AsBasic();
         }
-
+        
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> WithRestSharpResponseValidation(
             this INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResponseValidation(new DefaultRestSharpResponseValidatorSettings());
+            return factoryOptionalBuilder.AsAdvanced()
+                .WithResponseValidation(x => x
+                    .ForTransport().Use(new DefaultRestSharpResponseValidatorSettings()))
+                .AsBasic();
         }
     }
 }

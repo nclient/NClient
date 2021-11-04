@@ -11,11 +11,5 @@ namespace NClient
         {
             return clientOptionalBuilder.Use(new HttpResponseBuilderProvider());
         }
-        
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> UseHttpResults(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
-        {
-            return factoryOptionalBuilder.WithCustomResults(new HttpResponseBuilderProvider());
-        }
     }
 }

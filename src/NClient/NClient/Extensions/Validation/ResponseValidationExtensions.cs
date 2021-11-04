@@ -12,16 +12,10 @@ namespace NClient
             return factoryOptionalBuilder.WithSystemResponseValidation();
         }
         
-        public static INClientResponseValidationSelector<HttpRequestMessage, HttpResponseMessage> Use(
-            this INClientTransportResponseValidationSetter<HttpRequestMessage, HttpResponseMessage> transportResponseValidationSetter)
-        {
-            return transportResponseValidationSetter.UseSystemResponseValidation();
-        }
-        
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
         {
-            return SystemResponseValidationExtensions.WithCustomResponseValidation(factoryOptionalBuilder);
+            return factoryOptionalBuilder.WithSystemResponseValidation();
         }
     }
 }

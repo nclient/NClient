@@ -43,16 +43,30 @@ namespace NClient
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>
-        /// <param name="factoryOptionalBuilder"></param>
+        /// <param name="clientAdvancedOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSafeResilience(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder,
+        public static INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSafeResilience(
+            this INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
 
-            return factoryOptionalBuilder.WithPollySafeResilience(
+            return clientAdvancedOptionalBuilder.WithPollySafeResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+        }
+        
+        /// <summary>
+        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// </summary>
+        /// <param name="clientOptionalBuilder"></param>
+        /// <param name="settings">The settings for default resilience policy provider.</param>
+        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSafeResilience(
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
+        {
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+
+            return WithSafeResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
         }
     }
 }

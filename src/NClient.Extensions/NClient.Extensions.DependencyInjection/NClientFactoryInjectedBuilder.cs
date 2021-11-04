@@ -7,17 +7,17 @@ using NClient.Providers.Api.Rest.Extensions;
 namespace NClient.Extensions.DependencyInjection
 {
     // TODO: doc
-    public interface INClientInjectedFactoryBuilder
+    public interface INClientFactoryInjectedBuilder
     {
         INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName);
     }
     
-    public class NClientInjectedFactoryBuilder : INClientInjectedFactoryBuilder
+    public class NClientFactoryInjectedBuilder : INClientFactoryInjectedBuilder
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly string? _httpClientName;
         
-        public NClientInjectedFactoryBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
+        public NClientFactoryInjectedBuilder(IServiceProvider serviceProvider, string? httpClientName = null)
         {
             _serviceProvider = serviceProvider;
             _httpClientName = httpClientName;
@@ -28,17 +28,20 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             
-            return new NClientAdvancedFactoryBuilder()
+            return new NClientFactoryAdvancedBuilder()
                 .For(factoryName)
                 .UsingRestApi()
                 .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
-                .WithResponseValidation()
+                .WithResponseValidation(x => x
+                    .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithResults()
-                .WithHttpResults()
-                .WithLogging(loggerFactory);
+                .WithResults(x => x
+                    .ForTransport().UseHttpResults()
+                    .ForClient().UseResults())
+                .WithLogging(loggerFactory)
+                .AsBasic();
         }
     }
 }

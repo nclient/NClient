@@ -1,13 +1,12 @@
-﻿using System.Net.Http;
-using NClient.Providers.Results.LanguageExt;
+﻿using NClient.Providers.Results.LanguageExt;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
     public static class LanguageExtExtensions
     {
-        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithLanguageExtResults<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder) 
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithLanguageExtResults<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
             where TClient : class
         {
             return clientOptionalBuilder.AsAdvanced()
@@ -16,10 +15,13 @@ namespace NClient
                 .AsBasic();
         }
         
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithLanguageExtResults(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithLanguageExtResults<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResults(new EitherBuilderProvider());
+            return clientOptionalBuilder.AsAdvanced()
+                .WithResults(x => x
+                    .ForClient().Use(new EitherBuilderProvider()))
+                .AsBasic();
         }
     }
 }

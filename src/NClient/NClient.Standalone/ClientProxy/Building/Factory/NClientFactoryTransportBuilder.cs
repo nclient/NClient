@@ -5,7 +5,7 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Factory
 {
-    internal class NClientFactoryTransportBuilder : INClientFactoryTransportBuilder
+    internal class NClientFactoryTransportBuilder : INClientFactoryAdvancedTransportBuilder, INClientFactoryTransportBuilder
     {
         private readonly string _factoryName;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
@@ -16,13 +16,14 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _requestBuilderProvider = requestBuilderProvider;
         }
         
-        public INClientFactorySerializerBuilder<TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        public INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)
         {
             Ensure.IsNotNull(transportProvider, nameof(transportProvider));
             Ensure.IsNotNull(transportRequestBuilderProvider, nameof(transportRequestBuilderProvider));
+            Ensure.IsNotNull(responseBuilderProvider, nameof(responseBuilderProvider));
             
             return new NClientFactorySerializerBuilder<TRequest, TResponse>(_factoryName, new BuilderContext<TRequest, TResponse>()
                 .WithRequestBuilderProvider(_requestBuilderProvider)

@@ -6,7 +6,7 @@ using NClient.Providers.Transport.Http.System;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class ResilienceSetterExtensions
+    public static class UseResilienceExtensions
     {
         // TODO: doc
         public static INClientResilienceMethodSelector<TClient, HttpRequestMessage, HttpResponseMessage> Use<TClient>(

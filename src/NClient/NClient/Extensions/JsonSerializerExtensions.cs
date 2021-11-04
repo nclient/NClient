@@ -4,7 +4,7 @@ using NClient.Providers.Serialization;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class SerializerBuilderExtensions
+    public static class JsonSerializerExtensions
     {
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
@@ -35,13 +35,25 @@ namespace NClient
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="factorySerializerBuilder"></param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
-            this INClientFactorySerializerBuilder<TRequest, TResponse> factorySerializerBuilder)
+        /// <param name="clientAdvancedSerializerBuilder"></param>
+        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
+            this INClientFactoryAdvancedSerializerBuilder<TRequest, TResponse> clientAdvancedSerializerBuilder)
         {
-            Ensure.IsNotNull(factorySerializerBuilder, nameof(factorySerializerBuilder));
+            Ensure.IsNotNull(clientAdvancedSerializerBuilder, nameof(clientAdvancedSerializerBuilder));
 
-            return factorySerializerBuilder.UsingSystemJsonSerialization();
+            return clientAdvancedSerializerBuilder.UsingSystemJsonSerialization();
+        }
+        
+        /// <summary>
+        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// </summary>
+        /// <param name="clientSerializerBuilder"></param>
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
+            this INClientFactorySerializerBuilder<TRequest, TResponse> clientSerializerBuilder)
+        {
+            Ensure.IsNotNull(clientSerializerBuilder, nameof(clientSerializerBuilder));
+
+            return clientSerializerBuilder.UsingSystemJsonSerialization();
         }
     }
 }

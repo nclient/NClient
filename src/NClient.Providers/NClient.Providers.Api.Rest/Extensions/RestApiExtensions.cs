@@ -23,12 +23,20 @@ namespace NClient.Providers.Api.Rest.Extensions
             return UsingRestApi(clientApiBuilder.AsAdvanced()).AsBasic();
         }
         
-        public static INClientFactoryTransportBuilder UsingRestApi(
-            this INClientFactoryApiBuilder factoryApiBuilder)
+        public static INClientFactoryAdvancedTransportBuilder UsingRestApi(
+            this INClientFactoryAdvancedApiBuilder clientAdvancedApiBuilder)
         {
-            Ensure.IsNotNull(factoryApiBuilder, nameof(factoryApiBuilder));
-            
-            return factoryApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+            Ensure.IsNotNull(clientAdvancedApiBuilder, nameof(clientAdvancedApiBuilder));
+
+            return clientAdvancedApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+        }
+        
+        public static INClientFactoryTransportBuilder UsingRestApi(
+            this INClientFactoryApiBuilder clientApiBuilder)
+        {
+            Ensure.IsNotNull(clientApiBuilder, nameof(clientApiBuilder));
+
+            return UsingRestApi(clientApiBuilder.AsAdvanced()).AsBasic();
         }
     }
 }

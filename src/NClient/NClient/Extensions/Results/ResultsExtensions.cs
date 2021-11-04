@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class ResultExtensions
+    public static class ResultsExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
@@ -15,16 +15,13 @@ namespace NClient
                 .AsBasic();
         }
         
-        public static INClientResultsSelector<TRequest, TResponse> UseResults<TRequest, TResponse>(
-            this INClientResultsSetter<TRequest, TResponse> resultsSetter)
-        {
-            return resultsSetter.Use(new ResultBuilderProvider());
-        }
-        
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder)
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithCustomResults(new ResultBuilderProvider());
+            return clientOptionalBuilder.AsAdvanced()
+                .WithResults(x => x
+                    .ForClient().Use(new ResultBuilderProvider()))
+                .AsBasic();
         }
     }
 }

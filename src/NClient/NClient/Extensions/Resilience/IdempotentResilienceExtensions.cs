@@ -45,16 +45,31 @@ namespace NClient
         /// <summary>
         /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
         /// </summary>
-        /// <param name="factoryOptionalBuilder"></param>
+        /// <param name="clientAdvancedOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithIdempotentResilience(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder,
+        public static INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithIdempotentResilience(
+            this INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            Ensure.IsNotNull(factoryOptionalBuilder, nameof(factoryOptionalBuilder));
+            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
 
-            return factoryOptionalBuilder.WithPollyIdempotentResilience(
+            return clientAdvancedOptionalBuilder.WithPollyIdempotentResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+        }
+        
+        // TODO: doc
+        /// <summary>
+        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
+        /// </summary>
+        /// <param name="clientOptionalBuilder"></param>
+        /// <param name="settings">The settings for default resilience policy provider.</param>
+        public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithIdempotentResilience(
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
+            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
+        {
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+
+            return WithIdempotentResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
         }
     }
 }
