@@ -49,13 +49,6 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResponseValidation(IResponseValidator<TRequest, TResponse> validator, params IResponseValidator<TRequest, TResponse>[] extraValidators)
-        {
-            return WithResponseValidation(x => x
-                    .ForTransport().Use(validator, extraValidators))
-                .AsBasic();
-        }
-        
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResponseValidation(IEnumerable<IResponseValidator<TRequest, TResponse>> validators)
         {
             return WithResponseValidation(x => x
@@ -91,12 +84,6 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(IClientHandler<TRequest, TResponse> handler, params IClientHandler<TRequest, TResponse>[] extraHandlers)
-        {
-            return WithHandling(x => x
-                    .ForTransport().Use(handler, extraHandlers))
-                .AsBasic();
-        }
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(IEnumerable<IClientHandler<TRequest, TResponse>> handlers)
         {
             return WithHandling(x => x
@@ -161,13 +148,6 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResults(IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders)
-        {
-            return WithResults(x => x
-                    .ForTransport().Use(builder, extraBuilders))
-                .AsBasic();
-        }
-        
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
         {
             return WithResults(x => x
@@ -217,11 +197,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(loggerCollection));
         }
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithLogging(ILogger logger, params ILogger[] extraLoggers)
-        {
-            return WithLogging(logger, extraLoggers).AsBasic();
-        }
-        
         INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithLogging(IEnumerable<ILogger> loggers)
         {
             return WithLogging(loggers).AsBasic();

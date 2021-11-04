@@ -67,13 +67,6 @@ namespace NClient
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         // Not advanced
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory);
-
-        /// <summary>
-        /// Sets instances of <see cref="ILogger"/>.
-        /// </summary>
-        /// <param name="logger">The logger for a client.</param>
-        // Not advanced
-        INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers);
         
         INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers);
         
