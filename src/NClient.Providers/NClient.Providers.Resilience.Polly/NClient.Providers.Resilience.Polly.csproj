@@ -43,8 +43,8 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
-        <Compile Include="..\..\NClient\NClient.Core\Extensions\HttpMethodExtensions.cs">
-          <Link>Core\HttpMethodExtensions.cs</Link>
+        <Compile Include="..\..\NClient\NClient.Core\Extensions\RequestTypeExtensions.cs">
+          <Link>Core\RequestTypeExtensions.cs</Link>
         </Compile>
     </ItemGroup>
 

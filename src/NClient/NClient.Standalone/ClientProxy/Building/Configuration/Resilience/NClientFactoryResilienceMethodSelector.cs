@@ -26,7 +26,6 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
         
         public INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethodsOf<TClient>()
         {
-            // TODO: test it
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
                 methodPredicate: (method, _) => method.Info.DeclaringType == typeof(TClient));

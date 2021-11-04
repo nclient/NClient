@@ -3,7 +3,8 @@ using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientApiBuilder<TClient> : INClientApiBuilder<TClient> 
+    internal class NClientApiBuilder<TClient> 
+        : INClientAdvancedApiBuilder<TClient>, INClientApiBuilder<TClient>
         where TClient : class
     {
         private readonly string _host;
@@ -13,7 +14,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _host = host;
         }
         
-        public INClientTransportBuilder<TClient> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
+        public INClientAdvancedTransportBuilder<TClient> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
         {
             Ensure.IsNotNull(requestBuilderProvider, nameof(requestBuilderProvider));
             

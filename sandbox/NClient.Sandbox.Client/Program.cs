@@ -64,8 +64,8 @@ namespace NClient.Sandbox.Client
             _weatherForecastClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IWeatherForecastClient>(host: "http://localhost:5000")
-                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
-                .WithCustomResilience(selector => selector
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
                     .ForMethod(x => (Func<WeatherForecastDto, Task>)x.PostAsync).UsePolly(fallbackPolicy))
                 .WithLogging(weatherForecastClientLogger)
@@ -74,8 +74,8 @@ namespace NClient.Sandbox.Client
             _fileClient = NClientGallery.Clients
                 .GetBasic()
                 .For<IFileClient>(host: "http://localhost:5002")
-                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
-                .WithCustomResilience(selector => selector
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
                     .ForMethod(x => (Func<byte[], Task>)x.PostTextFileAsync).UsePolly(fallbackPolicy))
                 .WithLogging(fileClientLogger)

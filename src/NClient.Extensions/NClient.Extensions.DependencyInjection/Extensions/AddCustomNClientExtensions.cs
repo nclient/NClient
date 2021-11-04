@@ -15,15 +15,15 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<INClientApiBuilder<TClient>, TClient> implementationFactory)
+        public static IServiceCollection AddAdvancedNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<INClientAdvancedApiBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            return serviceCollection.AddSingleton(_ => implementationFactory(new CustomNClientBuilder().For<TClient>(host)));
+            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientAdvancedBuilder().For<TClient>(host)));
         }
 
         // TODO: doc
@@ -34,15 +34,15 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, Func<IServiceProvider, INClientApiBuilder<TClient>, TClient> implementationFactory)
+        public static IServiceCollection AddAdvancedNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, Func<IServiceProvider, INClientAdvancedApiBuilder<TClient>, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new CustomNClientBuilder().For<TClient>(host)));
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientAdvancedBuilder().For<TClient>(host)));
         }
     }
 }

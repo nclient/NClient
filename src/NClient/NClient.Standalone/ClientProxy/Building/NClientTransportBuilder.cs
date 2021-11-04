@@ -5,7 +5,9 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientTransportBuilder<TClient> : INClientTransportBuilder<TClient> where TClient : class
+    internal class NClientTransportBuilder<TClient> 
+        : INClientAdvancedTransportBuilder<TClient>, INClientTransportBuilder<TClient>
+        where TClient : class
     {
         private readonly string _host;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
@@ -16,7 +18,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _requestBuilderProvider = requestBuilderProvider;
         }
         
-        public INClientSerializerBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        public INClientAdvancedSerializationBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)
@@ -25,7 +27,7 @@ namespace NClient.Standalone.ClientProxy.Building
             Ensure.IsNotNull(transportRequestBuilderProvider, nameof(transportRequestBuilderProvider));
             Ensure.IsNotNull(responseBuilderProvider, nameof(responseBuilderProvider));
             
-            return new NClientSerializerBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
+            return new NClientSerializationBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
                 .WithHost(_host)
                 .WithRequestBuilderProvider(_requestBuilderProvider)
                 .WithTransport(transportProvider, transportRequestBuilderProvider, responseBuilderProvider));

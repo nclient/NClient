@@ -17,7 +17,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomHandling(new CustomHandler())
+                .AsAdvanced()
+                .WithHandling(x => x
+                    .ForTransport().Use(new CustomHandler()))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -31,8 +33,10 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+                .AsAdvanced()
                 .WithoutHandling()
-                .WithCustomHandling(new CustomHandler(), new CustomHandler())
+                .WithHandling(x => x
+                    .ForTransport().Use(new CustomHandler(), new CustomHandler()))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -46,7 +50,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomHandling(new CustomHandler())
+                .AsAdvanced()
+                .WithHandling(x => x
+                    .ForTransport().Use(new CustomHandler()))
                 .Build();
             
             var response = await client.GetAsync(id);
@@ -60,7 +66,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
-                .WithCustomHandling(new CustomHandler(), new CustomHandler())
+                .AsAdvanced()
+                .WithHandling(x => x
+                    .ForTransport().Use(new CustomHandler(), new CustomHandler()))
                 .Build();
             
             var response = await client.GetAsync(id);

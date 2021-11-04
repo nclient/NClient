@@ -5,7 +5,7 @@ namespace NClient.Extensions.DependencyInjection
 {
     public static class NClientGalleryExtensions
     {
-        public static IInjectedNClientBuilder GetInjected(this ClientGallery _, IServiceProvider serviceProvider, string? httpClientName = null) => 
-            new InjectedNClientBuilder(serviceProvider, httpClientName);
+        public static INClientInjectedBuilder GetInjected(this ClientGallery _, IServiceProvider serviceProvider, string? httpClientName = null) => 
+            new NClientInjectedBuilder(serviceProvider, httpClientName);
     }
 }

@@ -3,7 +3,8 @@ using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Building.Factory
 {
-    internal class NClientFactoryApiBuilder : INClientFactoryApiBuilder
+    internal class NClientFactoryApiBuilder
+        : INClientFactoryAdvancedApiBuilder, INClientFactoryApiBuilder
     {
         private readonly string _factoryName;
         
@@ -12,7 +13,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _factoryName = factoryName;
         }
         
-        public INClientFactoryTransportBuilder UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
+        public INClientFactoryAdvancedTransportBuilder UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
         {
             Ensure.IsNotNull(requestBuilderProvider, nameof(requestBuilderProvider));
             

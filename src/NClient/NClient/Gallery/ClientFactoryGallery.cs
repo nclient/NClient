@@ -4,15 +4,15 @@ namespace NClient
 {
     public interface IClientFactoryGallery
     {
-        IBasicNClientFactoryBuilder GetBasic();
-        IStandardNClientFactoryBuilder GetStandard();
-        INClientFactoryBuilder GetCustom();
+        INClientBasicFactoryBuilder GetBasic();
+        INClientStandardFactoryBuilder GetStandard();
+        INClientAdvancedFactoryBuilder GetCustom();
     }
     
     public class ClientFactoryGallery : IClientFactoryGallery
     {
-        public IBasicNClientFactoryBuilder GetBasic() => new BasicNClientFactoryBuilder();
-        public IStandardNClientFactoryBuilder GetStandard() => new StandardNClientFactoryBuilder();
-        public INClientFactoryBuilder GetCustom() => new CustomNClientFactoryBuilder();
+        public INClientBasicFactoryBuilder GetBasic() => new NClientBasicFactoryBuilder();
+        public INClientStandardFactoryBuilder GetStandard() => new NClientStandardFactoryBuilder();
+        public INClientAdvancedFactoryBuilder GetCustom() => new NClientFactoryAdvancedBuilder();
     }
 }

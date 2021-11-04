@@ -16,11 +16,12 @@ namespace NClient.Api.Tests.CustomClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetCustom().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetAdvanced().For<IBasicClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingJsonSerializer()
-                .WithRestSharpResponseValidation()
+                .WithResponseValidation(x => x
+                    .ForTransport().UseRestSharpResponseValidation())
                 .Build();
             
             var response = await client.GetAsync(id);
