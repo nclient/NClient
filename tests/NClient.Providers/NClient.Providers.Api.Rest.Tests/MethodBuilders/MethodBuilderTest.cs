@@ -27,8 +27,8 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
             var methodInfo = clientType.GetMethods().Single();
             var returnType = methodInfo.ReturnType;
             var methodAttribute = new GetMethodAttribute();
-            var useVersionAttribute = (UseVersionAttribute)null!;
-            var pathAttribute = (PathAttribute)null!;
+            var useVersionAttribute = (UseVersionAttribute) null!;
+            var pathAttribute = (PathAttribute) null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<IMethodParam>();
             var methodAttributeProviderMock = new Mock<IOperationAttributeProvider>();

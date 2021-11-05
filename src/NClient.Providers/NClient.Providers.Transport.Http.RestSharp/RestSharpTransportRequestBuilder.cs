@@ -47,7 +47,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
                 }
             }
 
-            return Task.FromResult((IRestRequest)restRequest);
+            return Task.FromResult((IRestRequest) restRequest);
         }
     }
 }

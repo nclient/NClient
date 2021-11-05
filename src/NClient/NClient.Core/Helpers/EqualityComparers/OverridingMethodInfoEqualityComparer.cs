@@ -23,7 +23,7 @@ namespace NClient.Core.Helpers.EqualityComparers
         {
             unchecked
             {
-                var hashCode = (int)obj.MemberType;
+                var hashCode = (int) obj.MemberType;
                 hashCode = (hashCode * 397) ^ obj.Name.GetHashCode();
                 return hashCode;
             }

@@ -40,11 +40,11 @@ namespace NClient.AspNetCore.Controllers
         private CustomAttributeBuilder BuildRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
         {
             if (attribute.Template is not null)
-                return BuildCustomAttribute((Attribute)attribute);
+                return BuildCustomAttribute((Attribute) attribute);
 
             var attributeCtor = attribute.GetType().GetConstructors().First();
             var attributeCtorParamValues = Array.Empty<object>();
-            return BuildAttribute(attributeCtor, attributeCtorParamValues, (Attribute)attribute);
+            return BuildAttribute(attributeCtor, attributeCtorParamValues, (Attribute) attribute);
         }
 
         private static CustomAttributeBuilder BuildApiVersionsBaseAttribute(ApiVersionsBaseAttribute attribute)

@@ -81,7 +81,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().Be(id);
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             result.Content.ToString().Should().Be(JsonSerializer.Serialize(BadRequestError));
         }
 
@@ -124,7 +124,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().Be(id);
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
             result.Error.Should().BeNull();
         }
 
@@ -167,7 +167,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             result.Error.Should().BeEquivalentTo(BadRequestError);
         }
 
@@ -182,7 +182,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
             result.Error.Should().BeEquivalentTo(InternalServerError);
         }
 
@@ -248,7 +248,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
@@ -262,7 +262,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             result.Content.ToString().Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
         }
 
@@ -291,7 +291,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }
 
         [Test]
@@ -305,7 +305,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
             result.Error.Should().BeNull();
         }
 
@@ -333,7 +333,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
             result.Error.Should().BeEquivalentTo(BadRequestError);
         }
 
@@ -348,7 +348,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
-            result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
             result.Error.Should().BeEquivalentTo(InternalServerError);
         }
     }

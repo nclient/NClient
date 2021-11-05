@@ -106,7 +106,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>
         /// Gets information about the success of the request.
         /// </summary>
-        public bool IsSuccessful => (int)StatusCode >= 200 && (int)StatusCode <= 299;
+        public bool IsSuccessful => (int) StatusCode >= 200 && (int) StatusCode <= 299;
 
         /// <summary>
         /// Creates the container for HTTP response data.

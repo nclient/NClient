@@ -116,7 +116,7 @@ namespace NClient.Tests.ClientFactoryTests
             var returnClientFactory = NClientGallery.ClientFactories.GetBasic().For(factoryName: "TestFactory")
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .WithResilience(x => x
-                    .ForMethodOf<IReturnClientWithMetadata>(client => (Action<BasicEntity>)client.Post)
+                    .ForMethodOf<IReturnClientWithMetadata>(client => (Action<BasicEntity>) client.Post)
                     .DoNotUse())
                 .Build();
 
@@ -196,7 +196,7 @@ namespace NClient.Tests.ClientFactoryTests
             using var api = ReturnApiMockFactory.MockInternalServerError();
             var returnClientFactory = NClientGallery.ClientFactories.GetBasic().For(factoryName: "TestFactory")
                 .WithResilience(selector => selector
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
@@ -213,7 +213,7 @@ namespace NClient.Tests.ClientFactoryTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClientFactory = NClientGallery.ClientFactories.GetBasic().For(factoryName: "TestFactory")
                 .WithResilience(selector => selector
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
@@ -228,9 +228,9 @@ namespace NClient.Tests.ClientFactoryTests
         {
             var returnClientFactory = NClientGallery.ClientFactories.GetBasic().For(factoryName: "TestFactory")
                 .WithResilience(selector => selector
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds())
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Action<BasicEntity>)x.Post)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Action<BasicEntity>) x.Post)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
@@ -258,9 +258,9 @@ namespace NClient.Tests.ClientFactoryTests
             var entity = new BasicEntity();
             var returnClientFactory = NClientGallery.ClientFactories.GetBasic().For(factoryName: "TestFactory")
                 .WithResilience(selector => selector
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds())
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Action<BasicEntity>)x.Post)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Action<BasicEntity>) x.Post)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
             
@@ -306,7 +306,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds())
-                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .DoNotUse())
                 .Build();
 

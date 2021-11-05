@@ -39,7 +39,7 @@ namespace NClient.Common.Helpers
         {
             if (value is not T)
                 throw EnsureExceptionFactory.CreateIncompatibleArgumentException<T>(paramName);
-            return (T)value;
+            return (T) value;
         }
     }
 

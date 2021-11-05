@@ -67,7 +67,7 @@ namespace NClient.Standalone.Client
         public async Task<TResult> GetResultAsync<TResult>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
             #pragma warning disable 8600, 8603
-            return (TResult)await GetResultAsync(request, typeof(TResult), resiliencePolicy).ConfigureAwait(false);
+            return (TResult) await GetResultAsync(request, typeof(TResult), resiliencePolicy).ConfigureAwait(false);
             #pragma warning restore 8600, 8603
         }
 
@@ -89,17 +89,17 @@ namespace NClient.Standalone.Client
 
         public async Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponse<TData>)await GetHttpResponseAsync(request, dataType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
+            return (IResponse<TData>) await GetHttpResponseAsync(request, dataType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
         }
 
         public async Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponseWithError<TError>)await GetHttpResponseWithErrorAsync(request, errorType: typeof(TError), resiliencePolicy).ConfigureAwait(false);
+            return (IResponseWithError<TError>) await GetHttpResponseWithErrorAsync(request, errorType: typeof(TError), resiliencePolicy).ConfigureAwait(false);
         }
 
         public async Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
         {
-            return (IResponseWithError<TData, TError>)await GetHttpResponseWithDataAndErrorAsync(request, dataType: typeof(TData), errorType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
+            return (IResponseWithError<TData, TError>) await GetHttpResponseWithDataAndErrorAsync(request, dataType: typeof(TData), errorType: typeof(TData), resiliencePolicy).ConfigureAwait(false);
         }
         
         public async Task GetResultAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null)
@@ -241,19 +241,19 @@ namespace NClient.Standalone.Client
         private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response)
         {
             var genericResponseType = typeof(Response<>).MakeGenericType(dataType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, data);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data);
         }
         
         private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<>).MakeGenericType(errorType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, error);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error);
         }
         
         private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
-            return (IResponse)Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
         }
     }
 }

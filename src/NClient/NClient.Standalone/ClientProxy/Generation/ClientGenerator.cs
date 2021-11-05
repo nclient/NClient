@@ -18,7 +18,7 @@ namespace NClient.Standalone.ClientProxy.Generation
 
         public TClient CreateClient<TClient>(IAsyncInterceptor asyncInterceptor)
         {
-            return (TClient)_proxyGenerator.CreateInterfaceProxyWithoutTarget(
+            return (TClient) _proxyGenerator.CreateInterfaceProxyWithoutTarget(
                 interfaceToProxy: typeof(TClient),
                 additionalInterfacesToProxy: new[] { typeof(IResilienceNClient<TClient>), typeof(ITransportNClient<TClient>) },
                 interceptors: asyncInterceptor.ToInterceptor());

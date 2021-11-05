@@ -36,7 +36,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             var response = new Response(finalRequest)
             {
                 Content = new Content(responseContext.Response.RawBytes, responseContext.Response.ContentEncoding, new MetadataContainer(contentHeaders)),
-                StatusCode = (int)responseContext.Response.StatusCode,
+                StatusCode = (int) responseContext.Response.StatusCode,
                 Endpoint = responseContext.Response.ResponseUri.ToString(),
                 Metadatas = new MetadataContainer(responseHeaders),
                 ErrorMessage = responseContext.Response.ErrorMessage,

@@ -25,7 +25,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().Be(id);
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().BeEquivalentTo(entity);
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace NClient.Tests.ClientTests
                 .PutAsync(entity);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace NClient.Tests.ClientTests
                 .Delete(id);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
     }
 }

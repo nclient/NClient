@@ -27,7 +27,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);
             var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 IsSuccessful = true
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
@@ -49,7 +49,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);   
             var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
             {
-                StatusCode = (int)HttpStatusCode.NotFound,
+                StatusCode = (int) HttpStatusCode.NotFound,
                 IsSuccessful = false
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
