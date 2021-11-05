@@ -18,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddAdvancedNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
+            serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -33,7 +33,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddAdvancedNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
+            serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -48,7 +48,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddAdvancedNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
+            serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -65,7 +65,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
             serviceCollection.AddHttpClient("TestClient");
 
-            serviceCollection.AddAdvancedNClient<ITestClientWithMetadata>(host: "http://localhost:5000", (serviceProvider, configure) => configure
+            serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", (serviceProvider, configure) => configure
                 .UsingRestApi()
                 .UsingSystemHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),

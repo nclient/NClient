@@ -17,12 +17,9 @@ namespace NClient
             Ensure.IsNotNull(beforeRequest, nameof(beforeRequest));
             Ensure.IsNotNull(afterRequest, nameof(afterRequest));
             
-            return clientOptionalBuilder.AsAdvanced()
-                .WithHandling(x => x
-                    .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
-                        beforeRequest, 
-                        afterRequest)))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedHandling(x => x
+                .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
+                    beforeRequest, afterRequest)));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling<TRequest, TResponse>(
@@ -34,12 +31,9 @@ namespace NClient
             Ensure.IsNotNull(beforeRequest, nameof(beforeRequest));
             Ensure.IsNotNull(afterRequest, nameof(afterRequest));
             
-            return factoryOptionalBuilder.AsAdvanced()
-                .WithHandling(x => x
-                    .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
-                        beforeRequest, 
-                        afterRequest)))
-                .AsBasic();
+            return factoryOptionalBuilder.WithAdvancedHandling(x => x
+                .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
+                    beforeRequest, afterRequest)));
         }
     }
 }

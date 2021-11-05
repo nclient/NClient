@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests
             const int id = 1;
             using var api = RestApiMockFactory.MockIntGetMethod(id);
 
-            var result = await new NClientAdvancedBuilder()
+            var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
@@ -36,7 +36,7 @@ namespace NClient.Standalone.Tests
             const string id = "1";
             using var api = RestApiMockFactory.MockStringGetMethod(id);
 
-            var result = await new NClientAdvancedBuilder()
+            var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
@@ -54,12 +54,12 @@ namespace NClient.Standalone.Tests
             const int id = 1;
             using var api = RestApiMockFactory.MockIntGetMethod(id);
 
-            var result = await new NClientAdvancedBuilder()
+            var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
                 .UsingSystemJsonSerialization()
-                .WithResponseValidation(x => x
+                .WithAdvancedResponseValidation(x => x
                     .ForTransport().UseSystemResponseValidation())
                 .Build()
                 .GetAsync(id);
@@ -73,12 +73,12 @@ namespace NClient.Standalone.Tests
             const string id = "1";
             using var api = RestApiMockFactory.MockStringGetMethod(id);
 
-            var result = await new NClientAdvancedBuilder()
+            var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
                 .UsingSystemJsonSerialization()
-                .WithResponseValidation(x => x
+                .WithAdvancedResponseValidation(x => x
                     .ForTransport().UseSystemResponseValidation())
                 .Build()
                 .GetAsync(id);
@@ -92,7 +92,7 @@ namespace NClient.Standalone.Tests
             const int id = 1;
             using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            await new NClientAdvancedBuilder()
+            await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
@@ -109,7 +109,7 @@ namespace NClient.Standalone.Tests
             const string id = "1";
             using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            await new NClientAdvancedBuilder()
+            await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
@@ -126,13 +126,13 @@ namespace NClient.Standalone.Tests
             const int id = 1;
             using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
-            await new NClientAdvancedBuilder()
+            await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
                 .UsingSystemJsonSerialization()
                 .Invoking(async x => await x
-                    .WithResponseValidation(setter => setter
+                    .WithAdvancedResponseValidation(setter => setter
                         .ForTransport().UseSystemResponseValidation())
                     .Build()
                     .GetAsync(id))
@@ -145,13 +145,13 @@ namespace NClient.Standalone.Tests
             const string id = "1";
             using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
-            await new NClientAdvancedBuilder()
+            await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemHttpTransport()
                 .UsingSystemJsonSerialization()
                 .Invoking(async x => await x
-                    .WithResponseValidation(setter => setter
+                    .WithAdvancedResponseValidation(setter => setter
                         .ForTransport().UseSystemResponseValidation())
                     .Build()
                     .GetAsync(id))

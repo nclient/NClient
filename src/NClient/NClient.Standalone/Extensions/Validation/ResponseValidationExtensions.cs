@@ -14,12 +14,9 @@ namespace NClient
             Action<IResponseContext<TRequest, TResponse>> onFailure)
             where TClient : class
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResponseValidation(x => x
-                    .ForTransport().Use(new ResponseValidatorSettings<TRequest, TResponse>(
-                        isSuccess, 
-                        onFailure)))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResponseValidation(x => x
+                .ForTransport().Use(new ResponseValidatorSettings<TRequest, TResponse>(
+                    isSuccess, onFailure)));
         }
 
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseValidation<TRequest, TResponse>(
@@ -27,12 +24,9 @@ namespace NClient
             Predicate<IResponseContext<TRequest, TResponse>> isSuccess,
             Action<IResponseContext<TRequest, TResponse>> onFailure)
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResponseValidation(x => x
-                    .ForTransport().Use(new ResponseValidatorSettings<TRequest, TResponse>(
-                        isSuccess, 
-                        onFailure)))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResponseValidation(x => x
+                .ForTransport().Use(new ResponseValidatorSettings<TRequest, TResponse>(
+                    isSuccess, onFailure)));
         }
     }
 }

@@ -5,8 +5,7 @@ using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientTransportBuilder<TClient> 
-        : INClientAdvancedTransportBuilder<TClient>, INClientTransportBuilder<TClient>
+    internal class NClientTransportBuilder<TClient> : INClientTransportBuilder<TClient>
         where TClient : class
     {
         private readonly string _host;
@@ -18,7 +17,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _requestBuilderProvider = requestBuilderProvider;
         }
         
-        public INClientAdvancedSerializationBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
+        public INClientSerializationBuilder<TClient, TRequest, TResponse> UsingCustomTransport<TRequest, TResponse>(
             ITransportProvider<TRequest, TResponse> transportProvider, 
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider)

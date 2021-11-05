@@ -15,20 +15,19 @@ namespace NClient
     {
         public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
-            return new NClientFactoryAdvancedBuilder()
+            return new NClientFactoryBuilder()
                 .For(factoryName)
                 .UsingRestApi()
                 .UsingHttpTransport()
                 .UsingJsonSerializer()
-                .WithResponseValidation(x => x
+                .WithAdvancedResponseValidation(x => x
                     .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithResults(x => x
+                .WithAdvancedResults(x => x
                     .ForTransport().UseHttpResults()
                     .ForClient().UseResults())
-                .WithoutLogging()
-                .AsBasic();
+                .WithoutLogging();
         }
     }
 }
