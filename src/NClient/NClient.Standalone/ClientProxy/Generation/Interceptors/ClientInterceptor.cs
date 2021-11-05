@@ -60,7 +60,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
             #pragma warning disable 8600, 8603
-            return (TResult)await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
+            return (TResult) await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
             #pragma warning restore 8600, 8603
         }
 

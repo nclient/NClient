@@ -36,7 +36,7 @@ namespace NClient.Providers.Serialization.Xml.System.Tests
             var serializer = new SystemXmlSerializerProvider().Create();
 
             serializer
-                .Invoking(x => x.Serialize((int?)null))
+                .Invoking(x => x.Serialize((int?) null))
                 .Should()
                 .ThrowExactly<ArgumentNullException>();
         }

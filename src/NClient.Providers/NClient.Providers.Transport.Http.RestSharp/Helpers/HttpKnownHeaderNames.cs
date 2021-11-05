@@ -98,7 +98,7 @@ namespace NClient.Providers.Transport.Http.RestSharp.Helpers
         
         public IEnumerator<string> GetEnumerator()
         {
-            return ((IEnumerable<string>)Names).GetEnumerator();
+            return ((IEnumerable<string>) Names).GetEnumerator();
         }
         
         IEnumerator IEnumerable.GetEnumerator()

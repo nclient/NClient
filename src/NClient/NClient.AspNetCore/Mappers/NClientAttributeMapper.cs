@@ -44,7 +44,7 @@ namespace NClient.AspNetCore.Mappers
                     : new HttpPatchAttribute(x.Path) { Order = x.Order, Name = x.Name },
                 #endif
 
-                IResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
+                IResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int) x.StatusCode),
 
                 IAnonymousAttribute => new AllowAnonymousAttribute(),
                 IAuthorizedAttribute x => new AuthorizeAttribute(x.Policy!) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },

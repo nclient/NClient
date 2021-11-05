@@ -165,7 +165,7 @@ namespace NClient.Tests.ClientTests
                 .For<IReturnClientWithMetadata>(api.Urls.First())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .WithResilience(x => x
-                    .ForMethod(client => (Action<BasicEntity>)client.Post)
+                    .ForMethod(client => (Action<BasicEntity>) client.Post)
                     .DoNotUse())
                 .Build();
 
@@ -250,7 +250,7 @@ namespace NClient.Tests.ClientTests
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
                 .WithResilience(selector => selector
-                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
@@ -268,7 +268,7 @@ namespace NClient.Tests.ClientTests
                 .GetBasic()
                 .For<IReturnClientWithMetadata>(api.Urls.First())
                 .WithResilience(selector => selector
-                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
@@ -287,9 +287,9 @@ namespace NClient.Tests.ClientTests
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
                     .WithResilience(selector => selector
-                        .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                        .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
-                        .ForMethod(x => (Action<BasicEntity>)x.Post)
+                        .ForMethod(x => (Action<BasicEntity>) x.Post)
                         .Use(getDelay: _ => 0.Seconds()))
                     .Build()
                     .Invoking(x => x.Get(id: 1))
@@ -302,9 +302,9 @@ namespace NClient.Tests.ClientTests
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
                     .WithResilience(selector => selector
-                        .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                        .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
-                        .ForMethod(x => (Action<BasicEntity>)x.Post)
+                        .ForMethod(x => (Action<BasicEntity>) x.Post)
                         .Use(getDelay: _ => 0.Seconds()))
                     .Build()
                     .Invoking(x => x.Post(new BasicEntity()))
@@ -326,9 +326,9 @@ namespace NClient.Tests.ClientTests
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
                     .WithResilience(selector => selector
-                        .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                        .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
-                        .ForMethod(x => (Action<BasicEntity>)x.Post)
+                        .ForMethod(x => (Action<BasicEntity>) x.Post)
                         .Use(getDelay: _ => 0.Seconds()))
                     .Build()
                     .Invoking(x => x.Get(id))
@@ -341,9 +341,9 @@ namespace NClient.Tests.ClientTests
                     .GetBasic()
                     .For<IReturnClientWithMetadata>(api.Urls.First())
                     .WithResilience(selector => selector
-                        .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                        .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
-                        .ForMethod(x => (Action<BasicEntity>)x.Post)
+                        .ForMethod(x => (Action<BasicEntity>) x.Post)
                         .Use(getDelay: _ => 0.Seconds()))
                     .Build()
                     .Invoking(x => x.Post(entity))
@@ -380,7 +380,7 @@ namespace NClient.Tests.ClientTests
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds())
-                    .ForMethod(x => (Func<int, BasicEntity>)x.Get)
+                    .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                     .DoNotUse())
                 .Build();
 

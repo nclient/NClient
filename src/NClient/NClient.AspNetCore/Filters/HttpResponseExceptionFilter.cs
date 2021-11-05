@@ -18,7 +18,7 @@ namespace NClient.AspNetCore.Filters
             {
                 context.Result = new ObjectResult(exception.Value)
                 {
-                    StatusCode = (int)exception.Status
+                    StatusCode = (int) exception.Status
                 };
                 context.ExceptionHandled = true;
             }

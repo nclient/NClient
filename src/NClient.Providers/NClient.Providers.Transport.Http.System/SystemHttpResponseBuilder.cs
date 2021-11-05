@@ -38,7 +38,7 @@ namespace NClient.Providers.Transport.Http.System
                     .SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))),
                 Content = content,
-                StatusCode = (int)responseContext.Response.StatusCode,
+                StatusCode = (int) responseContext.Response.StatusCode,
                 StatusDescription = responseContext.Response.StatusCode.ToString(),
                 Endpoint = responseContext.Response.RequestMessage.RequestUri.ToString(),
                 ProtocolVersion = responseContext.Response.Version,

@@ -33,7 +33,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
 
             var keepDataInterceptor = new KeepDataInterceptor();
             var proxyClient = _proxyGenerator.CreateInterfaceProxyWithoutTarget(clientType, keepDataInterceptor);
-            ((LambdaExpression)clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
+            ((LambdaExpression) clientMethodInvocation).Compile().DynamicInvoke(proxyClient);
 
             var innerInvocation = keepDataInterceptor.Invocation!;
 
@@ -42,7 +42,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
                 .SingleOrDefault(x => x.Param.ParameterType == typeof(IResiliencePolicyProvider<TRequest, TResponse>))?
                 .Index;
             var resiliencePolicyProvider = resiliencePolicyArgumentIndex.HasValue
-                ? (IResiliencePolicyProvider<TRequest, TResponse>?)invocation.Arguments[resiliencePolicyArgumentIndex.Value]
+                ? (IResiliencePolicyProvider<TRequest, TResponse>?) invocation.Arguments[resiliencePolicyArgumentIndex.Value]
                 : null;
 
             return new ExplicitInvocation<TRequest, TResponse>(innerInvocation, returnType, resiliencePolicyProvider);

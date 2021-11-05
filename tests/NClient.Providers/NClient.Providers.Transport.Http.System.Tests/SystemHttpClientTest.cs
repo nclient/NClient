@@ -79,7 +79,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
                 #else
                 Content = new Content(headerContainer: new MetadataContainer(Array.Empty<IMetadata>())),
                 #endif
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Endpoint = EndpointUri.ToString(),
                 Metadatas = new MetadataContainer(new[]
@@ -134,7 +134,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
                     ContentEncodingHeader,
                     new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
                 })),
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Endpoint = EndpointUri.ToString(),
                 Metadatas = new MetadataContainer(new[]
@@ -207,7 +207,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
                 {
                     EmptyContentLengthMetadata
                 })),
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Endpoint = EndpointUri.ToString(),
                 Metadatas = new MetadataContainer(new[]

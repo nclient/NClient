@@ -55,7 +55,7 @@ namespace NClient.Standalone.Tests
             {
                 new("obj", null)
             }).SetName("Nullable int32: null"),
-            new TestCaseData((int?)1, new PropertyKeyValue[]
+            new TestCaseData((int?) 1, new PropertyKeyValue[]
             {
                 new("obj", 1)
             }).SetName("Nullable int32: has value"),

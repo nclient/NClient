@@ -79,7 +79,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithResilience(selector => selector
                     .ForAllMethods().DoNotUse()
-                    .ForMethod(x => (Func<int, Task<int>>)x.GetAsync).Use(
+                    .ForMethod(x => (Func<int, Task<int>>) x.GetAsync).Use(
                         maxRetries: 3,
                         getDelay: _ => TimeSpan.FromSeconds(0),
                         shouldRetry: x => !x.Response.IsSuccessStatusCode))
@@ -98,7 +98,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .WithResilience(x => x
-                    .ForMethod(client => (Func<BasicEntity, Task>)client.PostAsync).DoNotUse())
+                    .ForMethod(client => (Func<BasicEntity, Task>) client.PostAsync).DoNotUse())
                 .Build();
             
             var response = await client.GetAsync(id);

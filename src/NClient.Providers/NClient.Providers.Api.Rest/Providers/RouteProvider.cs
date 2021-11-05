@@ -122,7 +122,7 @@ namespace NClient.Providers.Api.Rest.Providers
                 throw _clientValidationExceptionFactory.TokenNotMatchAnyMethodParameter(name);
             if (parameterValue.Value is null)
                 throw _clientArgumentExceptionFactory.ParameterInRouteTemplateIsNull(name);
-            return parameterValue!;
+            return parameterValue;
         }
 
         private string GetValueForText(TemplatePart templatePart, string clientName, string methodName)

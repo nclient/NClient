@@ -20,7 +20,7 @@ namespace NClient.Providers.Transport
                 .GroupBy(x => x.Name)
                 .ToDictionary(
                     g => g.Key,
-                    g => (IEnumerable<IMetadata>)g.Select(x => x).ToList());
+                    g => (IEnumerable<IMetadata>) g.Select(x => x).ToList());
         }
 
         public IEnumerable<IMetadata> Get(string name)

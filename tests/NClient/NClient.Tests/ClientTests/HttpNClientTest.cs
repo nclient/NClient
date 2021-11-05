@@ -33,7 +33,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                     Encoding.UTF8.WebName,
@@ -61,7 +61,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                     Encoding.UTF8.WebName,
@@ -89,7 +89,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                     Encoding.UTF8.WebName,
@@ -117,7 +117,7 @@ namespace NClient.Tests.ClientTests
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
                     Encoding.UTF8.WebName,
@@ -144,7 +144,7 @@ namespace NClient.Tests.ClientTests
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
                     encoding: null,
@@ -170,7 +170,7 @@ namespace NClient.Tests.ClientTests
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
                     encoding: null,
@@ -196,7 +196,7 @@ namespace NClient.Tests.ClientTests
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
                     encoding: null,
@@ -222,7 +222,7 @@ namespace NClient.Tests.ClientTests
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
                     Encoding.UTF8.GetBytes(""),
                     encoding: null,
@@ -247,7 +247,7 @@ namespace NClient.Tests.ClientTests
                 .AsHttp().GetTransportResponse(client => client.Post(entity));
 
             using var assertionScope = new AssertionScope();
-            httpResponse.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            httpResponse.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
             httpResponse.IsSuccessful.Should().BeFalse();
             httpResponse.ErrorMessage.Should().NotBeNull();
             httpResponse.ErrorException.Should().NotBeNull();
