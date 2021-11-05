@@ -9,10 +9,8 @@ namespace NClient
             this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResults(x => x
-                    .ForClient().Use(new EitherBuilderProvider()))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResults(x => x
+                .ForClient().Use(new EitherBuilderProvider()));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithLanguageExtResults<TRequest, TResponse>(

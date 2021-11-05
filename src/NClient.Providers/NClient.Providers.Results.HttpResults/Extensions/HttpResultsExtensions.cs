@@ -10,10 +10,8 @@ namespace NClient
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResults(x => x
-                    .ForTransport().Use(new HttpResponseBuilderProvider()))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResults(x => x
+                .ForTransport().Use(new HttpResponseBuilderProvider()));
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithHttpResults(

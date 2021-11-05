@@ -14,8 +14,8 @@ namespace NClient
         /// </summary>
         /// <param name="clientOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
-            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             IResiliencePolicySettings<TRequest, TResponse> settings)
             where TClient : class
         {
@@ -26,30 +26,14 @@ namespace NClient
                 .ForAllMethods()
                 .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
-        
-        /// <summary>
-        /// Sets resilience policy provider for all HTTP methods.
-        /// </summary>
-        /// <param name="clientOptionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            IResiliencePolicySettings<TRequest, TResponse> settings)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(settings, nameof(settings));
-            
-            return WithPollyFullResilience(clientOptionalBuilder.AsAdvanced(), settings).AsBasic();
-        }
 
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
         /// <param name="clientAdvancedOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
-            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
             int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
             where TClient : class
         {
@@ -60,27 +44,7 @@ namespace NClient
             return clientAdvancedOptionalBuilder.WithPollyFullResilience(
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
         }
-        
-        // TODO: doc
-        /// <summary>
-        /// Sets resilience policy provider for all HTTP methods.
-        /// </summary>
-        /// <param name="clientOptionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(getDelay, nameof(getDelay));
-            Ensure.IsNotNull(shouldRetry, nameof(shouldRetry));
-            
-            return WithPollyFullResilience(
-                    clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry)
-                .AsBasic();
-        }
-        
+
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>

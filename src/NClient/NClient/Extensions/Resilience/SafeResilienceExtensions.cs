@@ -14,8 +14,8 @@ namespace NClient
         /// </summary>
         /// <param name="clientAdvancedOptionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientAdvancedOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithSafeResilience<TClient>(
-            this INClientAdvancedOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
+        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithSafeResilience<TClient>(
+            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
             where TClient : class
         {
@@ -24,22 +24,7 @@ namespace NClient
             return clientAdvancedOptionalBuilder.WithPollySafeResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
-        
-        /// <summary>
-        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
-        /// </summary>
-        /// <param name="clientOptionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithSafeResilience<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
-            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
 
-            return WithSafeResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
-        }
-        
         /// <summary>
         /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>

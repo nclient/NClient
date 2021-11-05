@@ -9,8 +9,8 @@ namespace NClient
 {
     public static class FullResilienceExtensions
     {
-        public static INClientAdvancedOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithFullResilience<TClient>(
-            this INClientAdvancedOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
+        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithFullResilience<TClient>(
+            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
             where TClient : class
         {
@@ -19,23 +19,7 @@ namespace NClient
             return clientAdvancedOptionalBuilder.WithPollyFullResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
-        
-        // TODO: doc
-        /// <summary>
-        /// Sets resilience policy provider for all HTTP methods.
-        /// </summary>
-        /// <param name="clientOptionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
-        public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithFullResilience<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
-            int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            
-            return WithFullResilience(clientOptionalBuilder.AsAdvanced(), maxRetries, getDelay, shouldRetry).AsBasic();
-        }
-        
+
         public static INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithFullResilience(
             this INClientFactoryAdvancedOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientAdvancedOptionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)

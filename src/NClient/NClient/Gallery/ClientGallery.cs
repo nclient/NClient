@@ -6,13 +6,13 @@ namespace NClient
     {
         INClientBasicBuilder GetBasic();
         INClientStandardBuilder GetStandard();
-        INClientAdvancedBuilder GetAdvanced();
+        INClientBuilder GetCustom();
     }
     
     public class ClientGallery : IClientGallery
     {
         public INClientBasicBuilder GetBasic() => new NClientBasicBuilder();
         public INClientStandardBuilder GetStandard() => new NClientStandardBuilder();
-        public INClientAdvancedBuilder GetAdvanced() => new NClientAdvancedBuilder();
+        public INClientBuilder GetCustom() => new NClientBuilder();
     }
 }

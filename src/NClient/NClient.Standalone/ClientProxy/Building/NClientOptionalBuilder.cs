@@ -22,8 +22,7 @@ using NClient.Standalone.ClientProxy.Validation.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
-    internal class NClientOptionalBuilder<TClient, TRequest, TResponse> 
-        : INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse>, INClientOptionalBuilder<TClient, TRequest, TResponse>
+    internal class NClientOptionalBuilder<TClient, TRequest, TResponse> : INClientOptionalBuilder<TClient, TRequest, TResponse>
         where TClient : class
     {
         private readonly BuilderContext<TRequest, TResponse> _context;
@@ -39,77 +38,21 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value);
         }
 
-        #region INClientOptionalBuilder
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResponseValidation(IEnumerable<IResponseValidator<TRequest, TResponse>> validators)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
         {
-            return WithResponseValidation(x => x
-                    .ForTransport().Use(validators))
-                .AsBasic();
+            Ensure.IsNotNull(provider, nameof(provider));
+            
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithSerializer(provider));
         }
         
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutResponseValidation()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(IEnumerable<IResponseValidator<TRequest, TResponse>> validators)
         {
-            return WithoutResponseValidation().AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithHandling(IEnumerable<IClientHandler<TRequest, TResponse>> handlers)
-        {
-            return WithHandling(x => x
-                    .ForTransport().Use(handlers))
-                .AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutHandling()
-        {
-            return WithoutHandling().AsBasic();
+            return WithAdvancedResponseValidation(x => x
+                .ForTransport().Use(validators));
         }
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
-        {
-            return WithResults(x => x
-                    .ForTransport().Use(builders))
-                .AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutResults()
-        {
-            return WithoutResults().AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
-        {
-            return WithResilience(configure).AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutResilience()
-        {
-            return WithoutResilience().AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithLogging(ILoggerFactory loggerFactory)
-        {
-            return WithLogging(loggerFactory).AsBasic();
-        }
-        
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithLogging(IEnumerable<ILogger> loggers)
-        {
-            return WithLogging(loggers).AsBasic();
-        }
-
-        INClientOptionalBuilder<TClient, TRequest, TResponse> INClientOptionalBuilder<TClient, TRequest, TResponse>.WithoutLogging()
-        {
-            return WithoutLogging().AsBasic();
-        }
-        
-        TClient INClientOptionalBuilder<TClient, TRequest, TResponse>.Build()
-        {
-            return Build();
-        }
-        
-        #endregion
-
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
@@ -118,21 +61,19 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResponseValidation());
         }
-
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
-        {
-            Ensure.IsNotNull(provider, nameof(provider));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithSerializer(provider));
-        }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling(IEnumerable<IClientHandler<TRequest, TResponse>> handlers)
+        {
+            return WithAdvancedHandling(x => x
+                .ForTransport().Use(handlers));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
@@ -141,13 +82,19 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutHandlers());
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
+        {
+            return WithAdvancedResults(x => x
+                .ForTransport().Use(builders));
+        }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResults(Action<INClientResultsSelector<TRequest, TResponse>> configure)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResults(Action<INClientResultsSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
@@ -156,13 +103,13 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResults()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResultBuilders());
         }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
@@ -171,13 +118,13 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResiliencePolicy());
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
         {
             Ensure.IsNotNull(loggerFactory, nameof(loggerFactory));
             
@@ -185,7 +132,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(loggerFactory));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers)
         {
             Ensure.IsNotNull(logger, nameof(logger));
             Ensure.AreNotNullItems(extraLoggers, nameof(extraLoggers));
@@ -194,7 +141,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(extraLoggers.Concat(new[] { logger })));
         }
         
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers)
         {
             var loggerCollection = loggers as ICollection<ILogger> ?? loggers.ToArray();
             Ensure.AreNotNullItems(loggerCollection, nameof(loggerCollection));
@@ -203,7 +150,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithLogging(loggerCollection));
         }
 
-        public INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutLogging());

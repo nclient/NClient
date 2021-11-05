@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
 using NClient.Providers.Results;
+using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
@@ -11,18 +12,32 @@ namespace NClient
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
+        #region Serializer
+        
+        /// <summary>
+        /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
+        /// </summary>
+        /// <param name="provider">The provider that can create instances of <see cref="ISerializer"/>.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider);
+
+        #endregion
+        
         #region ResponseValidation
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation(IEnumerable<IResponseValidator<TRequest, TResponse>> validators);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseValidation(Action<INClientResponseValidationSelector<TRequest, TResponse>> configure);
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseValidation();
 
         #endregion
 
         #region Handling
-
+        
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling(IEnumerable<IClientHandler<TRequest, TResponse>> handlers);
-            
+        
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure);
+
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
         
@@ -32,6 +47,8 @@ namespace NClient
         
         // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResults(Action<INClientResultsSelector<TRequest, TResponse>> configure);
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
 
@@ -61,7 +78,7 @@ namespace NClient
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();
         
         #endregion
-        
+
         /// <summary>
         /// Creates <see cref="TClient"/>.
         /// </summary>

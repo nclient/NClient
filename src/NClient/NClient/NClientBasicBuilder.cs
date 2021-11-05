@@ -17,20 +17,19 @@ namespace NClient
         public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class
         {
-            return new NClientAdvancedBuilder()
+            return new NClientBuilder()
                 .For<TClient>(host)
                 .UsingRestApi()
                 .UsingHttpTransport()
                 .UsingJsonSerializer()
-                .WithResponseValidation(x => x
+                .WithAdvancedResponseValidation(x => x
                     .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithResults(x => x
+                .WithAdvancedResults(x => x
                     .ForTransport().UseHttpResults()
                     .ForClient().UseResults())
-                .WithoutLogging()
-                .AsBasic();
+                .WithoutLogging();
         }
     }
 }

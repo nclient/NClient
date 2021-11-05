@@ -8,26 +8,17 @@ namespace NClient
     // TODO: doc
     public static class NewtonsoftJsonSerializationExtensions
     {
-        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder) 
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder) 
             where TClient : class
         {
             Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
             
             return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
         }
-        
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            
-            return WithNewtonsoftJsonSerialization(clientOptionalBuilder.AsAdvanced()).AsBasic();
-        }
 
-        public static INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientAdvancedOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
             JsonSerializerSettings jsonSerializerSettings)
             where TClient : class
         {
@@ -36,18 +27,7 @@ namespace NClient
             
             return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
         }
-        
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            JsonSerializerSettings jsonSerializerSettings)
-            where TClient : class
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
-            
-            return WithNewtonsoftJsonSerialization(clientOptionalBuilder.AsAdvanced(), jsonSerializerSettings).AsBasic();
-        }
-        
+
         public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithNewtonsoftJsonSerialization<TRequest, TResponse>(
             this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder)
         {
