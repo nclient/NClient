@@ -28,20 +28,19 @@ namespace NClient.Extensions.DependencyInjection
             var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
             var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
             
-            return new NClientFactoryAdvancedBuilder()
+            return new NClientFactoryBuilder()
                 .For(factoryName)
                 .UsingRestApi()
                 .UsingSystemHttpTransport(httpClientFactory, _httpClientName)
                 .UsingJsonSerializer()
-                .WithResponseValidation(x => x
+                .WithAdvancedResponseValidation(x => x
                     .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithResults(x => x
+                .WithAdvancedResults(x => x
                     .ForTransport().UseHttpResults()
                     .ForClient().UseResults())
-                .WithLogging(loggerFactory)
-                .AsBasic();
+                .WithLogging(loggerFactory);
         }
     }
 }

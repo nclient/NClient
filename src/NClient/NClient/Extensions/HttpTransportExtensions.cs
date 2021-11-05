@@ -24,24 +24,12 @@ namespace NClient
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="clientAdvancedTransportBuilder"></param>
-        public static INClientFactoryAdvancedSerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
-            this INClientFactoryAdvancedTransportBuilder clientAdvancedTransportBuilder)
+        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
+            this INClientFactoryTransportBuilder clientAdvancedTransportBuilder)
         {
             Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
 
             return clientAdvancedTransportBuilder.UsingSystemHttpTransport();
-        }
-        
-        /// <summary>
-        /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
-        /// </summary>
-        /// <param name="clientTransportBuilder"></param>
-        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingHttpTransport(
-            this INClientFactoryTransportBuilder clientTransportBuilder)
-        {
-            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
-
-            return clientTransportBuilder.UsingSystemHttpTransport();
         }
     }
 }

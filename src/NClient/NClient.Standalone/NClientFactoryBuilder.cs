@@ -7,9 +7,9 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client factory with custom providers.
     /// </summary>
-    public class NClientFactoryAdvancedBuilder : INClientAdvancedFactoryBuilder
+    public class NClientFactoryBuilder : INClientFactoryBuilder
     {
-        public INClientFactoryAdvancedApiBuilder For(string factoryName)
+        public INClientFactoryApiBuilder For(string factoryName)
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
             return new NClientFactoryApiBuilder(factoryName);

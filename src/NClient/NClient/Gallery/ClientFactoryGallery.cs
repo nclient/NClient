@@ -6,13 +6,13 @@ namespace NClient
     {
         INClientBasicFactoryBuilder GetBasic();
         INClientStandardFactoryBuilder GetStandard();
-        INClientAdvancedFactoryBuilder GetCustom();
+        INClientFactoryBuilder GetCustom();
     }
     
     public class ClientFactoryGallery : IClientFactoryGallery
     {
         public INClientBasicFactoryBuilder GetBasic() => new NClientBasicFactoryBuilder();
         public INClientStandardFactoryBuilder GetStandard() => new NClientStandardFactoryBuilder();
-        public INClientAdvancedFactoryBuilder GetCustom() => new NClientFactoryAdvancedBuilder();
+        public INClientFactoryBuilder GetCustom() => new NClientFactoryBuilder();
     }
 }

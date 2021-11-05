@@ -42,24 +42,12 @@ namespace NClient
         /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="clientAdvancedSerializationBuilder"></param>
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
         {
             Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
 
             return clientAdvancedSerializationBuilder.UsingCustomSerializer(new NewtonsoftJsonSerializerProvider());
-        }
-        
-        /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="clientSerializationBuilder"></param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientSerializationBuilder)
-        {
-            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
-
-            return UsingNewtonsoftJsonSerialization(clientSerializationBuilder.AsAdvanced()).AsBasic();
         }
 
         /// <summary>
@@ -67,8 +55,8 @@ namespace NClient
         /// </summary>
         /// <param name="clientAdvancedSerializationBuilder"></param>
         /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder,
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder,
             JsonSerializerSettings jsonSerializerSettings)
         {
             Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
@@ -76,21 +64,6 @@ namespace NClient
 
             return clientAdvancedSerializationBuilder
                 .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
-        }
-        
-        /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="clientSerializationBuilder"></param>
-        /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientSerializationBuilder,
-            JsonSerializerSettings jsonSerializerSettings)
-        {
-            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
-            Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
-
-            return UsingNewtonsoftJsonSerialization(clientSerializationBuilder.AsAdvanced(), jsonSerializerSettings).AsBasic();
         }
     }
 }

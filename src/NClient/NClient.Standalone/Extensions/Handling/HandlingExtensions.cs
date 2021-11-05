@@ -31,12 +31,9 @@ namespace NClient
             Ensure.IsNotNull(beforeRequest, nameof(beforeRequest));
             Ensure.IsNotNull(afterRequest, nameof(afterRequest));
             
-            return factoryOptionalBuilder.AsAdvanced()
-                .WithHandling(x => x
-                    .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
-                        beforeRequest, 
-                        afterRequest)))
-                .AsBasic();
+            return factoryOptionalBuilder.WithAdvancedHandling(x => x
+                .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
+                    beforeRequest, afterRequest)));
         }
     }
 }

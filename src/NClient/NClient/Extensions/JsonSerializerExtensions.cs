@@ -23,24 +23,12 @@ namespace NClient
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="clientAdvancedSerializationBuilder"></param>
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
-            this INClientFactoryAdvancedSerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
+            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
         {
             Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
 
             return clientAdvancedSerializationBuilder.UsingSystemJsonSerialization();
-        }
-        
-        /// <summary>
-        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="clientSerializationBuilder"></param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientSerializationBuilder)
-        {
-            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
-
-            return clientSerializationBuilder.UsingSystemJsonSerialization();
         }
     }
 }

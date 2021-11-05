@@ -16,10 +16,8 @@ namespace NClient
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithLanguageExtResults<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder)
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResults(x => x
-                    .ForClient().Use(new EitherBuilderProvider()))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResults(x => x
+                .ForClient().Use(new EitherBuilderProvider()));
         }
     }
 }

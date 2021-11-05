@@ -17,10 +17,8 @@ namespace NClient
         public static INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> WithRestSharpResponseValidation(
             this INClientFactoryOptionalBuilder<IRestRequest, IRestResponse> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.AsAdvanced()
-                .WithResponseValidation(x => x
-                    .ForTransport().Use(new DefaultRestSharpResponseValidatorSettings()))
-                .AsBasic();
+            return factoryOptionalBuilder.WithAdvancedResponseValidation(x => x
+                .ForTransport().Use(new DefaultRestSharpResponseValidatorSettings()));
         }
     }
 }

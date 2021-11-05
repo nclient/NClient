@@ -24,8 +24,8 @@ namespace NClient
                     .Use(safeMethodProvider));
         }
 
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(
-            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
             IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
         {
             Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
@@ -38,17 +38,6 @@ namespace NClient
                     .Use(otherMethodProvider)
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
                     .Use(safeMethodProvider));
-        }
-        
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder,
-            IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
-            Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
-            
-            return WithSafeResilience(clientOptionalBuilder.AsAdvanced(), safeMethodProvider, otherMethodProvider).AsBasic();
         }
     }
 }

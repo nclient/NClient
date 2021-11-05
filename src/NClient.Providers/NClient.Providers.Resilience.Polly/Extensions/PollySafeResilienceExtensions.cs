@@ -26,8 +26,8 @@ namespace NClient
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
         
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithPollySafeResilience<TRequest, TResponse>(
-            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollySafeResilience<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
         {
             Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
@@ -40,23 +40,6 @@ namespace NClient
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
-        }
-        
-        /// <summary>
-        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
-        /// </summary>
-        /// <param name="clientOptionalBuilder"></param>
-        /// <param name="safeMethodPolicy">The settings for resilience policy provider for safe methods.</param>
-        /// <param name="otherMethodPolicy">The settings for resilience policy provider for other methods.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollySafeResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder,
-            IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(safeMethodPolicy, nameof(safeMethodPolicy));
-            Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
-            
-            return WithPollySafeResilience(clientOptionalBuilder.AsAdvanced(), safeMethodPolicy, otherMethodPolicy).AsBasic();
         }
     }
 }

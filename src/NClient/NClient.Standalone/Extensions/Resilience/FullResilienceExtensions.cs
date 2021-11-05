@@ -20,8 +20,8 @@ namespace NClient
                     .Use(provider));
         }
 
-        public static INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
-            this INClientFactoryAdvancedOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder, 
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
             Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
@@ -31,16 +31,6 @@ namespace NClient
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(provider));
-        }
-        
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder, 
-            IResiliencePolicyProvider<TRequest, TResponse> provider)
-        {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
-            Ensure.IsNotNull(provider, nameof(provider));
-
-            return WithFullResilience(clientOptionalBuilder.AsAdvanced(), provider).AsBasic();
         }
     }
 }

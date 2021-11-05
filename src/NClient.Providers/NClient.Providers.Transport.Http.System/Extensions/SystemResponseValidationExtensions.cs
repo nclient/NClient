@@ -17,10 +17,8 @@ namespace NClient
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSystemResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder)
         {
-            return clientOptionalBuilder.AsAdvanced()
-                .WithResponseValidation(x => x
-                    .ForTransport().Use(new DefaultSystemResponseValidatorSettings()))
-                .AsBasic();
+            return clientOptionalBuilder.WithAdvancedResponseValidation(x => x
+                .ForTransport().Use(new DefaultSystemResponseValidatorSettings()));
         }
     }
 }
