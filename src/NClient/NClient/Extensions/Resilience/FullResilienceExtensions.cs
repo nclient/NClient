@@ -10,23 +10,23 @@ namespace NClient
     public static class FullResilienceExtensions
     {
         public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithFullResilience<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> optionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
             where TClient : class
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
-            return clientOptionalBuilder.WithPollyFullResilience(
+            return optionalBuilder.WithPollyFullResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
 
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithFullResilience(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder,
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> optionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
-            return clientOptionalBuilder.WithPollyFullResilience(
+            return optionalBuilder.WithPollyFullResilience(
                 new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
     }

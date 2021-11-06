@@ -7,9 +7,9 @@ namespace NClient
     public static class UseHttpResultsExtensions
     {
         public static INClientResultsSelector<HttpRequestMessage, HttpResponseMessage> UseHttpResults(
-            this INClientTransportResultsSetter<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder)
+            this INClientTransportResultsSetter<HttpRequestMessage, HttpResponseMessage> optionalBuilder)
         {
-            return clientOptionalBuilder.Use(new HttpResponseBuilderProvider());
+            return optionalBuilder.Use(new HttpResponseBuilderProvider());
         }
     }
 }

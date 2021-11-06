@@ -11,11 +11,11 @@ namespace NClient
         /// </summary>
         /// <param name="logger">The logger for a client.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder, 
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder, 
             ILogger logger, params ILogger[] extraLoggers) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithLogging(extraLoggers.Concat(new[] { logger }));
+            return optionalBuilder.WithLogging(extraLoggers.Concat(new[] { logger }));
         }
     }
 }

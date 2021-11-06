@@ -10,15 +10,15 @@ namespace NClient
     public static class PollySafeResilienceExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollySafeResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
             where TClient : class
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(safeMethodPolicy, nameof(safeMethodPolicy));
             Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
             
-            return clientOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
@@ -27,14 +27,14 @@ namespace NClient
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollySafeResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder,
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(safeMethodPolicy, nameof(safeMethodPolicy));
             Ensure.IsNotNull(otherMethodPolicy, nameof(otherMethodPolicy));
             
-            return clientOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))

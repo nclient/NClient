@@ -6,17 +6,17 @@ namespace NClient
     public static class ResultsExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder) 
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithAdvancedResults(x => x
+            return optionalBuilder.WithAdvancedResults(x => x
                 .ForClient().Use(new ResultBuilderProvider()));
         }
         
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder)
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
-            return clientOptionalBuilder.WithAdvancedResults(x => x
+            return optionalBuilder.WithAdvancedResults(x => x
                 .ForClient().Use(new ResultBuilderProvider()));
         }
     }

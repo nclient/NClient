@@ -8,11 +8,11 @@ namespace NClient
     public static class ExtraResultsExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithResults(extraBuilders.Concat(new[] { builder }));
+            return optionalBuilder.WithResults(extraBuilders.Concat(new[] { builder }));
         }
 
         public static INClientResultsSelector<TRequest, TResponse> Use<TRequest, TResponse>(

@@ -11,61 +11,61 @@ namespace NClient
         /// <summary>
         /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingSystemXmlSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
         }
 
         /// <summary>
         /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         /// <param name="xmlReaderSettings">The settings to be used with <see cref="XmlReader"/>.</param>
         /// <param name="xmlWriterSettings">The settings to be used with <see cref="XmlWriter"/>.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingSystemXmlSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientAdvancedSerializationBuilder,
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             XmlReaderSettings xmlReaderSettings, XmlWriterSettings xmlWriterSettings)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
             Ensure.IsNotNull(xmlReaderSettings, nameof(xmlReaderSettings));
             Ensure.IsNotNull(xmlWriterSettings, nameof(xmlWriterSettings));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
+            return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
         }
 
         /// <summary>
         /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingSystemXmlSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
         }
 
         /// <summary>
         /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         /// <param name="xmlReaderSettings">The settings to be used with <see cref="XmlReader"/>.</param>
         /// <param name="xmlWriterSettings">The settings to be used with <see cref="XmlWriter"/>.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingSystemXmlSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder,
+            this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             XmlReaderSettings xmlReaderSettings, XmlWriterSettings xmlWriterSettings)
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
             Ensure.IsNotNull(xmlReaderSettings, nameof(xmlReaderSettings));
             Ensure.IsNotNull(xmlWriterSettings, nameof(xmlWriterSettings));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
+            return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
         }
     }
 }

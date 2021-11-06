@@ -6,20 +6,20 @@ namespace NClient.Providers.Api.Rest.Extensions
     public static class RestApiExtensions
     {
         public static INClientTransportBuilder<TClient> UsingRestApi<TClient>(
-            this INClientApiBuilder<TClient> clientAdvancedApiBuilder)
+            this INClientApiBuilder<TClient> apiBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedApiBuilder, nameof(clientAdvancedApiBuilder));
+            Ensure.IsNotNull(apiBuilder, nameof(apiBuilder));
 
-            return clientAdvancedApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+            return apiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
         }
 
         public static INClientFactoryTransportBuilder UsingRestApi(
-            this INClientFactoryApiBuilder clientAdvancedApiBuilder)
+            this INClientFactoryApiBuilder apiBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedApiBuilder, nameof(clientAdvancedApiBuilder));
+            Ensure.IsNotNull(apiBuilder, nameof(apiBuilder));
 
-            return clientAdvancedApiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
+            return apiBuilder.UsingCustomApi(new RestRequestBuilderProvider());
         }
     }
 }

@@ -6,9 +6,9 @@ namespace NClient
     public static class UseHttpResultsExtensions
     {
         public static INClientResultsSelector<TRequest, TResponse> UseLanguageExt<TRequest, TResponse>(
-            this INClientResultsSetter<TRequest, TResponse> clientOptionalBuilder)
+            this INClientResultsSetter<TRequest, TResponse> optionalBuilder)
         {
-            return clientOptionalBuilder.Use(new EitherBuilderProvider());
+            return optionalBuilder.Use(new EitherBuilderProvider());
         }
     }
 }

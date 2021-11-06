@@ -7,27 +7,27 @@ namespace NClient
     public static class FullResilienceExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder, 
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider) 
             where TClient : class
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(provider, nameof(provider));
             
-            return clientOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(provider));
         }
 
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder, 
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider)
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(provider, nameof(provider));
             
-            return clientOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(provider));
