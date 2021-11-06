@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NClient.Providers.Results.HttpResults;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
-namespace NClient.Providers.Results.HttpResults
+namespace NClient.Providers.Results.HttpResponses
 {
     public class HttpResponseBuilder : IResultBuilder<HttpRequestMessage, HttpResponseMessage>
     {

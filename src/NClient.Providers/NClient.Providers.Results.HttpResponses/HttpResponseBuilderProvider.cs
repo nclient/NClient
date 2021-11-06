@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace NClient.Providers.Results.HttpResults
+namespace NClient.Providers.Results.HttpResponses
 {
     public class HttpResponseBuilderProvider : IResultBuilderProvider<HttpRequestMessage, HttpResponseMessage>
     {

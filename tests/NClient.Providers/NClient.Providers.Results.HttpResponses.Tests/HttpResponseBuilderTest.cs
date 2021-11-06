@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Moq.Language.Flow;
+using NClient.Providers.Results.HttpResults;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.Providers.Results.HttpResults.Tests
+namespace NClient.Providers.Results.HttpResponses.Tests
 {
     [Parallelizable]
     public class HttpResponseBuilderTest
