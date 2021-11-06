@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Results.LanguageExt\NClient.Providers.Results.LanguageExt.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Mapping.LanguageExt\NClient.Providers.Mapping.LanguageExt.csproj" />
     </ItemGroup>
 
     <ItemGroup>

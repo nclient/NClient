@@ -1,14 +1,14 @@
-﻿using NClient.Providers.Results;
+﻿using NClient.Providers.Mapping.Results;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
     public static class UseResultsExtensions
     {
-        public static INClientResultsSelector<TRequest, TResponse> UseResults<TRequest, TResponse>(
-            this INClientResultsSetter<TRequest, TResponse> resultsSetter)
+        public static INClientResponseMappingSelector<TRequest, TResponse> UseResults<TRequest, TResponse>(
+            this INClientResponseMappingSetter<TRequest, TResponse> responseMappingSetter)
         {
-            return resultsSetter.Use(new ResultBuilderProvider());
+            return responseMappingSetter.Use(new ResponseToResultMapperProvider());
         }
     }
 }

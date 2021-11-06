@@ -26,8 +26,8 @@ namespace NClient
                     .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithAdvancedResults(x => x
-                    .ForTransport().UseHttpResults()
+                .WithAdvancedResponseMapping(x => x
+                    .ForTransport().UseHttpResponses()
                     .ForClient().UseResults())
                 .WithoutLogging();
         }

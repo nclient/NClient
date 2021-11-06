@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Results.HttpResponses\NClient.Providers.Results.HttpResponses.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Mapping.HttpResponses\NClient.Providers.Mapping.HttpResponses.csproj" />
     </ItemGroup>
 
     <ItemGroup>

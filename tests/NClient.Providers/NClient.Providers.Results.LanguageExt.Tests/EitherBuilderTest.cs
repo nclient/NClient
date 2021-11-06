@@ -5,6 +5,7 @@ using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using Moq;
+using NClient.Providers.Mapping.LanguageExt;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
@@ -19,7 +20,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
         public async Task Build_SuccessHttpResponse_EitherWithRight()
         {
             var expectedValue = new BasicEntity { Id = 1, Value = 2 };
-            var eitherBuilder = new EitherBuilder();
+            var eitherBuilder = new ResponseToEitherBuilder();
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
@@ -32,7 +33,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
+            var actualResult = await eitherBuilder.MapAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Right<string, BasicEntity>(expectedValue) }));
         }
@@ -41,7 +42,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
         public async Task Build_FailureHttpResponse_EitherWithLeft()
         {
             const string expectedError = "Error message.";
-            var eitherBuilder = new EitherBuilder();
+            var eitherBuilder = new ResponseToEitherBuilder();
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
@@ -54,7 +55,7 @@ namespace NClient.Providers.Results.LanguageExt.Tests
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.BuildAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
+            var actualResult = await eitherBuilder.MapAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Left<string, BasicEntity>(expectedError) }));
         }

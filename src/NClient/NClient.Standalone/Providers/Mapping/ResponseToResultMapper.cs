@@ -4,11 +4,11 @@ using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Results
+namespace NClient.Providers.Mapping.Results
 {
-    public class ResultBuilder : IResultBuilder<IRequest, IResponse>
+    public class ResponseToResultMapper : IResponseMapper<IRequest, IResponse>
     {
-        public bool CanBuild(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
+        public bool CanMap(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -17,7 +17,7 @@ namespace NClient.Providers.Results
                 || resultType.GetGenericTypeDefinition() == typeof(Result<,>);
         }
         
-        public Task<object?> BuildAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
+        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
         {
             var genericResultType = typeof(Result<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 

@@ -5,11 +5,11 @@ using LanguageExt.DataTypes.Serialisation;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
-namespace NClient.Providers.Results.LanguageExt
+namespace NClient.Providers.Mapping.LanguageExt
 {
-    public class EitherBuilder : IResultBuilder<IRequest, IResponse>
+    public class ResponseToEitherBuilder : IResponseMapper<IRequest, IResponse>
     {
-        public bool CanBuild(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
+        public bool CanMap(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
         {
             if (!resultType.IsGenericType)
                 return false;
@@ -17,7 +17,7 @@ namespace NClient.Providers.Results.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public Task<object?> BuildAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
+        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
         {
             if (responseContext.Response.IsSuccessful)
             {

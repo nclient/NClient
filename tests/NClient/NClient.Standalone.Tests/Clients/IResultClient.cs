@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping.Results;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 

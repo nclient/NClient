@@ -2,8 +2,8 @@
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
+using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
-using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
@@ -23,8 +23,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilderProvider<TRequest, TResponse> _responseBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
-        private readonly IEnumerable<IResultBuilderProvider<IRequest, IResponse>> _resultBuilderProviders;
-        private readonly IEnumerable<IResultBuilderProvider<TRequest, TResponse>> _typedResultBuilderProviders;
+        private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _resultBuilderProviders;
+        private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly ILogger? _logger;
 
@@ -35,8 +35,8 @@ namespace NClient.Standalone.Client
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
-            IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResultBuilderProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
             ILogger? logger)
         {

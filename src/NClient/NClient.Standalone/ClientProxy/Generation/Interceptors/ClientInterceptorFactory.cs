@@ -5,8 +5,8 @@ using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers.Api;
 using NClient.Providers.Handling;
+using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
-using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
@@ -32,8 +32,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResultBuilderProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             ILogger<TClient>? logger = null);
     }
@@ -71,8 +71,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResultBuilderProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             ILogger<TClient>? logger = null)
         {

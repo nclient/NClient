@@ -41,12 +41,12 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Providers.Resilience.Polly").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Results_HttpResponses() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Results.HttpResponses").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Mapping_HttpResponses() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Mapping.HttpResponses").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Results_LanguageExt() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Results.LanguageExt").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Mapping_LanguageExt() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Mapping.LanguageExt").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Serialization_Json_System() =>
