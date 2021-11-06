@@ -2,7 +2,7 @@ using NClient.Providers.Results;
 
 namespace NClient.Standalone.Client.Results
 {
-    public class ResultBuilderProvider<TRequest, TResponse> : IResultBuilderProvider<TRequest, TResponse>
+    internal class ResultBuilderProvider<TRequest, TResponse> : IResultBuilderProvider<TRequest, TResponse>
     {
         private readonly IResultBuilder<TRequest, TResponse> _resultBuilder;
         
