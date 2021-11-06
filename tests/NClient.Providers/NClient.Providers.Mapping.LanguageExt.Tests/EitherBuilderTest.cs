@@ -5,13 +5,12 @@ using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using Moq;
-using NClient.Providers.Mapping.LanguageExt;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
-namespace NClient.Providers.Results.LanguageExt.Tests
+namespace NClient.Providers.Mapping.LanguageExt.Tests
 {
     [Parallelizable]
     public class EitherBuilderTest
