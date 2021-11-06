@@ -81,13 +81,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serializa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Xml.System.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.Xml.System.Tests\NClient.Providers.Serialization.Xml.System.Tests.csproj", "{462BFC4C-79D6-4998-BE77-A8F6C52AE131}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.LanguageExt", "src\NClient.Providers\NClient.Providers.Results.LanguageExt\NClient.Providers.Results.LanguageExt.csproj", "{B1102158-3E63-46B5-A112-8BD0942D3EA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Mapping.LanguageExt", "src\NClient.Providers\NClient.Providers.Mapping.LanguageExt\NClient.Providers.Mapping.LanguageExt.csproj", "{B1102158-3E63-46B5-A112-8BD0942D3EA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.LanguageExt.Tests", "tests\NClient.Providers\NClient.Providers.Results.LanguageExt.Tests\NClient.Providers.Results.LanguageExt.Tests.csproj", "{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Mapping.LanguageExt.Tests", "tests\NClient.Providers\NClient.Providers.Mapping.LanguageExt.Tests\NClient.Providers.Mapping.LanguageExt.Tests.csproj", "{B2EDAB89-7441-4BBC-97D3-D7E7C7EFF2FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.HttpResults", "src\NClient.Providers\NClient.Providers.Results.HttpResults\NClient.Providers.Results.HttpResults.csproj", "{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Mapping.HttpResponses", "src\NClient.Providers\NClient.Providers.Mapping.HttpResponses\NClient.Providers.Mapping.HttpResponses.csproj", "{30F86543-ADF7-4B53-9E5E-3EC8F4376FA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Results.HttpResults.Tests", "tests\NClient.Providers\NClient.Providers.Results.HttpResults.Tests\NClient.Providers.Results.HttpResults.Tests.csproj", "{FA3D9C32-CC55-4D39-8F49-5FC3040EBD78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Mapping.HttpResponses.Tests", "tests\NClient.Providers\NClient.Providers.Mapping.HttpResponses.Tests\NClient.Providers.Mapping.HttpResponses.Tests.csproj", "{FA3D9C32-CC55-4D39-8F49-5FC3040EBD78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest", "src\NClient.Providers\NClient.Providers.Api.Rest\NClient.Providers.Api.Rest.csproj", "{0BB4D666-9C18-4F71-A0A3-88DCC275139D}"
 EndProject

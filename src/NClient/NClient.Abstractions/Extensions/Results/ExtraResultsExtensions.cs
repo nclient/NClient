@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
 
 // ReSharper disable once CheckNamespace
@@ -8,39 +8,39 @@ namespace NClient
     public static class ExtraResultsExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
-            IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders) 
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
+            IResponseMapper<TRequest, TResponse> builder, params IResponseMapper<TRequest, TResponse>[] extraBuilders) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithResults(extraBuilders.Concat(new[] { builder }));
+            return optionalBuilder.WithResponseMapping(extraBuilders.Concat(new[] { builder }));
         }
 
-        public static INClientResultsSelector<TRequest, TResponse> Use<TRequest, TResponse>(
-            this INClientResultsSetter<TRequest, TResponse> resultsSetter,
-            IResultBuilder<IRequest, IResponse> builder, params IResultBuilder<IRequest, IResponse>[] extraBuilders)
+        public static INClientResponseMappingSelector<TRequest, TResponse> Use<TRequest, TResponse>(
+            this INClientResponseMappingSetter<TRequest, TResponse> responseMappingSetter,
+            IResponseMapper<IRequest, IResponse> builder, params IResponseMapper<IRequest, IResponse>[] extraBuilders)
         {
-            return resultsSetter.Use(extraBuilders.Concat(new[] { builder }));
+            return responseMappingSetter.Use(extraBuilders.Concat(new[] { builder }));
         }
 
-        public static INClientResultsSelector<TRequest, TResponse> Use<TRequest, TResponse>(
-            this INClientResultsSetter<TRequest, TResponse> resultsSetter,
-            IResultBuilderProvider<IRequest, IResponse> provider, params IResultBuilderProvider<IRequest, IResponse>[] extraProviders)
+        public static INClientResponseMappingSelector<TRequest, TResponse> Use<TRequest, TResponse>(
+            this INClientResponseMappingSetter<TRequest, TResponse> responseMappingSetter,
+            IResponseMapperProvider<IRequest, IResponse> provider, params IResponseMapperProvider<IRequest, IResponse>[] extraProviders)
         {
-            return resultsSetter.Use(extraProviders.Concat(new[] { provider }));
+            return responseMappingSetter.Use(extraProviders.Concat(new[] { provider }));
         }
 
-        public static INClientResultsSelector<TRequest, TResponse> Use<TRequest, TResponse>(
-            this INClientTransportResultsSetter<TRequest, TResponse> transportResultsSetter,
-            IResultBuilder<TRequest, TResponse> builder, params IResultBuilder<TRequest, TResponse>[] extraBuilders)
+        public static INClientResponseMappingSelector<TRequest, TResponse> Use<TRequest, TResponse>(
+            this INClientTransportResponseMappingSetter<TRequest, TResponse> transportResponseMappingSetter,
+            IResponseMapper<TRequest, TResponse> builder, params IResponseMapper<TRequest, TResponse>[] extraBuilders)
         {
-            return transportResultsSetter.Use(extraBuilders.Concat(new[] { builder }));
+            return transportResponseMappingSetter.Use(extraBuilders.Concat(new[] { builder }));
         }
 
-        public static INClientResultsSelector<TRequest, TResponse> Use<TRequest, TResponse>(
-            this INClientTransportResultsSetter<TRequest, TResponse> transportResultsSetter,
-            IResultBuilderProvider<TRequest, TResponse> provider, params IResultBuilderProvider<TRequest, TResponse>[] extraProviders)
+        public static INClientResponseMappingSelector<TRequest, TResponse> Use<TRequest, TResponse>(
+            this INClientTransportResponseMappingSetter<TRequest, TResponse> transportResponseMappingSetter,
+            IResponseMapperProvider<TRequest, TResponse> provider, params IResponseMapperProvider<TRequest, TResponse>[] extraProviders)
         {
-            return transportResultsSetter.Use(extraProviders.Concat(new[] { provider }));
+            return transportResponseMappingSetter.Use(extraProviders.Concat(new[] { provider }));
         }
     }
 }

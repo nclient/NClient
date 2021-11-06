@@ -37,8 +37,8 @@ namespace NClient.Extensions.DependencyInjection
                     .ForTransport().UseSystemResponseValidation())
                 .WithoutHandling()
                 .WithoutResilience()
-                .WithAdvancedResults(x => x
-                    .ForTransport().UseHttpResults()
+                .WithAdvancedResponseMapping(x => x
+                    .ForTransport().UseHttpResponses()
                     .ForClient().UseResults())
                 .WithLogging(loggerFactory);
         }

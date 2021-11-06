@@ -4,7 +4,7 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {
-    public class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
+    internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
         private readonly IResponseValidatorSettings<TRequest, TResponse> _responseValidatorSettings;
         

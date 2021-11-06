@@ -8,16 +8,16 @@ namespace NClient
     public static class HandlingExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             Func<TRequest, TRequest> beforeRequest,
             Func<TResponse, TResponse> afterRequest) 
             where TClient : class
         {
-            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(beforeRequest, nameof(beforeRequest));
             Ensure.IsNotNull(afterRequest, nameof(afterRequest));
             
-            return clientOptionalBuilder.WithAdvancedHandling(x => x
+            return optionalBuilder.WithAdvancedHandling(x => x
                 .ForTransport().Use(new ClientHandlerSettings<TRequest, TResponse>(
                     beforeRequest, afterRequest)));
         }

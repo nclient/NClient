@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Exceptions;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
 using NClient.Resilience;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
@@ -48,8 +48,8 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),
-                    Array.Empty<IResultBuilderProvider<IRequest, IResponse>>(),
-                    Array.Empty<IResultBuilderProvider<IRequest, IResponse>>(),
+                    Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
+                    Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
                     new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
             var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
 

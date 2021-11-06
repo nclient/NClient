@@ -11,57 +11,57 @@ namespace NClient
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingSystemJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider());
         }
 
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingSystemJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientSerializationBuilder,
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             JsonSerializerOptions jsonSerializerOptions)
             where TClient : class
         {
-            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
-            return clientSerializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider(jsonSerializerOptions));
+            return serializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider(jsonSerializerOptions));
         }
 
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingSystemJsonSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider());
         }
 
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingSystemJsonSerialization<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientSerializationBuilder,
+            this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             JsonSerializerOptions jsonSerializerOptions)
         {
-            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
-            return clientSerializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider(jsonSerializerOptions));
+            return serializationBuilder.UsingCustomSerializer(new SystemJsonSerializerProvider(jsonSerializerOptions));
         }
     }
 }

@@ -9,41 +9,41 @@ namespace NClient
     public static class NewtonsoftJsonSerializationExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder) 
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
-            return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
+            return optionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
         }
 
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             JsonSerializerSettings jsonSerializerSettings)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
             
-            return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
+            return optionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
         }
 
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder)
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
-            return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
+            return optionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider());
         }
 
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithNewtonsoftJsonSerialization<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             JsonSerializerSettings jsonSerializerSettings)
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(jsonSerializerSettings, nameof(jsonSerializerSettings));
             
-            return clientAdvancedOptionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
+            return optionalBuilder.WithCustomSerialization(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
         }
     }
 }

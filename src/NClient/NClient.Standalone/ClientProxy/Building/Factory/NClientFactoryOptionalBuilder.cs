@@ -4,12 +4,12 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Providers.Handling;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
+using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
-using NClient.Standalone.ClientProxy.Building.Configuration.Results;
 using NClient.Standalone.ClientProxy.Building.Configuration.Validation;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -76,22 +76,22 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
                 .WithoutHandlers());
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders)
         {
-            return WithAdvancedResults(x => x
+            return WithAdvancedResponseMapping(x => x
                 .ForTransport().Use(builders));
         }
         
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithAdvancedResults(Action<INClientResultsSelector<TRequest, TResponse>> configure)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientResultsSelector<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientResponseMappingSelector<TRequest, TResponse>(builderContextModifier));
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, builderContextModifier.Invoke(_context));
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResults()
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResponseMapping()
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithoutResultBuilders());

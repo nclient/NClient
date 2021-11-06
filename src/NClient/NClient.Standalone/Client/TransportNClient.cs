@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
+using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
-using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
@@ -35,8 +35,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
-        private readonly IEnumerable<IResultBuilder<TRequest, TResponse>> _typedResultBuilders;
-        private readonly IReadOnlyCollection<IResultBuilder<IRequest, IResponse>> _resultBuilders;
+        private readonly IEnumerable<IResponseMapper<TRequest, TResponse>> _typedResultBuilders;
+        private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -47,8 +47,8 @@ namespace NClient.Standalone.Client
             IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
-            IEnumerable<IResultBuilder<IRequest, IResponse>> resultBuilders,
-            IEnumerable<IResultBuilder<TRequest, TResponse>> typedResultBuilders,
+            IEnumerable<IResponseMapper<IRequest, IResponse>> resultBuilders,
+            IEnumerable<IResponseMapper<TRequest, TResponse>> typedResultBuilders,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -118,9 +118,9 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(() => ExecuteAttemptAsync(request))
                 .ConfigureAwait(false);
 
-            if (_typedResultBuilders.FirstOrDefault(x => x.CanBuild(dataType, transportResponseContext)) is { } typedResultBuilder)
+            if (_typedResultBuilders.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } typedResultBuilder)
                 return await typedResultBuilder
-                    .BuildAsync(dataType, transportResponseContext, _serializer)
+                    .MapAsync(dataType, transportResponseContext, _serializer)
                     .ConfigureAwait(false);
             
             var response = await _responseBuilder
@@ -128,9 +128,9 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            if (_resultBuilders.FirstOrDefault(x => x.CanBuild(dataType, responseContext)) is { } resultBuilder)
+            if (_resultBuilders.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } resultBuilder)
                 return await resultBuilder
-                    .BuildAsync(dataType, responseContext, _serializer)
+                    .MapAsync(dataType, responseContext, _serializer)
                     .ConfigureAwait(false);
             
             if (!_responseValidator.IsSuccess(transportResponseContext))

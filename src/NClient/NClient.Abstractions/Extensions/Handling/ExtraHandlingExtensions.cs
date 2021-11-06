@@ -7,11 +7,11 @@ namespace NClient
     public static class ExtraHandlingExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IClientHandler<TRequest, TResponse> handler, params IClientHandler<TRequest, TResponse>[] extraHandlers)
             where TClient : class
         {
-            return clientOptionalBuilder.WithHandling(extraHandlers.Concat(new[] { handler }));
+            return optionalBuilder.WithHandling(extraHandlers.Concat(new[] { handler }));
         }
 
         public static INClientHandlingSelector<TRequest, TResponse> Use<TRequest, TResponse>(

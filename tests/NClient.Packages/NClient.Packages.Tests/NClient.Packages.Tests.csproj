@@ -19,11 +19,12 @@
         <PackageReference Include="NClient.Annotations" Version="*-*"/>
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Transport.Http.RestSharp" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Transport.Http.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Results.LanguageExt" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Results.HttpResults" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>

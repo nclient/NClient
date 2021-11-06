@@ -9,26 +9,26 @@ namespace NClient
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingJsonSerializer<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingSystemJsonSerialization();
+            return serializationBuilder.UsingSystemJsonSerialization();
         }
 
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="serializationBuilder"></param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingSystemJsonSerialization();
+            return serializationBuilder.UsingSystemJsonSerialization();
         }
     }
 }

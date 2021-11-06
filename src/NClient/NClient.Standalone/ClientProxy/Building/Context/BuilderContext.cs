@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using NClient.Invocation;
 using NClient.Providers.Api;
 using NClient.Providers.Handling;
+using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
-using NClient.Providers.Results;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
@@ -36,8 +36,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public IReadOnlyCollection<ResiliencePolicyPredicate<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
-        public IReadOnlyCollection<IResultBuilderProvider<IRequest, IResponse>> ResultBuilderProviders { get; private set; }
-        public IReadOnlyCollection<IResultBuilderProvider<TRequest, TResponse>> TypedResultBuilderProviders { get; private set; }
+        public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResultBuilderProviders { get; private set; }
+        public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TypedResultBuilderProviders { get; private set; }
 
         public IReadOnlyCollection<ILogger> Loggers { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
@@ -47,8 +47,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
-            ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IRequest, IResponse>>();
-            TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TRequest, TResponse>>();
+            ResultBuilderProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>();
+            TypedResultBuilderProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>();
             Loggers = Array.Empty<ILogger>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
@@ -187,7 +187,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<IRequest, IResponse>> resultBuilderProviders)
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -195,7 +195,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResultBuilderProvider<TRequest, TResponse>> resultBuilderProviders)
+        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResponseMapperProvider<TRequest, TResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -207,8 +207,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = Array.Empty<IResultBuilderProvider<IRequest, IResponse>>(),
-                TypedResultBuilderProviders = Array.Empty<IResultBuilderProvider<TRequest, TResponse>>()
+                ResultBuilderProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
+                TypedResultBuilderProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>()
             };
         }
 

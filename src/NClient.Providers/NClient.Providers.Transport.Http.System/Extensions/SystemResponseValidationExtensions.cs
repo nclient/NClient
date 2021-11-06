@@ -7,17 +7,17 @@ namespace NClient
     public static class SystemResponseValidationExtensions
     {
         public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithSystemResponseValidation<TClient>(
-            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder) 
+            this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> optionalBuilder) 
             where TClient : class
         {
-            return clientOptionalBuilder.WithAdvancedResponseValidation(x => x
+            return optionalBuilder.WithAdvancedResponseValidation(x => x
                 .ForTransport().Use(new DefaultSystemResponseValidatorSettings()));
         }
 
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSystemResponseValidation(
-            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> clientOptionalBuilder)
+            this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> optionalBuilder)
         {
-            return clientOptionalBuilder.WithAdvancedResponseValidation(x => x
+            return optionalBuilder.WithAdvancedResponseValidation(x => x
                 .ForTransport().Use(new DefaultSystemResponseValidatorSettings()));
         }
     }

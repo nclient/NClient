@@ -5,14 +5,14 @@ using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
 using NClient.Providers.Handling;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 using NClient.Resilience;
 using NClient.Standalone.Client.Logging;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
+using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
-using NClient.Standalone.ClientProxy.Building.Configuration.Results;
 using NClient.Standalone.ClientProxy.Building.Configuration.Validation;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
@@ -88,22 +88,22 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders)
         {
-            return WithAdvancedResults(x => x
+            return WithAdvancedResponseMapping(x => x
                 .ForTransport().Use(builders));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResults(Action<INClientResultsSelector<TRequest, TResponse>> configure)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure)
         {
             Ensure.IsNotNull(configure, nameof(configure));
 
             var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
-            configure(new NClientResultsSelector<TRequest, TResponse>(builderContextModifier));
+            configure(new NClientResponseMappingSelector<TRequest, TResponse>(builderContextModifier));
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutMapping()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResultBuilders());
@@ -176,12 +176,12 @@ namespace NClient.Standalone.ClientProxy.Building
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy.Reverse()),
                 _context.ResultBuilderProviders
-                    .OrderByDescending(x => x is IOrderedResultBuilderProvider)
-                    .ThenBy(x => (x as IOrderedResultBuilderProvider)?.Order)
+                    .OrderByDescending(x => x is IOrderedResponseMapperProvider)
+                    .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
                     .ToArray(),
                 _context.TypedResultBuilderProviders
-                    .OrderByDescending(x => x is IOrderedResultBuilderProvider)
-                    .ThenBy(x => (x as IOrderedResultBuilderProvider)?.Order)
+                    .OrderByDescending(x => x is IOrderedResponseMapperProvider)
+                    .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
                     .ToArray(),
                 _context.ResponseValidatorProviders,
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null

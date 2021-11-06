@@ -8,15 +8,15 @@ namespace NClient
     public static class SafeResilienceExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithSafeResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider) 
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return clientAdvancedOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(otherMethodProvider)
@@ -25,14 +25,14 @@ namespace NClient
         }
 
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSafeResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             IResiliencePolicyProvider<TRequest, TResponse> safeMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             Ensure.IsNotNull(safeMethodProvider, nameof(safeMethodProvider));
             Ensure.IsNotNull(otherMethodProvider, nameof(otherMethodProvider));
             
-            return clientAdvancedOptionalBuilder
+            return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
                     .Use(otherMethodProvider)

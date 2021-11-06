@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
-using NClient.Providers.Results;
+using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 
@@ -46,11 +46,11 @@ namespace NClient
         #region Results
         
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults(IEnumerable<IResultBuilder<TRequest, TResponse>> builders);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders);
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResults(Action<INClientResultsSelector<TRequest, TResponse>> configure);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure);
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResults();
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutMapping();
 
         #endregion
         

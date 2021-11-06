@@ -8,11 +8,11 @@ namespace NClient
     public static class ExtraResponseValidationExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IResponseValidator<TRequest, TResponse> validator, params IResponseValidator<TRequest, TResponse>[] extraValidators)
             where TClient : class
         {
-            return clientOptionalBuilder.WithResponseValidation(extraValidators.Concat(new[] { validator }));
+            return optionalBuilder.WithResponseValidation(extraValidators.Concat(new[] { validator }));
         }
 
         public static INClientResponseValidationSelector<TRequest, TResponse> Use<TRequest, TResponse>(
