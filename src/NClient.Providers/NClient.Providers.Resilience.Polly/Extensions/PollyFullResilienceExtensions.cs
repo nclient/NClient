@@ -11,17 +11,17 @@ namespace NClient
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
-        /// <param name="clientAdvancedOptionalBuilder"></param>
+        /// <param name="clientOptionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> clientOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
             
-            return clientAdvancedOptionalBuilder.WithResilience(x => x
+            return clientOptionalBuilder.WithResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
@@ -29,16 +29,16 @@ namespace NClient
         /// <summary>
         /// Sets resilience policy provider for all HTTP methods.
         /// </summary>
-        /// <param name="clientAdvancedOptionalBuilder"></param>
+        /// <param name="clientOptionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollyFullResilience<TRequest, TResponse>(
-            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientAdvancedOptionalBuilder,
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> clientOptionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
         {
-            Ensure.IsNotNull(clientAdvancedOptionalBuilder, nameof(clientAdvancedOptionalBuilder));
+            Ensure.IsNotNull(clientOptionalBuilder, nameof(clientOptionalBuilder));
             Ensure.IsNotNull(asyncPolicy, nameof(asyncPolicy));
             
-            return clientAdvancedOptionalBuilder.WithResilience(x => x
+            return clientOptionalBuilder.WithResilience(x => x
                 .ForAllMethods()
                 .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }

@@ -12,14 +12,14 @@ namespace NClient
         /// <summary>
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
-        /// <param name="clientAdvancedTransportBuilder"></param>
+        /// <param name="clientTransportBuilder"></param>
         public static INClientSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
-            this INClientTransportBuilder<TClient> clientAdvancedTransportBuilder)
+            this INClientTransportBuilder<TClient> clientTransportBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
+            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientAdvancedTransportBuilder.UsingCustomTransport(
+            return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(),
                 new RestSharpTransportRequestBuilderProvider(),
                 new RestSharpResponseBuilderProvider());
@@ -28,16 +28,16 @@ namespace NClient
         /// <summary>
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
-        /// <param name="clientAdvancedTransportBuilder"></param>
+        /// <param name="clientTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
         public static INClientSerializationBuilder<TClient, IRestRequest, IRestResponse> UsingRestSharpTransport<TClient>(
-            this INClientTransportBuilder<TClient> clientAdvancedTransportBuilder,
+            this INClientTransportBuilder<TClient> clientTransportBuilder,
             IAuthenticator authenticator)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
+            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientAdvancedTransportBuilder.UsingCustomTransport(
+            return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(authenticator),
                 new RestSharpTransportRequestBuilderProvider(),
                 new RestSharpResponseBuilderProvider());
@@ -46,13 +46,13 @@ namespace NClient
         /// <summary>
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
-        /// <param name="clientAdvancedTransportBuilder"></param>
+        /// <param name="clientTransportBuilder"></param>
         public static INClientFactorySerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
-            this INClientFactoryTransportBuilder clientAdvancedTransportBuilder)
+            this INClientFactoryTransportBuilder clientTransportBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
+            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientAdvancedTransportBuilder.UsingCustomTransport(
+            return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(),
                 new RestSharpTransportRequestBuilderProvider(),
                 new RestSharpResponseBuilderProvider());
@@ -61,15 +61,15 @@ namespace NClient
         /// <summary>
         /// Sets RestSharp based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
-        /// <param name="clientAdvancedTransportBuilder"></param>
+        /// <param name="clientTransportBuilder"></param>
         /// <param name="authenticator">The RestSharp authenticator.</param>
         public static INClientFactorySerializationBuilder<IRestRequest, IRestResponse> UsingRestSharpTransport(
-            this INClientFactoryTransportBuilder clientAdvancedTransportBuilder,
+            this INClientFactoryTransportBuilder clientTransportBuilder,
             IAuthenticator authenticator)
         {
-            Ensure.IsNotNull(clientAdvancedTransportBuilder, nameof(clientAdvancedTransportBuilder));
+            Ensure.IsNotNull(clientTransportBuilder, nameof(clientTransportBuilder));
 
-            return clientAdvancedTransportBuilder.UsingCustomTransport(
+            return clientTransportBuilder.UsingCustomTransport(
                 new RestSharpTransportProvider(authenticator),
                 new RestSharpTransportRequestBuilderProvider(),
                 new RestSharpResponseBuilderProvider());

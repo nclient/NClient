@@ -9,26 +9,26 @@ namespace NClient
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="clientSerializationBuilder"></param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingJsonSerializer<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> clientSerializationBuilder)
             where TClient : class
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingSystemJsonSerialization();
+            return clientSerializationBuilder.UsingSystemJsonSerialization();
         }
 
         /// <summary>
         /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
-        /// <param name="clientAdvancedSerializationBuilder"></param>
+        /// <param name="clientSerializationBuilder"></param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingJsonSerializer<TRequest, TResponse>(
-            this INClientFactorySerializationBuilder<TRequest, TResponse> clientAdvancedSerializationBuilder)
+            this INClientFactorySerializationBuilder<TRequest, TResponse> clientSerializationBuilder)
         {
-            Ensure.IsNotNull(clientAdvancedSerializationBuilder, nameof(clientAdvancedSerializationBuilder));
+            Ensure.IsNotNull(clientSerializationBuilder, nameof(clientSerializationBuilder));
 
-            return clientAdvancedSerializationBuilder.UsingSystemJsonSerialization();
+            return clientSerializationBuilder.UsingSystemJsonSerialization();
         }
     }
 }
