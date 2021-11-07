@@ -4,7 +4,7 @@
 ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/NClient?label=nuget-pre)
 ![Nuget](https://img.shields.io/nuget/dt/NClient)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nclient/NClient)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test:%20Full)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
 NClient is an automatic type-safe .NET HTTP client that allows you to call web API methods using annotated interfaces. 
