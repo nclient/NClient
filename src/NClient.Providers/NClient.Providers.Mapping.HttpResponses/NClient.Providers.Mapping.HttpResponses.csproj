@@ -9,7 +9,7 @@
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>NClient;NClient.Providers;NClient.Providers.Results;Http;Response;Result;Service;Api;WebApi</PackageTags>
-        <Description>LanguageExt based results provider for NClient.</Description>
+        <Description>Native NClient HttpResponse results provider for NClient.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

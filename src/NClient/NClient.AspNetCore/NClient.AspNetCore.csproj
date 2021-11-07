@@ -37,6 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\NClient.Annotations\NClient.Annotations.csproj" />
         <ProjectReference Include="..\NClient.Core\NClient.Core.csproj" />
     </ItemGroup>
 

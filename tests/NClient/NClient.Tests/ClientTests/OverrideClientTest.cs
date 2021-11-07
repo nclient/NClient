@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = OverriddenApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
                 .GetAsync(id);
 
             result.Should().NotBeNull();
@@ -32,7 +32,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = OverriddenApiMockFactory.MockPostMethod(entity);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
                 .PostAsync(entity);
 
             result.Should().NotBeNull();
@@ -45,7 +45,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = OverriddenApiMockFactory.MockPutMethod(entity);
 
-            await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -57,7 +57,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = OverriddenApiMockFactory.MockDeleteMethod(id);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(api.Urls.First()).Build()
                 .DeleteAsync(id);
 
             result.Should().NotBeNull();

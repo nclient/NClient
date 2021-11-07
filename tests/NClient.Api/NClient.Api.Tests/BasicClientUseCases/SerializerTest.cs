@@ -15,7 +15,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithNewtonsoftJsonSerialization()
                 .Build();
             

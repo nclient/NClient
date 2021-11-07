@@ -4,15 +4,13 @@ namespace NClient
 {
     public interface IClientGallery
     {
-        INClientBasicBuilder GetBasic();
-        INClientStandardBuilder GetStandard();
+        INClientRestBuilder GetRest();
         INClientBuilder GetCustom();
     }
     
     public class ClientGallery : IClientGallery
     {
-        public INClientBasicBuilder GetBasic() => new NClientBasicBuilder();
-        public INClientStandardBuilder GetStandard() => new NClientStandardBuilder();
+        public INClientRestBuilder GetRest() => new NClientRestBuilder();
         public INClientBuilder GetCustom() => new NClientBuilder();
     }
 }

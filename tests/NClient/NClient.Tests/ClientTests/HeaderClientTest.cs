@@ -16,7 +16,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = HeaderApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
                 .GetAsync(id);
 
             result.Should().Be(id);
@@ -29,7 +29,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = HeaderApiMockFactory.MockDeleteMethod(id);
 
-            await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();
@@ -42,7 +42,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = HeaderApiMockFactory.MockDeleteMethod(id);
 
-            await NClientGallery.Clients.GetBasic().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync())
                 .Should()
                 .NotThrowAsync();

@@ -28,8 +28,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse(client => client.GetAsync(id));
+            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse(client => client.GetAsync(id));
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
@@ -56,8 +56,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse<BasicEntity, Error>(client => client.GetAsync(id));
+            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.GetAsync(id));
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
@@ -84,8 +84,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse(client => client.Get(id));
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse(client => client.Get(id));
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
@@ -112,8 +112,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse<BasicEntity, Error>(client => client.Get(id));
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.Get(id));
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
@@ -139,8 +139,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostAsyncMethod(entity);
 
-            var httpResponse = await NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse(client => client.PostAsync(entity));
+            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse(client => client.PostAsync(entity));
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
@@ -165,8 +165,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostAsyncMethod(entity);
 
-            var httpResponse = await NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse<Error>(client => client.PostAsync(entity));
+            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse<Error>(client => client.PostAsync(entity));
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
@@ -191,8 +191,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            var httpResponse = NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse(client => client.Post(entity));
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse(client => client.Post(entity));
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
@@ -217,8 +217,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            var httpResponse = NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse<Error>(client => client.Post(entity));
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse<Error>(client => client.Post(entity));
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
@@ -243,8 +243,8 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockInternalServerError();
 
-            var httpResponse = NClientGallery.Clients.GetBasic().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
-                .AsHttp().GetTransportResponse(client => client.Post(entity));
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+                .AsTransport().GetTransportResponse(client => client.Post(entity));
 
             using var assertionScope = new AssertionScope();
             httpResponse.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);

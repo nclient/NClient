@@ -103,7 +103,7 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutMapping()
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseMapping()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutResultBuilders());
