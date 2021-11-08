@@ -7,23 +7,23 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test:%20Full)
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
-NClient is an automatic type-safe .NET HTTP client that allows you to call web API methods using annotated interfaces. 
-The main difference between NClient and its analogues is that NClient allows you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
-Annotated interfaces allow you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.  
+NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces. 
+The main difference between NClient and its analogues is that NClient lets you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
+This allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.  
 
 #### Advantages of NClient:
-- **All types of applications:** can be used on backend (ASP.NET), frontend (Blazor) and desktop (MAUI).
+- **All types of applications:** library can be used on backend (ASP.NET), frontend (Blazor) and desktop (MAUI).
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
-- **Various protocols:** currently only REST is provided as a ready-made implementation (plans to add GraphQL and RPC), but you can implement your own as provider.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Response validation:** preset or custom validation of responses can be set.
-- **Resilience:** it is possible to provide resilience with different strategies. There is Polly support.
-- **Serialization to choose from:** use any serialization implementation including: `Newtonsoft.Json`, `System.Text.Json`, `System.Xml.Serialization` or your own.
-- **Auto mapping of responses:** you can hide the details of the client's implementation and get models (native or custom) instead of HTTP responses or DTO.
-- **Easy error analysis:** there is support for any loggers implementing the `ILogger` interface. All thrown exceptions contain enough information to analyze errors.
-- **Extension using handlers:** add your own handlers to different steps of the request execution.
-- **Extension using providers:** there is a set of optional providers that extend the client, for example, sending requests via RestSharp or mapping responses to LanguageExt monads. By the way, you can create your own.
+- **Resilience:** resilience is provided by different strategies. There is Polly support.
+- **Serialization to choose from:** various sterilizers can be used: Newtonsoft JSON, system JSON, system Xml, your own.
+- **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
+- **Easy error analysis:** your logger can be used in clients and of course exceptions have all the required information to investigate.
+- **Extension using handlers:** your custom logic can be added to the client parts using handlers.
+- **Extension using providers:** the client functionality can be extended with the help of native or your own providers.
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
+- WIP: **Various protocols:** REST protocol is provided as a ready-made implementation (plans to add GraphQL and RPC).
 
 Do you like it? Give us a star! ⭐
 
@@ -32,9 +32,8 @@ Do you like it? Give us a star! ⭐
 - [How to install?](#install)
 - [Requirements](#requirements)
 - [How to use?](#usage)
-  - [Usage with non ASP.NET web service](#usage-non-aspnet)
+  - [Usage with third-party service](#usage-non-aspnet)
   - [Usage with ASP.NET Core](#usage-aspnet)
-  - [Samples of applications](#sample-applications)
 - [Features](#features)
   - [Creating](#features-creating)
   - [Annotation](#features-annotation)
@@ -67,6 +66,7 @@ Do you like it? Give us a star! ⭐
   - [Mapping.HttpResponses](#providers-http-response)
   - [Mapping.LanguageExt](#providers-language-ext)
 - [Documentation](#documentation)
+- [Samples of applications](#sample-applications)
 - [NuGet Packages](#nuget)
 - [Contributing](#contributing)
 
@@ -74,7 +74,7 @@ Do you like it? Give us a star! ⭐
 
 ## Why use NClient?
 Creating clients for web services can be quite a challenge because, in addition to data transfer, you need to implement query building, 
-serialization, retry policy, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs.
+serialization, retry policy, mapping, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs.
 What if you could create clients with a fraction of the effort? This is exactly what NClient hopes to achieve by allowing you to create clients declaratively.
 
 By the way, you can [contribute](#contributing) to the NClient, not just use it :smiley:
@@ -82,13 +82,10 @@ By the way, you can [contribute](#contributing) to the NClient, not just use it 
 <a name="install" />  
 
 ## How to install?
-The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget. For most users, it is enough to install the [NClient](https://www.nuget.org/packages/NClient) package on the client-side:
+The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget:
 ```
 dotnet add package NClient
 ```
-If you need to create a client via DI, install the [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) package.
-If you want to create a client for your ASP.NET app, then install the [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore) package on the server-side, and install the [NClient](https://www.nuget.org/packages/NClient) or [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection) package on the client-side. 
-To choose package for more complex case you need, see [NuGet Packages](#nuget) section.
 
 <a name="requirements" />
 
@@ -98,12 +95,12 @@ Use of the NClient library requires .NET Standard 2.0 or higher. The NClient con
 <a name="usage" />  
 
 ## How to use?
-To generate a client, you just need to create an interface describing available endpoints and input/output data of a service. After that, you can generate and configure the client, using the `NClientGallery.Clients.GetRest()`.
+First you have to create an interface describing available endpoints and input/output data of a service via annotations. After that, you can select the required type of client in `NClientGallery` and then set additional settings for it if necessary.
 
 <a name="usage-non-aspnet" />
 
-### Usage with non ASP.NET web service
-If you do not have the source code of the ASP.NET web service or you want to send requests to the non .Net service, then you just need to create an interface that describes the service you want to make requests to. Follow the steps below:
+### Usage with third-party service
+If you want to send requests to a third-party service, you should create an interface that describes the service you want to make requests to. Follow the steps below:
 #### Step 1: Install `NClient` on client-side
 ```
 dotnet add package NClient
@@ -120,17 +117,16 @@ public interface IProductServiceClient
     Task<Product> GetAsync([RouteParam] int id);
 }
 ```
-Interface annotation is very similar to the annotation of controllers in ASP.NET. The `PathAttribute` defines the base path for all interface methods.
-The `PostMethodAttribute` specifies the type of HTTP method and the path to endpoint. 
-Implicit annotations work as in ASP.NET controllers, for example, the `BodyParamAttribute` attribute will be implicitly set to the `product` parameter in `CreateAsync` method. 
-Path templates are also supported. Read about all the features in the [Annotation](#features-annotation) and [Routing](#features-routing) sections.
+Interface annotation is very similar to the annotation of controllers in ASP.NET. The `PathAttribute` defines the base path for all interface methods. The `PostMethodAttribute` specifies the type of HTTP method and the path to endpoint. 
+Moreover, implicit annotations work as in ASP.NET controllers, for example, the `BodyParamAttribute` attribute will be implicitly set to the `product` parameter in `CreateAsync` method. And of course route templates are also supported. 
+Read about all the features in the [Annotation](#features-annotation) and [Routing](#features-routing) sections.
 #### Step 3: Create the client
 ```C#
 IProductServiceClient client = NClientGallery.Clients.GetRest()
     .For<IProductServiceClient>(host: "http://localhost:8080")
     .Build();
 ```
-The `GetRest()` method creates a REST client with `System.Text.Json` serialization and without resilience policy.
+The `GetRest` method creates a REST client with `System.Text.Json` serialization and without resilience policy.
 #### Step 4 (optional): Configure the client
 ```C#
 IProductServiceClient client = NClientGallery.Clients.GetRest()
@@ -142,7 +138,7 @@ IProductServiceClient client = NClientGallery.Clients.GetRest()
     ...
     .Build();
 ```
-After the `For` method, you can configure the client as you need, for example, you can replace the serializer with `Newtonsoft.Json`, change the retry policy, and so on (see [Features](#features) section).
+After calling the `For` method, you can configure the client as you need, for example, you can replace the serializer with `Newtonsoft.Json`, add the retry policy, and so on (see [Features](#features) section).
 #### Step 5: Send an http request
 ```C#
 // Equivalent to the following request: 
@@ -153,8 +149,7 @@ Product product = await client.CreateAsync(new Product(name: "MyProduct"));
 <a name="usage-aspnet" />
 
 ### Usage with ASP.NET Core
-If you want to generate a client for a ASP.NET web service, you need to extract an interface for your controller and annotate it with attributes from the `NClient.Annotations`. 
-They are very similar to attributes for ASP.NET controllers. Follow the steps below:
+If you want to generate a client for youre ASP.NET web service, you need to extract an interface for your controller and annotate it with NClient attributes. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
 #### Step 1: Install `NClient.AspNetCore` package on server-side
 ```
 dotnet add package NClient.AspNetCore
@@ -215,11 +210,6 @@ If you decide to follow the 4th step, use the `IWeatherForecastClient` interface
 // curl -X GET -H "Content-type: application/json" http://localhost:8080/WeatherForecast?date=2021-03-13T00:15Z
 WeatherForecast forecast = await client.GetAsync(DateTime.Now);
 ```
-
-<a name="sample-applications" />  
-
-### Samples of applications
-See the sample applications in the [NClient.Samples](https://github.com/nclient/NClient.Samples) project.
 
 <a name="features" />  
 
@@ -491,10 +481,10 @@ In general, this method is not recommended because it complicates unit testing, 
 
 ## Errors
 All expected exceptions are inherited from the `NClientException`. There are two types of errors: client-side errors (`ClientException`) and controller-side errors (`ControllerException`).
-### Client-side errors
+#### Client-side errors
 `ControllerValidationException` - errors that occur if a client interface is invalid.  
 `ClientRequestException` - exceptions to return information about a failed client request.   
-### Controller-side errors
+#### Controller-side errors
 `ControllerValidationException` - errors that occur if a controller is invalid.
 
 <a name="features-api" />  
@@ -579,7 +569,7 @@ An important point: if the client method returns a transport response, for examp
 
 ## Resilience
 By default, a request is executed once without retries. If the request ended with an unsuccessful HTTP status code and the returned value is not HTTP response, an exception will be thrown. To change the logic of retries, you can use the `WithResilience` method.
-### Common policy
+#### Common policy
 Use the `WithFullResilience` method to retry requests for any methods:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -592,7 +582,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
 ```
 The parameters `maxRetries`, `getDelay` and `shouldRetry` are optional. By default, 3 attempts are used with a quadratic increase in the delay between attempts for responses with unsuccessful codes. 
 To use retries for safe methods (GET, HEAD, OPTIONS), use the `WithSafeResilience` method. To use retries for all methods except POST, use the `WithIdempotentResilience` method.
-### Specific policy for a method
+#### Specific policy for a method
 Set specific resilience policy for a method using the `WithResilience` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -601,7 +591,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
         .ForMethod(client => ((Func<Entity, Task>)x.PostAsync).Use(maxRetries: 4))
     .Build();
 ```
-### Policy combinations
+#### Policy combinations
 You can flexibly configure resilience using a combination of policies:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -611,7 +601,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
         .ForMethod(client => ((Func<Entity, Task>)x.PostAsync).DoNotUse())
     .Build();
 ```
-### Polly policy
+#### Polly policy
 For more complex cases, you can use the `Polly` library:
 ```C#
 var retryPolicy = Policy<ResponseContext>
@@ -628,7 +618,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
     .Build();
 ```
 You can also create your own implementation of the `IResiliencePolicyProvider` and pass it to the `WithResiliencePolicy` method. 
-### Runtime policy change
+#### Runtime policy change
 Create or change a policy for an already created client using the `Invoke` method:
 ```C#
 public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
@@ -761,7 +751,7 @@ For information on how to get HTTP status code, see section [Http response](#fea
 
 ## File upload/download
 Clients and controllers are able to upload and download files.
-### Controller side
+#### Controller side
 On the controller side, you do not need to perform any special actions, work with files as in the original ASP.NET Core:
 ```C#
 [Api, Path("api/[controller]")]
@@ -780,7 +770,7 @@ public class FileController : ControllerBase, IFileController
         ...;
 }
 ```
-### Client side
+#### Client side
 Since one method from the `IFileController` returns the `IActionResult`, it is necessary to override it using the `IHttpResponse` as the return value:
 ```C#
 public interface IFileClient : IFileController
@@ -903,21 +893,26 @@ The package [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packag
 ## Documentation
 You can find NClient documentation and samples [on the website](https://nclient.github.io/).
 
+<a name="sample-applications" />  
+
+# Samples of applications
+See samples of applications in the [NClient.Samples](https://github.com/nclient/NClient.Samples) project.
+
 <a name="nuget" />  
 
-## NuGet Packages
+# NuGet Packages
 
-#### Main
+## Main
 - [NClient](https://www.nuget.org/packages/NClient): Tools for creating clients from interfaces including third-party.
 - [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone): The same as NClient package, but without third-party.
 - [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore): Allows you to annotate controllers via interfaces.
 - [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions): Abstractions for clients and providers.
 - [NClient.Annotations](https://www.nuget.org/packages/NClient.Annotations): Attributes for annotation of clients and controllers interfaces.
 
-#### Extensions
+## Extensions
 - [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection): Extension methods for registration of clients in ServiceCollection.
 
-#### Providers
+## Providers
 - [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest): Rest based api provider.
 - [NClient.Providers.Transport.Http.System](https://www.nuget.org/packages/NClient.Providers.Transport.Http.System): System.Net.Http based transport provider.
 - [NClient.Providers.Transport.Http.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.Http.RestSharp): RestSharp based HTTP client provider.
@@ -930,7 +925,7 @@ You can find NClient documentation and samples [on the website](https://nclient.
 
 <a name="contributing" />  
 
-## Contributing
+# Contributing
 You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
 Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
 It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
