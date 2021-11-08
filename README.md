@@ -14,7 +14,7 @@ Annotated interfaces allow you to get rid of unwanted dependencies on a client s
 #### Advantages of NClient:
 - **All types of applications:** can be used on backend (ASP.NET), frontend (Blazor) and desktop (MAUI).
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
-- **Various protocols:** currently REST is supported, but you can implement your own as provider (plans to add GraphQL and RPC).
+- **Various protocols:** currently only REST is provided as a ready-made implementation (plans to add GraphQL and RPC), but you can implement your own as provider.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Response validation:** preset or custom validation of responses can be set.
 - **Resilience:** it is possible to provide resilience with different strategies. There is Polly support.
@@ -500,7 +500,7 @@ All expected exceptions are inherited from the `NClientException`. There are two
 <a name="features-api" />  
 
 ## Api protocols
-Currently, only the REST API protocol is supported. To use it in your own client configuration, you need to call the `UsingRestApi` method:
+Currently, only the REST API protocol is provided as a ready-made implementation. To use it in your own client configuration, you need to call the `UsingRestApi` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetCustom()
     .For<IMyClient>(host: "http://localhost:8080")
@@ -564,6 +564,16 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
 <a name="features-validation" /> 
 
 ## Response validation
+Validation of responses is needed, for example, to make sure that only responses with a successful code will be returned from the client. By default, the client checks that the response code is between 200 and 299 values and throws an exception if it is not. If you need a different logic, you can use the `WithResponseValidation` method:
+```C#
+IMyClient myClient = NClientGallery.Clients.GetRest()
+    .For<IMyClient>(host: "http://localhost:8080")
+    .WithResponseValidation(
+        isSuccess: responseContext => responseContext.Response.StatusCode == HttpStatusCode.OK,
+        onFailure: responseContext => throw new Exception($"Response with code: {responseContext.Response.StatusCode}"))
+    .Build();
+```
+An important point: if the client method returns a transport response, for example, HttpResponseMessage, then validation will be skipped.Use the `WithoutResponseValidation` method to remove the validation of responses in all cases. 
 
 <a name="features-resilience" /> 
 
@@ -630,6 +640,23 @@ Please note, the client interface must inherit the `INClient` interface.
 <a name="features-mapping" /> 
 
 ## Response mapping
+Response mapping allows you to transform the data received from the transport response into other models. This can be useful, for example, if you want to reduce dependence on transport and NClient. To use mapping, you need to implement the `IResponseMapper<TRequest, TResponse>` interface and pass implementation to the `WithResponseMapping` method:
+```C#
+public interface IMyClient
+{
+    [GetMethod] Task<MyModel> GetAsync(int id);
+}
+...
+
+IResponseMapper<HttpRequestMessage, HttpResponseMessage> myMapper = ...; // Mapper for MyModel
+IMyClient myClient = NClientGallery.Clients.GetRest()
+    .For<IMyClient>(host: "http://localhost:8080")
+    .WithResponseMapping(myMapper)
+    .Build();
+
+MyModel result = await myClient.GetAsync(id: 1);
+```
+By default, mappers for `IHttpResponse` and `IResult` models are already set in the client. Use the `WithoutResponseMapping` method to remove all mappers from client. 
 
 <a name="features-handling" />
 
@@ -677,6 +704,7 @@ IMyClient client = NClientGallery.Clients.GetRest()
 <a name="tips" /> 
 
 # Tips
+This section contains some tips and examples that may be useful.
 
 <a name="tips-system-httpclient" /> 
 
@@ -808,52 +836,67 @@ Providers give additional implementations for sending HTTP requests, serializati
 <a name="providers-rest" />  
 
 ## Api.Rest
+The package [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest) implements the conversion of an interface method call into a REST request. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for REST clients. To use this provider, you need to call the `UsingRestApi` method when building a client.
 
 <a name="providers-http-system" />  
 
 ## Transport.Http.System
+The package [NClient.Providers.Transport.Http.System](https://www.nuget.org/packages/NClient.Providers.Transport.Http.System) implements transport to the endpoint for requests over HTTP using `System.Net.Http`. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for the HTTP transport implementation. To use this provider, you need to call the `UsingSystemHttpTransport` method (or its alias `UsingHttpTransport`) when building a client.
 
 <a name="providers-restsharp" />  
 
 ## Transport.Http.RestSharp
-To use `RestSharp` client instead of the default one, you need to install `NClient.Providers.HttpClient.RestSharp` package and use the `RestSharpHttpClientProvider`:
+The package [NClient.Providers.Transport.Http.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.Http.RestSharp) implements transport to the endpoint for requests over HTTP using the RestSharp library. This can be useful, for example, to switch from the RestSharp library to NClient - you can return standard RestSharp (IRestResponse) responses from client interface methods. 
+To use `RestSharp` client instead of the default one, you need to install package and use the `UsingRestSharpTransport` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
     .For<IMyClient>(host: "http://localhost:8080")
-    .WithCustomHttpClient(new RestSharpHttpClientProvider())
+    .UsingRestSharpTransport()
     .Build();
 ```
+Keep in mind that RestSharp uses legacy `HttpWebRequest`, so it won't work in Blazor.
 
 <a name="providers-json-system" />  
 
 ## Serialization.Json.System
+The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements JSON serialization using `System.Text.Json`. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for the serialization implementation. To use this provider, you need to call the `UsingSystemJsonSerialization` method (or its alias `UsingJsonSerializer`) when building a client.
 
 <a name="providers-newtonsoft" />  
 
 ## Serialization.Json.Newtonsoft
-If you want to use `Newtonsoft.Json` for serialization, you need to install `NClient.Providers.Serialization.Newtonsoft` package and use `NewtonsoftSerializerProvider`:
+The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements JSON serialization using `Newtonsoft.Json`. This package will be useful if you need deserialization of generics or some Newtonsoft functionality. If you want to use `Newtonsoft.Json` for serialization, you need to install package and use the `UsingNewtonsoftJsonSerialization` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
     .For<IMyClient>(host)
-    .WithCustomSerializer(new NewtonsoftSerializerProvider())
+    .UsingNewtonsoftJsonSerialization()
     .Build();
 ```
 
 <a name="providers-xml-system" />  
 
 ## Serialization.Xml.System
+The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements XML serialization using `System.Xml.Serialization`. If you want to use `System.Xml.Serialization` for serialization, you need to install package and use the `WithSystemXmlSerialization` method:
+```C#
+IMyClient myClient = NClientGallery.Clients.GetRest()
+    .For<IMyClient>(host)
+    .WithSystemXmlSerialization()
+    .Build();
+```
 
 <a name="providers-polly" />  
 
-## Resilience.Polly]
+## Resilience.Polly
+The package [NClient.Providers.Resilience.Polly](https://www.nuget.org/packages/NClient.Providers.Resilience.Polly) implements resilience for client method calls. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for resilience. To use this provider, you need to call the `WithPolly*` method and other with the prefix `Polly`.
 
 <a name="providers-http-response" />  
 
 ## Mapping.HttpResponses
+The package [NClient.Providers.Mapping.HttpResponses](https://www.nuget.org/packages/NClient.Providers.Mapping.HttpResponses) implements mapping to a set of models representing HTTP responses with deserialized data that can be used as return types of client methods. This package is included in the [NClient](https://www.nuget.org/packages/NClient) and the mapper from the package is already in the client. To use this provider for custom clients, you need to call the `WithResponseToHttpResponseMapping` method when building a client.
 
 <a name="providers-language-ext" />  
 
 ## Mapping.LanguageExt
+The package [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packages/NClient.Providers.Mapping.LanguageExt) implements mapping to a set of monads from LanguageExt library that can be used as return types of client methods. To use this provider, you need to call the `WithResponseToMonadMapping` method when building a client.
 
 <a name="documentation" />  
 
