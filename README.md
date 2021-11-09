@@ -9,10 +9,26 @@
 
 NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces. 
 The main difference between NClient and its analogues is that NClient lets you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
-This allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code.  
+This allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code. 
+
+```C#
+[HttpFacade, Path("api/{controller}")] 
+public interface IWeatherFacade {
+    [GetMethod] Task<Weather> GetAsync(DateTime date);
+}
+    
+public class WeatherController : ControllerBase, IWeatherFacade {
+    public Task<Weather> GetAsync(DateTime date) => ...;
+}
+
+IWeatherFacade weatherFacade = NClientGallery.Clients.GetRest()
+    .For<IWeatherFacade>(host: "http://localhost:5000")
+    .WithSafeResilience(maxRetries: 3)
+    .Build();
+Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
+```
 
 #### Advantages of NClient:
-- **All types of applications:** library can be used on backend (ASP.NET), frontend (Blazor) and desktop (MAUI).
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Response validation:** preset or custom validation of responses can be set.
@@ -23,7 +39,8 @@ This allows you to get rid of unwanted dependencies on a client side and to reus
 - **Extension using handlers:** your custom logic can be added to the client parts using handlers.
 - **Extension using providers:** the client functionality can be extended with the help of native or your own providers.
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
-- WIP: **Various protocols:** REST protocol is provided as a ready-made implementation (plans to add GraphQL and RPC).
+- **[WIP] All types of applications:** library can be used on backend (ASP.NET) and frontend (Blazor) - plans to support mobile/desktop (MAUI).
+- **[WIP] Various protocols:** REST protocol is provided as a ready-made solution - plans to add GraphQL and RPC.
 
 Do you like it? Give us a star! ⭐
 
@@ -56,15 +73,6 @@ Do you like it? Give us a star! ⭐
 - [Extensions](#extensions)
   - [Dependency injection](#features-di)
 - [Providers](#providers)
-  - [Api.Rest](#providers-rest)
-  - [Transport.Http.System](#providers-http-system)
-  - [Transport.Http.RestSharp](#providers-restsharp)
-  - [Serialization.Json.System](#providers-json-system)
-  - [Serialization.Json.Newtonsoft](#providers-newtonsoft)
-  - [Serialization.Xml.System](#providers-xml-system)
-  - [Resilience.Polly](#providers-polly)
-  - [Mapping.HttpResponses](#providers-http-response)
-  - [Mapping.LanguageExt](#providers-language-ext)
 - [Documentation](#documentation)
 - [Samples of applications](#sample-applications)
 - [NuGet Packages](#nuget)
@@ -213,12 +221,12 @@ WeatherForecast forecast = await client.GetAsync(DateTime.Now);
 
 <a name="features" />  
 
-# Features
+## Features
 The list of the main features of NClient library:
 
 <a name="features-creating" />  
 
-## Creating
+### Creating
 There are several ways to create a client, you can choose the most suitable one.
 
 #### NClientGallery
@@ -289,14 +297,10 @@ There are similar classes for factories: `NClientRestFactoryBuilder` and `NClien
 
 <a name="features-annotation" />  
 
-## Annotation
-The client and controller interfaces are annotated with attributes. The following attributes can be used:
+### Annotation
+The interfaces of clients and controllers can be annotated with attributes to describe endpoints and add additional functionality. The following attributes can be used:
 
 #### Base attributes
-A client interface can be annotated with the `FacadeAttribute` if no other NClient attributes are used in the client interface. It can be useful for improving code readability or for detecting client interfaces if it does not have any other NClient attribute.
-```C#
-[Facade] public interface IMyClient { ... }
-```
 The `HttpFacade` attribute is an equivalent of the `ApiControllerAttribute` from ASP.NET Core.
 ```C#
 [HttpFacade] public interface IMyController { ... }
@@ -305,17 +309,21 @@ The base URL route for API can be set by the `PathAttribute`.
 ```C#
 [Path("api")] public interface IMyClient { ... }
 ```
+A client interface can be annotated with optional the `FacadeAttribute` if no other NClient attributes are used in the client interface. It can be useful for improving code readability or for detecting client interfaces if it does not have any other NClient attribute.
+```C#
+[Facade] public interface IMyClient { ... }
+```
 #### HTTP methods
-Each method must have an HTTP attribute that defines the request method. There are four types of such attributes: `GetMethodAttribute`, `HeadMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `PatchMethodAttribute`, `DeleteMethodAttribute`, `OptionsMethodAttribute`.
+Each interface method must have an HTTP attribute that defines the HTTP method for request. There are seven types of such attributes: `GetMethodAttribute`, `HeadMethodAttribute`, `PostMethodAttribute`, `PutMethodAttribute`, `PatchMethodAttribute`, `DeleteMethodAttribute`, `OptionsMethodAttribute`.
 ```C#
 public interface IMyClient { [GetMethod] Entity[] Get(); }
 ```
-Optionally, you can specify a relative path.
+Optionally, you can specify a relative path by passing it to the constructor:
 ```C#
 public interface IMyClient { [GetMethod("entities")] Entity[] Get(); }
 ```
 #### HTTP parameters
-By default, parameters that are custom objects are passed in the request body and primitive parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`.
+By default, custom type parameters are passed in the request body and primitive type parameters are passed in a URL query. You can explicitly specify how to pass a parameter using attributes: `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`.
 ```C#
 public interface IMyClient { [PostMethod] void Post([QueryParam] Entity entity); }
 ```
@@ -324,13 +332,13 @@ It is also possible to change a parameter name:
 public interface IMyClient { [PostMethod] void Post([QueryParam(Name = "myEntity")] Entity entity); }
 ```
 #### Properties
-`QueryParamAttribute` allows you to change a property name of a custom object that is passed in URL query.
+In addition to its main purpose, the `QueryParamAttribute` allows you to change a property name of a custom object that is passed in URL query:
 ```C#
 public class Entity { [QueryParam(Name = "id")] public int Id }
 ```
-The same effect will occur if you use the `FromQueryAttribute` from ASP.NET Core.
+The same effect will occur if you use the `FromQueryAttribute` from ASP.NET Core. But in this case you will have a dependency on ASP.NET, which is probably unwanted for client assemblies.
 
-The names of the properties of custom objects that are passed in the request body can be changed using the `JsonPropertyNameAttribute`.
+The names of the properties of custom objects that are passed in the request body can be changed using the `JsonPropertyNameAttribute`:
 ```C#
 public class Entity { [JsonPropertyName("id")] public int Id }
 ```
@@ -346,22 +354,21 @@ public interface IMyClient { [GetMethod, Header("Specific-Method-Header", Value:
 #### Override
 <a name="features-annotation-override" /> 
 
-The methods of the interface can be overridden in the inheriting interfaces. Although this is not an override in the usual sense, because you can change the return type of the method:
+The interface methods can be overridden in the inheriting interfaces. Although this is not an override in the usual sense, because you can change the return type of the method:
 ```C#
 public interface IMyController { [GetMethod] Task<int> GetAsync([RouteParam] long id); }
 public interface IMyClient : IMyController { [Override] new Task<string> GetFileAsync(long id); }
 ```
 Overridden methods inherit all method and parameters attributes from the method of the inherited interface. If necessary, you can replace the attributes or add new ones. It is worth noting that multiple inheritance is forbidden if you want to override the method.
 #### Authorization
-In ASP.NET there are `AuthorizeAttribute` and `AllowAnonymousAttribute` attributes. Their equivalents are `AuthorizedAttribute` and `AnonymousAttribute`.
+ASP.NET has two methods for configuring authentication: `AuthorizeAttribute` and `AllowAnonymousAttribute` attributes. There are two equivalents in the client: `AuthorizedAttribute` and `AnonymousAttribute`.
 #### Response type
-`ResponseAttribute` specifies the type of the value and status code returned by the method. This is the equivalent of the [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
+The `ResponseAttribute` is optional attribute that specifies the type of the value and status code returned by the method. This is the equivalent of the [ProducesResponseTypeAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.producesresponsetypeattribute).
 ```C#
 public interface IMyClient { [GetMethod, Response(typeof(Entity[]), HttpStatusCode.OK)] Entity[] Get(); }
 ```
-This attribute is optional.
 #### Versioning
-There are two attributes for API versioning: `VersionAttribute` and `ToVersionAttribute`. They are the equivalents of `ApiVersionAttribute` and `MapToApiVersionAttribute` (see [ASP.NET API Versioning](https://github.com/microsoft/aspnet-api-versioning)).
+There are two attributes for API versioning: `VersionAttribute` and `ToVersionAttribute`. They are the equivalents of `ApiVersionAttribute` and `MapToApiVersionAttribute` from ASP.NET (see [ASP.NET API Versioning](https://github.com/microsoft/aspnet-api-versioning)). They are needed only for controllers and therefore will be ignored when generating the client. Here is an example of their use for the controller interface:
 ```C#
 [Version("1.0"), Version("2.0"), Path("api/v{version:apiVersion}")]
 public interface IMyController 
@@ -370,7 +377,7 @@ public interface IMyController
     [DeleteMethod, ToVersion("2.0")] void Delete(int id);  // Available in version 2.0
 }
 ```
-You can add `UseVersionAttribute` to set the API version for a client:
+For the client, there is the `UseVersionAttribute`. You can add it to set the API version for a client:
 ```C#
 [UseVersion("1.0"), Path("api/v{version:apiVersion}")]
 public interface IMyClient
@@ -386,28 +393,29 @@ The `UseVersionAttribute` can be used together with the attributes for API versi
 
 <a name="features-routing" /> 
 
-## Routing
-Similar to routing in ASP.NET NClient supports route templates. Route templates are passed to the following attributes: `PathAttribute`, `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`. The `PathAttribute` sets the base path for all interface methods, the other attributes set the relative path to a specific endpoint. Routes can contain tokens that are inserted into the path in runtime:
+### Routing
+To generate the path to the endpoint, the client has support for route templates as in ASP.NET. Route templates are passed to the following attributes: `PathAttribute`, `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`. The `PathAttribute` sets the base path for all interface methods, the other attributes set the relative path to a specific endpoint.
 
+Routes can contain two types of tokens that are inserted into the path in runtime:
 #### Controller token
 The name of interface can be substituted in the path:
 ```C#
 [Path("api/[controller]")] public interface IEntitiesClient { ... } // the route will be: api/entities
 ```
 The name of the interface will be substituted without prefixes (`I`) and postfixes (`Controller`, `Client`, `Facade`).
-#### Method parameters
+#### Parameter token
 Method parameters can be completely substituted in the path:
 ```C#
 public interface IMyClient { [GetMethod("entities/{id}")] Entity[] Get(int id); }
 ```
-But you can also use property values of objects:
+If a complex object is passed as a parameter, you can insert its property into the path:
 ```C#
 public interface IMyClient { [PutMethod("entities/{entity.Id}")] void Put(Entity entity); }
 ```
 
 <a name="features-async" /> 
 
-## Asynchronously calls
+### Asynchronously calls
 To execute a request to the web-service asynchronously, you should define the returned type as `Task` or `Task<>`:
 ```C#
 public interface IMyClient
@@ -421,36 +429,37 @@ public interface IMyClient
 
 <a name="features-response" /> 
 
-## HTTP response
-You can get the full HTTP response, not just the body.
-If your interface is used only as a client and you want to always get an HTTP response, you have the following options:
+### HTTP response
+You can get the full HTTP response from the client's method, not just the body.
+If your interface is used only as a client and you want to always get an HTTP response, you have the following options: return the NClient `IHttpResponse` or return the original transport response.
 #### IHttpResponse
-If you use a default transport (`NClient.Providers.Transport.Http.System`) and want to receive an HTTP response along with a deserialized body:
+If you use a default transport (`NClient.Providers.Transport.Http.System`) and want to receive an HTTP response along with a deserialized body, return `IHttpResponse` or `IHttpResponse<T>`:
 ```C#
 public interface IMyClient
 {
     [GetMethod] Task<IHttpResponse<Entity>> GetAsync(int id);
     [PostMethod] Task<IHttpResponse> PostAsync(Entity entity);
 }
-
 ...
+
 HttpResponse<Entity> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
 Entity entity = response.EnsureSuccess().Value;
 ```
-You can also specify the type of expected error that is returned in body with failed HTTP statuses:
+If you want to specify the type of expected error that is returned in body with failed HTTP statuses, then use `IHttpResponseWithError<TValue, TError>` or `IHttpResponseWithError<TError>`:
 ```C#
 public interface IMyClient
 {
     [GetMethod] Task<IHttpResponseWithError<Entity, Error>> GetAsync(int id);
     [PostMethod] Task<IHttpResponseWithError<Error>> PostAsync(Entity entity);
 }
-
 ...
+
 IHttpResponseWithError<Entity, Error> response = await myClient.GetAsync(x => x.GetAsync(id: 1));
 Error? error = response.Error;
 ```
+Oviously controller cannot implemetn the interface that returns HTTP response, so the controller should return what it should, and you need to create a client interface, inherit it from the controller interface and override the method by changing the return type to HTTP response (see `OverrideAttribute` in [Annotation](#features-annotation-override) section).
 #### Transport response
-If you lack IHttpResponse functionality or you use a non-default transport, then you can return transport responses. If you use `NClient.Providers.Transport.Http.System` transport package, you can do this:
+There are cases when there is not enough functionality of `IHttpResponse`, then you can return transport responses. If you use `NClient.Providers.Transport.Http.System` transport package, you can do this:
 ```C#
 public interface IMyClient
 {
@@ -464,9 +473,7 @@ public interface IMyClient
     [GetMethod] Task<IRestResponse> GetAsync(int id);
 }
 ```
-If you have an interface for the controller, obviously it cannot return a client response, so you need to create a client interface, inherit it from the controller interface and override the method by changing the return type (see `OverrideAttribute` in [Annotation](#features-annotation-override) section).  
-
-You can also get a transport response without overriding and additional methods in the client. To do this, the client interface must inherit the `INClient` interface.
+Unlike the first option with `IHttpResponse` return, you can get a transport response without overriding and additional methods in the client. To do this, the client interface must inherit the `INClient` interface, then you will be able to do this:
 ```C#
 public interface IMyClient : INClient
 {
@@ -475,12 +482,12 @@ public interface IMyClient : INClient
 ...
 IHttpResponse<Entity> response = await myClient.AsTransport().GetTransportResponse(x => x.GetAsync(id: 1));
 ```
-In general, this method is not recommended because it complicates unit testing, but sometimes it can be useful.
+In general, this way is not recommended because it complicates unit testing, but sometimes it can be useful.
 
 <a name="features-errors" />  
 
-## Errors
-All expected exceptions are inherited from the `NClientException`. There are two types of errors: client-side errors (`ClientException`) and controller-side errors (`ControllerException`).
+### Errors
+All expected exceptions thrown by the client are inherited from the `NClientException`. In turn, they are divided into two types: client-side errors (inherited from `ClientException`) and controller-side errors (inherited from `ControllerException`).
 #### Client-side errors
 `ControllerValidationException` - errors that occur if a client interface is invalid.  
 `ClientRequestException` - exceptions to return information about a failed client request.   
@@ -489,8 +496,8 @@ All expected exceptions are inherited from the `NClientException`. There are two
 
 <a name="features-api" />  
 
-## Api protocols
-Currently, only the REST API protocol is provided as a ready-made implementation. To use it in your own client configuration, you need to call the `UsingRestApi` method:
+### Api protocols
+Currently, only the REST API protocol is provided as a ready-made implementation. To use it, you just need to create a client via `NClientGallery.Clients.GetRest` method. To use it in your custom client configuration, you need to call the `UsingRestApi` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetCustom()
     .For<IMyClient>(host: "http://localhost:8080")
@@ -498,7 +505,7 @@ IMyClient myClient = NClientGallery.Clients.GetCustom()
     ...
     .Build();
 ```
-To implement your own protocol, you will need to implement the `IRequestBuilderProvider` interface and pass its implementation to the `UsingCustomApi` method:
+If you need a non-REST protocol, you have the opportunity to create your own implementation of converting an interface method call into a request. To do this, you will need to implement the `IRequestBuilderProvider` interface and pass its implementation to the `UsingCustomApi` method:
 ```C#
 IRequestBuilderProvider myRequestBuilderProvider = ...;
 
@@ -511,8 +518,8 @@ IMyClient myClient = NClientGallery.Clients.GetCustom()
 
 <a name="features-transport" />  
 
-## Transport
-By default, HTTP transport (`NClient.Providers.Transport.Http.System` package) is used for message delivery in pre-configurated clients. To use it for your custom client configuration, you should call the `UsingHttpTransport` method:
+### Transport
+To deliver the request to the endpoint, you need transport. By default, HTTP transport (`NClient.Providers.Transport.Http.System` package) is used for message delivery in pre-configurated clients. To use it for your custom client, you should call the `UsingHttpTransport` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetCustom()
     .For<IMyClient>(host: "http://localhost:8080")
@@ -521,7 +528,7 @@ IMyClient myClient = NClientGallery.Clients.GetCustom()
     ...
     .Build();
 ```
-You can also create your own implementation of transport and pass it to the `UsingCustomTransport` method:
+If you are not satisfied with HTTP transport, you can implement your own and use it in the client. To do this, you will need to create your custom implementation of transport and pass it to the `UsingCustomTransport` method:
 ```C#
 ITransportProvider<TRequest, TResponse> myTransportProvider = ...;
 ITransportRequestBuilderProvider<TRequest, TResponse> myTransportRequestBuilderProvider = ...;
@@ -540,8 +547,22 @@ IMyClient myClient = NClientGallery.Clients.GetCustom()
 
 <a name="features-serialization" />  
 
-## Serialization
-By default, `System.Text.Json` is used for serialization. But you can also create your own implementation of the `ISerializerProvider` and pass it to the `WithCustomSerializer` method:
+### Serialization
+Serialization is needed to convert data when sending requests and receiving responses. By default, `System.Text.Json` is used for serialization. But you can replace it with other options:
+```C#
+IMyClient myClient = NClientGallery.Clients.GetCustom()
+    .For<IMyClient>(host: "http://localhost:8080")
+    .WithSystemJsonSerialization()     // It is already in use, so it is not necessary to call this method
+    // or
+    .WithJsonSerialization()           // This is the alias for WithJsonSerialization
+    // or
+    .WithNewtonsoftJsonSerialization()
+    // or
+    .WithSystemXmlSerialization()
+    ...
+    .Build();
+```
+You can also create your own implementation of the `ISerializerProvider` and pass it to the `WithCustomSerializer` method:
 ```C#
 ISerializerProvider serializerProvider = ...;
 
@@ -553,7 +574,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
 
 <a name="features-validation" /> 
 
-## Response validation
+### Response validation
 Validation of responses is needed, for example, to make sure that only responses with a successful code will be returned from the client. By default, the client checks that the response code is between 200 and 299 values and throws an exception if it is not. If you need a different logic, you can use the `WithResponseValidation` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -567,8 +588,8 @@ An important point: if the client method returns a transport response, for examp
 
 <a name="features-resilience" /> 
 
-## Resilience
-By default, a request is executed once without retries. If the request ended with an unsuccessful HTTP status code and the returned value is not HTTP response, an exception will be thrown. To change the logic of retries, you can use the `WithResilience` method.
+### Resilience
+Requests can end with errors for many reasons, so it is necessary to ensure resilience. By default, a request is executed once without retries. If the request ended with an unsuccessful HTTP status code and the returned method value is not HTTP response, an exception will be thrown. To change the logic of retries, you can use the `WithResilience` methods.
 #### Common policy
 Use the `WithFullResilience` method to retry requests for any methods:
 ```C#
@@ -617,9 +638,9 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
         .ForAllMethods().UsePolly(retryPolicy))
     .Build();
 ```
-You can also create your own implementation of the `IResiliencePolicyProvider` and pass it to the `WithResiliencePolicy` method. 
+You can also create your own implementation of the `IResiliencePolicyProvider` and pass it to the `Use` method. 
 #### Runtime policy change
-Create or change a policy for an already created client using the `Invoke` method:
+You may need to set policies in runtime. To create or change a policy for an already created client use the `Invoke` method:
 ```C#
 public class MyResiliencePolicyProvider : IResiliencePolicyProvider { ... }
 ...
@@ -629,7 +650,7 @@ Please note, the client interface must inherit the `INClient` interface.
 
 <a name="features-mapping" /> 
 
-## Response mapping
+### Response mapping
 Response mapping allows you to transform the data received from the transport response into other models. This can be useful, for example, if you want to reduce dependence on transport and NClient. To use mapping, you need to implement the `IResponseMapper<TRequest, TResponse>` interface and pass implementation to the `WithResponseMapping` method:
 ```C#
 public interface IMyClient
@@ -650,8 +671,8 @@ By default, mappers for `IHttpResponse` and `IResult` models are already set in 
 
 <a name="features-handling" />
 
-## Handling
-Create your own implementation of the `IClientHandler` abstraction to provide a custom handling functionality for HTTP requests and responses. For example you can implement authentication:
+### Handling
+To add your own logic for executing requests, create your own implementation of the `IClientHandler` interface and pass implementation to the `WithHandling` method. For example you can implement authentication using handlers:
 ```C#
 public class AuthHandler : IClientHandler
 {
@@ -669,19 +690,19 @@ public class AuthHandler : IClientHandler
     public Task<IHttpResponse> HandleResponseAsync(IHttpResponse httpResponse, MethodInvocation methodInvocation) 
         => Task.FromResult(httpResponse);
 }
-
 ...
+
 IConfiguration configuration = ...;
 IMyClient client = NClientGallery.Clients.GetRest()
     .For<IMyClient>(host: "http://localhost:8080")
-    .WithCustomHandlers(new IClientHandler[] { new AuthHandler(configuration) })
+    .WithHandling(new IClientHandler[] { new AuthHandler(configuration) })
     .Build();
 ```
 
 <a name="features-logging" /> 
 
-## Logging
-You can optionally set a logger or logger factory for a client:
+### Logging
+To log information about the execution of the request, the status of responses and errors, you can set a logger or logger factory for a client:
 ```C#
 ILogger<IMyClient> logger = ...;
 
@@ -693,12 +714,12 @@ IMyClient client = NClientGallery.Clients.GetRest()
 
 <a name="tips" /> 
 
-# Tips
+## Tips
 This section contains some tips and examples that may be useful.
 
 <a name="tips-system-httpclient" /> 
 
-## Specifics of using SystemHttpTransport
+### Specifics of using SystemHttpTransport
 An `HttpClient` is created for each instance of a client. Keep this in mind, because the `HttpClient` has problems. Create an instance for every request and you will run into socket exhaustion. Make it a singleton and it will not respect DNS changes. The best way would be to use `IHttpClientFactory`. You can create it yourself and pass it to the builder:
 ```C#
 IHttpClientFactory httpClientFactory = ...;
@@ -727,7 +748,7 @@ IMyClient myClient = serviceProvider.GetRequiredService<IMyClient>();
 
 <a name="tips-status-code" /> 
 
-## Return HTTP status code
+### Return HTTP status code
 It is not always convenient to use with the `IActionResult` in NClient controllers, so you can use the `HttpResponseException` to return an error object and HTTP status code.
 To use these exceptions you need to add NClient controllers in ASP.NET startup as follows:
 ```C#
@@ -749,8 +770,8 @@ For information on how to get HTTP status code, see section [Http response](#fea
 
 <a name="tips-files" /> 
 
-## File upload/download
-Clients and controllers are able to upload and download files.
+### File upload/download
+Clients and controllers are able to upload and download files. Here's how you can implement this on the client and on the server:
 #### Controller side
 On the controller side, you do not need to perform any special actions, work with files as in the original ASP.NET Core:
 ```C#
@@ -794,12 +815,12 @@ To work with streams, return a `HttpResponseMessage` instead of a `IHttpResponse
 
 <a name="extensions" />  
 
-# Extensions
+## Extensions
 NClient has packages that extend the capabilities of other libraries and make working with them more convenient.
 
 <a name="features-di" /> 
 
-## Dependency injection
+### Dependency injection
 The `NClient.Extensions.DependencyInjection` package contains methods for adding clients to the `ServiceCollection`.
 package contains the `AddNClient` extension methods:
 ```C#
@@ -820,22 +841,22 @@ var serviceProvider = new ServiceCollection()
 
 <a name="providers" />  
 
-# Providers
+## Providers
 Providers give additional implementations for sending HTTP requests, serialization, and resilience. You can use the providers listed below or implement your own.  
 
 <a name="providers-rest" />  
 
-## Api.Rest
+### NClient.Providers.Api.Rest
 The package [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest) implements the conversion of an interface method call into a REST request. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for REST clients. To use this provider, you need to call the `UsingRestApi` method when building a client.
 
 <a name="providers-http-system" />  
 
-## Transport.Http.System
+### NClient.Providers.Transport.Http.System
 The package [NClient.Providers.Transport.Http.System](https://www.nuget.org/packages/NClient.Providers.Transport.Http.System) implements transport to the endpoint for requests over HTTP using `System.Net.Http`. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for the HTTP transport implementation. To use this provider, you need to call the `UsingSystemHttpTransport` method (or its alias `UsingHttpTransport`) when building a client.
 
 <a name="providers-restsharp" />  
 
-## Transport.Http.RestSharp
+### NClient.Providers.Transport.Http.RestSharp
 The package [NClient.Providers.Transport.Http.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.Http.RestSharp) implements transport to the endpoint for requests over HTTP using the RestSharp library. This can be useful, for example, to switch from the RestSharp library to NClient - you can return standard RestSharp (IRestResponse) responses from client interface methods. 
 To use `RestSharp` client instead of the default one, you need to install package and use the `UsingRestSharpTransport` method:
 ```C#
@@ -848,12 +869,12 @@ Keep in mind that RestSharp uses legacy `HttpWebRequest`, so it won't work in Bl
 
 <a name="providers-json-system" />  
 
-## Serialization.Json.System
+### NClient.Providers.Serialization.Json.System
 The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements JSON serialization using `System.Text.Json`. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for the serialization implementation. To use this provider, you need to call the `UsingSystemJsonSerialization` method (or its alias `UsingJsonSerializer`) when building a client.
 
 <a name="providers-newtonsoft" />  
 
-## Serialization.Json.Newtonsoft
+### NClient.Providers.Serialization.Json.Newtonsoft
 The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements JSON serialization using `Newtonsoft.Json`. This package will be useful if you need deserialization of generics or some Newtonsoft functionality. If you want to use `Newtonsoft.Json` for serialization, you need to install package and use the `UsingNewtonsoftJsonSerialization` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -864,7 +885,7 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
 
 <a name="providers-xml-system" />  
 
-## Serialization.Xml.System
+### NClient.Providers.Serialization.Xml.System
 The package [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System) implements XML serialization using `System.Xml.Serialization`. If you want to use `System.Xml.Serialization` for serialization, you need to install package and use the `WithSystemXmlSerialization` method:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetRest()
@@ -875,44 +896,44 @@ IMyClient myClient = NClientGallery.Clients.GetRest()
 
 <a name="providers-polly" />  
 
-## Resilience.Polly
+### NClient.Providers.Resilience.Polly
 The package [NClient.Providers.Resilience.Polly](https://www.nuget.org/packages/NClient.Providers.Resilience.Polly) implements resilience for client method calls. This package is included in the [NClient](https://www.nuget.org/packages/NClient) package dependencies and is the default provider for resilience. To use this provider, you need to call the `WithPolly*` method and other with the prefix `Polly`.
 
 <a name="providers-http-response" />  
 
-## Mapping.HttpResponses
+### NClient.Providers.Mapping.HttpResponses
 The package [NClient.Providers.Mapping.HttpResponses](https://www.nuget.org/packages/NClient.Providers.Mapping.HttpResponses) implements mapping to a set of models representing HTTP responses with deserialized data that can be used as return types of client methods. This package is included in the [NClient](https://www.nuget.org/packages/NClient) and the mapper from the package is already in the client. To use this provider for custom clients, you need to call the `WithResponseToHttpResponseMapping` method when building a client.
 
 <a name="providers-language-ext" />  
 
-## Mapping.LanguageExt
+### NClient.Providers.Mapping.LanguageExt
 The package [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packages/NClient.Providers.Mapping.LanguageExt) implements mapping to a set of monads from LanguageExt library that can be used as return types of client methods. To use this provider, you need to call the `WithResponseToMonadMapping` method when building a client.
 
 <a name="documentation" />  
 
-## Documentation
+### Documentation
 You can find NClient documentation and samples [on the website](https://nclient.github.io/).
 
 <a name="sample-applications" />  
 
-# Samples of applications
+## Samples of applications
 See samples of applications in the [NClient.Samples](https://github.com/nclient/NClient.Samples) project.
 
 <a name="nuget" />  
 
-# NuGet Packages
+## NuGet Packages
 
-## Main
+### Main
 - [NClient](https://www.nuget.org/packages/NClient): Tools for creating clients from interfaces including third-party.
 - [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone): The same as NClient package, but without third-party.
 - [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore): Allows you to annotate controllers via interfaces.
 - [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions): Abstractions for clients and providers.
 - [NClient.Annotations](https://www.nuget.org/packages/NClient.Annotations): Attributes for annotation of clients and controllers interfaces.
 
-## Extensions
+### Extensions
 - [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection): Extension methods for registration of clients in ServiceCollection.
 
-## Providers
+### Providers
 - [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest): Rest based api provider.
 - [NClient.Providers.Transport.Http.System](https://www.nuget.org/packages/NClient.Providers.Transport.Http.System): System.Net.Http based transport provider.
 - [NClient.Providers.Transport.Http.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.Http.RestSharp): RestSharp based HTTP client provider.
@@ -925,7 +946,7 @@ See samples of applications in the [NClient.Samples](https://github.com/nclient/
 
 <a name="contributing" />  
 
-# Contributing
+## Contributing
 You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
 Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
 It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
