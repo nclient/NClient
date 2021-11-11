@@ -31,13 +31,14 @@ Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
 #### Advantages of NClient:
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
-- **Response validation:** preset or custom validation of responses can be set.
 - **Resilience:** resilience is provided by different strategies. There is Polly support.
 - **Serialization to choose from:** various sterilizers can be used: Newtonsoft JSON, system JSON, system Xml, your own.
+- **Response validation:** preset or custom validation of responses can be set.
 - **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
-- **Easy error analysis:** your logger can be used in clients and of course exceptions have all the required information to investigate.
 - **Extension using handlers:** your custom logic can be added to the client parts using handlers.
 - **Extension using providers:** the client functionality can be extended with the help of native or your own providers.
+- **Easy error analysis:** your logger can be used in clients and of course exceptions have all the required information to investigate.
+- **Easy to use with DI:** extension methods make it possible to conveniently add a client to a collection of services.
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
 - **[WIP] All types of applications:** library can be used on backend (ASP.NET) and frontend (Blazor) - plans to support mobile/desktop (MAUI).
 - **[WIP] Various protocols:** REST protocol is provided as a ready-made solution - plans to add GraphQL and RPC.
