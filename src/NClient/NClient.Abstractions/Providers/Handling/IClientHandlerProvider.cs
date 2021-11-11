@@ -4,6 +4,6 @@ namespace NClient.Providers.Handling
 {
     public interface IClientHandlerProvider<TRequest, TResponse>
     {
-        IClientHandler<TRequest, TResponse> Create();
+        IClientHandler<TRequest, TResponse> Create(IToolSet toolset);
     }
 }

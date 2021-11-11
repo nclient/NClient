@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.System.Helpers;
 
 namespace NClient.Providers.Transport.Http.System
@@ -13,7 +12,7 @@ namespace NClient.Providers.Transport.Http.System
             _systemHttpMethodMapper = new SystemHttpMethodMapper();
         }
         
-        public ITransportRequestBuilder<HttpRequestMessage, HttpResponseMessage> Create(ISerializer _)
+        public ITransportRequestBuilder<HttpRequestMessage, HttpResponseMessage> Create(IToolSet toolset)
         {
             return new SystemHttpTransportRequestBuilder(_systemHttpMethodMapper);
         }

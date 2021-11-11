@@ -1,10 +1,11 @@
-﻿using NClient.Providers.Resilience;
+﻿using NClient.Providers;
+using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Validation.Resilience
 {
     internal class StubResiliencePolicyProvider<TRequest, TResponse> : IResiliencePolicyProvider<TRequest, TResponse>
     {
-        public IResiliencePolicy<TRequest, TResponse> Create()
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolSet toolSet)
         {
             return new StubResiliencePolicy<TRequest, TResponse>();
         }

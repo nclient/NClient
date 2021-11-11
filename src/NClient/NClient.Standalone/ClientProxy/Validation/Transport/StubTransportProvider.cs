@@ -1,11 +1,11 @@
-﻿using NClient.Providers.Serialization;
+﻿using NClient.Providers;
 using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
     internal class StubTransportProvider : ITransportProvider<IRequest, IResponse>
     {
-        public ITransport<IRequest, IResponse> Create(ISerializer? serializer = null)
+        public ITransport<IRequest, IResponse> Create(IToolSet toolSet)
         {
             return new StubTransport();
         }

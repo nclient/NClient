@@ -22,8 +22,12 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Validation
         }
         
         public INClientResponseValidationSelector<TRequest, TResponse> Use(IEnumerable<IResponseValidatorSettings<TRequest, TResponse>> settings)
-        {
-            return Use(settings
+        {            
+            var settingsCollection = settings as ICollection<IResponseValidatorSettings<TRequest, TResponse>> ?? settings.ToArray();
+
+            Ensure.AreNotNullItems(settingsCollection, nameof(settings));
+            
+            return Use(settingsCollection
                 .Select(x => new ResponseValidator<TRequest, TResponse>(x))
                 .Cast<IResponseValidator<TRequest, TResponse>>()
                 .ToArray());

@@ -39,18 +39,19 @@ namespace NClient.Providers.Api.Rest.Tests
         {
             var objectMemberManager = new ObjectMemberManager(new ObjectMemberManagerExceptionFactory());
 
-            Serializer = new SystemJsonSerializerProvider().Create();
+            Serializer = new SystemJsonSerializerProvider().Create(logger: null);
+            var toolset = new ToolSet(Serializer, logger: null);
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             RestClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             ClientValidationExceptionFactory = new StandaloneClientValidationExceptionFactory();
             ObjectToKeyValueConverterExceptionFactory = new ObjectToKeyValueConverterExceptionFactory();
             RequestBuilder = new RestRequestBuilder(
-                Serializer,
                 new RouteTemplateProvider(RestClientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, RestClientValidationExceptionFactory),
                 new RequestTypeProvider(RestClientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(objectMemberManager, ObjectToKeyValueConverterExceptionFactory),
-                RestClientValidationExceptionFactory);
+                RestClientValidationExceptionFactory,
+                toolset);
 
             var attributeMapper = new AttributeMapper();
             MethodBuilder = new MethodBuilder(

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.System.Helpers;
 
 namespace NClient.Providers.Transport.Http.System
@@ -46,9 +45,9 @@ namespace NClient.Providers.Transport.Http.System
             _httpClientName = httpClientName;
         }
 
-        public ITransport<HttpRequestMessage, HttpResponseMessage> Create(ISerializer serializer)
+        public ITransport<HttpRequestMessage, HttpResponseMessage> Create(IToolSet toolset)
         {
-            Ensure.IsNotNull(serializer, nameof(serializer));
+            Ensure.IsNotNull(toolset, nameof(toolset));
 
             return new SystemHttpTransport(_httpClientFactory.Invoke(), _httpClientName);
         }

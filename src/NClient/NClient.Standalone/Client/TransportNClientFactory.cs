@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+using NClient.Providers;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 
@@ -17,7 +16,6 @@ namespace NClient.Standalone.Client
 
     internal class TransportNClientFactory<TRequest, TResponse> : ITransportNClientFactory<TRequest, TResponse>
     {
-        private readonly ISerializerProvider _serializerProvider;
         private readonly ITransportProvider<TRequest, TResponse> _transportProvider;
         private readonly ITransportRequestBuilderProvider<TRequest, TResponse> _transportRequestBuilderProvider;
         private readonly IResponseBuilderProvider<TRequest, TResponse> _responseBuilderProvider;
@@ -26,10 +24,9 @@ namespace NClient.Standalone.Client
         private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _resultBuilderProviders;
         private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
-        private readonly ILogger? _logger;
+        private readonly IToolSet _toolset;
 
         public TransportNClientFactory(
-            ISerializerProvider serializerProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
@@ -38,9 +35,8 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            ILogger? logger)
+            IToolSet toolset)
         {
-            _serializerProvider = serializerProvider;
             _transportProvider = transportProvider;
             _transportRequestBuilderProvider = transportRequestBuilderProvider;
             _responseBuilderProvider = responseBuilderProvider;
@@ -49,24 +45,22 @@ namespace NClient.Standalone.Client
             _resultBuilderProviders = resultBuilderProviders;
             _typedResultBuilderProviders = typedResultBuilderProviders;
             _responseValidatorProvider = responseValidatorProvider;
-            _logger = logger;
+            _toolset = toolset;
         }
 
         public ITransportNClient<TRequest, TResponse> Create()
         {
-            var serializer = _serializerProvider.Create();
-            
             return new TransportNClient<TRequest, TResponse>(
-                serializer,
-                _transportProvider.Create(serializer),
-                _transportRequestBuilderProvider.Create(serializer),
-                _responseBuilderProvider.Create(serializer),
-                _clientHandlerProvider.Create(),
-                _resiliencePolicyProvider.Create(),
-                _resultBuilderProviders.Select(x => x.Create()),
-                _typedResultBuilderProviders.Select(x => x.Create()),
-                _responseValidatorProvider.Create(),
-                _logger);
+                _toolset.Serializer,
+                _transportProvider.Create(_toolset),
+                _transportRequestBuilderProvider.Create(_toolset),
+                _responseBuilderProvider.Create(_toolset),
+                _clientHandlerProvider.Create(_toolset),
+                _resiliencePolicyProvider.Create(_toolset),
+                _resultBuilderProviders.Select(x => x.Create(_toolset)),
+                _typedResultBuilderProviders.Select(x => x.Create(_toolset)),
+                _responseValidatorProvider.Create(_toolset),
+                _toolset.Logger);
         }
     }
 }

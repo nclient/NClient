@@ -3,6 +3,7 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
+using NClient.Providers;
 using NClient.Providers.Api;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
@@ -76,14 +77,16 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             ILogger<TClient>? logger = null)
         {
+            var serializer = serializerProvider.Create(logger);
+            var toolset = new ToolSet(serializer, logger);
+            
             return new ClientInterceptor<TClient, TRequest, TResponse>(
                 resource,
                 _guidProvider,
                 _methodBuilder,
                 new ExplicitInvocationProvider<TRequest, TResponse>(_proxyGenerator),
-                requestBuilderProvider.Create(serializerProvider.Create()),
+                requestBuilderProvider.Create(toolset),
                 new TransportNClientFactory<TRequest, TResponse>(
-                    serializerProvider,
                     transportProvider,
                     transportRequestBuilderProvider,
                     responseBuilderProvider,
@@ -92,10 +95,10 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     resultBuilderProviders,
                     typedResultBuilderProviders,
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
-                    logger),
+                    toolset),
                 methodResiliencePolicyProvider,
                 _clientRequestExceptionFactory,
-                logger);
+                toolset);
         }
     }
 }

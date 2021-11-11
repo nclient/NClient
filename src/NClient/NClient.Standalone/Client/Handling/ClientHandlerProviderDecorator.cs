@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NClient.Providers;
 using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
@@ -13,10 +14,10 @@ namespace NClient.Standalone.Client.Handling
             _clientHandlerProviders = clientHandlerProviders;
         }
         
-        public IClientHandler<TRequest, TResponse> Create()
+        public IClientHandler<TRequest, TResponse> Create(IToolSet toolset)
         {
             return new ClientHandlerDecorator<TRequest, TResponse>(_clientHandlerProviders
-                .Select(x => x.Create())
+                .Select(x => x.Create(toolset))
                 .ToArray());
         }
     }

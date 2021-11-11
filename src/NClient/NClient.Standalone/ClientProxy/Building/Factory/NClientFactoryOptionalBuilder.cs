@@ -76,10 +76,10 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
                 .WithoutHandlers());
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> mappers)
         {
             return WithAdvancedResponseMapping(x => x
-                .ForTransport().Use(builders));
+                .ForTransport().Use(mappers));
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure)

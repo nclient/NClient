@@ -1,4 +1,5 @@
-﻿using NClient.Providers.Handling;
+﻿using NClient.Providers;
+using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {
@@ -11,7 +12,7 @@ namespace NClient.Standalone.Client.Handling
             _clientHandler = clientHandler;
         }
         
-        public IClientHandler<TRequest, TResponse> Create()
+        public IClientHandler<TRequest, TResponse> Create(IToolSet toolset)
         {
             return _clientHandler;
         }

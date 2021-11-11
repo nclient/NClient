@@ -1,4 +1,5 @@
-﻿using NClient.Providers.Validation;
+﻿using NClient.Providers;
+using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {
@@ -11,7 +12,7 @@ namespace NClient.Standalone.Client.Validation
             _responseValidator = responseValidator;
         }
         
-        public IResponseValidator<TRequest, TResponse> Create()
+        public IResponseValidator<TRequest, TResponse> Create(IToolSet toolset)
         {
             return _responseValidator;
         }

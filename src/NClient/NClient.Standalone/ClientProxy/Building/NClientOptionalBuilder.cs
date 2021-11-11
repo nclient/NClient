@@ -8,8 +8,8 @@ using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
-using NClient.Resilience;
 using NClient.Standalone.Client.Logging;
+using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -88,10 +88,10 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutHandlers());
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> mappers)
         {
             return WithAdvancedResponseMapping(x => x
-                .ForTransport().Use(builders));
+                .ForTransport().Use(mappers));
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NClient.Providers;
 using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
@@ -13,10 +14,10 @@ namespace NClient.Standalone.Client.Validation
             _responseValidatorProviders = responseValidatorProviders;
         }
         
-        public IResponseValidator<TRequest, TResponse> Create()
+        public IResponseValidator<TRequest, TResponse> Create(IToolSet toolset)
         {
             return new ResponseValidatorDecorator<TRequest, TResponse>(_responseValidatorProviders
-                .Select(x => x.Create()));
+                .Select(x => x.Create(toolset)));
         }
     }
 }

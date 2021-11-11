@@ -13,7 +13,7 @@ namespace NClient.Providers.Resilience.Polly
             _settings = settings;
         }
         
-        public IResiliencePolicy<TRequest, TResponse> Create()
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolSet toolSet)
         {
             var basePolicy = Policy<IResponseContext<TRequest, TResponse>>
                 .HandleResult(_settings.ShouldRetry).Or<Exception>();
