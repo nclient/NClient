@@ -1,5 +1,4 @@
-﻿using System;
-using WireMock.RequestBuilders;
+﻿using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
@@ -7,16 +6,9 @@ namespace NClient.Testing.Common.Apis
 {
     public class HeaderApiMockFactory
     {
-        public Uri ApiUri { get; }
-
-        public HeaderApiMockFactory(int port)
+        public static IWireMockServer MockGetMethod(int id)
         {
-            ApiUri = new UriBuilder("http", "localhost", port).Uri;
-        }
-
-        public IWireMockServer MockGetMethod(int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/header")
                     .WithHeader("Accept", "application/json")
@@ -30,9 +22,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockDeleteMethod(int id)
+        public static IWireMockServer MockDeleteMethod(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/header")
                     .WithHeader("Accept", "application/json")

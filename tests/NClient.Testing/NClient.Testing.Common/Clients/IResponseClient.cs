@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions;
-using NClient.Abstractions.HttpClients;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.Testing.Common.Clients
@@ -19,14 +18,14 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse<int>> GetResponseAsync(int id);
+        Task<IResponse<int>> GetResponseAsync(int id);
 
         /// <summary>
         /// Url: api/basic?id={id}
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<HttpResponseWithError<int, Error>> GetResponseWithErrorAsync(int id);
+        Task<IResponseWithError<int, HttpError>> GetResponseWithErrorAsync(int id);
 
         /// <summary>
         /// Url: api/basic
@@ -40,13 +39,13 @@ namespace NClient.Testing.Common.Clients
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpResponse> PostResponseAsync(BasicEntity entity);
+        Task<IResponse> PostResponseAsync(BasicEntity entity);
 
         /// <summary>
         /// Url: api/basic
         /// Body: {entity}
         /// Headers: empty
         /// </summary>
-        Task<HttpResponseWithError<Error>> PostResponseWithErrorAsync(BasicEntity entity);
+        Task<IResponseWithError<HttpError>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }

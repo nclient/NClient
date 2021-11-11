@@ -1,4 +1,4 @@
-﻿using NClient.Annotations.Parameters;
+﻿using NClient.Annotations.Http;
 
 namespace NClient.Testing.Common.Entities
 {

@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
-using NClient.Annotations.Auth;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Mappers
@@ -16,46 +13,46 @@ namespace NClient.AspNetCore.Mappers
         {
             return attribute switch
             {
-                ApiAttribute => new ApiControllerAttribute(),
+                IHttpFacadeAttribute => new ApiControllerAttribute(),
 
-                ToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
-                VersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
+                IToVersionAttribute x => new MapToApiVersionAttribute(x.Version),
+                IVersionAttribute x => new ApiVersionAttribute(x.Version) { Deprecated = x.Deprecated },
 
-                PathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                IPathAttribute x => new RouteAttribute(x.Template) { Order = x.Order, Name = x.Name },
 
-                GetMethodAttribute x => x.Template is null
+                IGetMethodAttribute x => x.Path is null
                     ? new HttpGetAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpGetAttribute(x.Template) { Order = x.Order, Name = x.Name },
-                HeadMethodAttribute x => x.Template is null
+                    : new HttpGetAttribute(x.Path) { Order = x.Order, Name = x.Name },
+                IHeadMethodAttribute x => x.Path is null
                     ? new HttpHeadAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpHeadAttribute(x.Template) { Order = x.Order, Name = x.Name },
-                PostMethodAttribute x => x.Template is null
+                    : new HttpHeadAttribute(x.Path) { Order = x.Order, Name = x.Name },
+                IPostMethodAttribute x => x.Path is null
                     ? new HttpPostAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpPostAttribute(x.Template) { Order = x.Order, Name = x.Name },
-                PutMethodAttribute x => x.Template is null
+                    : new HttpPostAttribute(x.Path) { Order = x.Order, Name = x.Name },
+                IPutMethodAttribute x => x.Path is null
                     ? new HttpPutAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpPutAttribute(x.Template) { Order = x.Order, Name = x.Name },
-                DeleteMethodAttribute x => x.Template is null
+                    : new HttpPutAttribute(x.Path) { Order = x.Order, Name = x.Name },
+                IDeleteMethodAttribute x => x.Path is null
                     ? new HttpDeleteAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpDeleteAttribute(x.Template) { Order = x.Order, Name = x.Name },
-                OptionsMethodAttribute x => x.Template is null
+                    : new HttpDeleteAttribute(x.Path) { Order = x.Order, Name = x.Name },
+                IOptionsMethodAttribute x => x.Path is null
                     ? new HttpOptionsAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpOptionsAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                    : new HttpOptionsAttribute(x.Path) { Order = x.Order, Name = x.Name },
                 #if !NETSTANDARD2_0
-                PatchMethodAttribute x => x.Template is null
+                IPatchMethodAttribute x => x.Path is null
                     ? new HttpPatchAttribute { Order = x.Order, Name = x.Name }
-                    : new HttpPatchAttribute(x.Template) { Order = x.Order, Name = x.Name },
+                    : new HttpPatchAttribute(x.Path) { Order = x.Order, Name = x.Name },
                 #endif
 
-                ResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int)x.StatusCode),
+                IResponseAttribute x => new ProducesResponseTypeAttribute(x.Type, (int) x.StatusCode),
 
-                AnonymousAttribute => new AllowAnonymousAttribute(),
-                AuthorizedAttribute x => new AuthorizeAttribute(x.Policy!) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },
+                IAnonymousAttribute => new AllowAnonymousAttribute(),
+                IAuthorizedAttribute x => new AuthorizeAttribute(x.Policy!) { Roles = x.Roles, AuthenticationSchemes = x.AuthenticationSchemes },
 
-                RouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
-                QueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
-                BodyParamAttribute => new FromBodyAttribute(),
-                HeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
+                IRouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
+                IQueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
+                IBodyParamAttribute => new FromBodyAttribute(),
+                IHeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
                 { } => attribute,
                 _ => throw new ArgumentNullException(nameof(attribute))

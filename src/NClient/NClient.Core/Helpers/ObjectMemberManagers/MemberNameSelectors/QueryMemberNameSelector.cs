@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using NClient.Annotations.Parameters;
+using NClient.Annotations;
 
 namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
 {
@@ -15,9 +15,10 @@ namespace NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors
                 .GetProperty("Name")!
                 .GetValue(fromQueryAttribute) as string;
 
-            var queryParamName = memberInfo
-                .GetCustomAttribute<QueryParamAttribute>()?
-                .Name;
+            var queryParamName = (memberInfo
+                    .GetCustomAttributes()
+                    .SingleOrDefault(x => x is IPropertyParamAttribute)
+                as IPropertyParamAttribute)?.Name;
 
             return fromQueryName ?? queryParamName ?? memberInfo.Name;
         }

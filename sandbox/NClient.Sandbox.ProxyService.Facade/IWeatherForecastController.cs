@@ -1,14 +1,12 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 using NClient.Sandbox.ProxyService.Facade.Dto;
 
 namespace NClient.Sandbox.ProxyService.Facade
 {
-    [Api]
+    [HttpFacade]
     [Path("api/nclient/v{version:apiVersion}/[controller]")]
     [Version("1.0"), Version("2.0"), Version("3.0")]
     public interface IWeatherForecastController

@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NClient.Annotations;
 using NClient.Annotations.Auth;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 using NClient.AspNetCore.Controllers;
 using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.AspNetCore.Mappers;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.ObjectMemberManagers;
 using NUnit.Framework;
 
 namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
 {
+    [Parallelizable]
     [SuppressMessage("ReSharper", "BadEmptyBracesLineBreaks")]
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     [SuppressMessage("ReSharper", "MultipleTypeMembersOnOneLine")]
@@ -32,7 +32,9 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
         {
             _controllerValidationExceptionFactory = new ControllerValidationExceptionFactory();
             _virtualControllerGenerator = new VirtualControllerGenerator(
-                new VirtualControllerAttributeBuilder(),
+                new VirtualControllerAttributeBuilder(
+                    new ObjectMemberManager(new ControllerObjectMemberManagerExceptionFactory()),
+                    new ControllerValidationExceptionFactory()),
                 new NClientAttributeMapper(),
                 new ControllerValidationExceptionFactory(),
                 new GuidProvider());
@@ -60,7 +62,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
         }
 
-        [Api] public interface IInterfaceWithApiAttribute { }
+        [HttpFacade] public interface IInterfaceWithApiAttribute { }
         public class InterfaceWithApiAttribute : IInterfaceWithApiAttribute { }
 
         [Test]
@@ -196,7 +198,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 });
         }
 
-        [Api, Path("api/[controller]")] public interface IInterfaceWithApiAndPathAttributes { }
+        [HttpFacade, Path("api/[controller]")] public interface IInterfaceWithApiAndPathAttributes { }
         public class InterfaceWithApiAndPathAttributes : IInterfaceWithApiAndPathAttributes { }
 
         [Test]
@@ -496,6 +498,31 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var nameParamAttributes = methodParams[1].GetCustomAttributes(inherit: true);
             nameParamAttributes.Length.Should().Be(1);
             nameParamAttributes[0].Should().BeEquivalentTo(new FromBodyAttribute());
+        }
+        
+        public interface IGenericInterface<T> { T Method(); }
+        public class GenericInterface : IGenericInterface<int> { public int Method() { return 1; } }
+
+        [Test]
+        public void Create_GenericInterface_MapToGenericController()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IGenericInterface<int>), typeof(GenericInterface))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            var methodInfo = virtualControllerType.GetMethod(nameof(GenericInterface.Method))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
+            methodAttributes.Should().BeEmpty();
         }
     }
 }

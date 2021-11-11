@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using NClient.AspNetCore.Exceptions.Factories;
+using NClient.Core.Helpers.ObjectMemberManagers;
 
 namespace NClient.AspNetCore.Controllers
 {
@@ -15,6 +16,17 @@ namespace NClient.AspNetCore.Controllers
 
     internal class VirtualControllerAttributeBuilder : IVirtualControllerAttributeBuilder
     {
+        private readonly IObjectMemberManager _objectMemberManager;
+        private readonly IControllerValidationExceptionFactory _controllerValidationExceptionFactory;
+
+        public VirtualControllerAttributeBuilder(
+            IObjectMemberManager objectMemberManager,
+            IControllerValidationExceptionFactory controllerValidationExceptionFactory)
+        {
+            _objectMemberManager = objectMemberManager;
+            _controllerValidationExceptionFactory = controllerValidationExceptionFactory;
+        }
+        
         public CustomAttributeBuilder? TryBuild(Attribute attribute)
         {
             return attribute switch
@@ -25,14 +37,14 @@ namespace NClient.AspNetCore.Controllers
             };
         }
 
-        private static CustomAttributeBuilder BuildRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
+        private CustomAttributeBuilder BuildRouteTemplateProviderAttribute(IRouteTemplateProvider attribute)
         {
             if (attribute.Template is not null)
-                return BuildCustomAttribute((Attribute)attribute);
+                return BuildCustomAttribute((Attribute) attribute);
 
             var attributeCtor = attribute.GetType().GetConstructors().First();
             var attributeCtorParamValues = Array.Empty<object>();
-            return BuildAttribute(attributeCtor, attributeCtorParamValues, (Attribute)attribute);
+            return BuildAttribute(attributeCtor, attributeCtorParamValues, (Attribute) attribute);
         }
 
         private static CustomAttributeBuilder BuildApiVersionsBaseAttribute(ApiVersionsBaseAttribute attribute)
@@ -42,7 +54,7 @@ namespace NClient.AspNetCore.Controllers
             return BuildAttribute(attributeCtor, attributeCtorParamValues, attribute);
         }
 
-        private static CustomAttributeBuilder? TryBuildCustomAttribute(Attribute attribute)
+        private CustomAttributeBuilder? TryBuildCustomAttribute(Attribute attribute)
         {
             try
             {
@@ -54,16 +66,21 @@ namespace NClient.AspNetCore.Controllers
             }
         }
 
-        private static CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
+        private CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
         {
             var attributeCtor = attribute.GetType().GetConstructors().Last();
-            var attributeCtorParamNames = new HashSet<string>(attributeCtor.GetParameters().Select(x => x.Name!));
-            var attributeCtorParamValues = GetProperties(attribute)
-                .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-                .Select(x => x.GetValue(attribute))
-                .Concat(GetFields(attribute)
-                    .Where(x => attributeCtorParamNames.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-                    .Select(x => x.GetValue(attribute)))
+            var attributeCtorParamNames = attributeCtor.GetParameters().Select(x => x.Name!);
+            var propsAndFields = GetProperties(attribute)
+                .Concat(GetFields(attribute).Cast<MemberInfo>())
+                .GroupBy(x => x.Name)
+                .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+            var attributeCtorParamValues = attributeCtorParamNames
+                .Select(x =>
+                {
+                    if (!propsAndFields.TryGetValue(x, out var memberInfo))
+                        throw _controllerValidationExceptionFactory.ControllerAttributeCannotBeCreated(attribute.GetType().Name);
+                    return _objectMemberManager.GetValue(memberInfo, attribute);
+                })
                 .ToArray();
 
             return BuildAttribute(attributeCtor, attributeCtorParamValues!, attribute);

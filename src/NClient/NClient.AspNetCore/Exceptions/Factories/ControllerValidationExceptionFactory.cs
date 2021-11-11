@@ -2,6 +2,7 @@
 {
     internal interface IControllerValidationExceptionFactory
     {
+        ControllerValidationException ControllerAttributeCannotBeCreated(string attributeName);
         ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName);
         ControllerValidationException ControllerImplementsMultipleNClientInterfaces(string controllerName);
         ControllerValidationException ControllerInterfaceNotFound(string controllerName);
@@ -10,6 +11,9 @@
 
     internal class ControllerValidationExceptionFactory : IControllerValidationExceptionFactory
     {
+        public ControllerValidationException ControllerAttributeCannotBeCreated(string attributeName) => 
+            new($"The controller attribute '{attributeName}' has a constructor that cannot be used to create an attribute.");
+        
         public ControllerValidationException ModelNotFoundForRouteTemplateToken(string tokenName) =>
             new($"The model was not found for the '{tokenName}' route template token.");
 
