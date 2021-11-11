@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-        <Description>The core of NClient library for creating HTTP client that allows you to call web service API methods using annotated interfaces or controllers.</Description>
+        <PackageTags>NClient;Core;Client;HTTP;Rest</PackageTags>
+        <Description>The core of NClient library for creating client that allows you to call web service API methods using annotated clients and controllers interfaces.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

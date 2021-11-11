@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
+        <PackageTags>NClient;Annotation;Client;HTTP;Rest</PackageTags>
         <Description>NClient attributes for annotation of controllers and client interfaces.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>

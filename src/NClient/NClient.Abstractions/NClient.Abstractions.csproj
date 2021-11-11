@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
-        <Description>NClient abstractions for clients and providers.</Description>
+        <PackageTags>NClient;Abstractions;Client;HTTP;Rest</PackageTags>
+        <Description>NClient abstractions for your providers and extensions.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

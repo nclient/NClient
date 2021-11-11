@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Transport;RestSharp;HttpClient;Api;WebApi;Rest</PackageTags>
-        <Description>RestSharp based HTTP client provider for NClient.</Description>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Transport;RestSharp</PackageTags>
+        <Description>The provider that allows you to transport messages using RestSharp.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

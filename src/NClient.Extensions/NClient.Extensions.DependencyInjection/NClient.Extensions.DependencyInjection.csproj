@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
-        <Description>Extension methods for registration of clients in ServiceCollection.</Description>
+        <PackageTags>NClient;NClient.Extensions;DependencyInjection</PackageTags>
+        <Description>Extension methods that make it easy to add clients in ServiceCollection.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
