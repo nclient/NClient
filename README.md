@@ -45,6 +45,8 @@ Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
 
 Do you like it? Give us a star! ⭐
 
+Do you like it? Give us a star! ⭐
+
 ## Table of Contents
 - [Why use NClient?](#why)
 - [How to install?](#install)
