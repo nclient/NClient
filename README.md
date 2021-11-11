@@ -32,7 +32,7 @@ Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Resilience:** resilience is provided by different strategies. There is Polly support.
-- **Serialization to choose from:** various sterilizers can be used: Newtonsoft JSON, system JSON, system Xml, your own.
+- **Serialization to choose from:** various sterilizers can be used: Newtonsoft JSON, system JSON, system XML, your own.
 - **Response validation:** preset or custom validation of responses can be set.
 - **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
 - **Extension using handlers:** your custom logic can be added to the client parts using handlers.
@@ -42,8 +42,6 @@ Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
 - **[WIP] All types of applications:** library can be used on backend (ASP.NET) and frontend (Blazor) - plans to support mobile/desktop (MAUI).
 - **[WIP] Various protocols:** REST protocol is provided as a ready-made solution - plans to add GraphQL and RPC.
-
-Do you like it? Give us a star! ⭐
 
 Do you like it? Give us a star! ⭐
 
@@ -93,7 +91,7 @@ By the way, you can [contribute](#contributing) to the NClient, not just use it 
 <a name="install" />  
 
 ## How to install?
-The easiest way is to install [NClient package](https://www.nuget.org/packages?q=Tags%3A"NClient") using Nuget:
+The easiest way is to install [NClient package](https://www.nuget.org/packages/NClient) using Nuget:
 ```
 dotnet add package NClient
 ```
