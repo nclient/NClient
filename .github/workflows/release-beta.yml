@@ -32,7 +32,7 @@ jobs:
         needsTag: true
       
   validation:
-    needs: release-beta
+    needs: release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
