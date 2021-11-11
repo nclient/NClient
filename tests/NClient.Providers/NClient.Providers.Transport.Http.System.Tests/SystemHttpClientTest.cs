@@ -23,7 +23,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
         private static readonly Uri EndpointUri = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
-        private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create();
+        private static readonly ISerializer Serializer = new SystemJsonSerializerProvider().Create(logger: null);
         private static readonly Metadata AcceptHeader = new("Accept", "application/json");
         private static readonly Metadata ServerHeader = new("Server", "Kestrel");
         private static readonly Metadata EmptyContentLengthMetadata = new("Content-Length", "0");
@@ -41,9 +41,10 @@ namespace NClient.Providers.Transport.Http.System.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var transport = new SystemHttpTransportProvider().Create(Serializer);
-            var transportRequestBuilder = new SystemHttpTransportRequestBuilderProvider().Create(Serializer);
-            var responseBuilder = new SystemHttpResponseBuilderProvider().Create(Serializer);
+            var toolset = new ToolSet(Serializer, logger: null);
+            var transport = new SystemHttpTransportProvider().Create(toolset);
+            var transportRequestBuilder = new SystemHttpTransportRequestBuilderProvider().Create(toolset);
+            var responseBuilder = new SystemHttpResponseBuilderProvider().Create(toolset);
 
             var httpRequestMessage = await transportRequestBuilder.BuildAsync(request);
             var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage);

@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Transport;HttpClient;Api;WebApi;System</PackageTags>
-        <Description>System.Net.Http based HTTP client provider for NClient.</Description>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Transport;HttpClient;System</PackageTags>
+        <Description>The provider that allows you to transport messages using System.Net.Http.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

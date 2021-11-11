@@ -1,5 +1,4 @@
 ﻿using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -21,9 +20,9 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _authenticator = authenticator;
         }
 
-        public ITransport<IRestRequest, IRestResponse> Create(ISerializer serializer)
+        public ITransport<IRestRequest, IRestResponse> Create(IToolSet toolSet)
         {
-            Ensure.IsNotNull(serializer, nameof(serializer));
+            Ensure.IsNotNull(toolSet, nameof(toolSet));
 
             return new RestSharpTransport(_authenticator);
         }

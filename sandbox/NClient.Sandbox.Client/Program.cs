@@ -62,7 +62,7 @@ namespace NClient.Sandbox.Client
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
             _weatherForecastClient = NClientGallery.Clients
-                .GetBasic()
+                .GetRest()
                 .For<IWeatherForecastClient>(host: "http://localhost:5000")
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector
@@ -72,7 +72,7 @@ namespace NClient.Sandbox.Client
                 .Build();
 
             _fileClient = NClientGallery.Clients
-                .GetBasic()
+                .GetRest()
                 .For<IFileClient>(host: "http://localhost:5002")
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector

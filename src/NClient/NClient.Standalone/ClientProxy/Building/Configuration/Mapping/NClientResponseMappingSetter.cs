@@ -22,9 +22,13 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Mapping
             return Use(extraBuilders.Concat(new[] { builder }));
         }
         
-        public INClientResponseMappingSelector<TRequest, TResponse> Use(IEnumerable<IResponseMapper<IRequest, IResponse>> builders)
+        public INClientResponseMappingSelector<TRequest, TResponse> Use(IEnumerable<IResponseMapper<IRequest, IResponse>> mappers)
         {
-            return Use(builders
+            var mapperCollection = mappers as ICollection<IResponseMapper<IRequest, IResponse>> ?? mappers.ToArray();
+
+            Ensure.AreNotNullItems(mapperCollection, nameof(mappers));
+            
+            return Use(mapperCollection
                 .Select(x => new ResponseMapperProvider<IRequest, IResponse>(x))
                 .Cast<IResponseMapperProvider<IRequest, IResponse>>()
                 .ToArray());

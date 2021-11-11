@@ -16,7 +16,7 @@ namespace NClient
                 ?? throw new NClientException($"The client '{client.GetType().Name}' does not implement the interface '{typeof(IResilienceNClient<T>)}'.");
         }
 
-        public static ITransportNClient<T> AsHttp<T>(this T client) where T : class, INClient
+        public static ITransportNClient<T> AsTransport<T>(this T client) where T : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));
             Ensure.IsCompatibleWith<ITransportNClient<T>>(client, nameof(client));

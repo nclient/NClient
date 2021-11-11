@@ -1,5 +1,4 @@
-﻿using NClient.Providers.Serialization;
-using NClient.Providers.Transport.Http.RestSharp.Builders;
+﻿using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
 
@@ -14,7 +13,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _restSharpMethodMapper = new RestSharpMethodMapper();
         }
         
-        public IResponseBuilder<IRestRequest, IRestResponse> Create(ISerializer serializer)
+        public IResponseBuilder<IRestRequest, IRestResponse> Create(IToolSet toolSet)
         {
             return new RestSharpResponseBuilder(new FinalHttpRequestBuilder(_restSharpMethodMapper));
         }

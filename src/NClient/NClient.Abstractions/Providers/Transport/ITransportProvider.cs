@@ -1,6 +1,4 @@
-﻿using NClient.Providers.Serialization;
-
-namespace NClient.Providers.Transport
+﻿namespace NClient.Providers.Transport
 {
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
@@ -11,6 +9,6 @@ namespace NClient.Providers.Transport
         /// Creates and configures an instance of <see cref="ITransport{TRequest,TResponse}"/> instance.
         /// </summary>
         /// <param name="serializer">The serializer for serializing a request body.</param>
-        ITransport<TRequest, TResponse> Create(ISerializer serializer);
+        ITransport<TRequest, TResponse> Create(IToolSet toolset);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using NClient.Common.Helpers;
 using NClient.Invocation;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
+using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 
@@ -24,9 +26,18 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
             _methodPredicates = methodPredicates;
         }
 
-        public INClientFactoryResilienceMethodSelector<TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
+        public INClientFactoryResilienceMethodSelector<TRequest, TResponse> Use(IResiliencePolicy<TRequest, TResponse> policy)
         {
-            _builderContextModifier.Add(context => context.WithResiliencePolicy(_methodPredicates, resiliencePolicyProvider));
+            Ensure.IsNotNull(policy, nameof(policy));
+            
+            return Use(new ResiliencePolicyProvider<TRequest, TResponse>(policy));
+        }
+        
+        public INClientFactoryResilienceMethodSelector<TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            Ensure.IsNotNull(provider, nameof(provider));
+            
+            _builderContextModifier.Add(context => context.WithResiliencePolicy(_methodPredicates, provider));
             return new NClientFactoryResilienceMethodSelector<TRequest, TResponse>(_builderContextModifier);
         }
         

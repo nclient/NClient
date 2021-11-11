@@ -5,7 +5,7 @@ namespace NClient
 {
     public static class LanguageExtExtensions
     {
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithLanguageExtMonads<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseToMonadMapping<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
         {
@@ -13,7 +13,7 @@ namespace NClient
                 .ForClient().Use(new ResponseToEitherBuilderProvider()));
         }
         
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithLanguageExtMonads<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseToMonadMapping<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
             return optionalBuilder.WithAdvancedResponseMapping(x => x

@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using NClient.Common.Helpers;
 using Newtonsoft.Json;
 
 namespace NClient.Providers.Serialization.Json.Newtonsoft
@@ -29,7 +30,7 @@ namespace NClient.Providers.Serialization.Json.Newtonsoft
             _jsonSerializerSettings = jsonSerializerSettings;
         }
 
-        public ISerializer Create()
+        public ISerializer Create(ILogger? logger)
         {
             return new NewtonsoftJsonSerializer(_jsonSerializerSettings);
         }

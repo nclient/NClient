@@ -4,6 +4,6 @@ namespace NClient.Providers.Validation
 {
     public interface IResponseValidatorProvider<TRequest, TResponse>
     {
-        IResponseValidator<TRequest, TResponse> Create();
+        IResponseValidator<TRequest, TResponse> Create(IToolSet toolset);
     }
 }

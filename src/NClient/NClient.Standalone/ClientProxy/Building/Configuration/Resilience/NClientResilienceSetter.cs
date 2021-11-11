@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using NClient.Common.Helpers;
 using NClient.Invocation;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
+using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 
@@ -24,13 +26,22 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
             _methodPredicates = methodPredicates;
         }
 
-        INClientResilienceMethodSelector<TClient, TRequest, TResponse> INClientResilienceSetter<TClient, TRequest, TResponse>.Use(IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider)
+        public INClientResilienceMethodSelector<TClient, TRequest, TResponse> Use(IResiliencePolicy<TRequest, TResponse> policy)
         {
-            _builderContextModifier.Add(context => context.WithResiliencePolicy(_methodPredicates, resiliencePolicyProvider));
+            Ensure.IsNotNull(policy, nameof(policy));
+            
+            return Use(new ResiliencePolicyProvider<TRequest, TResponse>(policy));
+        }
+        
+        public INClientResilienceMethodSelector<TClient, TRequest, TResponse> Use(IResiliencePolicyProvider<TRequest, TResponse> provider)
+        {
+            Ensure.IsNotNull(provider, nameof(provider));
+            
+            _builderContextModifier.Add(context => context.WithResiliencePolicy(_methodPredicates, provider));
             return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_builderContextModifier);
         }
         
-        INClientResilienceMethodSelector<TClient, TRequest, TResponse> INClientResilienceSetter<TClient, TRequest, TResponse>.DoNotUse()
+        public INClientResilienceMethodSelector<TClient, TRequest, TResponse> DoNotUse()
         {
             _builderContextModifier.Add(context => context.WithResiliencePolicy(_methodPredicates, new StubResiliencePolicyProvider<TRequest, TResponse>()));
             return new NClientResilienceMethodSelector<TClient, TRequest, TResponse>(_builderContextModifier);
