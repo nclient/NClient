@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
 using NClient.Sandbox.ProxyService.Facade.Dto;
 
 namespace NClient.Sandbox.ProxyService.Clients

@@ -1,0 +1,56 @@
+name: 'Test: Base'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build with ${{ matrix.target-frameworks }}
+    strategy:
+      matrix:
+        target-frameworks: [net48, net5.0]
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Build with ${{ matrix.target-frameworks }}
+        uses: ./actions/build
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'Tests.slnf'
+          
+  test-dotnet-core:
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [windows-latest]
+        target-frameworks: [net48]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Test with ${{ matrix.target-frameworks }}
+        uses: ./actions/test-framework
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'NClient.sln'
+          
+  test-dotnet-framework:
+    name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        target-frameworks: [net5.0]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Test with ${{ matrix.target-frameworks }}
+        uses: ./actions/test-core
+        with:
+          target-framework: ${{ matrix.target-frameworks }}
+          solution: 'NClient.sln'

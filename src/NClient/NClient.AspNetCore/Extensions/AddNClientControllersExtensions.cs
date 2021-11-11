@@ -16,6 +16,7 @@ using NClient.AspNetCore.Filters;
 using NClient.AspNetCore.Mappers;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.ObjectMemberManagers;
 
 #pragma warning disable 618
 
@@ -32,7 +33,9 @@ namespace NClient.AspNetCore.Extensions
             ProxyGenerator = new ProxyGenerator();
             NClientControllerFinder = new NClientControllerFinder(new ControllerValidationExceptionFactory());
             VirtualControllerGenerator = new VirtualControllerGenerator(
-                new VirtualControllerAttributeBuilder(),
+                new VirtualControllerAttributeBuilder(
+                    new ObjectMemberManager(new ControllerObjectMemberManagerExceptionFactory()),
+                    new ControllerValidationExceptionFactory()),
                 new NClientAttributeMapper(),
                 new ControllerValidationExceptionFactory(),
                 new GuidProvider());

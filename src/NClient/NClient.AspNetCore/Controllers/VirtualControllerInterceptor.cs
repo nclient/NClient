@@ -20,7 +20,7 @@ namespace NClient.AspNetCore.Controllers
             if (_target is ControllerBase controllerBase)
             {
                 var proxyController = invocation.InvocationTarget;
-                controllerBase.ControllerContext = (ControllerContext)proxyController
+                controllerBase.ControllerContext = (ControllerContext) proxyController
                     .GetType().GetProperty(nameof(controllerBase.ControllerContext))!.GetValue(proxyController)!;
             }
 

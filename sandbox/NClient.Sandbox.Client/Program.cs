@@ -2,13 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Transport;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.FileService.Facade;
 using NClient.Sandbox.ProxyService.Facade;
@@ -42,12 +40,9 @@ namespace NClient.Sandbox.Client
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .BuildServiceProvider();
 
-            var basePolicy = Policy<ResponseContext>.HandleResult(x =>
-            {
-                if (x.MethodInvocation.MethodInfo.Name == nameof(IWeatherForecastClient.GetAsync) && x.HttpResponse.StatusCode == HttpStatusCode.NotFound)
-                    return false;
-                return !x.HttpResponse.IsSuccessful;
-            }).Or<Exception>();
+            var basePolicy = Policy<IResponseContext<HttpRequestMessage, HttpResponseMessage>>
+                .HandleResult(x => !x.Response.IsSuccessStatusCode)
+                .Or<Exception>();
             var retryPolicy = basePolicy.WaitAndRetryAsync(
                 retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
@@ -57,9 +52,8 @@ namespace NClient.Sandbox.Client
                 {
                     if (delegateResult.Exception is not null)
                         throw delegateResult.Exception;
-                    if (typeof(HttpResponse).IsAssignableFrom(delegateResult.Result.MethodInvocation.ResultType))
-                        return Task.CompletedTask;
-                    throw delegateResult.Result.HttpResponse.ErrorException!;
+                    delegateResult.Result.Response.EnsureSuccessStatusCode();
+                    return Task.CompletedTask;
                 });
 
             var handlerLogger = serviceProvider.GetRequiredService<ILogger<LoggingClientHandler>>();
@@ -67,29 +61,23 @@ namespace NClient.Sandbox.Client
             var fileClientLogger = serviceProvider.GetRequiredService<ILogger<IFileClient>>();
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            _weatherForecastClient = NClientProvider
-                .Use<IWeatherForecastClient>(host: "http://localhost:5000")
-                .WithCustomHandlers(new IClientHandler[]
-                {
-                    new LoggingClientHandler(handlerLogger)
-                })
-                .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
-                .WithResiliencePolicy(
-                    methodSelector: x => (Func<WeatherForecastDto, Task>)x.PostAsync,
-                    asyncPolicy: fallbackPolicy)
+            _weatherForecastClient = NClientGallery.Clients
+                .GetRest()
+                .For<IWeatherForecastClient>(host: "http://localhost:5000")
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
+                    .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
+                    .ForMethod(x => (Func<WeatherForecastDto, Task>) x.PostAsync).UsePolly(fallbackPolicy))
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
 
-            _fileClient = NClientProvider
-                .Use<IFileClient>(host: "http://localhost:5002")
-                .WithCustomHandlers(new IClientHandler[]
-                {
-                    new LoggingClientHandler(handlerLogger)
-                })
-                .WithResiliencePolicy(fallbackPolicy.WrapAsync(retryPolicy))
-                .WithResiliencePolicy(
-                    methodSelector: x => (Func<byte[], Task>)x.PostTextFileAsync,
-                    asyncPolicy: fallbackPolicy)
+            _fileClient = NClientGallery.Clients
+                .GetRest()
+                .For<IFileClient>(host: "http://localhost:5002")
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
+                    .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
+                    .ForMethod(x => (Func<byte[], Task>) x.PostTextFileAsync).UsePolly(fallbackPolicy))
                 .WithLogging(fileClientLogger)
                 .Build();
         }
@@ -125,22 +113,22 @@ namespace NClient.Sandbox.Client
             _programLogger.LogInformation("The text file was received.");
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
             {
-                await textFileStream.WriteAsync(httpResponseWithText.RawBytes);
+                await textFileStream.WriteAsync(httpResponseWithText.Content.Bytes);
                 _programLogger.LogInformation("The text file was saved.");
             }
 
-            await _fileClient.PostTextFileAsync(httpResponseWithText.RawBytes!);
+            await _fileClient.PostTextFileAsync(httpResponseWithText.Content.Bytes!);
             _programLogger.LogInformation("The text file has been sent.");
 
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
             _programLogger.LogInformation("The image was received.");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
             {
-                await imageStream.WriteAsync(httpResponseWithImage.RawBytes);
+                await imageStream.WriteAsync(httpResponseWithImage.Content.Bytes);
                 _programLogger.LogInformation("The image was saved.");
             }
 
-            await _fileClient.PostImageFileAsync(httpResponseWithImage.RawBytes!);
+            await _fileClient.PostImageFileAsync(httpResponseWithImage.Content.Bytes!);
             _programLogger.LogInformation("The image has been sent.");
 
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);

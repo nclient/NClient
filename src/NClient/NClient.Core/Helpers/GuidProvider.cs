@@ -3,13 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NClient.Core.Helpers
 {
-    public interface IGuidProvider
+    internal interface IGuidProvider
     {
         Guid Create();
     }
 
     [SuppressMessage("ReSharper", "GuidNew")]
-    public class GuidProvider : IGuidProvider
+    internal class GuidProvider : IGuidProvider
     {
         public Guid Create()
         {

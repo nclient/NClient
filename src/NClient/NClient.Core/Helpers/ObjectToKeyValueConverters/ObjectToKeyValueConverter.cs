@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.Core.Exceptions.Factories;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
+using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
 
 namespace NClient.Core.Helpers.ObjectToKeyValueConverters
 {
@@ -16,14 +16,14 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
     internal class ObjectToKeyValueConverter : IObjectToKeyValueConverter
     {
         private readonly IObjectMemberManager _objectMemberManager;
-        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
+        private readonly IObjectToKeyValueConverterExceptionFactory _objectToKeyValueConverterExceptionFactory;
 
         public ObjectToKeyValueConverter(
             IObjectMemberManager objectMemberManager,
-            IClientValidationExceptionFactory clientValidationExceptionFactory)
+            IObjectToKeyValueConverterExceptionFactory objectToKeyValueConverterExceptionFactory)
         {
             _objectMemberManager = objectMemberManager;
-            _clientValidationExceptionFactory = clientValidationExceptionFactory;
+            _objectToKeyValueConverterExceptionFactory = objectToKeyValueConverterExceptionFactory;
         }
 
         public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector)
@@ -67,16 +67,16 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
                 {
                     var itemKey = item.GetType().GetProperty("Key")!.GetValue(item, null);
                     if (!IsPrimitive(itemKey))
-                        throw _clientValidationExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported();
+                        throw _objectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported();
 
                     var itemValue = item.GetType().GetProperty("Value")!.GetValue(item, null);
                     if (!TryAddAsPrimitive(stringValues, key: $"{key}[{itemKey}]", itemValue))
-                        throw _clientValidationExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported();
+                        throw _objectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported();
                 }
                 else
                 {
                     if (!TryAddAsPrimitive(stringValues, key, item))
-                        throw _clientValidationExceptionFactory.ArrayWithComplexTypeNotSupported();
+                        throw _objectToKeyValueConverterExceptionFactory.ArrayWithComplexTypeNotSupported();
                 }
             }
 

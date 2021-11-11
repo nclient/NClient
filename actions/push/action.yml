@@ -1,0 +1,74 @@
+name: Push NuGet packages
+
+inputs:
+  version-prefix:
+    description: 'Version prefix'     
+    required: true
+  version-suffix:
+    description: 'Version suffix'     
+    required: true
+  source:
+    description: 'Package regestry'     
+    required: true
+  source-api-key:
+    description: 'Package regestry api key'     
+    required: true
+  needsTag:
+    description: 'Need to create a tag'     
+    required: true
+    default: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Setup latest .NET
+      uses: actions/setup-dotnet@v1
+    - name: Setting VersionPrefix env variable
+      run: |
+        echo "VersionPrefix=${{ inputs.version-prefix }}" >> $GITHUB_ENV
+      shell: bash
+    - name: Setting VersionSuffix env variable
+      run: |
+        if [[ "${{ inputs.version-suffix }}" != "" ]]; then
+          echo "VersionSuffix=${{ inputs.version-suffix }}" >> $GITHUB_ENV
+        else
+          echo "VersionSuffix=" >> $GITHUB_ENV
+        fi
+      shell: bash
+    - name: Set release tag
+      run: |
+        if [[ "${{ env.VersionSuffix }}" != "" ]]; then
+          echo "ReleaseTag=v${{ env.VersionPrefix }}-${{ env.VersionSuffix }}" >> $GITHUB_ENV
+        else
+          echo "ReleaseTag=v${{ env.VersionPrefix }}" >> $GITHUB_ENV
+        fi
+      shell: bash
+    - name: Restore dependencies and build
+      run: dotnet build --configuration Release -warnaserror
+      shell: bash
+    - name: Pack
+      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
+      shell: bash
+    - name: Compress nupkgs
+      run: tar cvzf nupkgs-${{ env.ReleaseTag }}.tar.gz nupkgs
+      shell: bash
+    - name: Upload nupkgs ${{ env.ReleaseTag }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: nupkgs-${{ env.ReleaseTag }}
+        path: nupkgs-${{ env.ReleaseTag }}.tar.gz
+    - name: Publish to ${{ inputs.source }}
+      run: dotnet nuget push ./nupkgs/ --source ${{ inputs.source }} --api-key ${{ inputs.source-api-key }} --skip-duplicate
+      shell: bash
+    - name: Try to create release tag
+      run: |
+        if [[ "${{ inputs.needsTag }}" == "true" ]]; then
+          git tag ${{ env.ReleaseTag }}
+        fi
+      shell: bash
+    - name: Try to push release tag
+      run: |
+        if [[ "${{ inputs.needsTag }}" == "true" ]]; then
+          git push origin ${{ env.ReleaseTag }}
+        fi
+      shell: bash

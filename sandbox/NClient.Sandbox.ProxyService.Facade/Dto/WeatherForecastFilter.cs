@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using NClient.Annotations.Parameters;
+using NClient.Annotations.Http;
 
 namespace NClient.Sandbox.ProxyService.Facade.Dto
 {

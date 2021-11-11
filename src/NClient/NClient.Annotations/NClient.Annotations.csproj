@@ -8,12 +8,11 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest</PackageTags>
+        <PackageTags>NClient;Annotation;Client;HTTP;Rest</PackageTags>
         <Description>NClient attributes for annotation of controllers and client interfaces.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
-        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -23,17 +22,23 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\logo.png" Pack="true" PackagePath=""/>
-        <None Include="..\..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Include="..\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NClient.Abstractions\NClient.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

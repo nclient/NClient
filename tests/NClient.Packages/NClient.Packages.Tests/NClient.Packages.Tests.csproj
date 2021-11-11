@@ -1,21 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net462;net472;net48;net5.0;netcoreapp3.1</TargetFrameworks>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <IsPackable>false</IsPackable>
-        <Configurations>Debug;Release;ReleaseTest</Configurations>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NClient" Version="*-*"/>
+        <PackageReference Include="NClient.Core" Version="*-*"/>
+        <PackageReference Include="NClient.Abstractions" Version="*-*"/>
+        <PackageReference Include="NClient.Annotations" Version="*-*"/>
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.HttpClient.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Newtonsoft" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.Http.RestSharp" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.Http.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
     </ItemGroup>
 

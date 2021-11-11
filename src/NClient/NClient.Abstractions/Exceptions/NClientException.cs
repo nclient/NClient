@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace NClient.Abstractions.Exceptions
+// ReSharper disable once CheckNamespace
+namespace NClient.Exceptions
 {
     /// <summary>
     /// Represents exceptions thrown by the NClient library classes.

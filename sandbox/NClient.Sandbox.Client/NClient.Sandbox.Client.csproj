@@ -10,6 +10,7 @@
         <IsPackable>false</IsPackable>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/sandbox/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

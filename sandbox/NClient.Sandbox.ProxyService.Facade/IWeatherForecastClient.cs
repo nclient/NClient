@@ -1,5 +1,5 @@
 ﻿using NClient.Annotations;
-using NClient.Annotations.Versioning;
+using NClient.Annotations.Http;
 
 namespace NClient.Sandbox.ProxyService.Facade
 {

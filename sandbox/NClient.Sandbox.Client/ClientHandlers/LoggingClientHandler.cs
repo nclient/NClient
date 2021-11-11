@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Handling;
-using NClient.Abstractions.HttpClients;
-using NClient.Abstractions.Invocation;
+using NClient.Providers.Handling;
 
 namespace NClient.Sandbox.Client.ClientHandlers
 {
-    public class LoggingClientHandler : IClientHandler
+    public class LoggingClientHandler : IClientHandler<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly ILogger<LoggingClientHandler> _logger;
 
@@ -15,15 +14,15 @@ namespace NClient.Sandbox.Client.ClientHandlers
             _logger = logger;
         }
 
-        public Task<HttpRequest> HandleRequestAsync(HttpRequest httpRequest, MethodInvocation methodInvocation)
+        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request)
         {
-            return Task.FromResult(httpRequest);
+            return Task.FromResult(request);
         }
 
-        public Task<HttpResponse> HandleResponseAsync(HttpResponse httpResponse, MethodInvocation methodInvocation)
+        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response)
         {
-            _logger.LogDebug("The response (id: {httpRequestId}) with the body is received: {httpRequestContent}", httpResponse.Request.Id, httpResponse.Content);
-            return Task.FromResult(httpResponse);
+            _logger.LogDebug("The response with the body is received: {httpRequestContent}", response.Content);
+            return Task.FromResult(response);
         }
     }
 }
