@@ -1,3 +1,4 @@
+using NClient.Providers;
 using NClient.Providers.Mapping;
 
 namespace NClient.Standalone.Client.Mapping
@@ -11,7 +12,7 @@ namespace NClient.Standalone.Client.Mapping
             _responseMapper = responseMapper;
         }
         
-        public IResponseMapper<TRequest, TResponse> Create()
+        public IResponseMapper<TRequest, TResponse> Create(IToolSet toolset)
         {
             return _responseMapper;
         }

@@ -3,7 +3,6 @@ using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
-using NClient.Providers.Serialization;
 
 namespace NClient.Providers.Api.Rest
 {
@@ -22,15 +21,15 @@ namespace NClient.Providers.Api.Rest
             _objectToKeyValueConverterExceptionFactory = new ObjectToKeyValueConverterExceptionFactory();
         }
         
-        public IRequestBuilder Create(ISerializer serializer)
+        public IRequestBuilder Create(IToolSet toolSet)
         {
             return new RestRequestBuilder(
-                serializer,
                 new RouteTemplateProvider(_clientValidationExceptionFactory),
                 new RouteProvider(_objectMemberManager, _clientArgumentExceptionFactory, _clientValidationExceptionFactory),
                 new RequestTypeProvider(_clientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(_objectMemberManager, _objectToKeyValueConverterExceptionFactory),
-                _clientValidationExceptionFactory);
+                _clientValidationExceptionFactory,
+                toolSet);
         }
     }
 }

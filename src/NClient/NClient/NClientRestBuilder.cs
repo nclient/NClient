@@ -3,7 +3,7 @@ using NClient.Providers.Api.Rest.Extensions;
 
 namespace NClient
 {
-    public interface INClientStandardBuilder
+    public interface INClientRestBuilder
     {
         INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class;
@@ -12,7 +12,7 @@ namespace NClient
     /// <summary>
     /// The builder used to create the client.
     /// </summary>
-    public class NClientStandardBuilder : INClientStandardBuilder
+    public class NClientRestBuilder : INClientRestBuilder
     {
         public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class
@@ -22,13 +22,11 @@ namespace NClient
                 .UsingRestApi()
                 .UsingHttpTransport()
                 .UsingJsonSerializer()
-                .WithAdvancedResponseValidation(x => x
-                    .ForTransport().UseSystemResponseValidation())
+                .WithResponseValidation()
                 .WithoutHandling()
-                .WithIdempotentResilience()
-                .WithAdvancedResponseMapping(x => x
-                    .ForTransport().UseHttpResponses()
-                    .ForClient().UseResults())
+                .WithoutResilience()
+                .WithResponseToHttpResponseMapping()
+                .WithResponseToResultMapping()
                 .WithoutLogging();
         }
     }

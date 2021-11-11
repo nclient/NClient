@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Api;Api;WebApi;Rest</PackageTags>
-        <Description>Rest based api provider for NClient.</Description>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Api;Rest</PackageTags>
+        <Description>The provider that allows you to create clients for the REST API.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

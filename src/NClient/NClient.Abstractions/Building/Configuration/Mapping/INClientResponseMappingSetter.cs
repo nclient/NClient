@@ -7,7 +7,7 @@ namespace NClient
 {
     public interface INClientResponseMappingSetter<TRequest, TResponse>
     {
-        INClientResponseMappingSelector<TRequest, TResponse> Use(IEnumerable<IResponseMapper<IRequest, IResponse>> builders);
+        INClientResponseMappingSelector<TRequest, TResponse> Use(IEnumerable<IResponseMapper<IRequest, IResponse>> mappers);
         
         INClientResponseMappingSelector<TRequest, TResponse> Use(IEnumerable<IResponseMapperProvider<IRequest, IResponse>> providers);
     }

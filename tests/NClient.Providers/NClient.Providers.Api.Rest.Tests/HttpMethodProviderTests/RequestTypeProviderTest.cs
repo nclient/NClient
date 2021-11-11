@@ -3,7 +3,6 @@ using System.Collections;
 using FluentAssertions;
 using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Common.Helpers;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Transport;
@@ -32,7 +31,7 @@ namespace NClient.Providers.Api.Rest.Tests.HttpMethodProviderTests
         public static IEnumerable InvalidTestCases = new[]
         {
             new TestCaseData(null,
-                EnsureExceptionFactory.CreateArgumentNullException("operationAttribute")),
+                new ArgumentNullException("operationAttribute")),
             new TestCaseData(new NotSupportedAttribute(),
                 ClientValidationExceptionFactory.MethodAttributeNotSupported(nameof(NotSupportedAttribute)))
         };

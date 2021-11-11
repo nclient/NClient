@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Value = 1 };
             using var api = GenericApiMockFactory.MockPostMethod(entity, id);
 
-            var result = await NClientGallery.Clients.GetBasic().For<IGenericClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IGenericClientWithMetadata>(api.Urls.First()).Build()
                 .PostAsync(entity);
 
             result.Should().Be(id);

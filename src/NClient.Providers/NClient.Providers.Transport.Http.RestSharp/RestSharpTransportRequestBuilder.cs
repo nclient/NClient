@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
 
@@ -9,15 +8,15 @@ namespace NClient.Providers.Transport.Http.RestSharp
 {
     internal class RestSharpTransportRequestBuilder : ITransportRequestBuilder<IRestRequest, IRestResponse>
     {
-        private readonly ISerializer _serializer;
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
+        private readonly IToolSet _toolSet;
 
         public RestSharpTransportRequestBuilder(
-            ISerializer serializer,
-            IRestSharpMethodMapper restSharpMethodMapper)
+            IRestSharpMethodMapper restSharpMethodMapper,
+            IToolSet toolSet)
         {
-            _serializer = serializer;
             _restSharpMethodMapper = restSharpMethodMapper;
+            _toolSet = toolSet;
         }
 
         public Task<IRestRequest> BuildAsync(IRequest request)
@@ -30,7 +29,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
-            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_serializer.ContentType).ToString());
+            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_toolSet.Serializer.ContentType).ToString());
             
             foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
             {
@@ -39,7 +38,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
 
             if (request.Content is not null)
             {
-                restRequest.AddParameter(_serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
+                restRequest.AddParameter(_toolSet.Serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {

@@ -10,7 +10,7 @@ namespace NClient
     public interface INClientResilienceMethodSelector<TClient, TRequest, TResponse>
     {
         INClientResilienceSetter<TClient, TRequest, TResponse> ForAllMethods();
-        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> methodSelector);
-        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> predicate);
+        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> selector);
+        INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> condition);
     }
 }

@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using Microsoft.Extensions.Logging;
 
 namespace NClient.Providers.Serialization
 {
@@ -10,6 +10,6 @@ namespace NClient.Providers.Serialization
         /// <summary>
         /// Creates and configures an instance of <see cref="ISerializer"/> instance.
         /// </summary>
-        ISerializer Create();
+        ISerializer Create(ILogger? logger);
     }
 }

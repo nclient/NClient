@@ -46,11 +46,11 @@ namespace NClient
         #region Results
         
         // TODO: doc
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> builders);
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> mappers);
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure);
 
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutMapping();
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseMapping();
 
         #endregion
         

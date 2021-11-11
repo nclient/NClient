@@ -10,6 +10,6 @@ namespace NClient.Providers.Resilience
         /// <summary>
         /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
         /// </summary>
-        IResiliencePolicy<TRequest, TResponse> Create();
+        IResiliencePolicy<TRequest, TResponse> Create(IToolSet toolset);
     }
 }

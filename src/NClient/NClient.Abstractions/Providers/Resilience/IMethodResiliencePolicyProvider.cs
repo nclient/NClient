@@ -3,16 +3,8 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Resilience
 {
-    /// <summary>
-    /// A provider abstraction for a component that can create <see cref="IResiliencePolicy"/> instances for specific method.
-    /// </summary>
     internal interface IMethodResiliencePolicyProvider<TRequest, TResponse>
     {
-        /// <summary>
-        /// Creates and configures an instance of <see cref="IResiliencePolicy"/> instance.
-        /// </summary>
-        /// <param name="method">The method to apply the policy to.</param>
-        /// <param name="request">The request to apply the policy to.</param>
-        IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request);
+        IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolSet toolset);
     }
 }

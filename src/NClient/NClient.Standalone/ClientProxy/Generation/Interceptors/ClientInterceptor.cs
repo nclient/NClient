@@ -5,6 +5,7 @@ using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
+using NClient.Providers;
 using NClient.Providers.Api;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
@@ -26,6 +27,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
+        private readonly IToolSet _toolset;
         private readonly ILogger<TClient>? _logger;
 
         public ClientInterceptor(
@@ -37,6 +39,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
+            IToolSet toolset,
             ILogger<TClient>? logger = null)
         {
             _resource = resource;
@@ -47,6 +50,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
+            _toolset = toolset;
             _logger = logger;
         }
 
@@ -80,8 +84,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 httpRequest = await _requestBuilder
                     .BuildAsync(requestId, _resource, methodInvocation)
                     .ConfigureAwait(false);
-                var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create()
-                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest);
+                var resiliencePolicy = explicitInvocation.ResiliencePolicyProvider?.Create(_toolset)
+                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
 

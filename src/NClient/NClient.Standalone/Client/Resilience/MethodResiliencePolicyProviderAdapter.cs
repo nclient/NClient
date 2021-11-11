@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using NClient.Invocation;
+using NClient.Providers;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Models;
 
-// ReSharper disable once CheckNamespace
-namespace NClient.Resilience
+namespace NClient.Standalone.Client.Resilience
 {
     internal class MethodResiliencePolicyProviderAdapter<TRequest, TResponse> : IMethodResiliencePolicyProvider<TRequest, TResponse>
     {
@@ -22,10 +22,10 @@ namespace NClient.Resilience
             _resiliencePolicyPredicates = resiliencePolicyPredicates?.ToArray() ?? Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request)
+        public IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolSet toolset)
         {
             var resiliencePolicyPredicate = _resiliencePolicyPredicates.FirstOrDefault(x => x.Predicate(method, request));
-            return resiliencePolicyPredicate?.Provider.Create() ?? _defaultResiliencePolicyProvider!.Create();
+            return resiliencePolicyPredicate?.Provider.Create(toolset) ?? _defaultResiliencePolicyProvider!.Create(toolset);
         }
     }
 }

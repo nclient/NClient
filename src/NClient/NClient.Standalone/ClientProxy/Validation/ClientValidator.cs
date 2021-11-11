@@ -6,7 +6,7 @@ using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
-using NClient.Resilience;
+using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
 using NClient.Standalone.ClientProxy.Validation.Handling;

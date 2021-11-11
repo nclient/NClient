@@ -5,7 +5,7 @@ namespace NClient
 {
     public static class ResultsExtensions
     {
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResults<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseToResultMapping<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
         {
@@ -13,7 +13,7 @@ namespace NClient
                 .ForClient().Use(new ResponseToResultMapperProvider()));
         }
         
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResults<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseToResultMapping<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
             return optionalBuilder.WithAdvancedResponseMapping(x => x

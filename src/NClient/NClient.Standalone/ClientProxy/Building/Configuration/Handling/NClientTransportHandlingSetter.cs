@@ -40,7 +40,11 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Handling
         
         public INClientHandlingSelector<TRequest, TResponse> Use(IEnumerable<IClientHandler<TRequest, TResponse>> handlers)
         {
-            return Use(handlers
+            var handlerCollection = handlers as ICollection<IClientHandler<TRequest, TResponse>> ?? handlers.ToArray();
+
+            Ensure.AreNotNullItems(handlerCollection, nameof(handlers));
+            
+            return Use(handlerCollection
                 .Select(x => new ClientHandlerProvider<TRequest, TResponse>(x))
                 .Cast<IClientHandlerProvider<TRequest, TResponse>>()
                 .ToArray());

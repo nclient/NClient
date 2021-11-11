@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers.EqualityComparers;
 using NClient.Invocation;
 using NClient.Providers.Transport;
@@ -31,20 +32,24 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
                 methodPredicate: (method, _) => method.Info.DeclaringType == typeof(TClient));
         }
         
-        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> methodSelector)
+        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> selector)
         {
-            var func = methodSelector.Compile();
+            Ensure.IsNotNull(selector, nameof(selector));
+            
+            var func = selector.Compile();
             var selectedMethod = func.Invoke(default!).Method;
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
                 methodPredicate: (method, _) => _methodInfoEqualityComparer.Equals(method.Info, selectedMethod));
         }
         
-        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> predicate)
+        public INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> condition)
         {
+            Ensure.IsNotNull(condition, nameof(condition));
+            
             return new NClientFactoryResilienceSetter<TRequest, TResponse>(
                 _builderContextModifier, 
-                predicate);
+                condition);
         }
     }
 }

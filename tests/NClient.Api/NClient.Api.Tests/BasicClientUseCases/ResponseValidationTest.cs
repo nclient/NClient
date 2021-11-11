@@ -16,7 +16,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithoutResponseValidation()
                 .Build();
 
@@ -30,7 +30,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithoutResponseValidation()
                 .WithAdvancedResponseValidation(x => x
                     .ForTransport().Use(new CustomResponseValidatorSettings()))
@@ -46,7 +46,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithAdvancedResponseValidation(x => x
                     .ForTransport().Use(new CustomResponseValidatorSettings()))
                 .Build();
@@ -61,7 +61,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithResponseValidation(
                     isSuccess: _ => true, 
                     onFailure: _ =>
