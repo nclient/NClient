@@ -129,7 +129,9 @@ namespace NClient.Providers.Api.Rest.Providers
         {
             return templatePart.Text switch
             {
-                "[controller]" => GetControllerName(clientName),
+                "[controller]" => GetFacadeName(clientName),
+                "[facade]" => GetFacadeName(clientName),
+                "[client]" => GetFacadeName(clientName),
                 "[action]" => methodName,
                 { Length: > 2 } token when token.First() == '[' && token.Last() == ']' =>
                     throw _clientValidationExceptionFactory.SpecialTokenFromTemplateNotExists(token),
@@ -137,7 +139,7 @@ namespace NClient.Providers.Api.Rest.Providers
             };
         }
 
-        private string GetControllerName(string name)
+        private string GetFacadeName(string name)
         {
             var nameWithoutSuffixAndPrefix = GetNameWithoutSuffix(GetNameWithoutPrefix(name));
             if (string.IsNullOrEmpty(nameWithoutSuffixAndPrefix))
