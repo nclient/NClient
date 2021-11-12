@@ -8,8 +8,8 @@
 ![GitHub](https://img.shields.io/github/license/nclient/NClient)
 
 NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces. 
-The main difference between NClient and its analogues is that NClient lets you to annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
-This allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code. 
+The main difference between NClient and its analogues is that NClient lets you annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
+It allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code. 
 
 ```C#
 [HttpFacade, Path("api/{controller}")] 
@@ -32,16 +32,16 @@ Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Resilience:** resilience is provided by different strategies. There is Polly support.
-- **Serialization to choose from:** various sterilizers can be used: Newtonsoft JSON, system JSON, system XML, your own.
+- **Serialization selection:** various serializers are avaliable for use: Newtonsoft JSON, system JSON, system XML, your own.
 - **Response validation:** preset or custom validation of responses can be set.
 - **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
-- **Extension using handlers:** your custom logic can be added to the client parts using handlers.
-- **Extension using providers:** the client functionality can be extended with the help of native or your own providers.
-- **Easy error analysis:** your logger can be used in clients and of course exceptions have all the required information to investigate.
-- **Easy to use with DI:** extension methods make it possible to conveniently add a client to a collection of services.
+- **Extension using handlers:** handlers allow to add custom logic to the client parts
+- **Extension using providers:** the client functionality can be extended with native or your own providers. 
+- **Easy error analysis:** your logger can be used in clients, and certainly exceptions have all the required information to investigate.
+- **Easy to use with DI:** extension methods allow to add a client to a collection of services easily.
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
-- **[WIP] All types of applications:** library can be used on backend (ASP.NET) and frontend (Blazor) - plans to support mobile/desktop (MAUI).
-- **[WIP] Various protocols:** REST protocol is provided as a ready-made solution - plans to add GraphQL and RPC.
+- **[WIP] All types of applications:** the library can be used on backend (ASP.NET) and frontend (Blazor), its planed tо support mobile/desktop (MAUI).
+- **[WIP] Various protocols:** REST protocol is provided as a ready-made solution, its planed to add GraphQL and RPC.
 
 Do you like it? Give us a star! ⭐
 
@@ -104,7 +104,7 @@ Use of the NClient library requires .NET Standard 2.0 or higher. The NClient con
 <a name="usage" />  
 
 ## How to use?
-First you have to create an interface describing available endpoints and input/output data of a service via annotations. After that, you can select the required type of client in `NClientGallery` and then set additional settings for it if necessary.
+First you have to create an interface describing available endpoints and input/output data of a service via annotations. After that, you can select the required type of client in `NClientGallery` and then set additional settings for it if it`s necessary.
 
 <a name="usage-non-aspnet" />
 
@@ -127,7 +127,7 @@ public interface IProductServiceClient
 }
 ```
 Interface annotation is very similar to the annotation of controllers in ASP.NET. The `PathAttribute` defines the base path for all interface methods. The `PostMethodAttribute` specifies the type of HTTP method and the path to endpoint. 
-Moreover, implicit annotations work as in ASP.NET controllers, for example, the `BodyParamAttribute` attribute will be implicitly set to the `product` parameter in `CreateAsync` method. And of course route templates are also supported. 
+Moreover, implicit annotations work as in ASP.NET controllers, for example, the `BodyParamAttribute` attribute will be implicitly set to the `product` parameter in `CreateAsync` method. And certainly the route templates are also supported. 
 Read about all the features in the [Annotation](#features-annotation) and [Routing](#features-routing) sections.
 #### Step 3: Create the client
 ```C#
@@ -147,7 +147,7 @@ IProductServiceClient client = NClientGallery.Clients.GetRest()
     ...
     .Build();
 ```
-After calling the `For` method, you can configure the client as you need, for example, you can replace the serializer with `Newtonsoft.Json`, add the retry policy, and so on (see [Features](#features) section).
+After calling the `For` method, you can configure the client as you need, for example, you can replace the serializer with `Newtonsoft.Json`, add the retry policy and so on (see [Features](#features) section).
 #### Step 5: Send an http request
 ```C#
 // Equivalent to the following request: 
@@ -158,7 +158,7 @@ Product product = await client.CreateAsync(new Product(name: "MyProduct"));
 <a name="usage-aspnet" />
 
 ### Usage with ASP.NET Core
-If you want to generate a client for youre ASP.NET web service, you need to extract an interface for your controller and annotate it with NClient attributes. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
+If you want to generate a client for your ASP.NET web service, you need to extract an interface for your controller and annotate it with NClient attributes. They are very similar to attributes for ASP.NET controllers. Follow the steps below:
 #### Step 1: Install `NClient.AspNetCore` package on server-side
 ```
 dotnet add package NClient.AspNetCore
@@ -171,7 +171,7 @@ public class WeatherForecastController : ControllerBase
         new WeatherForecast(date: date, temperatureC: -25);
 }
 ```
-Don't annotate your controller with ASP.NET attributes that will semantically conflict with the NClient attributes you will be using. 
+Don't annotate your controller with ASP.NET attributes that may semantically conflict with the NClient attributes you are going to use.
 Other attributes (including your own) can be used without restrictions.
 #### Step 3: Extract the interface for your controller and annotate it with NClient attributes
 ```C#
@@ -185,12 +185,12 @@ public interface IWeatherForecastController
 public class WeatherForecastController : ControllerBase, IWeatherForecastController { ... }
 ```
 The annotation in the interface instead of the controller allows you to put the interface in a separate assembly. 
-Therefore, the client that will use this interface will not depend on the ASP.NET application.
+Therefore, the client useing this interface doesn`t depend on the ASP.NET application.
 #### Step 4 (optional): Create the interface for the client
 ```C#
 public interface IWeatherForecastClient : IWeatherForecastController { }
 ```
-This should be done if you want your client type not to contain "Сontroller" in the name or if you want to override some methods for the client (see `OverrideAttribute` in [Annotation](#features-annotation-override) section). 
+You should do it if you want your client type not to contain "Сontroller" in the name or if you want to override some methods for the client (see `OverrideAttribute` in [Annotation](#features-annotation-override) section). 
 There is no need to duplicate interface attributes, they are inherited.
 #### Step 5: Add NClient controllers to ServiceCollection in Startup.cs
 ```C#
@@ -228,7 +228,7 @@ The list of the main features of NClient library:
 <a name="features-creating" />  
 
 ### Creating
-There are several ways to create a client, you can choose the most suitable one.
+There are several ways to create a client, so you can choose the most suitable one.
 
 #### NClientGallery
 The `NClientGallery` class contains already configured clients and factories. There are two types of gallery usage:
@@ -270,7 +270,7 @@ The gallery contains several types of clients:
 The request is considered unsuccessful if the response code is not equal to 200.
 - Custom: without pre-configuration.
 
-The custom client is a special case because it has no presets, so you will have to fully configure it yourself:
+The custom client is a special case because it has no presets, so you will have to fully configure it by yourself:
 ```C#
 IMyClient myClient = NClientGallery.Clients.GetCustom()
     .For<IMyClient>(host: "http://localhost:8080")
