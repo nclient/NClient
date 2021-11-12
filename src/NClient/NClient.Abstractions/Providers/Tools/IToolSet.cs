@@ -7,6 +7,6 @@ namespace NClient.Providers
     public interface IToolset
     {
         ISerializer Serializer { get; } 
-        ILogger? Logger { get; set; }
+        ILogger? Logger { get; }
     }
 }

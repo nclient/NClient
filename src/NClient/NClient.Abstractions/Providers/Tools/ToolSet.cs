@@ -7,7 +7,7 @@ namespace NClient.Providers
     internal class Toolset : IToolset
     {
         public ISerializer Serializer { get; }
-        public ILogger? Logger { get; set; }
+        public ILogger? Logger { get; }
 
         public Toolset(ISerializer serializer, ILogger? logger)
         {
