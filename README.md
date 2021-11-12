@@ -12,20 +12,24 @@ The main difference between NClient and its analogues is that NClient lets you a
 It allows you to get rid of unwanted dependencies on a client side and to reuse an API description in clients without boilerplate code. 
 
 ```C#
-[HttpFacade, Path("api/{controller}")] 
-public interface IWeatherFacade {
-    [GetMethod] Task<Weather> GetAsync(DateTime date);
-}
-    
+// WebService.dll:
 public class WeatherController : ControllerBase, IWeatherFacade {
-    public Task<Weather> GetAsync(DateTime date) => ...;
+    public Task<Weather> GetAsync(string city, DateTime date) => ...;
 }
 
+// WebService.Facade.dll:
+[HttpFacade, Path("api/[facade]")] 
+public interface IWeatherFacade {
+    [GetMethod("{city}")] 
+    Task<Weather> GetAsync([RouteParam] string city, [QueryParam] DateTime date);
+}
+
+// Client.dll:
 IWeatherFacade weatherFacade = NClientGallery.Clients.GetRest()
     .For<IWeatherFacade>(host: "http://localhost:5000")
     .WithSafeResilience(maxRetries: 3)
     .Build();
-Weather todaysWeather = await weatherFacade.GetAsync(DateTime.Today);
+Weather todaysWeather = await weatherFacade.GetAsync(city: "Chelyabinsk", date: DateTime.Today);
 ```
 
 #### Advantages of NClient:
