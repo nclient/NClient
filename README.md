@@ -402,12 +402,12 @@ The `UseVersionAttribute` can be used together with the attributes for API versi
 To generate the path to the endpoint, the client has support for route templates as in ASP.NET. Route templates are passed to the following attributes: `PathAttribute`, `QueryParamAttribute`, `BodyParamAttribute`, `HeaderParamAttribute`, `RouteParamAttribute`. The `PathAttribute` sets the base path for all interface methods, the other attributes set the relative path to a specific endpoint.
 
 Routes can contain two types of tokens that are inserted into the path in runtime:
-#### Controller token
+#### Facade token
 The name of interface can be substituted in the path:
 ```C#
-[Path("api/[controller]")] public interface IEntitiesClient { ... } // the route will be: api/entities
+[Path("api/[facade]")] public interface IEntitiesClient { ... } // the route will be: api/entities
 ```
-The name of the interface will be substituted without prefixes (`I`) and postfixes (`Controller`, `Client`, `Facade`).
+The name of the interface will be substituted without prefixes (`I`) and postfixes (`Controller`, `Client`, `Facade`). Facade token has aliases: `[controller]` and `[client]`
 #### Parameter token
 Method parameters can be completely substituted in the path:
 ```C#
@@ -780,7 +780,7 @@ Clients and controllers are able to upload and download files. Here's how you ca
 #### Controller side
 On the controller side, you do not need to perform any special actions, work with files as in the original ASP.NET Core:
 ```C#
-[Api, Path("api/[controller]")]
+[HttpFacade, Path("api/[controller]")]
 public interface IFileController
 {
     [GetMethod("files/{id}")] Task<IActionResult> GetFileAsync([RouteParam] long id);
