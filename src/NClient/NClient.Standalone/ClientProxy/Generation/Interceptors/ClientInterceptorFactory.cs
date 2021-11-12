@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
@@ -92,8 +93,14 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     responseBuilderProvider,
                     new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
-                    resultBuilderProviders,
-                    typedResultBuilderProviders,
+                    resultBuilderProviders
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                        .ToArray(),
+                    typedResultBuilderProviders
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                        .ToArray(),
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
                     toolset),
                 methodResiliencePolicyProvider,
