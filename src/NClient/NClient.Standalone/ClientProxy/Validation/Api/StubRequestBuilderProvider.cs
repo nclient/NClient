@@ -5,7 +5,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Api
 {
     public class StubRequestBuilderProvider : IRequestBuilderProvider
     {
-        public IRequestBuilder Create(IToolSet toolSet)
+        public IRequestBuilder Create(IToolset toolset)
         {
             return new StubRequestBuilder();
         }

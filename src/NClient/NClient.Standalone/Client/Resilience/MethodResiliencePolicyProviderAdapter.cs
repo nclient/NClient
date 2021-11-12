@@ -22,7 +22,7 @@ namespace NClient.Standalone.Client.Resilience
             _resiliencePolicyPredicates = resiliencePolicyPredicates?.ToArray() ?? Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolSet toolset)
+        public IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolset toolset)
         {
             var resiliencePolicyPredicate = _resiliencePolicyPredicates.FirstOrDefault(x => x.Predicate(method, request));
             return resiliencePolicyPredicate?.Provider.Create(toolset) ?? _defaultResiliencePolicyProvider!.Create(toolset);

@@ -41,7 +41,7 @@ namespace NClient.Providers.Transport.Http.System.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var toolset = new ToolSet(Serializer, logger: null);
+            var toolset = new Toolset(Serializer, logger: null);
             var transport = new SystemHttpTransportProvider().Create(toolset);
             var transportRequestBuilder = new SystemHttpTransportRequestBuilderProvider().Create(toolset);
             var responseBuilder = new SystemHttpResponseBuilderProvider().Create(toolset);

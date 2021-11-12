@@ -14,7 +14,7 @@ namespace NClient.Standalone.Client.Handling
             _clientHandlerProviders = clientHandlerProviders;
         }
         
-        public IClientHandler<TRequest, TResponse> Create(IToolSet toolset)
+        public IClientHandler<TRequest, TResponse> Create(IToolset toolset)
         {
             return new ClientHandlerDecorator<TRequest, TResponse>(_clientHandlerProviders
                 .Select(x => x.Create(toolset))

@@ -79,7 +79,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ILogger<TClient>? logger = null)
         {
             var serializer = serializerProvider.Create(logger);
-            var toolset = new ToolSet(serializer, logger);
+            var toolset = new Toolset(serializer, logger);
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
                 resource,

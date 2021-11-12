@@ -5,7 +5,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Validation
 {
     public class StubResponseValidatorProvider<TRequest, TResponse> : IResponseValidatorProvider<TRequest, TResponse>
     {
-        public IResponseValidator<TRequest, TResponse> Create(IToolSet toolSet)
+        public IResponseValidator<TRequest, TResponse> Create(IToolset toolset)
         {
             return new StubResponseValidator<TRequest, TResponse>();
         }
