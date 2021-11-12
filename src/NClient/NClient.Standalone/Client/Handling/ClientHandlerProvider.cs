@@ -12,7 +12,7 @@ namespace NClient.Standalone.Client.Handling
             _clientHandler = clientHandler;
         }
         
-        public IClientHandler<TRequest, TResponse> Create(IToolSet toolset)
+        public IClientHandler<TRequest, TResponse> Create(IToolset toolset)
         {
             return _clientHandler;
         }

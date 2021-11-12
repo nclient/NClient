@@ -21,7 +21,7 @@ namespace NClient.Providers.Api.Rest
             _objectToKeyValueConverterExceptionFactory = new ObjectToKeyValueConverterExceptionFactory();
         }
         
-        public IRequestBuilder Create(IToolSet toolSet)
+        public IRequestBuilder Create(IToolset toolset)
         {
             return new RestRequestBuilder(
                 new RouteTemplateProvider(_clientValidationExceptionFactory),
@@ -29,7 +29,7 @@ namespace NClient.Providers.Api.Rest
                 new RequestTypeProvider(_clientValidationExceptionFactory),
                 new ObjectToKeyValueConverter(_objectMemberManager, _objectToKeyValueConverterExceptionFactory),
                 _clientValidationExceptionFactory,
-                toolSet);
+                toolset);
         }
     }
 }

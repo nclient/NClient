@@ -9,14 +9,14 @@ namespace NClient.Providers.Transport.Http.RestSharp
     internal class RestSharpTransportRequestBuilder : ITransportRequestBuilder<IRestRequest, IRestResponse>
     {
         private readonly IRestSharpMethodMapper _restSharpMethodMapper;
-        private readonly IToolSet _toolSet;
+        private readonly IToolset _toolset;
 
         public RestSharpTransportRequestBuilder(
             IRestSharpMethodMapper restSharpMethodMapper,
-            IToolSet toolSet)
+            IToolset toolset)
         {
             _restSharpMethodMapper = restSharpMethodMapper;
-            _toolSet = toolSet;
+            _toolset = toolset;
         }
 
         public Task<IRestRequest> BuildAsync(IRequest request)
@@ -29,7 +29,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
                 restRequest.AddParameter(param.Name, param.Value!, ParameterType.QueryString);
             }
 
-            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_toolSet.Serializer.ContentType).ToString());
+            restRequest.AddHeader(HttpKnownHeaderNames.Accept, MediaTypeWithQualityHeaderValue.Parse(_toolset.Serializer.ContentType).ToString());
             
             foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
             {
@@ -38,7 +38,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
 
             if (request.Content is not null)
             {
-                restRequest.AddParameter(_toolSet.Serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
+                restRequest.AddParameter(_toolset.Serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {

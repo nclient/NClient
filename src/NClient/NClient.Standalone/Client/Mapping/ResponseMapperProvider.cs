@@ -12,7 +12,7 @@ namespace NClient.Standalone.Client.Mapping
             _responseMapper = responseMapper;
         }
         
-        public IResponseMapper<TRequest, TResponse> Create(IToolSet toolset)
+        public IResponseMapper<TRequest, TResponse> Create(IToolset toolset)
         {
             return _responseMapper;
         }
