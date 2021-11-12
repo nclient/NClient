@@ -13,7 +13,7 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _restSharpMethodMapper = new RestSharpMethodMapper();
         }
         
-        public IResponseBuilder<IRestRequest, IRestResponse> Create(IToolSet toolSet)
+        public IResponseBuilder<IRestRequest, IRestResponse> Create(IToolset toolset)
         {
             return new RestSharpResponseBuilder(new FinalHttpRequestBuilder(_restSharpMethodMapper));
         }

@@ -20,7 +20,7 @@ namespace NClient.Providers.Api.Rest
         private readonly ITransportMethodProvider _transportMethodProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
-        private readonly IToolSet _toolSet;
+        private readonly IToolset _toolset;
 
         public RestRequestBuilder(
             IRouteTemplateProvider routeTemplateProvider,
@@ -28,14 +28,14 @@ namespace NClient.Providers.Api.Rest
             ITransportMethodProvider transportMethodProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IClientValidationExceptionFactory clientValidationExceptionFactory,
-            IToolSet toolSet)
+            IToolset toolset)
         {
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _transportMethodProvider = transportMethodProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
-            _toolSet = toolSet;
+            _toolset = toolset;
         }
 
         public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation)
@@ -81,7 +81,7 @@ namespace NClient.Providers.Api.Rest
                     throw _clientValidationExceptionFactory.ComplexTypeInHeaderNotSupported(headerParam.Name);
                 request.AddMetadata(headerParam.Name, headerParam.Value!.ToString());
             }
-            request.AddMetadata("Accept", _toolSet.Serializer.ContentType);
+            request.AddMetadata("Accept", _toolset.Serializer.ContentType);
 
             var bodyParams = methodParameters
                 .Where(x => x.Attribute is IContentParamAttribute && x.Value != null)
@@ -90,12 +90,12 @@ namespace NClient.Providers.Api.Rest
                 throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
             if (bodyParams.Length == 1)
             {
-                var bodyJson = _toolSet.Serializer.Serialize(bodyParams.SingleOrDefault()?.Value);
+                var bodyJson = _toolset.Serializer.Serialize(bodyParams.SingleOrDefault()?.Value);
                 var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
                 request.Content = new Content(bodyBytes, Encoding.UTF8.WebName, new MetadataContainer
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
-                    new Metadata("Content-Type", _toolSet.Serializer.ContentType),
+                    new Metadata("Content-Type", _toolset.Serializer.ContentType),
                     new Metadata("Content-Length", bodyBytes.Length.ToString())
                 });
             }

@@ -5,6 +5,6 @@ namespace NClient.Providers.Resilience
 {
     internal interface IMethodResiliencePolicyProvider<TRequest, TResponse>
     {
-        IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolSet toolset);
+        IResiliencePolicy<TRequest, TResponse> Create(IMethod method, IRequest request, IToolset toolset);
     }
 }
