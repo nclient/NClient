@@ -27,7 +27,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
-        private readonly IToolSet _toolset;
+        private readonly IToolset _toolset;
 
         public ClientInterceptor(
             string resource,
@@ -38,7 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
-            IToolSet toolset)
+            IToolset toolset)
         {
             _resource = resource;
             _guidProvider = guidProvider;

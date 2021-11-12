@@ -5,7 +5,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
     internal class StubTransportRequestBuilderProvider : ITransportRequestBuilderProvider<IRequest, IResponse>
     {
-        public ITransportRequestBuilder<IRequest, IResponse> Create(IToolSet toolSet)
+        public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset)
         {
             return new StubTransportRequestBuilder();
         }

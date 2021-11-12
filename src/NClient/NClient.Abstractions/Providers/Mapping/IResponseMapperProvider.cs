@@ -2,7 +2,7 @@
 {
     public interface IResponseMapperProvider<TRequest, TResponse>
     {
-        IResponseMapper<TRequest, TResponse> Create(IToolSet toolset);
+        IResponseMapper<TRequest, TResponse> Create(IToolset toolset);
     }
     
     public interface IOrderedResponseMapperProvider

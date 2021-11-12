@@ -2,6 +2,6 @@
 {
     public interface IRequestBuilderProvider
     {
-        IRequestBuilder Create(IToolSet toolset);
+        IRequestBuilder Create(IToolset toolset);
     }
 }

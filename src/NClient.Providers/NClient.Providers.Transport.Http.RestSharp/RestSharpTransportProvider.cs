@@ -20,9 +20,9 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _authenticator = authenticator;
         }
 
-        public ITransport<IRestRequest, IRestResponse> Create(IToolSet toolSet)
+        public ITransport<IRestRequest, IRestResponse> Create(IToolset toolset)
         {
-            Ensure.IsNotNull(toolSet, nameof(toolSet));
+            Ensure.IsNotNull(toolset, nameof(toolset));
 
             return new RestSharpTransport(_authenticator);
         }

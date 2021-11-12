@@ -12,7 +12,7 @@ namespace NClient.Standalone.Client.Validation
             _responseValidator = responseValidator;
         }
         
-        public IResponseValidator<TRequest, TResponse> Create(IToolSet toolset)
+        public IResponseValidator<TRequest, TResponse> Create(IToolset toolset)
         {
             return _responseValidator;
         }

@@ -2,6 +2,6 @@
 {
     public interface ITransportRequestBuilderProvider<TRequest, TResponse>
     {
-        ITransportRequestBuilder<TRequest, TResponse> Create(IToolSet toolset);
+        ITransportRequestBuilder<TRequest, TResponse> Create(IToolset toolset);
     }
 }
