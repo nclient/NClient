@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -175,14 +175,8 @@ namespace NClient.Standalone.ClientProxy.Building
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy.Reverse()),
-                _context.ResultBuilderProviders
-                    .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                    .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
-                    .ToArray(),
-                _context.TypedResultBuilderProviders
-                    .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                    .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
-                    .ToArray(),
+                _context.ResultBuilderProviders,
+                _context.TypedResultBuilderProviders,
                 _context.ResponseValidatorProviders,
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null
                     ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
