@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        target-frameworks: [net5.0]
+        target-frameworks: [net5.0, net6.0]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
