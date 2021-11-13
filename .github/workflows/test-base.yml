@@ -10,7 +10,7 @@ jobs:
     name: Build with ${{ matrix.target-frameworks }}
     strategy:
       matrix:
-        target-frameworks: [net48, net5.0]
+        target-frameworks: [net48, net5.0, net6.0]
     runs-on: windows-latest
     steps:
       - name: Checkout Repo
