@@ -13,6 +13,6 @@ jobs:
       - name: Send telegram message on given a star
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_BOT_API }}
-          token: ${{ secrets.TELEGRAM_RECIPIENT }}
-          message: The ${{ github.actor }} user gave a star to the repository.
+          to: ${{ secrets.TELEGRAM_RECIPIENT }}
+          token: ${{ secrets.TELEGRAM_BOT_API }}
+          message: The '${{ github.actor }}' user gave a star to the repository.
