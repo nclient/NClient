@@ -7,11 +7,11 @@ namespace NClient.Standalone.Client.Logging
 {
     internal class LoggerDecorator<T> : ILogger<T>
     {
-        private readonly IEnumerable<ILogger> _loggers;
+        private readonly ICollection<ILogger> _loggers;
         
         public LoggerDecorator(IEnumerable<ILogger> loggers)
         {
-            _loggers = loggers;
+            _loggers = loggers.ToArray();
         }
         
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)

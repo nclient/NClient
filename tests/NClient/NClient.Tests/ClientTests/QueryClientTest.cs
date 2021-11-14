@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
@@ -10,26 +11,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class QueryClientTest
     {
-        private IQueryClientWithMetadata _queryClient = null!;
-        private QueryApiMockFactory _queryApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _queryApiMockFactory = new QueryApiMockFactory(port: 5009);
-            _queryClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IQueryClientWithMetadata>(_queryApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task QueryClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _queryApiMockFactory.MockGetMethod(id);
+            using var api = QueryApiMockFactory.MockGetMethod(id);
 
-            var result = await _queryClient.GetAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+                .GetAsync(id);
 
             result.Should().Be(id);
         }
@@ -38,9 +27,9 @@ namespace NClient.Tests.ClientTests
         public async Task QueryClient_PostAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _queryApiMockFactory.MockPostMethod(entity);
+            using var api = QueryApiMockFactory.MockPostMethod(entity);
 
-            await _queryClient
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -50,9 +39,9 @@ namespace NClient.Tests.ClientTests
         public async Task QueryClient_PutAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _queryApiMockFactory.MockPutMethod(entity);
+            using var api = QueryApiMockFactory.MockPutMethod(entity);
 
-            await _queryClient
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -62,9 +51,9 @@ namespace NClient.Tests.ClientTests
         public async Task QueryClient_DeleteAsync_NotThrow()
         {
             const int id = 1;
-            using var api = _queryApiMockFactory.MockDeleteMethod(id);
+            using var api = QueryApiMockFactory.MockDeleteMethod(id);
 
-            await _queryClient
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();

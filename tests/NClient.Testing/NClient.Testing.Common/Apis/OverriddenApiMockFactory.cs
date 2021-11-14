@@ -1,5 +1,4 @@
-﻿using System;
-using NClient.Testing.Common.Entities;
+﻿using NClient.Testing.Common.Entities;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -9,16 +8,9 @@ namespace NClient.Testing.Common.Apis
 {
     public class OverriddenApiMockFactory
     {
-        public Uri ApiUri { get; }
-
-        public OverriddenApiMockFactory(int port)
+        public static IWireMockServer MockGetMethod(int id)
         {
-            ApiUri = new UriBuilder("http", "localhost", port).Uri;
-        }
-
-        public IWireMockServer MockGetMethod(int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/overridden")
                     .WithHeader("Accept", "application/json")
@@ -32,13 +24,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPostMethod(BasicEntity entity)
+        public static IWireMockServer MockPostMethod(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/overridden/fakePost")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPut())
                 .RespondWith(Response.Create()
@@ -47,13 +39,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPutMethod(BasicEntity entity)
+        public static IWireMockServer MockPutMethod(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/overridden")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithHeader("test", "2")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPut())
@@ -63,13 +55,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockDeleteMethod(int id)
+        public static IWireMockServer MockDeleteMethod(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/overridden")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(id.ToString())
                     .UsingDelete())
                 .RespondWith(Response.Create()

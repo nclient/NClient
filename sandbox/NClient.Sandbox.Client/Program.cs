@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Transport;
 using NClient.Sandbox.Client.ClientHandlers;
 using NClient.Sandbox.FileService.Facade;
 using NClient.Sandbox.ProxyService.Facade;
@@ -62,22 +62,22 @@ namespace NClient.Sandbox.Client
             _programLogger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
             _weatherForecastClient = NClientGallery.Clients
-                .GetBasic()
+                .GetRest()
                 .For<IWeatherForecastClient>(host: "http://localhost:5000")
-                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
-                .WithCustomResilience(selector => selector
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
-                    .ForMethod(x => (Func<WeatherForecastDto, Task>)x.PostAsync).UsePolly(fallbackPolicy))
+                    .ForMethod(x => (Func<WeatherForecastDto, Task>) x.PostAsync).UsePolly(fallbackPolicy))
                 .WithLogging(weatherForecastClientLogger)
                 .Build();
 
             _fileClient = NClientGallery.Clients
-                .GetBasic()
+                .GetRest()
                 .For<IFileClient>(host: "http://localhost:5002")
-                .WithCustomHandling(new LoggingClientHandler(handlerLogger))
-                .WithCustomResilience(selector => selector
+                .WithHandling(new LoggingClientHandler(handlerLogger))
+                .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
-                    .ForMethod(x => (Func<byte[], Task>)x.PostTextFileAsync).UsePolly(fallbackPolicy))
+                    .ForMethod(x => (Func<byte[], Task>) x.PostTextFileAsync).UsePolly(fallbackPolicy))
                 .WithLogging(fileClientLogger)
                 .Build();
         }

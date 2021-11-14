@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using NClient.Testing.Common.Entities;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -10,16 +9,9 @@ namespace NClient.Testing.Common.Apis
 {
     public class ResponseApiMockFactory
     {
-        public Uri ApiUri { get; }
-
-        public ResponseApiMockFactory(int port)
+        public static IWireMockServer MockGetMethod(int id)
         {
-            ApiUri = new UriBuilder("http", "localhost", port).Uri;
-        }
-
-        public IWireMockServer MockGetMethod(int id)
-        {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
@@ -33,9 +25,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockGetMethodWithBadRequest(int id)
+        public static IWireMockServer MockGetMethodWithBadRequest(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
@@ -48,9 +40,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockGetMethodWithBadRequestAndError(int id)
+        public static IWireMockServer MockGetMethodWithBadRequestAndError(int id)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
@@ -64,13 +56,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPostMethod(BasicEntity entity)
+        public static IWireMockServer MockPostMethod(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -79,13 +71,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPostMethodWithBadRequest(BasicEntity entity)
+        public static IWireMockServer MockPostMethodWithBadRequest(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -95,13 +87,13 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockPostMethodWithBadRequestAndError(BasicEntity entity)
+        public static IWireMockServer MockPostMethodWithBadRequestAndError(BasicEntity entity)
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/response")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader("Content-Type", "application/json")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()
@@ -112,9 +104,9 @@ namespace NClient.Testing.Common.Apis
             return api;
         }
 
-        public IWireMockServer MockInternalServerError()
+        public static IWireMockServer MockInternalServerError()
         {
-            var api = WireMockServer.Start(ApiUri.ToString());
+            var api = WireMockServer.Start();
             api.Given(Request.Create().UsingAnyMethod())
                 .RespondWith(Response.Create()
                     .WithStatusCode(500)

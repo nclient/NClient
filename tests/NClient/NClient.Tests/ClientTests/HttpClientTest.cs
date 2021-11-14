@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -12,70 +13,60 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HttpClientTest
     {
-        private IHttpClientWithMetadata _httpClient = null!;
-        private HttpApiMockFactory _httpApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _httpApiMockFactory = new HttpApiMockFactory(port: 5016);
-
-            _httpClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IHttpClientWithMetadata>(_httpApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task HttpClient_GetAsync_IntInBody()
         {
             const int id = 1;
-            using var api = _httpApiMockFactory.MockGetMethod(id);
+            using var api = HttpApiMockFactory.MockGetMethod(id);
 
-            var result = await _httpClient.GetAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+                .GetAsync(id);
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().Be(id);
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
         public async Task HttpClient_PostAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _httpApiMockFactory.MockPostMethod(entity);
+            using var api = HttpApiMockFactory.MockPostMethod(entity);
 
-            var result = await _httpClient.PostAsync(entity);
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+                .PostAsync(entity);
 
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.Data.Should().BeEquivalentTo(entity);
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
         public async Task HttpClient_PutAsync_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            using var api = _httpApiMockFactory.MockPutMethod(entity);
+            using var api = HttpApiMockFactory.MockPutMethod(entity);
 
-            var result = await _httpClient.PutAsync(entity);
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+                .PutAsync(entity);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
 
         [Test]
         public void HttpClient_Delete_NotThrow()
         {
             const int id = 1;
-            using var api = _httpApiMockFactory.MockDeleteMethod(id);
+            using var api = HttpApiMockFactory.MockDeleteMethod(id);
 
-            var result = _httpClient.Delete(id);
+            var result = NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+                .Delete(id);
 
             result.Should().NotBeNull();
-            result.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.StatusCode.Should().Be((int) HttpStatusCode.OK);
         }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-using NClient.Abstractions;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
+using NClient.Annotations.Http;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.Standalone.Tests.Clients
@@ -11,11 +9,11 @@ namespace NClient.Standalone.Tests.Clients
     public interface IOverriddenClientWithMetadata : IOverriddenClientWithMetadataBase
     {
         [Override]
-        new Task<IHttpResponse<int>> GetAsync(int id);
+        new Task<IResponse<int>> GetAsync(int id);
 
         [Override]
         [PutMethod("fakePost")]
-        new Task<IHttpResponse> PostAsync(BasicEntity entity);
+        new Task<IResponse> PostAsync(BasicEntity entity);
 
         [Override]
         [Header("test", "2")]

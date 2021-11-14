@@ -1,13 +1,14 @@
 ﻿using System;
 using NClient.Common.Helpers;
 
-namespace NClient.Annotations.Versioning
+// ReSharper disable once CheckNamespace
+namespace NClient.Annotations
 {
     /// <summary>
     /// Represents the metadata that describes the API version associated used by the client.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class UseVersionAttribute : Attribute
+    public class UseVersionAttribute : Attribute, IUseVersionAttribute
     {
         /// <summary>
         /// Gets the API version defined by the attribute.

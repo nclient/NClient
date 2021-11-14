@@ -5,7 +5,8 @@ namespace NClient.Standalone.Exceptions.Factories
     public interface IClientBuildExceptionFactory
     {
         ClientBuildException HostIsNotSet();
-        ClientBuildException HttpClientIsNotSet();
+        ClientBuildException ApiIsNotSet();
+        ClientBuildException TransportIsNotSet();
         ClientBuildException SerializerIsNotSet();
     }
     
@@ -13,9 +14,12 @@ namespace NClient.Standalone.Exceptions.Factories
     {
         public ClientBuildException HostIsNotSet() =>
             new("The client cannot be created: the host is not set.");
-        
-        public ClientBuildException HttpClientIsNotSet() =>
-            new("The client cannot be created: the http client is not set. The step of setting an HTTP client is required.");
+
+        public ClientBuildException ApiIsNotSet() =>
+            new("The client cannot be created: the api settings is not set. The step of setting an api is required.");
+
+        public ClientBuildException TransportIsNotSet() =>
+            new("The client cannot be created: the transport is not set. The step of setting an transport is required.");
         
         public ClientBuildException SerializerIsNotSet() =>
             new("The client cannot be created: the http client is not set. The step of setting a serializer is required.");

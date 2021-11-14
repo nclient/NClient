@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using NClient.Standalone.Tests.Clients;
@@ -11,27 +12,14 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class ResultClientTest
     {
-        private IResultClientWithMetadata _resultClient = null!;
-        private ResultApiMockFactory _resultApiMockFactory = null!;
-
-        [SetUp]
-        public void Setup()
-        {
-            _resultApiMockFactory = new ResultApiMockFactory(port: 5031);
-
-            _resultClient = NClientGallery.Clients
-                .GetBasic()
-                .For<IResultClientWithMetadata>(_resultApiMockFactory.ApiUri.ToString())
-                .Build();
-        }
-
         [Test]
         public async Task BasicClient_GetIResultWithIntAsync_IResultWithInt()
         {
             const int id = 1;
-            using var api = _resultApiMockFactory.MockGetIntMethod(id);
+            using var api = ResultApiMockFactory.MockGetIntMethod(id);
 
-            var result = await _resultClient.GetIResultWithIntAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(id);
@@ -43,9 +31,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
-            using var api = _resultApiMockFactory.MockGetNotFoundIntMethod(id);
+            using var api = ResultApiMockFactory.MockGetNotFoundIntMethod(id);
 
-            var result = await _resultClient.GetIResultWithIntAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);
@@ -57,9 +46,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedEntity = new BasicEntity { Id = id, Value = 2 };
-            using var api = _resultApiMockFactory.MockGetEntityMethod(id);
+            using var api = ResultApiMockFactory.MockGetEntityMethod(id);
 
-            var result = await _resultClient.GetIResultWithEntityAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetIResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().BeEquivalentTo(expectedEntity);
@@ -71,9 +61,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
-            using var api = _resultApiMockFactory.MockGetNotFoundEntityMethod(id);
+            using var api = ResultApiMockFactory.MockGetNotFoundEntityMethod(id);
 
-            var result = await _resultClient.GetResultWithEntityAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);
@@ -84,9 +75,10 @@ namespace NClient.Tests.ClientTests
         public async Task BasicClient_GetResultWithIntAsync_ResultWithInt()
         {
             const int id = 1;
-            using var api = _resultApiMockFactory.MockGetIntMethod(id);
+            using var api = ResultApiMockFactory.MockGetIntMethod(id);
 
-            var result = await _resultClient.GetResultWithIntAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(id);
@@ -98,9 +90,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
-            using var api = _resultApiMockFactory.MockGetNotFoundIntMethod(id);
+            using var api = ResultApiMockFactory.MockGetNotFoundIntMethod(id);
 
-            var result = await _resultClient.GetIResultWithIntAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);
@@ -112,9 +105,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedEntity = new BasicEntity { Id = id, Value = 2 };
-            using var api = _resultApiMockFactory.MockGetEntityMethod(id);
+            using var api = ResultApiMockFactory.MockGetEntityMethod(id);
 
-            var result = await _resultClient.GetResultWithEntityAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().BeEquivalentTo(expectedEntity);
@@ -126,9 +120,10 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             var expectedError = new Error { Message = "Error" };
-            using var api = _resultApiMockFactory.MockGetNotFoundEntityMethod(id);
+            using var api = ResultApiMockFactory.MockGetNotFoundEntityMethod(id);
 
-            var result = await _resultClient.GetResultWithEntityAsync(id);
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First()).Build()
+                .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
             result.Value.Should().Be(null);

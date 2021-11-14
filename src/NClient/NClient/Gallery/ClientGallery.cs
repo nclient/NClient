@@ -1,19 +1,16 @@
-﻿using NClient.Abstractions;
+﻿// ReSharper disable once CheckNamespace
 
-// ReSharper disable once CheckNamespace
 namespace NClient
 {
     public interface IClientGallery
     {
-        IBasicNClientBuilder GetBasic();
-        IStandardNClientBuilder GetStandard();
+        INClientRestBuilder GetRest();
         INClientBuilder GetCustom();
     }
     
     public class ClientGallery : IClientGallery
     {
-        public IBasicNClientBuilder GetBasic() => new BasicNClientBuilder();
-        public IStandardNClientBuilder GetStandard() => new StandardNClientBuilder();
-        public INClientBuilder GetCustom() => new CustomNClientBuilder();
+        public INClientRestBuilder GetRest() => new NClientRestBuilder();
+        public INClientBuilder GetCustom() => new NClientBuilder();
     }
 }

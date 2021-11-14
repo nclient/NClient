@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace NClient.Providers.Serialization.Xml.System.Tests
 {
+    [Parallelizable]
     public class SystemXmlSerializerTest
     {
         public static readonly IEnumerable SerializationValidTestCases = new[]
@@ -22,7 +23,7 @@ namespace NClient.Providers.Serialization.Xml.System.Tests
         [TestCaseSource(nameof(SerializationValidTestCases))]
         public void Serialize_ValidValues_NotThrow(object? obj, string expectedResult)
         {
-            var serializer = new SystemXmlSerializerProvider().Create();
+            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
 
             var actualResult = serializer.Serialize(obj);
 
@@ -32,10 +33,10 @@ namespace NClient.Providers.Serialization.Xml.System.Tests
         [Test]
         public void Serialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new SystemXmlSerializerProvider().Create();
+            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
 
             serializer
-                .Invoking(x => x.Serialize((int?)null))
+                .Invoking(x => x.Serialize((int?) null))
                 .Should()
                 .ThrowExactly<ArgumentNullException>();
         }
@@ -43,7 +44,7 @@ namespace NClient.Providers.Serialization.Xml.System.Tests
         [TestCaseSource(nameof(DeserializationValidTestCases))]
         public void Deserialize_ValidValues_NotThrow(string xml, Type type, object? expectedResult)
         {
-            var serializer = new SystemXmlSerializerProvider().Create();
+            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
 
             var actualResult = serializer.Deserialize(xml, type);
 
@@ -53,7 +54,7 @@ namespace NClient.Providers.Serialization.Xml.System.Tests
         [Test]
         public void Deserialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new SystemXmlSerializerProvider().Create();
+            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
 
             serializer
                 .Invoking(x => x.Deserialize(null!, typeof(string)))

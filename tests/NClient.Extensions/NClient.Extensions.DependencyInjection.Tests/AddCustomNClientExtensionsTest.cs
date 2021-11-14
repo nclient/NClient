@@ -1,8 +1,9 @@
 ﻿using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Resilience;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Providers.Api.Rest.Extensions;
+using NClient.Providers.Transport;
 using NUnit.Framework;
 using Polly;
 using RestSharp;
@@ -18,8 +19,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
-                .UsingRestSharpHttpClient()
-                .UsingNewtonsoftJsonSerializer()
+                .UsingRestApi()
+                .UsingRestSharpTransport()
+                .UsingNewtonsoftJsonSerialization()
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
@@ -32,8 +34,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
-                .UsingRestSharpHttpClient()
-                .UsingNewtonsoftJsonSerializer()
+                .UsingRestApi()
+                .UsingRestSharpTransport()
+                .UsingNewtonsoftJsonSerialization()
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
@@ -46,9 +49,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", configure => configure
-                .UsingRestSharpHttpClient()
-                .UsingNewtonsoftJsonSerializer()
-                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
+                .UsingRestApi()
+                .UsingRestSharpTransport()
+                .UsingNewtonsoftJsonSerialization()
+                .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<IRestRequest, IRestResponse>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
@@ -62,7 +66,8 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddHttpClient("TestClient");
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", (serviceProvider, configure) => configure
-                .UsingSystemHttpClient(
+                .UsingRestApi()
+                .UsingSystemHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName: "TestClient")
                 .UsingJsonSerializer()

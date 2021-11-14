@@ -8,6 +8,7 @@ using NClient.AspNetCore.Controllers.Models;
 using NClient.AspNetCore.Exceptions;
 using NClient.AspNetCore.Exceptions.Factories;
 using NClient.Core.Helpers;
+using NClient.Core.Helpers.EqualityComparers;
 using NClient.Core.Mappers;
 
 namespace NClient.AspNetCore.Controllers

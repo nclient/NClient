@@ -1,25 +1,18 @@
-﻿using System;
-using System.Reflection;
+﻿using NClient.Invocation;
 
-namespace NClient.Abstractions.Invocation
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public interface IMethodInvocation
     {
         /// <summary>
-        /// Gets type of client interface.
+        /// Gets method information.
         /// </summary>
-        Type ClientType { get; }
-        /// <summary>
-        /// Gets information about the client method. 
-        /// </summary>
-        MethodInfo MethodInfo { get; }
+        public IMethod Method { get; }
+
         /// <summary>
         /// Gets values of the arguments in the client method call. 
         /// </summary>
-        object[] MethodArguments { get; }
-        /// <summary>
-        /// Gets type returned by the client method.
-        /// </summary>
-        Type ResultType { get; }
+        object[] Arguments { get; }
     }
 }

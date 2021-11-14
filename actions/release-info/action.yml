@@ -1,0 +1,37 @@
+name: Release info
+
+inputs:
+  version-prefix:
+    description: 'Overriding version prefix'
+    required: false
+    default: 0.10.1
+  version-patch:
+    description: 'Overriding version patch'     
+    required: false
+    default: 1
+  release-type:
+    description: 'Release type (dev, alpha, beta, release)'     
+    required: true
+    
+outputs:
+  version-prefix:
+    description: "Version prefix"
+    value: ${{ steps.version-prefix-generator.outputs.version-prefix }}
+  version-suffix:
+    description: "Version suffix"
+    value: ${{ steps.version-suffix-generator.outputs.version-suffix }}
+    
+runs:
+  using: "composite"
+  steps:
+    - id: version-prefix-generator
+      run: echo "::set-output name=version-prefix::${{ inputs.version-prefix }}"
+      shell: bash
+    - id: version-suffix-generator
+      run: |
+        if [[ "${{ inputs.release-type }}" == "release" ]]; then
+          echo "::set-output name=version-suffix::"
+        else
+          echo "::set-output name=version-suffix::${{ inputs.release-type }}.${{ inputs.version-patch }}"
+        fi
+      shell: bash

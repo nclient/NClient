@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Abstractions.Exceptions;
+using NClient.Exceptions;
 
 namespace NClient.AspNetCore.Exceptions
 {

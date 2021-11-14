@@ -2,8 +2,7 @@
 using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Transport;
 using NUnit.Framework;
 using Polly;
 
@@ -52,7 +51,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddNClientFactory(builder => builder
-                .WithFullPollyResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
+                .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();

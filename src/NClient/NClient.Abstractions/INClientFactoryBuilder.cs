@@ -1,6 +1,4 @@
-﻿using NClient.Abstractions.Building;
-
-namespace NClient.Abstractions
+﻿namespace NClient
 {
     /// <summary>
     /// A builder abstraction used to create the client factory with custom providers.
@@ -8,6 +6,6 @@ namespace NClient.Abstractions
     public interface INClientFactoryBuilder
     {
         // TODO: doc
-        INClientFactoryHttpClientBuilder For(string factoryName);
+        INClientFactoryApiBuilder For(string factoryName);
     }
 }

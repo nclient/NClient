@@ -1,7 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions;
-using NClient.Abstractions.Building;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 
@@ -20,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
+            Func<INClientFactoryApiBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -28,7 +26,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
             
-            return serviceCollection.AddSingleton(_ => implementationFactory(new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientFactoryBuilder().For(factoryName)));
         }
 
         // TODO: doc
@@ -39,7 +37,7 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <param name="factoryName">The name of the factory.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, INClientFactoryHttpClientBuilder, INClientFactory> implementationFactory,
+            Func<IServiceProvider, INClientFactoryApiBuilder, INClientFactory> implementationFactory,
             string? factoryName = null)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
@@ -47,7 +45,7 @@ namespace NClient.Extensions.DependencyInjection
 
             factoryName ??= GuidProvider.Create().ToString();
 
-            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new CustomNClientFactoryBuilder().For(factoryName)));
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientFactoryBuilder().For(factoryName)));
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using NClient.Abstractions.Serialization;
+using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.Json.System
@@ -30,7 +30,7 @@ namespace NClient.Providers.Serialization.Json.System
             _jsonSerializerOptions = jsonSerializerOptions;
         }
 
-        public ISerializer Create()
+        public ISerializer Create(ILogger? logger)
         {
             return new SystemJsonSerializer(_jsonSerializerOptions);
         }

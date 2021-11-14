@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Handling;
+using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {
-    internal class ClientHandlerDecorator<TClient, TRequest, TResponse> : IClientHandler<TRequest, TResponse>
+    internal class ClientHandlerDecorator<TRequest, TResponse> : IClientHandler<TRequest, TResponse>
     {
         private readonly IReadOnlyCollection<IClientHandler<TRequest, TResponse>> _clientHandlers;
-        private readonly ILogger<TClient>? _logger;
 
-        public ClientHandlerDecorator(
-            IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers,
-            ILogger<TClient>? logger)
+        public ClientHandlerDecorator(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers)
         {
-            _clientHandlers = clientHandlers;
-            _logger = logger;
+            _clientHandlers = clientHandlers
+                .OrderByDescending(x => x is IOrderedClientHandler)
+                .ThenBy(x => (x as IOrderedClientHandler)?.Order)
+                .ToArray();
         }
 
         public async Task<TRequest> HandleRequestAsync(TRequest request)

@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Abstractions.Building;
+using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NUnit.Framework;
@@ -10,26 +11,17 @@ namespace NClient.Api.Tests.CustomClientUseCases
     [Parallelizable]
     public class HttpClientTest
     {
-        private INClientHttpClientBuilder<IBasicClientWithMetadata> _optionalBuilder = null!;
-        private BasicApiMockFactory _api = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _api = new BasicApiMockFactory(5029);
-            _optionalBuilder = new CustomNClientBuilder()
-                .For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
-        }
-
         [Test]
-        public async Task CustomNClientBuilder_WithRestSharp_NotThrow()
+        public async Task AdvancedNClientBuilder_WithRestSharp_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
-            var client = _optionalBuilder
-                .UsingRestSharpHttpClient()
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var client = NClientGallery.Clients.GetCustom().For<IBasicClientWithMetadata>(api.Urls.First())
+                .UsingRestApi()
+                .UsingRestSharpTransport()
                 .UsingJsonSerializer()
-                .EnsuringRestSharpSuccess()
+                .WithAdvancedResponseValidation(x => x
+                    .ForTransport().UseRestSharpResponseValidation())
                 .Build();
             
             var response = await client.GetAsync(id);

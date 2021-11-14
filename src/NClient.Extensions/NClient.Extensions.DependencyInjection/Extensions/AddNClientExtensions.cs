@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Abstractions.Building;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
 
@@ -83,7 +82,7 @@ namespace NClient.Extensions.DependencyInjection
             IServiceProvider serviceProvider, string host, string? httpClientName)
             where TClient : class
         {
-            return new InjectedNClientBuilder(serviceProvider, httpClientName).For<TClient>(host);
+            return new NClientInjectedBuilder(serviceProvider, httpClientName).For<TClient>(host);
         }
     }
 }

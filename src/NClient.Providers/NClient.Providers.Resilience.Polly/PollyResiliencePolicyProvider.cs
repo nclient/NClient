@@ -1,5 +1,5 @@
-﻿using NClient.Abstractions.Resilience;
-using NClient.Common.Helpers;
+﻿using NClient.Common.Helpers;
+using NClient.Providers.Transport;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly
@@ -23,7 +23,7 @@ namespace NClient.Providers.Resilience.Polly
             _asyncPolicy = asyncPolicy;
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create()
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolset toolset)
         {
             return new PollyResiliencePolicy<TRequest, TResponse>(_asyncPolicy);
         }

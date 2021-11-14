@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Xml;
-using NClient.Abstractions.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace NClient.Providers.Serialization.Xml.System
 {
@@ -32,7 +32,7 @@ namespace NClient.Providers.Serialization.Xml.System
             _xmlWriterSettings = xmlWriterSettings;
         }
 
-        public ISerializer Create()
+        public ISerializer Create(ILogger? logger)
         {
             return new SystemXmlSerializer(_xmlReaderSettings, _xmlWriterSettings);
         }

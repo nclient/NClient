@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
@@ -21,13 +21,13 @@ namespace NClient.Standalone.Tests.Clients
         [Response(typeof(int), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<IHttpResponse<int>> GetResponseAsync(int id);
+        new Task<IResponse<int>> GetResponseAsync(int id);
 
         [GetMethod]
         [Response(typeof(int), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<IHttpResponseWithError<int, HttpError>> GetResponseWithErrorAsync(int id);
+        new Task<IResponseWithError<int, HttpError>> GetResponseWithErrorAsync(int id);
 
         [PostMethod]
         [Response(typeof(void), HttpStatusCode.OK)]
@@ -39,12 +39,12 @@ namespace NClient.Standalone.Tests.Clients
         [Response(typeof(void), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<IHttpResponse> PostResponseAsync(BasicEntity entity);
+        new Task<IResponse> PostResponseAsync(BasicEntity entity);
 
         [PostMethod]
         [Response(typeof(void), HttpStatusCode.OK)]
         [Response(typeof(string), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.InternalServerError)]
-        new Task<IHttpResponseWithError<HttpError>> PostResponseWithErrorAsync(BasicEntity entity);
+        new Task<IResponseWithError<HttpError>> PostResponseWithErrorAsync(BasicEntity entity);
     }
 }

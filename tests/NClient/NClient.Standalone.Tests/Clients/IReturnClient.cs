@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using NClient.Abstractions.HttpClients;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
+using NClient.Annotations.Http;
+using NClient.Providers.Transport;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests.Clients
         new Task<BasicEntity> GetAsync(int id);
 
         [GetMethod]
-        IHttpResponse<BasicEntity> GetIHttpResponse(int id);
+        IResponse<BasicEntity> GetIHttpResponse(int id);
         
         [GetMethod]
         HttpResponseMessage GetHttpResponseMessage(int id);
@@ -30,6 +30,6 @@ namespace NClient.Standalone.Tests.Clients
         new Task PostAsync(BasicEntity entity);
 
         [PostMethod]
-        IHttpResponse PostHttpResponse(BasicEntity entity);
+        IResponse PostHttpResponse(BasicEntity entity);
     }
 }

@@ -1,10 +1,9 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Abstractions.Building;
-using NClient.Api.Tests.Helpers;
+using NClient.Api.Tests.Stubs;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
@@ -15,26 +14,16 @@ namespace NClient.Api.Tests.BasicClientUseCases
     [Parallelizable]
     public class LoggingTest
     {
-        private INClientOptionalBuilder<IBasicClientWithMetadata, HttpRequestMessage, HttpResponseMessage> _optionalBuilder = null!;
-        private BasicApiMockFactory _api = null!;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _api = new BasicApiMockFactory(5025);
-            _optionalBuilder = NClientGallery.Clients.GetBasic().For<IBasicClientWithMetadata>(_api.ApiUri.ToString());
-        }
-        
         [Test]
         public async Task NClientBuilder_WithGenericLogger_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
+            using var api = BasicApiMockFactory.MockGetMethod(id);
             var logger = new ServiceCollection()
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ILogger<IBasicClient>>();
-            var client = _optionalBuilder
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithLogging(logger)
                 .Build();
             
@@ -47,12 +36,12 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithLoggerFactory_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
+            using var api = BasicApiMockFactory.MockGetMethod(id);
             var loggerFactory = new ServiceCollection()
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ILoggerFactory>();
-            var client = _optionalBuilder
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithLogging(loggerFactory)
                 .Build();
             
@@ -65,9 +54,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithCustomLogger_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
+            using var api = BasicApiMockFactory.MockGetMethod(id);
             var customLogger = new CustomLogger();
-            var client = _optionalBuilder
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithLogging(customLogger)
                 .Build();
             
@@ -80,9 +69,9 @@ namespace NClient.Api.Tests.BasicClientUseCases
         public async Task NClientBuilder_WithMultipleCustomLoggers_NotThrow()
         {
             const int id = 1;
-            using var api = _api.MockGetMethod(id);
+            using var api = BasicApiMockFactory.MockGetMethod(id);
             var customLogger = new CustomLogger();
-            var client = _optionalBuilder
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
                 .WithLogging(customLogger)
                 .WithLogging(customLogger)
                 .Build();

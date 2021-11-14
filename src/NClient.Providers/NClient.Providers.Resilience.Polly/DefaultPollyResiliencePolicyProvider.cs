@@ -1,5 +1,5 @@
 ﻿using System;
-using NClient.Abstractions.Resilience;
+using NClient.Providers.Transport;
 using Polly;
 
 namespace NClient.Providers.Resilience.Polly
@@ -13,7 +13,7 @@ namespace NClient.Providers.Resilience.Polly
             _settings = settings;
         }
         
-        public IResiliencePolicy<TRequest, TResponse> Create()
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolset toolset)
         {
             var basePolicy = Policy<IResponseContext<TRequest, TResponse>>
                 .HandleResult(_settings.ShouldRetry).Or<Exception>();

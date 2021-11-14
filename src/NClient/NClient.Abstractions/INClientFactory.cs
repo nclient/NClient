@@ -1,4 +1,4 @@
-﻿namespace NClient.Abstractions
+﻿namespace NClient
 {
     /// <summary>
     /// A factory abstraction used to create the client with custom providers.

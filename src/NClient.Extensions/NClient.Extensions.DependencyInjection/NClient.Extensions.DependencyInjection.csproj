@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;HttpClient;Api;WebApi;AspNet;Rest;DependencyInjection;DI;Microsoft</PackageTags>
-        <Description>Extension methods for registration of clients in ServiceCollection.</Description>
+        <PackageTags>NClient;NClient.Extensions;DependencyInjection</PackageTags>
+        <Description>Extension methods that make it easy to add clients in ServiceCollection.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
@@ -21,7 +21,9 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Debug;Release;ReleaseTest</Configurations>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\NClient.Providers\NClient.Providers.Api.Rest\NClient.Providers.Api.Rest.csproj" />
         <ProjectReference Include="..\..\NClient\NClient\NClient.csproj" />
     </ItemGroup>
 

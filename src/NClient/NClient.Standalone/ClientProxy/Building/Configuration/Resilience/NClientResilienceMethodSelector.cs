@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
-using NClient.Abstractions.Configuration.Resilience;
-using NClient.Abstractions.HttpClients;
-using NClient.Core.Helpers;
+using NClient.Common.Helpers;
+using NClient.Core.Helpers.EqualityComparers;
+using NClient.Invocation;
+using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
@@ -25,20 +25,24 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Resilience
                 methodPredicate: (_, _) => true);
         }
         
-        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> methodSelector)
+        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethod(Expression<Func<TClient, Delegate>> selector)
         {
-            var func = methodSelector.Compile();
+            Ensure.IsNotNull(selector, nameof(selector));
+            
+            var func = selector.Compile();
             var selectedMethod = func.Invoke(default!).Method;
             return new NClientResilienceSetter<TClient, TRequest, TResponse>(
                 _builderContextModifier, 
-                methodPredicate: (methodInfo, _) => _methodInfoEqualityComparer.Equals(methodInfo, selectedMethod));
+                methodPredicate: (method, _) => _methodInfoEqualityComparer.Equals(method.Info, selectedMethod));
         }
         
-        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<MethodInfo, IHttpRequest, bool> predicate)
+        public INClientResilienceSetter<TClient, TRequest, TResponse> ForMethodsThat(Func<IMethod, IRequest, bool> condition)
         {
+            Ensure.IsNotNull(condition, nameof(condition));
+            
             return new NClientResilienceSetter<TClient, TRequest, TResponse>(
                 _builderContextModifier, 
-                predicate);
+                condition);
         }
     }
 }

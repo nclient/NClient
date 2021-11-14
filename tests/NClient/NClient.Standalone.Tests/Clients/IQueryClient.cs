@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
-using NClient.Annotations.Methods;
-using NClient.Annotations.Parameters;
+using NClient.Annotations.Http;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
