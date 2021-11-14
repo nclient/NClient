@@ -15,4 +15,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_RECIPIENT }}
           token: ${{ secrets.TELEGRAM_BOT_API }}
-          message: The ${{ github.actor }} user gave a star to the repository.
+          message: The '${{ github.actor }}' user gave a star to the repository.
