@@ -23,7 +23,7 @@ namespace NClient.Providers.Resilience.Polly
             _asyncPolicy = asyncPolicy;
         }
 
-        public IResiliencePolicy<TRequest, TResponse> Create(IToolSet toolSet)
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolset toolset)
         {
             return new PollyResiliencePolicy<TRequest, TResponse>(_asyncPolicy);
         }

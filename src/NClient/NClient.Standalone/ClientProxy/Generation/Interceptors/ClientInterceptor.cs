@@ -27,8 +27,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
-        private readonly IToolSet _toolset;
-        private readonly ILogger<TClient>? _logger;
+        private readonly IToolset _toolset;
 
         public ClientInterceptor(
             string resource,
@@ -39,8 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
-            IToolSet toolset,
-            ILogger<TClient>? logger = null)
+            IToolset toolset)
         {
             _resource = resource;
             _guidProvider = guidProvider;
@@ -51,7 +49,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _toolset = toolset;
-            _logger = logger;
         }
 
         protected override async Task InterceptAsync(
@@ -71,7 +68,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private async Task<object?> ProcessInvocationAsync(IInvocation invocation, Type resultType)
         {
             var requestId = _guidProvider.Create();
-            using var loggingScope = _logger?.BeginScope("Processing request {requestId}.", requestId);
+            using var loggingScope = _toolset.Logger?.BeginScope("Processing request {requestId}.", requestId);
 
             FullMethodInvocation<TRequest, TResponse>? methodInvocation = null;
             IRequest? httpRequest = null;
@@ -88,33 +85,33 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy)
                     .ConfigureAwait(false);
-
-                _logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
+                
+                _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return result;
             }
             catch (ClientValidationException e)
             {
-                _logger?.LogError(e, "Client validation error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Client validation error. Request id: '{requestId}'.", requestId);
                 e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (ClientArgumentException e)
             {
-                _logger?.LogError(e, "Method call error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Method call error. Request id: '{requestId}'.", requestId);
                 e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (TransportException<TRequest, TResponse> e)
             {
-                _logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", httpRequest!.Id);
+                _toolset.Logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", httpRequest!.Id);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), methodInvocation!.Method.Info, e);
             }
             catch (Exception e)
             {
                 // TODO
-                _logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, e);
             }
         }

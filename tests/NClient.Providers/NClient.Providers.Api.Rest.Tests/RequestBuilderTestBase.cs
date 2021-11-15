@@ -40,7 +40,7 @@ namespace NClient.Providers.Api.Rest.Tests
             var objectMemberManager = new ObjectMemberManager(new ObjectMemberManagerExceptionFactory());
 
             Serializer = new SystemJsonSerializerProvider().Create(logger: null);
-            var toolset = new ToolSet(Serializer, logger: null);
+            var toolset = new Toolset(Serializer, logger: null);
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             RestClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             ClientValidationExceptionFactory = new StandaloneClientValidationExceptionFactory();

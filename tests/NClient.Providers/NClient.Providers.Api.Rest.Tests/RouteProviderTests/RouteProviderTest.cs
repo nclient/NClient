@@ -59,6 +59,36 @@ namespace NClient.Providers.Api.Rest.Tests.RouteProviderTests
 
             route.Should().Be("api");
         }
+        
+        [Test]
+        public void Build_FacadeTokenForClientInterface_ClientNameWithoutPrefixAndSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[facade]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: Array.Empty<MethodParameter>(),
+                useVersionAttribute: null);
+
+            route.Should().Be("My");
+        }
+        
+        [Test]
+        public void Build_ClientTokenForClientInterface_ClientNameWithoutPrefixAndSuffix()
+        {
+            var routeTemplate = TemplateParser.Parse("[client]");
+
+            var route = RouteProvider.Build(
+                routeTemplate,
+                clientName: "IMyClient",
+                methodName: "Method",
+                parameters: Array.Empty<MethodParameter>(),
+                useVersionAttribute: null);
+
+            route.Should().Be("My");
+        }
 
         [Test]
         public void Build_ControllerTokenForClientInterface_ClientNameWithoutPrefixAndSuffix()
