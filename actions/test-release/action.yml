@@ -33,14 +33,14 @@ runs:
       uses: jakejarvis/wait-action@master
       with:
         time: ${{ inputs.delay }}
-    - name: Setup latest .NET
+    - name: Setup all .NET versions
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
     - name: Try add GitHub NuGet source
       run: |
         if [[ "${{ inputs.custom-source}}" != "" ]]; then
+          dotnet nuget remove source nuget.org
           dotnet nuget add source --username ${{ inputs.custom-source-user }} --password ${{ inputs.custom-source-password }} --store-password-in-clear-text --name github ${{ inputs.custom-source}}
+          dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
         fi
       shell: bash
     - name: Restore dependencies and build
