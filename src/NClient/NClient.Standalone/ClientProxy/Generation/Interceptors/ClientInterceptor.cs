@@ -110,7 +110,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
             catch (Exception e)
             {
-                // TODO
                 _toolset.Logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, e);
             }
