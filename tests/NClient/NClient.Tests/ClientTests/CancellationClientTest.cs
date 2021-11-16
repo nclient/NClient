@@ -28,7 +28,7 @@ namespace NClient.Tests.ClientTests
         public async Task CancellationClient_GetWithCancellation_ThrowTaskCanceledException()
         {
             const int id = 1;
-            using var api = CancellationApiMockFactory.MockGetMethod(id);
+            using var api = CancellationApiMockFactory.MockGetMethodWithDelay(id);
             var source = new CancellationTokenSource();
             var cancellationTask = Task.Run(async () =>
             {
@@ -59,7 +59,7 @@ namespace NClient.Tests.ClientTests
         public async Task CancellationClient_GetAsyncWithCancellation_ThrowTaskCanceledException()
         {
             const int id = 1;
-            using var api = CancellationApiMockFactory.MockGetMethod(id);
+            using var api = CancellationApiMockFactory.MockGetMethodWithDelay(id);
             var source = new CancellationTokenSource();
             
             var resultTask = NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First()).Build()
