@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Providers.Serialization;
@@ -46,9 +47,10 @@ namespace NClient.Providers.Transport.Http.System.Tests
             var transportRequestBuilder = new SystemHttpTransportRequestBuilderProvider().Create(toolset);
             var responseBuilder = new SystemHttpResponseBuilderProvider().Create(toolset);
 
-            var httpRequestMessage = await transportRequestBuilder.BuildAsync(request);
-            var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage);
-            var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage));
+            var httpRequestMessage = await transportRequestBuilder.BuildAsync(request, CancellationToken.None);
+            var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage, CancellationToken.None);
+            var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, 
+                HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
