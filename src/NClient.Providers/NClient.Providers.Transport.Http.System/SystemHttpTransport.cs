@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Common.Helpers;
@@ -16,12 +17,13 @@ namespace NClient.Providers.Transport.Http.System
             _httpClientName = httpClientName ?? Options.DefaultName;
         }
 
-        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage transportRequest)
+        public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage transportRequest, CancellationToken cancellationToken)
         {
             Ensure.IsNotNull(transportRequest, nameof(transportRequest));
+            cancellationToken.ThrowIfCancellationRequested();
 
             var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            return await httpClient.SendAsync(transportRequest).ConfigureAwait(false);
+            return await httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
         }
     }
 }

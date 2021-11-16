@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Castle.DynamicProxy;
 using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Generation.Invocation
 {
-    public class ExplicitInvocation<TRequest, TResponse>
+    public class ExplicitMethodInvocation<TRequest, TResponse>
     {
         public object[] Arguments { get; }
         public Type[] GenericArguments { get; }
@@ -18,11 +19,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
         public Type ReturnType { get; }
         public Type? TargetType { get; }
         public IResiliencePolicyProvider<TRequest, TResponse>? ResiliencePolicyProvider { get; }
+        public CancellationToken? CancellationToken { get; }
 
-        public ExplicitInvocation(
+        public ExplicitMethodInvocation(
             IInvocation invocation,
             Type returnType,
-            IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider = null)
+            IResiliencePolicyProvider<TRequest, TResponse>? resiliencePolicyProvider = null,
+            CancellationToken? cancellationToken = null)
         {
             Arguments = invocation.Arguments?.ToArray() ?? Array.Empty<object>();
             GenericArguments = invocation.GenericArguments?.ToArray() ?? Array.Empty<Type>();
@@ -34,6 +37,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
             TargetType = invocation.TargetType;
             ReturnType = returnType;
             ResiliencePolicyProvider = resiliencePolicyProvider;
+            CancellationToken = cancellationToken;
         }
     }
 }

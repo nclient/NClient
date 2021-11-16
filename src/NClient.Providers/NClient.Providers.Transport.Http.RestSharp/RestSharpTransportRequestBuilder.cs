@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
@@ -19,8 +20,10 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _toolset = toolset;
         }
 
-        public Task<IRestRequest> BuildAsync(IRequest request)
+        public Task<IRestRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var method = _restSharpMethodMapper.Map(request.Type);
             var restRequest = new RestRequest(request.Endpoint, method, DataFormat.Json);
 

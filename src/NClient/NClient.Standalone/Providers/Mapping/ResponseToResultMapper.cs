@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
@@ -17,7 +18,8 @@ namespace NClient.Providers.Mapping.Results
                 || resultType.GetGenericTypeDefinition() == typeof(Result<,>);
         }
         
-        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
+        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
+            ISerializer serializer, CancellationToken cancellationToken)
         {
             var genericResultType = typeof(Result<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 

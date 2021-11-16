@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using NClient.Providers.Transport.Http.System.Helpers;
@@ -17,8 +18,10 @@ namespace NClient.Providers.Transport.Http.System
             _systemHttpMethodMapper = systemHttpMethodMapper;
         }
         
-        public Task<HttpRequestMessage> BuildAsync(IRequest request)
+        public Task<HttpRequestMessage> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var parameters = request.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
             var uri = new Uri(QueryHelpers.AddQueryString(request.Endpoint, parameters));

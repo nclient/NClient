@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -13,14 +14,16 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _authenticator = authenticator;
         }
 
-        public async Task<IRestResponse> ExecuteAsync(IRestRequest transportRequest)
+        public async Task<IRestResponse> ExecuteAsync(IRestRequest transportRequest, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var restClient = new RestClient
             {
                 Authenticator = _authenticator
             };
             
-            return await restClient.ExecuteAsync(transportRequest).ConfigureAwait(false);
+            return await restClient.ExecuteAsync(transportRequest, cancellationToken).ConfigureAwait(false);
         }
     }
 }

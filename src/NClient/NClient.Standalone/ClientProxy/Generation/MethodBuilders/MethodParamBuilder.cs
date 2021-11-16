@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using NClient.Annotations;
+using NClient.Core.Extensions;
 using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 
@@ -24,12 +25,13 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
         public IMethodParam[] Build(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
         {
             return method
-                .GetParameters()
+                .GetParametersExceptNClientCancellationToken()
                 .Select(x =>
                 {
                     var overridingParams = overridingMethods
                         .Select(overridingMethod => overridingMethod
-                            .GetParameters().Single(overridingParam => overridingParam.Name == x.Name))
+                            .GetParametersExceptNClientCancellationToken()
+                            .Single(overridingParam => overridingParam.Name == x.Name))
                         .ToArray();
                     var paramAttribute = _paramAttributeProvider.Get(x, overridingParams);
                     var paramName = GetParamName(x, paramAttribute);
