@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Results.HttpResults;
 using NClient.Providers.Serialization;
@@ -24,8 +25,11 @@ namespace NClient.Providers.Mapping.HttpResponses
                 || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
         }
         
-        public async Task<object?> MapAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, ISerializer serializer)
+        public async Task<object?> MapAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, 
+            ISerializer serializer, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var httpRequest = new HttpRequest(responseContext.Response.RequestMessage);
             var httpResponse = new HttpResponse(httpRequest, responseContext.Response);
             var content = await responseContext.Response.Content.ReadAsStringAsync().ConfigureAwait(false);

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Transport.Http.System.Builders;
 
@@ -16,8 +17,11 @@ namespace NClient.Providers.Transport.Http.System
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
 
-        public async Task<IResponse> BuildAsync(IRequest request, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
+        public async Task<IResponse> BuildAsync(IRequest request, 
+            IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var finalHttpRequest = await _finalHttpRequestBuilder
                 .BuildAsync(request, responseContext.Response.RequestMessage)
                 .ConfigureAwait(false);

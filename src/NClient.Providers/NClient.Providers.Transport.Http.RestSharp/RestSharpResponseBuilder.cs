@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Transport.Http.RestSharp.Builders;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
@@ -18,8 +19,11 @@ namespace NClient.Providers.Transport.Http.RestSharp
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }
 
-        public Task<IResponse> BuildAsync(IRequest request, IResponseContext<IRestRequest, IRestResponse> responseContext)
+        public Task<IResponse> BuildAsync(IRequest request, 
+            IResponseContext<IRestRequest, IRestResponse> responseContext, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var finalRequest = _finalHttpRequestBuilder.Build(request, responseContext.Response.Request);
             
             var allHeaders = responseContext.Response.Headers

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Core.Helpers;
@@ -38,8 +39,11 @@ namespace NClient.Providers.Api.Rest
             _toolset = toolset;
         }
 
-        public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation)
+        public Task<IRequest> BuildAsync(Guid requestId, string resource, 
+            IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
             var methodParameters = methodInvocation.Method.Params

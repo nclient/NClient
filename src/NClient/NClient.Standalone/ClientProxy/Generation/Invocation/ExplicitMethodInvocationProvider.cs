@@ -2,30 +2,32 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using Castle.DynamicProxy;
+using NClient.Core.Extensions;
 using NClient.Providers.Resilience;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 
 namespace NClient.Standalone.ClientProxy.Generation.Invocation
 {
-    internal interface IExplicitInvocationProvider<TRequest, TResponse>
+    internal interface IExplicitMethodInvocationProvider<TRequest, TResponse>
     {
-        ExplicitInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType);
+        ExplicitMethodInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType);
     }
 
-    internal class ExplicitInvocationProvider<TRequest, TResponse> : IExplicitInvocationProvider<TRequest, TResponse>
+    internal class ExplicitMethodInvocationProvider<TRequest, TResponse> : IExplicitMethodInvocationProvider<TRequest, TResponse>
     {
         private readonly IProxyGenerator _proxyGenerator;
 
-        public ExplicitInvocationProvider(IProxyGenerator proxyGenerator)
+        public ExplicitMethodInvocationProvider(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
         }
         
-        public ExplicitInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType)
+        public ExplicitMethodInvocation<TRequest, TResponse> Get(Type clientType, IInvocation invocation, Type returnType)
         {
             if (!IsNClientMethod(invocation.Method))
-                return new ExplicitInvocation<TRequest, TResponse>(invocation, returnType);
+                return new ExplicitMethodInvocation<TRequest, TResponse>(invocation, returnType);
 
             var clientMethodInvocation = invocation.Arguments[0];
             if (invocation.Arguments[0] is null)
@@ -44,8 +46,10 @@ namespace NClient.Standalone.ClientProxy.Generation.Invocation
             var resiliencePolicyProvider = resiliencePolicyArgumentIndex.HasValue
                 ? (IResiliencePolicyProvider<TRequest, TResponse>?) invocation.Arguments[resiliencePolicyArgumentIndex.Value]
                 : null;
+            var cancellationToken = invocation.Method.FindNClientCancellationToken(invocation.Arguments) 
+                ?? CancellationToken.None;
 
-            return new ExplicitInvocation<TRequest, TResponse>(innerInvocation, returnType, resiliencePolicyProvider);
+            return new ExplicitMethodInvocation<TRequest, TResponse>(innerInvocation, returnType, resiliencePolicyProvider, cancellationToken);
         }
 
         private static bool IsNClientMethod(MethodInfo method)

@@ -1,4 +1,6 @@
-﻿using NClient.Invocation;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NClient.Invocation;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -18,10 +20,10 @@ namespace NClient
         /// </summary>
         public object[] Arguments { get; }
 
-        public MethodInvocation(IMethod method, object[] methodArguments)
+        public MethodInvocation(IMethod method, IEnumerable<object> methodArguments)
         {
             Method = method;
-            Arguments = methodArguments;
+            Arguments = methodArguments.ToArray();
         }
     }
 }
