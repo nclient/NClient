@@ -2,6 +2,7 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.MessagePack.Extensions
 {
+    // ReSharper disable once UnusedType.Global
     public static class MessagePackSerializationExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
