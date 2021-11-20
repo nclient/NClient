@@ -21,17 +21,26 @@ namespace NClient.Providers.Serialization.MessagePack
             ContentType = messagePackSerializerSettings.ContentTypeHeader;
         }
 
+        //SUGGESTION: Use byte array instead of string 
         public object? Deserialize(string source, Type returnType)
         {
             Ensure.IsNotNull(source, nameof(source));
             Ensure.IsNotNull(returnType, nameof(returnType));
 
-            return MP.MessagePackSerializer.Typeless.Deserialize(Encoding.UTF8.GetBytes(source), _messagePackSerializerSettings.Options);
+            byte[] bytes = new byte[source.Length];
+            Buffer.BlockCopy(source.ToCharArray(), 0, bytes, 0, bytes.Length);
+
+            return MP.MessagePackSerializer.Deserialize(returnType,bytes, _messagePackSerializerSettings.Options);
         }
 
         public string Serialize<T>(T? value)
         {
-            return Encoding.UTF8.GetString(MP.MessagePackSerializer.Serialize(value, _messagePackSerializerSettings.Options));
+            Ensure.IsNotNull(value, nameof(value));
+            
+            var serializedBytes = MP.MessagePackSerializer.Serialize(value, _messagePackSerializerSettings.Options);
+            var chars = new char[serializedBytes.Length];
+            Buffer.BlockCopy(serializedBytes, 0, chars, 0, serializedBytes.Length);
+            return new string(chars);
         }
     }
 }
