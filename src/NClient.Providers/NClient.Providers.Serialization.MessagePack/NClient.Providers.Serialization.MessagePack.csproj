@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+    <PropertyGroup>
+        <PackageId>$(AssemblyName)</PackageId>
+        <VersionPrefix>$(VersionPrefix)</VersionPrefix>
+        <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Srialization;MessagePack</PackageTags>
+        <Description>The provider that allows you to use the MessagePack serializer.</Description>
+        <Authors>kingmidas74</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
+            <Link>Common\Ensure.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+</Project>
