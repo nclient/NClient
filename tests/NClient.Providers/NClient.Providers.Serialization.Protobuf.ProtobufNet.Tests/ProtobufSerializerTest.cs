@@ -3,11 +3,11 @@ using System.Collections;
 using System.IO;
 using FluentAssertions;
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization.Protobuf.Tests.Models;
+using NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests.Models;
 using NUnit.Framework;
 using ProtoBuf;
 
-namespace NClient.Providers.Serialization.Protobuf.Tests
+namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests
 {
     [Parallelizable]
     public class ProtobufSerializerTest

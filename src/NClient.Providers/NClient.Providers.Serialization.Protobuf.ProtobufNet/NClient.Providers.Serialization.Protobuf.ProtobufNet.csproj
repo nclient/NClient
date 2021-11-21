@@ -9,7 +9,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Protobuf;Google</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Protobuf;Google;protobuf-net</PackageTags>
         <Description>The provider that allows you to use the Protobuf serializer.</Description>
         <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>

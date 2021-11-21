@@ -1,15 +1,15 @@
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.Protobuf.Extensions
+namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
 {
     public static class UsingProtobufSerializationExtensions
     {
         /// <summary>
-        /// Sets Protobuf based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
+        public static INClientOptionalBuilder<TClient, TClient, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientSerializationBuilder<TClient, TClient, TResponse> serializationBuilder)
             where TClient : class
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
@@ -18,12 +18,12 @@ namespace NClient.Providers.Serialization.Protobuf.Extensions
         }
 
         /// <summary>
-        /// Sets Protobuf based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="protobufSerializerSettings">The settings to be used with <see cref="ProtobufSerializer"/>.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
+        public static INClientOptionalBuilder<TClient, TClient, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientSerializationBuilder<TClient, TClient, TResponse> serializationBuilder,
             ProtobufSerializerSettings protobufSerializerSettings)
             where TClient : class
         {
@@ -35,10 +35,10 @@ namespace NClient.Providers.Serialization.Protobuf.Extensions
         }
 
         /// <summary>
-        /// Sets Protobuf based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingProtobufNetSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
@@ -47,11 +47,11 @@ namespace NClient.Providers.Serialization.Protobuf.Extensions
         }
 
         /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="protobufSerializerSettings">The settings to be used with <see cref="ProtobufSerializer"/>.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingProtobufNetSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             ProtobufSerializerSettings protobufSerializerSettings)
         {

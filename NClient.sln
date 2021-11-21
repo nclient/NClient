@@ -93,9 +93,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest.Tests", "tests\NClient.Providers\NClient.Providers.Api.Rest.Tests\NClient.Providers.Api.Rest.Tests.csproj", "{27521108-9C67-44AE-885C-3BE343421955}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf", "src\NClient.Providers\NClient.Providers.Serialization.Protobuf\NClient.Providers.Serialization.Protobuf.csproj", "{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf.ProtobufNet", "src\NClient.Providers\NClient.Providers.Serialization.Protobuf.ProtobufNet\NClient.Providers.Serialization.Protobuf.ProtobufNet.csproj", "{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.Protobuf.Tests\NClient.Providers.Serialization.Protobuf.Tests.csproj", "{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests\NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests.csproj", "{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

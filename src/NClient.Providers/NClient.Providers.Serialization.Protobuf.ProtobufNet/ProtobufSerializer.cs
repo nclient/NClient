@@ -3,7 +3,7 @@ using System.IO;
 using NClient.Common.Helpers;
 using ProtoBuf;
 
-namespace NClient.Providers.Serialization.Protobuf
+namespace NClient.Providers.Serialization.Protobuf.ProtobufNet
 {
     public class ProtobufSerializer : ISerializer
     {

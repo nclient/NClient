@@ -1,4 +1,4 @@
-namespace NClient.Providers.Serialization.Protobuf.Tests.Models
+namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests.Models
 {
     public readonly struct NotProto
     {

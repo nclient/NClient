@@ -1,6 +1,6 @@
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.Protobuf
+namespace NClient.Providers.Serialization.Protobuf.ProtobufNet
 {
     public record ProtobufSerializerSettings
     {

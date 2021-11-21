@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Protobuf\NClient.Providers.Serialization.Protobuf.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Protobuf.ProtobufNet\NClient.Providers.Serialization.Protobuf.ProtobufNet.csproj" />
     </ItemGroup>
 
     <ItemGroup>
