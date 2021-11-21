@@ -5,10 +5,10 @@ namespace NClient.Providers.Serialization.MessagePack.Extensions
     public static class UsingMessagePackSerializerExtensions
     {
         /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
         {
@@ -18,11 +18,11 @@ namespace NClient.Providers.Serialization.MessagePack.Extensions
         }
 
         /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
-        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)
             where TClient : class
@@ -35,10 +35,10 @@ namespace NClient.Providers.Serialization.MessagePack.Extensions
         }
 
         /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingMessagePackSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
@@ -47,11 +47,11 @@ namespace NClient.Providers.Serialization.MessagePack.Extensions
         }
 
         /// <summary>
-        /// Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
+        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
-        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingMessagePackSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)
         {
