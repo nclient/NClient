@@ -1,6 +1,6 @@
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.MessagePack.Extensions
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Extensions
 {
     // ReSharper disable once UnusedType.Global
     public static class MessagePackSerializationExtensions

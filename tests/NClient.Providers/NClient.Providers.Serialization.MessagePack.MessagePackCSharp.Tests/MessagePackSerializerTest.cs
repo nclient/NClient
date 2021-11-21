@@ -3,10 +3,10 @@ using System.Collections;
 using FluentAssertions;
 using MessagePack;
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization.MessagePack.Tests.Models;
+using NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests.Models;
 using NUnit.Framework;
 
-namespace NClient.Providers.Serialization.MessagePack.Tests
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests
 {
     [Parallelizable]
     public class MessagePackSerializerTest

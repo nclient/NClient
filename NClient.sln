@@ -93,9 +93,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest.Tests", "tests\NClient.Providers\NClient.Providers.Api.Rest.Tests\NClient.Providers.Api.Rest.Tests.csproj", "{27521108-9C67-44AE-885C-3BE343421955}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack", "src\NClient.Providers\NClient.Providers.Serialization.MessagePack\NClient.Providers.Serialization.MessagePack.csproj", "{908AB05B-91D3-4198-B475-20B9629E40B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack.MessagePackCSharp", "src\NClient.Providers\NClient.Providers.Serialization.MessagePack.MessagePackCSharp\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.csproj", "{908AB05B-91D3-4198-B475-20B9629E40B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.MessagePack.Tests\NClient.Providers.Serialization.MessagePack.Tests.csproj", "{649471DF-3CCD-42F0-9035-5BF694134529}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests.csproj", "{649471DF-3CCD-42F0-9035-5BF694134529}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

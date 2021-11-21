@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace NClient.Providers.Serialization.MessagePack
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp
 {
     public enum MIMEType   
     {

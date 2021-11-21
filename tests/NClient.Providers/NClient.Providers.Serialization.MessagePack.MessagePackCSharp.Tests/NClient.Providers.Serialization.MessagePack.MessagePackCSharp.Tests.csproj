@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.MessagePack\NClient.Providers.Serialization.MessagePack.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.MessagePack.MessagePackCSharp\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.csproj" />
     </ItemGroup>
 
     <ItemGroup>

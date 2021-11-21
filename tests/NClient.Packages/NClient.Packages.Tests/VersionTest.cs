@@ -57,8 +57,8 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
-        public void NClient_Providers_Serialization_MessagePack() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.MessagePack").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_MessagePack_MessagePackCSharp() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.MessagePack.MessagePackCSharp").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
         public void NClient_Providers_Serialization_Xml_System() =>

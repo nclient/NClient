@@ -1,7 +1,7 @@
 using MessagePack;
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.MessagePack
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp
 {
     public class MessagePackSerializerSettings
     {

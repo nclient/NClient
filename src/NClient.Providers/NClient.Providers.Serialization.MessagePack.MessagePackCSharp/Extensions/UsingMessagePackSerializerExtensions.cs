@@ -1,6 +1,6 @@
 using NClient.Common.Helpers;
 
-namespace NClient.Providers.Serialization.MessagePack.Extensions
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Extensions
 {
     public static class UsingMessagePackSerializerExtensions
     {

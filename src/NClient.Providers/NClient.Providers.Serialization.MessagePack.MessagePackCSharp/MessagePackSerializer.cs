@@ -2,7 +2,7 @@ using System;
 using NClient.Common.Helpers;
 using MP = MessagePack;
 
-namespace NClient.Providers.Serialization.MessagePack
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp
 {
     internal class MessagePackSerializer : ISerializer
     {

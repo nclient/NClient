@@ -2,7 +2,7 @@ using MessagePack;
 using NClient.Common.Helpers;
 using Microsoft.Extensions.Logging;
 
-namespace NClient.Providers.Serialization.MessagePack
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp
 {
     public class MessagePackSerializerProvider : ISerializerProvider
     {

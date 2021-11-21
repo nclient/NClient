@@ -1,4 +1,4 @@
-namespace NClient.Providers.Serialization.MessagePack.Tests.Models
+namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests.Models
 {
     public struct NotMP
     {
