@@ -25,8 +25,7 @@ namespace NClient.Providers.Serialization.Protobuf
             Ensure.IsNotNull(source, nameof(source));
             Ensure.IsNotNull(returnType, nameof(returnType));
 
-            byte[] bytes = new byte[source.Length];
-            Buffer.BlockCopy(source.ToCharArray(), 0, bytes, 0, bytes.Length);
+            var bytes = Converters.GetBytes(source);
             
             using var memoryStream = new MemoryStream(bytes);
             return Serializer.Deserialize(returnType, memoryStream);
@@ -38,11 +37,8 @@ namespace NClient.Providers.Serialization.Protobuf
             
             using var memoryStream = new MemoryStream();
             Serializer.Serialize(memoryStream, value);
-            var serializedBytes = memoryStream.ToArray();
             
-            var chars = new char[serializedBytes.Length];
-            Buffer.BlockCopy(serializedBytes, 0, chars, 0, serializedBytes.Length);
-            return new string(chars);
+            return Converters.GetString(memoryStream.ToArray());
         }
     }
 }

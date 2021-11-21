@@ -40,6 +40,9 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\Converters.cs">
+            <Link>Common\Converters.cs</Link>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

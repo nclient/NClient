@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using FluentAssertions;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization.Protobuf.Tests.Models;
 using NUnit.Framework;
 using ProtoBuf;
@@ -33,8 +34,7 @@ namespace NClient.Providers.Serialization.Protobuf.Tests
             var serializer = new ProtobufSerializerProvider().Create(logger: null);
 
             var serializerString = serializer.Serialize(obj);
-            byte[] bytes = new byte[serializerString.Length];
-            Buffer.BlockCopy(serializerString.ToCharArray(), 0, bytes, 0, bytes.Length);
+            byte[] bytes = Converters.GetBytes(serializerString);
 
             var actualResult = Serializer.Deserialize(type, new MemoryStream(bytes));
 
@@ -62,9 +62,7 @@ namespace NClient.Providers.Serialization.Protobuf.Tests
             
             var serializedBytes = memoryStream.ToArray();
             
-            var chars = new char[serializedBytes.Length];
-            Buffer.BlockCopy(serializedBytes, 0, chars, 0, serializedBytes.Length);
-            var serializedString = new string(chars);
+            var serializedString = Converters.GetString(serializedBytes);
             
             var actualResult = serializer.Deserialize(serializedString, type);
 
