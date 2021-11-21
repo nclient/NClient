@@ -3,7 +3,7 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.MessagePack
 {
-    public record MessagePackSerializerSettings
+    public class MessagePackSerializerSettings
     {
         public string ContentTypeHeader { get; } = string.Empty;
         public MessagePackSerializerOptions Options { get; }
@@ -11,7 +11,7 @@ namespace NClient.Providers.Serialization.MessagePack
         public MessagePackSerializerSettings(MIMEType contentTypeHeader, MessagePackSerializerOptions? options = null)
         {
             Ensure.IsNotNull(contentTypeHeader, nameof(contentTypeHeader));
-            
+
             ContentTypeHeader = contentTypeHeader.GetDescription();
             Options = options ?? MessagePackSerializerOptions.Standard;
         }

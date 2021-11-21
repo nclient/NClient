@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using System.Text;
 using FluentAssertions;
 using MessagePack;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization.MessagePack.Tests.Models;
 using NUnit.Framework;
 
@@ -34,12 +34,10 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         public void Serialize_ValidValues_NotThrow(object obj, object expectedResult, Type type)
         {
             var serializer = new MessagePackSerializerProvider().Create(logger: null);
-
-            var serializerString = serializer.Serialize(obj);
-            byte[] bytes = new byte[serializerString.Length * sizeof(char)];
-            Buffer.BlockCopy(serializerString.ToCharArray(), 0, bytes, 0, bytes.Length);
             
-            var actualResult = MessagePackSerializer.Deserialize(type, bytes, MessagePackSerializerOptions.Standard);
+            var serializerString = serializer.Serialize(obj);
+            
+            var actualResult = MessagePackSerializer.Deserialize(type, Converters.GetBytes(serializerString), MessagePackSerializerOptions.Standard);
             
             actualResult.Should().BeEquivalentTo(expectedResult);
         }
@@ -72,9 +70,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
 
             var serializedBytes = MessagePackSerializer.Serialize(sourceObject, MessagePackSerializerOptions.Standard);
             
-            var chars = new char[serializedBytes.Length];
-            Buffer.BlockCopy(serializedBytes, 0, chars, 0, serializedBytes.Length);
-            var serializedString = new string(chars);
+            var serializedString = Converters.GetString(serializedBytes);
             
             var actualResult = serializer.Deserialize(serializedString, type);
             

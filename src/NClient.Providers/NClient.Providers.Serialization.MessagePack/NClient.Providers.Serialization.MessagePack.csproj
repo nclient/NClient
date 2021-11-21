@@ -47,6 +47,9 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\EnumExtensions.cs">
             <Link>Common\EnumExtensions.cs</Link>
         </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\Converters.cs">
+            <Link>Common\Converters.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using NClient.Common.Helpers;
 using MP = MessagePack;
 
@@ -27,20 +26,14 @@ namespace NClient.Providers.Serialization.MessagePack
             Ensure.IsNotNull(source, nameof(source));
             Ensure.IsNotNull(returnType, nameof(returnType));
 
-            byte[] bytes = new byte[source.Length];
-            Buffer.BlockCopy(source.ToCharArray(), 0, bytes, 0, bytes.Length);
-
-            return MP.MessagePackSerializer.Deserialize(returnType,bytes, _messagePackSerializerSettings.Options);
+            return MP.MessagePackSerializer.Deserialize(returnType, Converters.GetBytes(source), _messagePackSerializerSettings.Options);
         }
 
         public string Serialize<T>(T? value)
         {
             Ensure.IsNotNull(value, nameof(value));
             
-            var serializedBytes = MP.MessagePackSerializer.Serialize(value, _messagePackSerializerSettings.Options);
-            var chars = new char[serializedBytes.Length];
-            Buffer.BlockCopy(serializedBytes, 0, chars, 0, serializedBytes.Length);
-            return new string(chars);
+            return Converters.GetString(MP.MessagePackSerializer.Serialize(value, _messagePackSerializerSettings.Options));
         }
     }
 }
