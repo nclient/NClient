@@ -9,7 +9,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Srialization;MessagePack</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;MessagePack</PackageTags>
         <Description>The provider that allows you to use the MessagePack serializer.</Description>
         <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
