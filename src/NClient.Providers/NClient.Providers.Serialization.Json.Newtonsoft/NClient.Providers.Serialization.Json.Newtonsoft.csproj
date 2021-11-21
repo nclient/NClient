@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Srialization;Json;Newtonsoft</PackageTags>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Json;Newtonsoft</PackageTags>
         <Description>The provider that allows you to use the Newtonsoft.Json serializer.</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
