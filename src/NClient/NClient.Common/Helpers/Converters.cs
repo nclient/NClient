@@ -2,7 +2,7 @@ using System;
 
 namespace NClient.Common.Helpers
 {
-    public static class Converters
+    internal static class Converters
     {
         public static string GetString(byte[] source)
         {
