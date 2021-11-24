@@ -1,6 +1,9 @@
 using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
+using NClient.Providers.Serialization.MessagePack.MessagePackCSharp;
 
-namespace NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Extensions
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     // ReSharper disable once UnusedType.Global
     public static class MessagePackSerializationExtensions
