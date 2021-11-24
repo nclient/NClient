@@ -1,6 +1,9 @@
 using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
+using NClient.Providers.Serialization.Protobuf.ProtobufNet;
 
-namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public static class ProtobufSerializationExtensions
     {
@@ -12,8 +15,8 @@ namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
         /// <typeparam name="TRequest"></typeparam>
         /// <typeparam name="TResponse"></typeparam>
         /// <returns></returns>
-        public static INClientOptionalBuilder<TClient, TClient, TResponse> WithProtobufNetSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TClient, TResponse> optionalBuilder) 
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
         {
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
@@ -30,8 +33,8 @@ namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
         /// <typeparam name="TRequest"></typeparam>
         /// <typeparam name="TResponse"></typeparam>
         /// <returns></returns>
-        public static INClientOptionalBuilder<TClient, TClient, TResponse> WithProtobufNetSerialization<TClient, TRequest, TResponse>(
-            this INClientOptionalBuilder<TClient, TClient, TResponse> optionalBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             ProtobufSerializerSettings protobufSerializerSettings)
             where TClient : class
         {

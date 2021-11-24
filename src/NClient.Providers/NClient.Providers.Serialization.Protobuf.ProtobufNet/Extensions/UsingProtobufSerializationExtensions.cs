@@ -1,6 +1,9 @@
 using NClient.Common.Helpers;
+using NClient.Providers.Serialization;
+using NClient.Providers.Serialization.Protobuf.ProtobufNet;
 
-namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
+// ReSharper disable once CheckNamespace
+namespace NClient
 {
     public static class UsingProtobufSerializationExtensions
     {
@@ -8,8 +11,8 @@ namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
         /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        public static INClientOptionalBuilder<TClient, TClient, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TClient, TResponse> serializationBuilder)
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
@@ -22,8 +25,8 @@ namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Extensions
         /// </summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="protobufSerializerSettings">The settings to be used with <see cref="ProtobufSerializer"/>.</param>
-        public static INClientOptionalBuilder<TClient, TClient, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
-            this INClientSerializationBuilder<TClient, TClient, TResponse> serializationBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
+            this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             ProtobufSerializerSettings protobufSerializerSettings)
             where TClient : class
         {
