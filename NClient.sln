@@ -93,6 +93,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Api.Rest.Tests", "tests\NClient.Providers\NClient.Providers.Api.Rest.Tests\NClient.Providers.Api.Rest.Tests.csproj", "{27521108-9C67-44AE-885C-3BE343421955}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack.MessagePackCSharp", "src\NClient.Providers\NClient.Providers.Serialization.MessagePack.MessagePackCSharp\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.csproj", "{908AB05B-91D3-4198-B475-20B9629E40B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests\NClient.Providers.Serialization.MessagePack.MessagePackCSharp.Tests.csproj", "{649471DF-3CCD-42F0-9035-5BF694134529}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf.ProtobufNet", "src\NClient.Providers\NClient.Providers.Serialization.Protobuf.ProtobufNet\NClient.Providers.Serialization.Protobuf.ProtobufNet.csproj", "{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests\NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests.csproj", "{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}"
@@ -283,6 +287,18 @@ Global
 		{27521108-9C67-44AE-885C-3BE343421955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27521108-9C67-44AE-885C-3BE343421955}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27521108-9C67-44AE-885C-3BE343421955}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.TestRelease|Any CPU.Build.0 = Debug|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.Release|Any CPU.Build.0 = Release|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.TestRelease|Any CPU.Build.0 = Debug|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -334,6 +350,8 @@ Global
 		{FA3D9C32-CC55-4D39-8F49-5FC3040EBD78} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 		{0BB4D666-9C18-4F71-A0A3-88DCC275139D} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
 		{27521108-9C67-44AE-885C-3BE343421955} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
+		{908AB05B-91D3-4198-B475-20B9629E40B7} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
+		{649471DF-3CCD-42F0-9035-5BF694134529} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 	EndGlobalSection
