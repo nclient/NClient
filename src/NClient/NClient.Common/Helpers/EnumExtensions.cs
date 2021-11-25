@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace NClient.Common.Helpers
 {
     // ReSharper disable once UnusedType.Global
-    public static class EnumExtensions
+    internal static class EnumExtensions
     {
         public static string GetDescription(this Enum value)
         {
