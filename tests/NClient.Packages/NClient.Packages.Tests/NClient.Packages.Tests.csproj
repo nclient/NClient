@@ -20,16 +20,16 @@
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.Http.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.Http.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.RestSharp" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.SystemNetHttp" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.MessagePack" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Protobuf.ProtobufNet" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.NewtonsoftJson" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.ProtobufNet" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
     </ItemGroup>
 
