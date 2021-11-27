@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using NClient.Common.Helpers;
 using NClient.Providers.Transport.Http.System.Helpers;
 
@@ -10,7 +9,7 @@ namespace NClient.Providers.Transport.Http.System
     /// </summary>
     public class SystemHttpTransportProvider : ITransportProvider<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly Func<IHttpClientFactory> _httpClientFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string? _httpClientName;
 
         /// <summary>
@@ -18,7 +17,7 @@ namespace NClient.Providers.Transport.Http.System
         /// </summary>
         public SystemHttpTransportProvider()
         {
-            _httpClientFactory = () => new SystemHttpClientFactory(new HttpClient());
+            _httpClientFactory = new SystemHttpClientFactory(new HttpClient());
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             Ensure.IsNotNull(httpClient, nameof(httpClient));
 
-            _httpClientFactory = () => new SystemHttpClientFactory(httpClient);
+            _httpClientFactory = new SystemHttpClientFactory(httpClient);
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
-            _httpClientFactory = () => httpClientFactory;
+            _httpClientFactory = httpClientFactory;
             _httpClientName = httpClientName;
         }
 
@@ -49,7 +48,7 @@ namespace NClient.Providers.Transport.Http.System
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
 
-            return new SystemHttpTransport(_httpClientFactory.Invoke(), _httpClientName);
+            return new SystemHttpTransport(_httpClientFactory, _httpClientName);
         }
     }
 }
