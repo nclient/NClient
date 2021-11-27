@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+
     <PropertyGroup>
         <PackageId>$(AssemblyName)</PackageId>
         <VersionPrefix>$(VersionPrefix)</VersionPrefix>
@@ -8,9 +9,9 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Json;System</PackageTags>
-        <Description>The provider that allows you to use the System.Text.Json serializer.</Description>
-        <Authors>smolchanovsky</Authors>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Protobuf;Google;protobuf-net</PackageTags>
+        <Description>The provider that allows you to use the Protobuf serializer.</Description>
+        <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -27,10 +28,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="5.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
     </ItemGroup>
 
@@ -43,6 +40,13 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\Converters.cs">
+            <Link>Common\Converters.cs</Link>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="protobuf-net" Version="3.0.101" />
     </ItemGroup>
 
 </Project>

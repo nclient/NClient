@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+
     <PropertyGroup>
         <PackageId>$(AssemblyName)</PackageId>
         <VersionPrefix>$(VersionPrefix)</VersionPrefix>
@@ -8,9 +9,9 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Json;System</PackageTags>
-        <Description>The provider that allows you to use the System.Text.Json serializer.</Description>
-        <Authors>smolchanovsky</Authors>
+        <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;MessagePack</PackageTags>
+        <Description>The provider that allows you to use the MessagePack serializer.</Description>
+        <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -27,7 +28,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="5.0.2" />
+        <PackageReference Include="MessagePack" Version="2.3.85" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,6 +43,12 @@
     <ItemGroup>
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
+        </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\EnumExtensions.cs">
+            <Link>Common\EnumExtensions.cs</Link>
+        </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\Converters.cs">
+            <Link>Common\Converters.cs</Link>
         </Compile>
     </ItemGroup>
 
