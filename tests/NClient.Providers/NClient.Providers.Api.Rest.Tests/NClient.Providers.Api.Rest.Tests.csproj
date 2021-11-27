@@ -18,7 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Api.Rest\NClient.Providers.Api.Rest.csproj" />
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.System\NClient.Providers.Serialization.Json.System.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.SystemTextJson\NClient.Providers.Serialization.SystemTextJson.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient.Standalone\NClient.Standalone.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
