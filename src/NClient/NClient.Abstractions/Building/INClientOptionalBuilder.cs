@@ -63,6 +63,12 @@ namespace NClient
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
         
         #endregion
+
+        #region Timeout
+
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithTimeout(TimeSpan timeout);
+
+        #endregion
         
         #region Logging
         

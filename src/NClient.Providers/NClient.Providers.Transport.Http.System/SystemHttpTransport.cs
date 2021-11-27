@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NClient.Common.Helpers;
+using NClient.Providers.Transport.Http.System.Helpers;
 
 namespace NClient.Providers.Transport.Http.System
 {
@@ -23,6 +24,11 @@ namespace NClient.Providers.Transport.Http.System
             cancellationToken.ThrowIfCancellationRequested();
 
             var httpClient = _httpClientFactory.CreateClient(_httpClientName);
+            if (transportRequest.TryGetTimeout() is { } timeout && httpClient.Timeout != timeout)
+                httpClient.Timeout = timeout;
+            if (transportRequest.TryGetTimeout() is null)
+                transportRequest.SetTimeout(httpClient.Timeout);
+            
             return await httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
         }
     }

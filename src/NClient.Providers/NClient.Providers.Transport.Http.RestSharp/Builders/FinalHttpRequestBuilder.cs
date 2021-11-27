@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NClient.Providers.Transport.Http.RestSharp.Helpers;
 using RestSharp;
@@ -41,7 +42,8 @@ namespace NClient.Providers.Transport.Http.RestSharp.Builders
                 Content = new Content(
                     request.Content?.Bytes.ToArray(), 
                     encoding: request.Content?.Encoding?.WebName,
-                    headerContainer: new MetadataContainer(contentHeaders))
+                    headerContainer: new MetadataContainer(contentHeaders)),
+                Timeout = TimeSpan.FromMilliseconds(restRequest.Timeout)
             };
             
             foreach (var header in requestHeaders)
