@@ -14,13 +14,13 @@ namespace NClient.Providers.Serialization.Protobuf.ProtobufNet.Tests
     {
         public static readonly IEnumerable SerializationValidTestCases = new[]
         {
-            new TestCaseData(new Point{ X = 1, Y = 2 }, new Point{ X = 1, Y = 2 }, typeof(Point)),
-            new TestCaseData(new Point{ X = 2, Y = 2 }, new Point{ X = 2, Y = 2 }, typeof(Point))
+            new TestCaseData(new Point { X = 1, Y = 2 }, new Point { X = 1, Y = 2 }, typeof(Point)),
+            new TestCaseData(new Point { X = 2, Y = 2 }, new Point { X = 2, Y = 2 }, typeof(Point))
         };
 
         public static readonly IEnumerable DeserializationValidTestCases = new[]
         {
-            new TestCaseData(new Point{ X = 1, Y = 2 }, new Point{ X = 1, Y = 2 }, typeof(Point))
+            new TestCaseData(new Point { X = 1, Y = 2 }, new Point { X = 1, Y = 2 }, typeof(Point))
         };
 
         public static readonly IEnumerable NotValidTestCases = new[]
