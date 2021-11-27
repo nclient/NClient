@@ -21,7 +21,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets string representation of request body.
         /// </summary>
-        IContent? Content { get; set; }
+        IContent? Content { get; }
         /// <summary>
         /// Gets collection of URI parameters.
         /// </summary>
@@ -30,6 +30,10 @@ namespace NClient.Providers.Transport
         /// Gets collection of metadata.
         /// </summary>
         IMetadataContainer Metadatas { get; }
+        /// <summary>
+        /// The request duration timeout.
+        /// </summary>
+        TimeSpan? Timeout { get; }
         /// <summary>
         /// Adds URI parameter.
         /// </summary>

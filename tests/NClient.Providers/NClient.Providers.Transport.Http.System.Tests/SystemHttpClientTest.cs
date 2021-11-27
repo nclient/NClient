@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.Json.System;
 using NClient.Testing.Common.Entities;
@@ -62,13 +63,15 @@ namespace NClient.Providers.Transport.Http.System.Tests
             const RequestType method = RequestType.Check;
             var request = new Request(RequestId, EndpointUri.ToString(), method)
             {
-                Content = null
+                Content = null,
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
             var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
             {
-                Content = null
+                Content = null,
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
@@ -117,13 +120,15 @@ namespace NClient.Providers.Transport.Http.System.Tests
             const RequestType method = RequestType.Read;
             var request = new Request(RequestId, EndpointUri.ToString(), method)
             {
-                Content = null
+                Content = null,
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
             var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
             {
-                Content = null
+                Content = null,
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
@@ -186,7 +191,8 @@ namespace NClient.Providers.Transport.Http.System.Tests
                         new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
                         new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
                         new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
-                    }))
+                    })),
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
@@ -200,7 +206,8 @@ namespace NClient.Providers.Transport.Http.System.Tests
                         new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
                         new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
                         new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
-                    }))
+                    })),
+                Timeout = 1.Minutes() + 40.Seconds()
             };
             finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             

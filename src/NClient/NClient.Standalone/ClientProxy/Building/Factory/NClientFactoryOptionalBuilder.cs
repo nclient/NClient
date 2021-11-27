@@ -111,6 +111,12 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithoutResiliencePolicy());
         }
+        
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithTimeout(TimeSpan timeout)
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithTimeout(timeout));
+        }
 
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory)
         {

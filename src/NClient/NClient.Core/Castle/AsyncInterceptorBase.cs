@@ -133,7 +133,7 @@ namespace NClient.Core.Castle
             task.RethrowIfFaulted();
 
             //NOTE: My fix
-            invocation.ReturnValue = task.Result;
+            invocation.ReturnValue = task.GetAwaiter().GetResult();
         }
 
         private static Task ProceedSynchronous(IInvocation invocation, IInvocationProceedInfo proceedInfo)

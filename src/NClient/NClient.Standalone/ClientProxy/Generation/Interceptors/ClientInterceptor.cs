@@ -29,6 +29,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
+        private readonly TimeSpan? _timeout;
         private readonly IToolset _toolset;
 
         public ClientInterceptor(
@@ -41,6 +42,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
+            TimeSpan? timeout,
             IToolset toolset)
         {
             _resource = resource;
@@ -52,6 +54,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
+            _timeout = timeout;
             _toolset = toolset;
         }
 
@@ -84,7 +87,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
                 httpRequest = await _requestBuilder
-                    .BuildAsync(requestId, _resource, methodInvocation, cancellationToken)
+                    .BuildAsync(requestId, _resource, methodInvocation, _timeout, cancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)

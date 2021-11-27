@@ -32,6 +32,9 @@ namespace NClient.Providers.Transport.Http.System
                 RequestUri = uri
             };
 
+            if (request.Timeout.HasValue)
+                httpRequestMessage.SetTimeout(request.Timeout.Value);
+
             foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
             {
                 httpRequestMessage.Headers.Add(metadata.Name, metadata.Value);

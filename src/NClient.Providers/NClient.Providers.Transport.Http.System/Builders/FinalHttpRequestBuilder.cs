@@ -45,7 +45,8 @@ namespace NClient.Providers.Transport.Http.System.Builders
             {
                 Content = contentBytes is null
                     ? null
-                    : new Content(contentBytes, contentEncoding, new MetadataContainer(contentHeaders))
+                    : new Content(contentBytes, contentEncoding, new MetadataContainer(contentHeaders)),
+                Timeout = httpRequestMessage.GetTimeout()
             };
 
             var headers = httpRequestMessage.Headers?

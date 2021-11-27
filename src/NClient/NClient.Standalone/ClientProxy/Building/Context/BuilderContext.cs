@@ -39,6 +39,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResultBuilderProviders { get; private set; }
         public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TypedResultBuilderProviders { get; private set; }
 
+        public TimeSpan? Timeout { get; private set; }
+        
         public IReadOnlyCollection<ILogger> Loggers { get; private set; }
         public ILoggerFactory? LoggerFactory { get; private set; }
 
@@ -76,6 +78,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             ResultBuilderProviders = builderContext.ResultBuilderProviders.ToArray();
             TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders.ToArray();
+
+            Timeout = builderContext.Timeout;
             
             Loggers = builderContext.Loggers.ToArray();
             LoggerFactory = builderContext.LoggerFactory;
@@ -209,6 +213,14 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             {
                 ResultBuilderProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
                 TypedResultBuilderProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithTimeout(TimeSpan timeout)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                Timeout = timeout
             };
         }
 
