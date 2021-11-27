@@ -125,7 +125,7 @@ IProductServiceClient client = NClientGallery.Clients.GetRest()
     .WithNewtonsoftJsonSerialization()
     .WithResilience(x => x
         .ForMethod(client => (Func<Product, Task<Product>>) client.CreateAsync)
-        .For(maxRetries: 2, attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt))))
+        .Use(maxRetries: 2, attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt))))
     ...
     .Build();
 ```
