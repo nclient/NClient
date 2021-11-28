@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  solution: NClient.sln
+  solution: Tests.slnf
 
 jobs:
   build:

@@ -7,7 +7,7 @@ on:
     branches: [ main, alpha-release, beta-release, release ]
 
 env:
-  solution: NClient.sln
+  solution: Tests.slnf
 
 jobs:
   build:

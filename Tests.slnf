@@ -1,0 +1,22 @@
+{
+  "solution": {
+    "path": "NClient.sln",
+    "projects": [
+      "tests\\NClient.Api\\NClient.Api.Tests\\NClient.Api.Tests.csproj",
+      "tests\\NClient.Extensions\\NClient.Extensions.DependencyInjection.Tests\\NClient.Extensions.DependencyInjection.Tests.csproj",
+      "tests\\NClient.Packages\\NClient.Packages.Tests\\NClient.Packages.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Api.Rest.Tests\\NClient.Providers.Api.Rest.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Mapping.HttpResponses.Tests\\NClient.Providers.Mapping.HttpResponses.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Mapping.LanguageExt.Tests\\NClient.Providers.Mapping.LanguageExt.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Transport.SystemNetHttp.Tests\\NClient.Providers.Transport.SystemNetHttp.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Serialization.SystemXml.Tests\\NClient.Providers.Serialization.SystemXml.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Serialization.ProtobufNet.Tests\\NClient.Providers.Serialization.ProtobufNet.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Serialization.MessagePack.Tests\\NClient.Providers.Serialization.MessagePack.Tests.csproj",
+      "tests\\NClient.Testing\\NClient.Testing.Common\\NClient.Testing.Common.csproj",
+      "tests\\NClient\\NClient.AspNetCore.Tests\\NClient.AspNetCore.Tests.csproj",
+      "tests\\NClient\\NClient.Core.Tests\\NClient.Core.Tests.csproj",
+      "tests\\NClient\\NClient.Standalone.Tests\\NClient.Standalone.Tests.csproj",
+      "tests\\NClient\\NClient.Tests\\NClient.Tests.csproj"
+    ]
+  }
+}
