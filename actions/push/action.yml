@@ -1,6 +1,9 @@
 name: Push NuGet packages
 
 inputs:
+  solution:
+    description: 'Solution/project path'
+    required: true
   version-prefix:
     description: 'Version prefix'     
     required: true
@@ -46,10 +49,10 @@ runs:
         fi
       shell: bash
     - name: Restore dependencies and build
-      run: dotnet build --configuration Release -warnaserror
+      run: dotnet build ${{ inputs.solution }} --configuration Release -warnaserror
       shell: bash
     - name: Pack
-      run: dotnet pack ./Packable.slnf --no-build --output ./nupkgs --configuration Release 
+      run: dotnet pack ${{ inputs.solution }} --no-build --output ./nupkgs --configuration Release 
       shell: bash
     - name: Compress nupkgs
       run: tar cvzf nupkgs-${{ env.ReleaseTag }}.tar.gz nupkgs

@@ -11,6 +11,7 @@ on:
         required: true
 
 env:
+  solution: NClient.sln
   release-type: dev
   github-pkgs-source: https://nuget.pkg.github.com/nclient/index.json
       
@@ -33,6 +34,7 @@ jobs:
     - name: Push packaget to NuGet
       uses: ./actions/push
       with:
+        solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
         version-suffix: ${{ steps.release-info.outputs.version-suffix }}
         source: ${{ env.github-pkgs-source }}
@@ -55,6 +57,7 @@ jobs:
     - name: Test release
       uses: ./actions/test-release
       with:
+        solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
         version-suffix: ${{ steps.release-info.outputs.version-suffix }}
         delay: 30s
