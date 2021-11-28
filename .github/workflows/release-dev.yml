@@ -30,7 +30,7 @@ jobs:
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
-        version-patch: dev.${{ github.event.inputs.version-patch }}
+        version-patch: ${{ github.event.inputs.version-patch }}
     - name: Push packaget to NuGet
       uses: ./actions/push
       with:
@@ -53,7 +53,7 @@ jobs:
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
-        version-patch: dev.${{ github.event.inputs.version-patch }}
+        version-patch: ${{ github.event.inputs.version-patch }}
     - name: Test release
       uses: ./actions/test-release
       with:
