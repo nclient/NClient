@@ -53,22 +53,42 @@ namespace NClient.AspNetCore.Controllers
             var attributeCtorParamValues = new object[] { attribute.Versions.Single().ToString() };
             return BuildAttribute(attributeCtor, attributeCtorParamValues, attribute);
         }
+        
+        private CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
+        {
+            Exception? lastException = null;
+            foreach (var attributeCtor in attribute.GetType().GetConstructors().Reverse())
+            {
+                try
+                {
+                    return BuildCustomAttribute(attribute, attributeCtor);
+                }
+                catch (Exception e)
+                {
+                    lastException = e.InnerException;
+                }
+            }
+            throw lastException!;
+        }
 
         private CustomAttributeBuilder? TryBuildCustomAttribute(Attribute attribute)
         {
-            try
+            foreach (var attributeCtor in attribute.GetType().GetConstructors().Reverse())
             {
-                return BuildCustomAttribute(attribute);
+                try
+                {
+                    return BuildCustomAttribute(attribute, attributeCtor);
+                }
+                catch
+                {
+                    // ignored
+                }
             }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
 
-        private CustomAttributeBuilder BuildCustomAttribute(Attribute attribute)
+        private CustomAttributeBuilder BuildCustomAttribute(Attribute attribute, ConstructorInfo attributeCtor)
         {
-            var attributeCtor = attribute.GetType().GetConstructors().Last();
             var attributeCtorParamNames = attributeCtor.GetParameters().Select(x => x.Name!);
             var propsAndFields = GetProperties(attribute)
                 .Concat(GetFields(attribute).Cast<MemberInfo>())
