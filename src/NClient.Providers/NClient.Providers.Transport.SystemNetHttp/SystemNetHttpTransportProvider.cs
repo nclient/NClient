@@ -7,7 +7,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
     /// <summary>
     /// The System.Net.Http based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
     /// </summary>
-    public class SystemHttpTransportProvider : ITransportProvider<HttpRequestMessage, HttpResponseMessage>
+    public class SystemNetHttpTransportProvider : ITransportProvider<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string? _httpClientName;
@@ -15,20 +15,20 @@ namespace NClient.Providers.Transport.SystemNetHttp
         /// <summary>
         /// Creates the System.Net.Http based HTTP client provider.
         /// </summary>
-        public SystemHttpTransportProvider()
+        public SystemNetHttpTransportProvider()
         {
-            _httpClientFactory = new SystemHttpClientFactory(new HttpClient());
+            _httpClientFactory = new SystemNetHttpClientFactory(new HttpClient());
         }
 
         /// <summary>
         /// Creates the System.Net.Http based HTTP client provider.
         /// </summary>
         /// <param name="httpClient">The system <see cref="HttpClient"/>.</param>
-        public SystemHttpTransportProvider(HttpClient httpClient)
+        public SystemNetHttpTransportProvider(HttpClient httpClient)
         {
             Ensure.IsNotNull(httpClient, nameof(httpClient));
 
-            _httpClientFactory = new SystemHttpClientFactory(httpClient);
+            _httpClientFactory = new SystemNetHttpClientFactory(httpClient);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
         /// </summary>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
-        public SystemHttpTransportProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemNetHttpTransportProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
@@ -48,7 +48,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
 
-            return new SystemHttpTransport(_httpClientFactory, _httpClientName);
+            return new SystemNetHttpTransport(_httpClientFactory, _httpClientName);
         }
     }
 }

@@ -7,14 +7,14 @@ namespace NClient.Providers.Serialization.SystemTextJson
     /// <summary>
     /// The System.Text.Json based provider for a component that can create <see cref="ISerializer"/> instances.
     /// </summary>
-    public class SystemJsonSerializerProvider : ISerializerProvider
+    public class SystemTextJsonSerializerProvider : ISerializerProvider
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         /// <summary>
         /// Creates the System.Text.Json based serializer provider.
         /// </summary>
-        public SystemJsonSerializerProvider()
+        public SystemTextJsonSerializerProvider()
         {
             _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
@@ -23,7 +23,7 @@ namespace NClient.Providers.Serialization.SystemTextJson
         /// Creates the System.Text.Json based serializer provider.
         /// </summary>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
-        public SystemJsonSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
+        public SystemTextJsonSerializerProvider(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 
@@ -32,7 +32,7 @@ namespace NClient.Providers.Serialization.SystemTextJson
 
         public ISerializer Create(ILogger? logger)
         {
-            return new SystemJsonSerializer(_jsonSerializerOptions);
+            return new SystemTextJsonSerializer(_jsonSerializerOptions);
         }
     }
 }

@@ -2,11 +2,11 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.ProtobufNet
 {
-    public record ProtobufSerializerSettings
+    public record ProtobufNetSerializerSettings
     {
         public string ContentTypeHeader { get; } = string.Empty;
 
-        public ProtobufSerializerSettings(string contentTypeHeader)
+        public ProtobufNetSerializerSettings(string contentTypeHeader)
         {
             Ensure.IsNotNullOrEmpty(contentTypeHeader, nameof(contentTypeHeader));
 

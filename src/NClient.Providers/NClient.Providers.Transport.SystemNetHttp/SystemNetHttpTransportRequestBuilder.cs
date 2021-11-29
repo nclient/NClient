@@ -9,13 +9,13 @@ using NClient.Providers.Transport.SystemNetHttp.Helpers;
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.SystemNetHttp
 {
-    internal class SystemHttpTransportRequestBuilder : ITransportRequestBuilder<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemNetHttpTransportRequestBuilder : ITransportRequestBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly ISystemHttpMethodMapper _systemHttpMethodMapper;
+        private readonly ISystemNetHttpMethodMapper _systemNetHttpMethodMapper;
 
-        public SystemHttpTransportRequestBuilder(ISystemHttpMethodMapper systemHttpMethodMapper)
+        public SystemNetHttpTransportRequestBuilder(ISystemNetHttpMethodMapper systemNetHttpMethodMapper)
         {
-            _systemHttpMethodMapper = systemHttpMethodMapper;
+            _systemNetHttpMethodMapper = systemNetHttpMethodMapper;
         }
         
         public Task<HttpRequestMessage> BuildAsync(IRequest request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
 
             var httpRequestMessage = new HttpRequestMessage
             {
-                Method = _systemHttpMethodMapper.Map(request.Type), 
+                Method = _systemNetHttpMethodMapper.Map(request.Type), 
                 RequestUri = uri
             };
 

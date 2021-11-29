@@ -66,7 +66,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddCustomNClientFactory((serviceProvider, configure) => configure
                 .UsingRestApi()
-                .UsingSystemHttpTransport(
+                .UsingSystemNetHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName: "TestClient")
                 .UsingJsonSerializer()

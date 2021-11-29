@@ -22,7 +22,7 @@ namespace NClient.Tests.ClientTests
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport(httpClient)
+                .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
                 .Build();
 
@@ -40,7 +40,7 @@ namespace NClient.Tests.ClientTests
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport(httpClient)
+                .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
                 .Build();
 

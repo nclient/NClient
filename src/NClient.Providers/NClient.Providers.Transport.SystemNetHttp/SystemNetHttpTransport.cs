@@ -7,12 +7,12 @@ using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 namespace NClient.Providers.Transport.SystemNetHttp
 {
-    internal class SystemHttpTransport : ITransport<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemNetHttpTransport : ITransport<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _httpClientName;
 
-        public SystemHttpTransport(IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemNetHttpTransport(IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientName = httpClientName ?? Options.DefaultName;

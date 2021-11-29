@@ -8,11 +8,11 @@ using NClient.Providers.Transport.SystemNetHttp.Builders;
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.SystemNetHttp
 {
-    internal class SystemHttpResponseBuilder : IResponseBuilder<HttpRequestMessage, HttpResponseMessage>
+    internal class SystemNetHttpResponseBuilder : IResponseBuilder<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
 
-        public SystemHttpResponseBuilder(IFinalHttpRequestBuilder finalHttpRequestBuilder)
+        public SystemNetHttpResponseBuilder(IFinalHttpRequestBuilder finalHttpRequestBuilder)
         {
             _finalHttpRequestBuilder = finalHttpRequestBuilder;
         }

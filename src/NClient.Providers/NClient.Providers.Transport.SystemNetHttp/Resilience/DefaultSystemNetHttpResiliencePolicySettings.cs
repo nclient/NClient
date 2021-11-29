@@ -4,13 +4,13 @@ using System.Net.Http;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport.Http.System
 {
-    public class DefaultSystemResiliencePolicySettings : SystemResiliencePolicySettings
+    public class DefaultSystemNetHttpResiliencePolicySettings : SystemNetHttpResiliencePolicySettings
     {
-        public DefaultSystemResiliencePolicySettings() : this(maxRetries: null, getDelay: null, shouldRetry: null)
+        public DefaultSystemNetHttpResiliencePolicySettings() : this(maxRetries: null, getDelay: null, shouldRetry: null)
         {
         }
         
-        public DefaultSystemResiliencePolicySettings(
+        public DefaultSystemNetHttpResiliencePolicySettings(
             int? maxRetries = null, 
             Func<int, TimeSpan>? getDelay = null, 
             Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null) 

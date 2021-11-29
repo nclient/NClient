@@ -6,13 +6,13 @@ using NClient.Providers.Transport.SystemNetHttp;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class SystemHttpTransportBuilderExtensions
+    public static class SystemNetHttpTransportBuilderExtensions
     {
         /// <summary>
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="transportBuilder"></param>
-        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> transportBuilder)
             where TClient : class
         {
@@ -20,9 +20,9 @@ namespace NClient
 
             return transportBuilder
                 .UsingCustomTransport(
-                    new SystemHttpTransportProvider(), 
-                    new SystemHttpTransportRequestBuilderProvider(),
-                    new SystemHttpResponseBuilderProvider());
+                    new SystemNetHttpTransportProvider(), 
+                    new SystemNetHttpTransportRequestBuilderProvider(),
+                    new SystemNetHttpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace NClient
         /// </summary>
         /// <param name="transportBuilder"></param>
         /// <param name="httpClient">The custom HTTP client.</param>
-        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> transportBuilder,
             HttpClient httpClient)
             where TClient : class
@@ -39,9 +39,9 @@ namespace NClient
 
             return transportBuilder
                 .UsingCustomTransport(
-                    new SystemHttpTransportProvider(httpClient), 
-                    new SystemHttpTransportRequestBuilderProvider(),
-                    new SystemHttpResponseBuilderProvider());
+                    new SystemNetHttpTransportProvider(httpClient), 
+                    new SystemNetHttpTransportRequestBuilderProvider(),
+                    new SystemNetHttpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace NClient
         /// <param name="transportBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
-        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport<TClient>(
+        public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> transportBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
             where TClient : class
@@ -59,25 +59,25 @@ namespace NClient
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
             return transportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
+                new SystemNetHttpTransportProvider(httpClientFactory, httpClientName), 
+                new SystemNetHttpTransportRequestBuilderProvider(),
+                new SystemNetHttpResponseBuilderProvider());
         }
 
         /// <summary>
         /// Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.
         /// </summary>
         /// <param name="transportBuilder"></param>
-        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport(
             this INClientFactoryTransportBuilder transportBuilder)
         {
             Ensure.IsNotNull(transportBuilder, nameof(transportBuilder));
 
             return transportBuilder
                 .UsingCustomTransport(
-                    new SystemHttpTransportProvider(), 
-                    new SystemHttpTransportRequestBuilderProvider(),
-                    new SystemHttpResponseBuilderProvider());
+                    new SystemNetHttpTransportProvider(), 
+                    new SystemNetHttpTransportRequestBuilderProvider(),
+                    new SystemNetHttpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace NClient
         /// </summary>
         /// <param name="transportBuilder"></param>
         /// <param name="httpClient">The custom HTTP client.</param>
-        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport(
             this INClientFactoryTransportBuilder transportBuilder,
             HttpClient httpClient)
         {
@@ -93,9 +93,9 @@ namespace NClient
 
             return transportBuilder
                 .UsingCustomTransport(
-                    new SystemHttpTransportProvider(httpClient), 
-                    new SystemHttpTransportRequestBuilderProvider(),
-                    new SystemHttpResponseBuilderProvider());
+                    new SystemNetHttpTransportProvider(httpClient), 
+                    new SystemNetHttpTransportRequestBuilderProvider(),
+                    new SystemNetHttpResponseBuilderProvider());
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace NClient
         /// <param name="transportBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
-        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemHttpTransport(
+        public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport(
             this INClientFactoryTransportBuilder transportBuilder,
             IHttpClientFactory httpClientFactory, string? httpClientName = null)
         {
@@ -112,9 +112,9 @@ namespace NClient
             Ensure.IsNotNull(httpClientFactory, nameof(httpClientFactory));
 
             return transportBuilder.UsingCustomTransport(
-                new SystemHttpTransportProvider(httpClientFactory, httpClientName), 
-                new SystemHttpTransportRequestBuilderProvider(),
-                new SystemHttpResponseBuilderProvider());
+                new SystemNetHttpTransportProvider(httpClientFactory, httpClientName), 
+                new SystemNetHttpTransportRequestBuilderProvider(),
+                new SystemNetHttpResponseBuilderProvider());
         }
     }
 }

@@ -4,13 +4,13 @@ using NClient.Common.Helpers;
 
 namespace NClient.Providers.Serialization.SystemTextJson
 {
-    internal class SystemJsonSerializer : ISerializer
+    internal class SystemTextJsonSerializer : ISerializer
     {
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public string ContentType { get; } = "application/json";
 
-        public SystemJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
+        public SystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
             Ensure.IsNotNull(jsonSerializerOptions, nameof(jsonSerializerOptions));
 

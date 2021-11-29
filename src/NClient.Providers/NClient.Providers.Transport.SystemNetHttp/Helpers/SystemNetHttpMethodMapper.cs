@@ -5,13 +5,13 @@ using NClient.Exceptions;
 
 namespace NClient.Providers.Transport.SystemNetHttp.Helpers
 {
-    internal interface ISystemHttpMethodMapper
+    internal interface ISystemNetHttpMethodMapper
     {
         HttpMethod Map(RequestType requestType);
         RequestType Map(HttpMethod method);
     }
     
-    internal class SystemHttpMethodMapper : ISystemHttpMethodMapper
+    internal class SystemNetHttpMethodMapper : ISystemNetHttpMethodMapper
     {
         private static readonly Dictionary<RequestType, HttpMethod> HttpMethodByRequestTypes = new()
         {

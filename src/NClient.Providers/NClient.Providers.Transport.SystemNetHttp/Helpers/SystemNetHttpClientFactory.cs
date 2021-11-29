@@ -2,11 +2,11 @@
 
 namespace NClient.Providers.Transport.SystemNetHttp.Helpers
 {
-    internal class SystemHttpClientFactory : IHttpClientFactory
+    internal class SystemNetHttpClientFactory : IHttpClientFactory
     {
         private readonly HttpClient _httpClient;
 
-        public SystemHttpClientFactory(HttpClient httpClient)
+        public SystemNetHttpClientFactory(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

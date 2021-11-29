@@ -15,17 +15,17 @@ namespace NClient.Providers.Transport.SystemNetHttp.Builders
     
     internal class FinalHttpRequestBuilder : IFinalHttpRequestBuilder
     {
-        private readonly ISystemHttpMethodMapper _systemHttpMethodMapper;
+        private readonly ISystemNetHttpMethodMapper _systemNetHttpMethodMapper;
 
-        public FinalHttpRequestBuilder(ISystemHttpMethodMapper systemHttpMethodMapper)
+        public FinalHttpRequestBuilder(ISystemNetHttpMethodMapper systemNetHttpMethodMapper)
         {
-            _systemHttpMethodMapper = systemHttpMethodMapper;
+            _systemNetHttpMethodMapper = systemNetHttpMethodMapper;
         }
         
         public async Task<IRequest> BuildAsync(IRequest request, HttpRequestMessage httpRequestMessage)
         {
             var endpoint = new Uri(httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Path));
-            var method = _systemHttpMethodMapper.Map(httpRequestMessage.Method);
+            var method = _systemNetHttpMethodMapper.Map(httpRequestMessage.Method);
             
             // Workaround for the framework:
             var disposedFiled = typeof(HttpContent).GetField(name: "disposed", BindingFlags.NonPublic | BindingFlags.Instance);

@@ -6,12 +6,12 @@ using NClient.Providers.Validation;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport.Http.System
 {
-    public class DefaultSystemResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
+    public class DefaultSystemNetHttpResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {
         public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
         public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
         
-        public DefaultSystemResponseValidatorSettings() : this(
+        public DefaultSystemNetHttpResponseValidatorSettings() : this(
             isSuccess: x => x.Response.IsSuccessStatusCode,
             onFailure: x =>
             {
@@ -27,7 +27,7 @@ namespace NClient.Providers.Transport.Http.System
         {
         }
         
-        public DefaultSystemResponseValidatorSettings(
+        public DefaultSystemNetHttpResponseValidatorSettings(
             Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
             Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)
         {

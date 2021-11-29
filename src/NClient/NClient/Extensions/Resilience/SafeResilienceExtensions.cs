@@ -22,7 +22,7 @@ namespace NClient
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
 
             return optionalBuilder.WithPollySafeResilience(
-                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+                new DefaultSystemNetHttpResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace NClient
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
 
             return optionalBuilder.WithPollySafeResilience(
-                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+                new DefaultSystemNetHttpResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
     }
 }

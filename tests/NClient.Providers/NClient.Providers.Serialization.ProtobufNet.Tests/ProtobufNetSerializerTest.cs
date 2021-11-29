@@ -10,7 +10,7 @@ using ProtoBuf;
 namespace NClient.Providers.Serialization.ProtobufNet.Tests
 {
     [Parallelizable]
-    public class ProtobufSerializerTest
+    public class ProtobufNetSerializerTest
     {
         public static readonly IEnumerable SerializationValidTestCases = new[]
         {
@@ -31,7 +31,7 @@ namespace NClient.Providers.Serialization.ProtobufNet.Tests
         [TestCaseSource(nameof(SerializationValidTestCases))]
         public void Serialize_ValidValues_NotThrow(object obj, object expectedResult, Type type)
         {
-            var serializer = new ProtobufSerializerProvider().Create(logger: null);
+            var serializer = new ProtobufNetSerializerProvider().Create(logger: null);
 
             var serializerString = serializer.Serialize(obj);
             byte[] bytes = Converters.GetBytes(serializerString);
@@ -44,7 +44,7 @@ namespace NClient.Providers.Serialization.ProtobufNet.Tests
         [Test]
         public void Serialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new ProtobufSerializerProvider().Create(logger: null);
+            var serializer = new ProtobufNetSerializerProvider().Create(logger: null);
 
             serializer
                 .Invoking(x => x.Serialize((int?) null))
@@ -55,7 +55,7 @@ namespace NClient.Providers.Serialization.ProtobufNet.Tests
         [TestCaseSource(nameof(DeserializationValidTestCases))]
         public void Deserialize_ValidValues_NotThrow(object sourceObject, object expectedResult, Type type)
         {
-            var serializer = new ProtobufSerializerProvider().Create(logger: null);
+            var serializer = new ProtobufNetSerializerProvider().Create(logger: null);
 
             using var memoryStream = new MemoryStream();
             Serializer.Serialize(memoryStream, sourceObject);
@@ -72,7 +72,7 @@ namespace NClient.Providers.Serialization.ProtobufNet.Tests
         [Test]
         public void Deserialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new ProtobufSerializerProvider().Create(logger: null);
+            var serializer = new ProtobufNetSerializerProvider().Create(logger: null);
 
             serializer
                 .Invoking(x => x.Deserialize(null!, typeof(string)))

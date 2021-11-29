@@ -5,19 +5,16 @@ using ProtoBuf;
 
 namespace NClient.Providers.Serialization.ProtobufNet
 {
-    public class ProtobufSerializer : ISerializer
+    public class ProtobufNetSerializer : ISerializer
     {
-        private readonly ProtobufSerializerSettings _protobufSerializerSettings;
+        public string ContentType { get; }
 
-        public string ContentType { get; } = String.Empty;
-
-        public ProtobufSerializer(ProtobufSerializerSettings protobufSerializerSettings)
+        public ProtobufNetSerializer(ProtobufNetSerializerSettings protobufNetSerializerSettings)
         {
-            Ensure.IsNotNull(protobufSerializerSettings, nameof(protobufSerializerSettings));
-            Ensure.IsNotNullOrEmpty(protobufSerializerSettings.ContentTypeHeader, nameof(protobufSerializerSettings.ContentTypeHeader));
+            Ensure.IsNotNull(protobufNetSerializerSettings, nameof(protobufNetSerializerSettings));
+            Ensure.IsNotNullOrEmpty(protobufNetSerializerSettings.ContentTypeHeader, nameof(protobufNetSerializerSettings.ContentTypeHeader));
 
-            _protobufSerializerSettings = protobufSerializerSettings;
-            ContentType = _protobufSerializerSettings.ContentTypeHeader;
+            ContentType = protobufNetSerializerSettings.ContentTypeHeader;
         }
 
         public object? Deserialize(string source, Type returnType)

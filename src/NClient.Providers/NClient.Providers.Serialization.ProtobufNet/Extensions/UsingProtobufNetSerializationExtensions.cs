@@ -5,7 +5,7 @@ using NClient.Providers.Serialization.ProtobufNet;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class UsingProtobufSerializationExtensions
+    public static class UsingProtobufNetSerializationExtensions
     {
         /// <summary>
         /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
@@ -17,24 +17,24 @@ namespace NClient
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return serializationBuilder.UsingCustomSerializer(new ProtobufSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new ProtobufNetSerializerProvider());
         }
 
         /// <summary>
         /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="protobufSerializerSettings">The settings to be used with <see cref="ProtobufSerializer"/>.</param>
+        /// <param name="protobufNetSerializerSettings">The settings to be used with <see cref="ProtobufNetSerializer"/>.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
-            ProtobufSerializerSettings protobufSerializerSettings)
+            ProtobufNetSerializerSettings protobufNetSerializerSettings)
             where TClient : class
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
-            Ensure.IsNotNull(protobufSerializerSettings, nameof(protobufSerializerSettings));
+            Ensure.IsNotNull(protobufNetSerializerSettings, nameof(protobufNetSerializerSettings));
 
             return serializationBuilder
-                .UsingCustomSerializer(new ProtobufSerializerProvider(protobufSerializerSettings));
+                .UsingCustomSerializer(new ProtobufNetSerializerProvider(protobufNetSerializerSettings));
         }
 
         /// <summary>
@@ -46,23 +46,23 @@ namespace NClient
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return serializationBuilder.UsingCustomSerializer(new ProtobufSerializerProvider());
+            return serializationBuilder.UsingCustomSerializer(new ProtobufNetSerializerProvider());
         }
 
         /// <summary>
         /// Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
         /// </summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="protobufSerializerSettings">The settings to be used with <see cref="ProtobufSerializer"/>.</param>
+        /// <param name="protobufNetSerializerSettings">The settings to be used with <see cref="ProtobufNetSerializer"/>.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingProtobufNetSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
-            ProtobufSerializerSettings protobufSerializerSettings)
+            ProtobufNetSerializerSettings protobufNetSerializerSettings)
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
-            Ensure.IsNotNull(protobufSerializerSettings, nameof(protobufSerializerSettings));
+            Ensure.IsNotNull(protobufNetSerializerSettings, nameof(protobufNetSerializerSettings));
 
             return serializationBuilder
-                .UsingCustomSerializer(new ProtobufSerializerProvider(protobufSerializerSettings));
+                .UsingCustomSerializer(new ProtobufNetSerializerProvider(protobufNetSerializerSettings));
         }
     }
 }
