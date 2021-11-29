@@ -32,10 +32,10 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
 
             var actualResult = methodBuilder.Build(methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
-            actualResult.Should().BeEquivalentTo(new MethodParam(
-                paramInfo.Name!,
-                paramInfo.ParameterType,
-                paramAttribute));
+            actualResult.Should().BeEquivalentTo(new[] 
+            { 
+                new MethodParam(paramInfo.Name!, paramInfo.ParameterType, paramAttribute)
+            });
         }
     }
 }
