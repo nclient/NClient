@@ -9,6 +9,6 @@
         /// Creates and configures an instance of <see cref="ITransport{TRequest,TResponse}"/> instance.
         /// </summary>
         /// <param name="serializer">The serializer for serializing a request body.</param>
-        ITransport<TRequest, TResponse> Create(IToolSet toolset);
+        ITransport<TRequest, TResponse> Create(IToolset toolset);
     }
 }

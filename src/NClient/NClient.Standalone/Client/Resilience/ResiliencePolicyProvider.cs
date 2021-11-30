@@ -12,7 +12,7 @@ namespace NClient.Standalone.Client.Resilience
             _resiliencePolicy = resiliencePolicy;
         }
         
-        public IResiliencePolicy<TRequest, TResponse> Create(IToolSet toolset)
+        public IResiliencePolicy<TRequest, TResponse> Create(IToolset toolset)
         {
             return _resiliencePolicy;
         }

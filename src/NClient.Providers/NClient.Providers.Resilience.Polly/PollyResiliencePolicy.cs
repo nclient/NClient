@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Common.Helpers;
 using NClient.Providers.Transport;
@@ -24,11 +25,13 @@ namespace NClient.Providers.Resilience.Polly
             _asyncPolicy = asyncPolicy;
         }
 
-        public async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(Func<Task<IResponseContext<TRequest, TResponse>>> action)
+        public async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(
+            Func<CancellationToken, Task<IResponseContext<TRequest, TResponse>>> action, CancellationToken cancellationToken)
         {
             Ensure.IsNotNull(action, nameof(action));
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var responseContext = await _asyncPolicy.ExecuteAsync(action).ConfigureAwait(false);
+            var responseContext = await _asyncPolicy.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
             return responseContext;
         }
     }

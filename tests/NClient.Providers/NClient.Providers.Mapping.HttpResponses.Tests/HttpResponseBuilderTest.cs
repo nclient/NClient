@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -42,7 +43,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponse), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponse), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse>();
             ((HttpResponse) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -61,7 +63,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(IHttpResponse), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(IHttpResponse), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse>();
             ((HttpResponse) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -78,7 +81,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             };
             var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponse), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponse), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse>();
             ((HttpResponse) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -97,7 +101,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponse<BasicEntity>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponse<BasicEntity>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -117,7 +122,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(IHttpResponse<BasicEntity>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(IHttpResponse<BasicEntity>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -135,7 +141,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             };
             var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponse<BasicEntity>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponse<BasicEntity>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -153,7 +160,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             };
             var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponseWithError<string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponseWithError<string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -171,7 +179,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             };
             var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(IHttpResponseWithError<string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(IHttpResponseWithError<string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -191,7 +200,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             const string expectedError = "error";
             _serializerMockSetup.Returns(expectedError);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponseWithError<string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponseWithError<string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -211,7 +221,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
             
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -232,7 +243,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             var expectedData = new BasicEntity { Id = 1, Value = 2 };
             _serializerMockSetup.Returns(expectedData);
             
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(IHttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(IHttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
@@ -253,7 +265,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             const string expectedError = "error";
             _serializerMockSetup.Returns(expectedError);
 
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(typeof(HttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object);
+            var actualResult = await _responseToHttpResponseMapper.MapAsync(
+                typeof(HttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);

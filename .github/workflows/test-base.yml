@@ -5,12 +5,15 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  solution: NClient.sln
+
 jobs:
   build:
     name: Build with ${{ matrix.target-frameworks }}
     strategy:
       matrix:
-        target-frameworks: [net48, net5.0]
+        target-frameworks: [net48, net5.0, net6.0]
     runs-on: windows-latest
     steps:
       - name: Checkout Repo
@@ -19,7 +22,7 @@ jobs:
         uses: ./actions/build
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'Tests.slnf'
+          solution: Tests.slnf
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -36,7 +39,7 @@ jobs:
         uses: ./actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
+          solution: ${{ env.solution }}
           
   test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -44,7 +47,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        target-frameworks: [net5.0]
+        target-frameworks: [net5.0, net6.0]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
@@ -53,4 +56,4 @@ jobs:
         uses: ./actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
+          solution: ${{ env.solution }}

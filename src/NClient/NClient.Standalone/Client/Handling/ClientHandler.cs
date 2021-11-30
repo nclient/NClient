@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
@@ -12,12 +13,12 @@ namespace NClient.Standalone.Client.Handling
             _clientHandlerSettings = clientHandlerSettings;
         }
 
-        public Task<TRequest> HandleRequestAsync(TRequest request)
+        public Task<TRequest> HandleRequestAsync(TRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult(_clientHandlerSettings.BeforeRequest(request));
         }
 
-        public Task<TResponse> HandleResponseAsync(TResponse response)
+        public Task<TResponse> HandleResponseAsync(TResponse response, CancellationToken cancellationToken)
         {
             return Task.FromResult(_clientHandlerSettings.AfterResponse(response));
         }

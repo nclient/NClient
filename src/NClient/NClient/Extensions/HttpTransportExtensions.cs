@@ -17,7 +17,7 @@ namespace NClient
         {
             Ensure.IsNotNull(transportBuilder, nameof(transportBuilder));
 
-            return transportBuilder.UsingSystemHttpTransport();
+            return transportBuilder.UsingSystemNetHttpTransport();
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace NClient
         {
             Ensure.IsNotNull(transportBuilder, nameof(transportBuilder));
 
-            return transportBuilder.UsingSystemHttpTransport();
+            return transportBuilder.UsingSystemNetHttpTransport();
         }
     }
 }

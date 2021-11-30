@@ -24,7 +24,7 @@ namespace NClient.Standalone.Client
         private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _resultBuilderProviders;
         private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _typedResultBuilderProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
-        private readonly IToolSet _toolset;
+        private readonly IToolset _toolset;
 
         public TransportNClientFactory(
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -35,7 +35,7 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            IToolSet toolset)
+            IToolset toolset)
         {
             _transportProvider = transportProvider;
             _transportRequestBuilderProvider = transportRequestBuilderProvider;

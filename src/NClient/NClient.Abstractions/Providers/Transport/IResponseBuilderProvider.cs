@@ -2,6 +2,6 @@
 {
     public interface IResponseBuilderProvider<TRequest, TResponse>
     {
-        IResponseBuilder<TRequest, TResponse> Create(IToolSet toolset);
+        IResponseBuilder<TRequest, TResponse> Create(IToolset toolset);
     }
 }

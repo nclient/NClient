@@ -14,7 +14,7 @@ namespace NClient.Standalone.Client.Validation
             _responseValidatorProviders = responseValidatorProviders;
         }
         
-        public IResponseValidator<TRequest, TResponse> Create(IToolSet toolset)
+        public IResponseValidator<TRequest, TResponse> Create(IToolset toolset)
         {
             return new ResponseValidatorDecorator<TRequest, TResponse>(_responseValidatorProviders
                 .Select(x => x.Create(toolset)));

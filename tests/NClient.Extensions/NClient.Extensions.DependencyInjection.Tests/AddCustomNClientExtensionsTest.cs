@@ -67,7 +67,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             serviceCollection.AddCustomNClient<ITestClientWithMetadata>(host: "http://localhost:5000", (serviceProvider, configure) => configure
                 .UsingRestApi()
-                .UsingSystemHttpTransport(
+                .UsingSystemNetHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName: "TestClient")
                 .UsingJsonSerializer()

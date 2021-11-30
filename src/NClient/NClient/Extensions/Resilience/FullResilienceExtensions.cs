@@ -17,7 +17,7 @@ namespace NClient
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
             return optionalBuilder.WithPollyFullResilience(
-                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+                new DefaultSystemNetHttpResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
 
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithFullResilience(
@@ -27,7 +27,7 @@ namespace NClient
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
             
             return optionalBuilder.WithPollyFullResilience(
-                new DefaultSystemResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
+                new DefaultSystemNetHttpResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
     }
 }
