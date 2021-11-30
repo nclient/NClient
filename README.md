@@ -36,7 +36,7 @@ Weather todaysWeather = await weatherFacade.GetAsync(city: "Chelyabinsk", date: 
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
 - **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Resilience:** resilience is provided by different strategies. There is Polly support.
-- **Serialization selection:** various serializers are avaliable for use: Newtonsoft JSON, system JSON, system XML, your own.
+- **Serialization selection:** various serializers are avaliable for use: System.Text.Json, Newtonsoft JSON, System.XML, MessagePack, Protobuf, your own.
 - **Response validation:** preset or custom validation of responses can be set.
 - **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
 - **Extension using handlers:** handlers allow to add custom logic to the client parts
@@ -234,12 +234,14 @@ It's worth getting in touch with us to discuss changes in case of any questions.
 - [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection): Extension methods for registration of clients in ServiceCollection.
 
 ### Providers
-- [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest): Rest based api provider.
-- [NClient.Providers.Transport.Http.System](https://www.nuget.org/packages/NClient.Providers.Transport.Http.System): System.Net.Http based transport provider.
-- [NClient.Providers.Transport.Http.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.Http.RestSharp): RestSharp based HTTP client provider.
-- [NClient.Providers.Serialization.Json.System](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.System): System.Text.Json based serialization provider.
-- [NClient.Providers.Serialization.Json.Newtonsoft](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.Newtonsoft): Newtonsoft.Json based serialization provider.
-- [NClient.Providers.Serialization.Json.Newtonsoft](https://www.nuget.org/packages/NClient.Providers.Serialization.Json.Newtonsoft): SSystem.Xml.XmlSerializer based serialization provider.
-- [NClient.Providers.Resilience.Polly](https://www.nuget.org/packages/NClient.Providers.Resilience.Polly): Polly based resilience policy provider
-- [NClient.Providers.Mapping.HttpResponses](https://www.nuget.org/packages/NClient.Providers.Mapping.HttpResponses): Native NClient HttpResponse results provider.
-- [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packages/NClient.Providers.Mapping.LanguageExt): LanguageExt based results provider
+- [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest): The provider that allows you to create clients for the REST API.
+- [NClient.Providers.Transport.SystemNetHttp](https://www.nuget.org/packages/NClient.Providers.Transport.SystemNetHttp): The provider that allows you to transport messages using System.Net.Http.
+- [NClient.Providers.Transport.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.RestSharp): The provider that allows you to transport messages using RestSharp.
+- [NClient.Providers.Serialization.SystemTextJson](https://www.nuget.org/packages/NClient.Providers.Serialization.SystemTextJson): The provider that allows you to use the System.Text.Json serializer.
+- [NClient.Providers.Serialization.NewtonsoftJson](https://www.nuget.org/packages/NClient.Providers.Serialization.NewtonsoftJson): The provider that allows you to use the Newtonsoft.Json serializer.
+- [NClient.Providers.Serialization.SystemXml](https://www.nuget.org/packages/NClient.Providers.Serialization.SystemXml): The provider that allows you to use the System.Xml.XmlSerializer serializer.
+- [NClient.Providers.Serialization.MessagePack](https://www.nuget.org/packages/NClient.Providers.Serialization.MessagePack): The provider that allows you to use the MessagePack serializer.
+- [NClient.Providers.Serialization.ProtobufNet](https://www.nuget.org/packages/NClient.Providers.Serialization.ProtobufNet): The provider that allows you to use the Protobuf serializer.
+- [NClient.Providers.Resilience.Polly](https://www.nuget.org/packages/NClient.Providers.Resilience.Polly): The provider that allows you to implement resilience policies using the Polly library.
+- [NClient.Providers.Mapping.HttpResponses](https://www.nuget.org/packages/NClient.Providers.Mapping.HttpResponses): The provider that allows you to return native HTTP responses.
+- [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packages/NClient.Providers.Mapping.LanguageExt): The provider that allows you to return the LanguageExt of a monad as responses.
