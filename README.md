@@ -32,12 +32,13 @@ IWeatherFacade weatherFacade = NClientGallery.Clients.GetRest()
 Weather todaysWeather = await weatherFacade.GetAsync(city: "Chelyabinsk", date: DateTime.Today);
 ```
 
+Do you like it? Give us a star! ⭐
+
 #### Advantages of NClient:
 - **Integration with ASP.NET:** clients are available for all controllers out of the box.
-- **Asynchronous requests:** asynchronous and synchronous requests are supported.
 - **Resilience:** resilience is provided by different strategies. There is Polly support.
 - **Serialization selection:** various serializers are avaliable for use: System.Text.Json, Newtonsoft JSON, System.XML, MessagePack, Protobuf, your own.
-- **Response validation:** preset or custom validation of responses can be set.
+- **Auto validation of responses:** preset or custom validation of responses can be set.
 - **Auto mapping of responses:** native or your own models can be returned from the client instead of responses or DTO.
 - **Extension using handlers:** handlers allow to add custom logic to the client parts
 - **Extension using providers:** the client functionality can be extended with native or your own providers. 
@@ -47,7 +48,7 @@ Weather todaysWeather = await weatherFacade.GetAsync(city: "Chelyabinsk", date: 
 - **[WIP] All types of applications:** the library can be used on backend (ASP.NET) and frontend (Blazor), its planed tо support mobile/desktop (MAUI).
 - **[WIP] Various protocols:** REST protocol is provided as a ready-made solution, its planed to add GraphQL and RPC.
 
-Do you like it? Give us a star! ⭐
+**Features:** Dynamic templated routing; Static routing; Dynamic query parameters; Collections as query parameters; Dynamic headers; Static headers; Dynamic body; Auto serialization and deserialization; HTTP/Transport context; Authentication; Asynchronous requests; Timeouts; Cancellation requests; Resilience policy; Response validation; Response mapping; File upload/download; Generic interfaces; Interface inheritance; Client factory; Versioning; Handling; Logging.
 
 ## Table of Contents
 - [Why use NClient?](#why)
