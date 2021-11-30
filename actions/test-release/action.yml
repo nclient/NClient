@@ -1,6 +1,9 @@
 name: Test release
 
 inputs:
+  solution:
+    description: 'Solution/project path'
+    required: true
   version-prefix:
     description: 'Version prefix'     
     required: true
@@ -44,8 +47,8 @@ runs:
         fi
       shell: bash
     - name: Restore dependencies and build
-      run: dotnet build --configuration TestRelease -warnaserror
+      run: dotnet build ${{ inputs.solution }} --configuration TestRelease -warnaserror
       shell: bash
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration TestRelease
+      run: dotnet test ${{ inputs.solution }} --no-build --verbosity normal --configuration TestRelease
       shell: bash

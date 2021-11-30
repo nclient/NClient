@@ -16,7 +16,7 @@ namespace NClient
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return serializationBuilder.UsingSystemJsonSerialization();
+            return serializationBuilder.UsingSystemTextJsonSerialization();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace NClient
         {
             Ensure.IsNotNull(serializationBuilder, nameof(serializationBuilder));
 
-            return serializationBuilder.UsingSystemJsonSerialization();
+            return serializationBuilder.UsingSystemTextJsonSerialization();
         }
     }
 }

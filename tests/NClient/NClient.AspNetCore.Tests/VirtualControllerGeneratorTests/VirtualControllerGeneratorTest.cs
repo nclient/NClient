@@ -59,7 +59,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
         }
 
         [HttpFacade] public interface IInterfaceWithApiAttribute { }
@@ -81,7 +81,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(2);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new ApiControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute(), new ApiControllerAttribute() });
         }
 
         [Authorized] public interface IInterfaceWithAuthorizedAttribute { }
@@ -103,7 +103,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(2);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new AuthorizeAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new Attribute[] { new ControllerAttribute(), new AuthorizeAttribute() });
         }
 
         [Anonymous] public interface IInterfaceWithAnonymousAttribute { }
@@ -125,7 +125,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(2);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new AllowAnonymousAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new Attribute[] { new ControllerAttribute(), new AllowAnonymousAttribute() });
         }
 
         [Version("1.0")] public interface IInterfaceWithVersionAttribute { }
@@ -147,7 +147,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(2);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new ApiVersionAttribute("1.0"));
+            controllerAttributes.Should().BeEquivalentTo(new Attribute[] { new ControllerAttribute(), new ApiVersionAttribute("1.0") });
         }
 
         public interface IInterfaceWithToVersionAttribute {[ToVersion("1.0")] void Method(); }
@@ -169,11 +169,11 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(InterfaceWithToVersionAttribute.Method))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new MapToApiVersionAttribute("1.0"));
+            methodAttributes.Should().BeEquivalentTo(new[] { new MapToApiVersionAttribute("1.0") });
         }
 
         [Path("api/[controller]")] public interface IInterfaceWithPathAttributeWithTemplate { }
@@ -195,7 +195,10 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(2);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 });
+            controllerAttributes.Should().BeEquivalentTo(new Attribute[]
+            {
+                new ControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 }
+            });
         }
 
         [HttpFacade, Path("api/[controller]")] public interface IInterfaceWithApiAndPathAttributes { }
@@ -217,7 +220,10 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(3);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute(), new ApiControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 });
+            controllerAttributes.Should().BeEquivalentTo(new Attribute[]
+            {
+                new ControllerAttribute(), new ApiControllerAttribute(), new RouteAttribute("api/[controller]") { Order = 0 }
+            });
         }
 
         public interface IMethodAttributeController { [GetMethod] int Get(); }
@@ -239,11 +245,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
+            methodAttributes.Should().BeEquivalentTo(new[] { new HttpGetAttribute { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpGetAttribute>());
         }
         
         public interface IInterfaceAspNetMethodAttributeController { [HttpGet] int Get(); }
@@ -265,11 +272,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
+            methodAttributes.Should().BeEquivalentTo(new[] { new HttpGetAttribute { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpGetAttribute>());
         }
         
         public interface IControllerAspNetMethodAttributeController { int Get(); }
@@ -291,11 +299,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
+            methodAttributes.Should().BeEquivalentTo(new[] { new HttpGetAttribute { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpGetAttribute>());
         }
 
         public interface IMethodAttributeWithTemplateController { [GetMethod("[action]")] int Get(); }
@@ -317,11 +326,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(MethodAttributeWithTemplateController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute("[action]") { Order = 0 });
+            methodAttributes.Should().BeEquivalentTo(new[] { new HttpGetAttribute("[action]") { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpGetAttribute>());
         }
 
         public interface IMultipleMethodController { [GetMethod] int Get(); [PostMethod] int Post(); }
@@ -343,15 +353,17 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var getMethodInfo = virtualControllerType.GetMethod(nameof(MultipleMethodController.Get))!;
             var getMethodAttributes = getMethodInfo.GetCustomAttributes(inherit: true);
             getMethodAttributes.Length.Should().Be(1);
-            getMethodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 });
+            getMethodAttributes.Should().BeEquivalentTo(new[] { new HttpGetAttribute { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpGetAttribute>());
             var postMethodInfo = virtualControllerType.GetMethod(nameof(MultipleMethodController.Post))!;
             var postMethodAttributes = postMethodInfo.GetCustomAttributes(inherit: true);
             postMethodAttributes.Length.Should().Be(1);
-            postMethodAttributes.Should().BeEquivalentTo(new HttpPostAttribute { Order = 0 });
+            postMethodAttributes.Should().BeEquivalentTo(new[] { new HttpPostAttribute { Order = 0 } }, 
+                opts => opts.ComparingByMembers<HttpPostAttribute>());
         }
 
         public class CustomAttribute : Attribute { }
@@ -374,14 +386,14 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(NotNClientMethodAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(1);
-            methodAttributes.Should().BeEquivalentTo(new CustomAttribute());
+            methodAttributes.Should().BeEquivalentTo(new[] { new CustomAttribute() });
         }
 
-        public interface IResponseAttributeController {[GetMethod, Response(typeof(int), HttpStatusCode.OK)] int Get(); }
+        public interface IResponseAttributeController { [GetMethod, Response(typeof(int), HttpStatusCode.OK)] int Get(); }
         public class ResponseAttributeController : IResponseAttributeController { public int Get() => 1; }
 
         [Test]
@@ -400,11 +412,12 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(ResponseAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(2);
-            methodAttributes.Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 }, new ProducesResponseTypeAttribute(typeof(int), 200));
+            methodAttributes[0].Should().BeEquivalentTo(new HttpGetAttribute { Order = 0 }, opts => opts.ComparingByMembers<HttpGetAttribute>());
+            methodAttributes[1].Should().BeEquivalentTo(new ProducesResponseTypeAttribute(typeof(int), 200), opts => opts.ComparingByMembers<ProducesResponseTypeAttribute>());
         }
 
         public interface IParameterAttributeController { int Get([QueryParam] int id); }
@@ -426,7 +439,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(0);
@@ -456,7 +469,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeWithNameController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(0);
@@ -486,7 +499,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeController.Get))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Length.Should().Be(0);
@@ -519,7 +532,7 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             var virtualControllerType = actualResult.Single().Type;
             var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
             controllerAttributes.Length.Should().Be(1);
-            controllerAttributes.Should().BeEquivalentTo(new ControllerAttribute());
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
             var methodInfo = virtualControllerType.GetMethod(nameof(GenericInterface.Method))!;
             var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
             methodAttributes.Should().BeEmpty();

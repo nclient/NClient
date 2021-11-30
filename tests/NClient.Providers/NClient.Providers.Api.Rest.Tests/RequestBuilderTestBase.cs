@@ -14,7 +14,7 @@ using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Serialization;
-using NClient.Providers.Serialization.Json.System;
+using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
@@ -41,7 +41,7 @@ namespace NClient.Providers.Api.Rest.Tests
         {
             var objectMemberManager = new ObjectMemberManager(new ObjectMemberManagerExceptionFactory());
 
-            Serializer = new SystemJsonSerializerProvider().Create(logger: null);
+            Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
             var toolset = new Toolset(Serializer, logger: null);
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             RestClientValidationExceptionFactory = new ClientValidationExceptionFactory();
