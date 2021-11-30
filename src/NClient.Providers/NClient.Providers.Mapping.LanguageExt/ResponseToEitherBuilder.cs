@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
@@ -17,8 +18,11 @@ namespace NClient.Providers.Mapping.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, ISerializer serializer)
+        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
+            ISerializer serializer, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (responseContext.Response.IsSuccessful)
             {
                 var value = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[1]);

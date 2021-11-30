@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
+            TimeSpan? timeout = null,
             ILogger<TClient>? logger = null);
     }
 
@@ -76,6 +78,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
+            TimeSpan? timeout,
             ILogger<TClient>? logger = null)
         {
             var serializer = serializerProvider.Create(logger);
@@ -85,7 +88,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 resource,
                 _guidProvider,
                 _methodBuilder,
-                new ExplicitInvocationProvider<TRequest, TResponse>(_proxyGenerator),
+                new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
+                new ClientMethodInvocationProvider<TRequest, TResponse>(),
                 requestBuilderProvider.Create(toolset),
                 new TransportNClientFactory<TRequest, TResponse>(
                     transportProvider,
@@ -105,6 +109,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     toolset),
                 methodResiliencePolicyProvider,
                 _clientRequestExceptionFactory,
+                timeout,
                 toolset);
         }
     }

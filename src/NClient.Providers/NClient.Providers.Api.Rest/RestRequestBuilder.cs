@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Core.Helpers;
@@ -38,8 +39,11 @@ namespace NClient.Providers.Api.Rest
             _toolset = toolset;
         }
 
-        public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation)
+        public Task<IRequest> BuildAsync(Guid requestId, string resource, 
+            IMethodInvocation methodInvocation, TimeSpan? timeout, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
             var methodParameters = methodInvocation.Method.Params
@@ -53,7 +57,10 @@ namespace NClient.Providers.Api.Rest
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
             var endpoint = PathHelper.Combine(resource, route);
-            var request = new Request(requestId, endpoint, requestType);
+            var request = new Request(requestId, endpoint, requestType)
+            {
+                Timeout = timeout
+            };
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Handling;
@@ -14,12 +15,12 @@ namespace NClient.Sandbox.Client.ClientHandlers
             _logger = logger;
         }
 
-        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request)
+        public Task<HttpRequestMessage> HandleRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             return Task.FromResult(request);
         }
 
-        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response)
+        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
             _logger.LogDebug("The response with the body is received: {httpRequestContent}", response.Content);
             return Task.FromResult(response);

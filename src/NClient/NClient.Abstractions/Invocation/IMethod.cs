@@ -18,9 +18,9 @@ namespace NClient.Invocation
         /// </summary>
         Type ClientType { get; }
         IOperationAttribute Operation { get; }
-        IPathAttribute? PathAttribute { get; set; }
-        IUseVersionAttribute? UseVersionAttribute { get; set; }
-        IMetadataAttribute[] MetadataAttributes { get; set; }
+        IPathAttribute? PathAttribute { get; }
+        IUseVersionAttribute? UseVersionAttribute { get; }
+        IMetadataAttribute[] MetadataAttributes { get; }
         IMethodParam[] Params { get; }
         /// <summary>
         /// Gets type returned by the client method.

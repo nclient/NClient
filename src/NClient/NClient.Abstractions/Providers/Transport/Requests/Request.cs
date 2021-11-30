@@ -36,6 +36,10 @@ namespace NClient.Providers.Transport
         /// Gets collection of metadata.
         /// </summary>
         public IMetadataContainer Metadatas { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public TimeSpan? Timeout { get; set; }
 
         /// <summary>
         /// Creates container for request data.

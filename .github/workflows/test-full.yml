@@ -6,6 +6,9 @@ on:
     types: assigned
     branches: [ main, alpha-release, beta-release, release ]
 
+env:
+  solution: NClient.sln
+
 jobs:
   build:
     name: Build with ${{ matrix.target-frameworks }}
@@ -20,7 +23,7 @@ jobs:
         uses: ./actions/build
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'Tests.slnf'
+          solution: Tests.slnf
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -37,7 +40,7 @@ jobs:
         uses: ./actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
+          solution: ${{ env.solution }}
           
   test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -54,4 +57,4 @@ jobs:
         uses: ./actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: 'NClient.sln'
+          solution: ${{ env.solution }}

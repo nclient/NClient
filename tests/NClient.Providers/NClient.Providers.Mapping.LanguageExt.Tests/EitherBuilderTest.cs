@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
@@ -32,7 +33,8 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.MapAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
+            var actualResult = await eitherBuilder.MapAsync(
+                typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Right<string, BasicEntity>(expectedValue) }));
         }
@@ -54,7 +56,8 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             };
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            var actualResult = await eitherBuilder.MapAsync(typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object);
+            var actualResult = await eitherBuilder.MapAsync(
+                typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object, CancellationToken.None);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Left<string, BasicEntity>(expectedError) }));
         }

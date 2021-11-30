@@ -8,7 +8,7 @@ namespace NClient
         public static INClientResponseValidationSelector<HttpRequestMessage, HttpResponseMessage> Use(
             this INClientTransportResponseValidationSetter<HttpRequestMessage, HttpResponseMessage> transportResponseValidationSetter)
         {
-            return transportResponseValidationSetter.UseSystemResponseValidation();
+            return transportResponseValidationSetter.UseSystemNetHttpResponseValidation();
         }
     }
 }
