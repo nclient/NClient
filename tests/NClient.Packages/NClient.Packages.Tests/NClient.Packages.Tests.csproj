@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net472;net48;net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net462;net472;net48;net5.0;netcoreapp3.1</TargetFrameworks>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>
@@ -20,19 +21,21 @@
         <PackageReference Include="NClient.Standalone" Version="*-*"/>
         <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.Http.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.Http.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.RestSharp" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Transport.SystemNetHttp" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Json.System" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Json.Newtonsoft" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.Xml.System" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.MessagePack" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.NewtonsoftJson" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.ProtobufNet" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*"/>
+        <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="5.10.3"/>
+        <PackageReference Include="FluentAssertions" Version="6.2.0"/>
         <PackageReference Include="Moq" Version="4.16.0"/>
         <PackageReference Include="NUnit" Version="3.12.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="3.16.1"/>

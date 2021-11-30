@@ -21,8 +21,8 @@ namespace NClient.Standalone.Tests
             var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -39,8 +39,8 @@ namespace NClient.Standalone.Tests
             var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .WithoutResponseValidation()
                 .Build()
                 .GetAsync(id);
@@ -57,10 +57,10 @@ namespace NClient.Standalone.Tests
             var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .WithAdvancedResponseValidation(x => x
-                    .ForTransport().UseSystemResponseValidation())
+                    .ForTransport().UseSystemNetHttpResponseValidation())
                 .Build()
                 .GetAsync(id);
 
@@ -76,10 +76,10 @@ namespace NClient.Standalone.Tests
             var result = await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .WithAdvancedResponseValidation(x => x
-                    .ForTransport().UseSystemResponseValidation())
+                    .ForTransport().UseSystemNetHttpResponseValidation())
                 .Build()
                 .GetAsync(id);
 
@@ -95,8 +95,8 @@ namespace NClient.Standalone.Tests
             await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
@@ -112,8 +112,8 @@ namespace NClient.Standalone.Tests
             await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .Invoking(async x => await x.WithoutResponseValidation()
                     .Build()
                     .GetAsync(id))
@@ -129,11 +129,11 @@ namespace NClient.Standalone.Tests
             await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .Invoking(async x => await x
                     .WithAdvancedResponseValidation(setter => setter
-                        .ForTransport().UseSystemResponseValidation())
+                        .ForTransport().UseSystemNetHttpResponseValidation())
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();
@@ -148,11 +148,11 @@ namespace NClient.Standalone.Tests
             await new NClientBuilder()
                 .For<IRestClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
-                .UsingSystemHttpTransport()
-                .UsingSystemJsonSerialization()
+                .UsingSystemNetHttpTransport()
+                .UsingSystemTextJsonSerialization()
                 .Invoking(async x => await x
                     .WithAdvancedResponseValidation(setter => setter
-                        .ForTransport().UseSystemResponseValidation())
+                        .ForTransport().UseSystemNetHttpResponseValidation())
                     .Build()
                     .GetAsync(id))
                 .Should().ThrowExactlyAsync<ClientRequestException>();

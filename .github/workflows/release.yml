@@ -5,6 +5,7 @@ on:
     branches: release
 
 env:
+  solution: NClient.sln
   release-type: release
   nuget-source: https://api.nuget.org/v3/index.json
       
@@ -25,6 +26,7 @@ jobs:
     - name: Push packaget to NuGet
       uses: ./actions/push
       with:
+        solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
         version-suffix: ${{ steps.release-info.outputs.version-suffix }}
         source: ${{ env.nuget-source }}
@@ -45,6 +47,7 @@ jobs:
     - name: Test release
       uses: ./actions/test-release
       with:
+        solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
         version-suffix: ${{ steps.release-info.outputs.version-suffix }}
         delay: 5m

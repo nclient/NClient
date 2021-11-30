@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
@@ -12,7 +14,7 @@ using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Serialization;
-using NClient.Providers.Serialization.Json.System;
+using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
@@ -39,7 +41,7 @@ namespace NClient.Providers.Api.Rest.Tests
         {
             var objectMemberManager = new ObjectMemberManager(new ObjectMemberManagerExceptionFactory());
 
-            Serializer = new SystemJsonSerializerProvider().Create(logger: null);
+            Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
             var toolset = new Toolset(Serializer, logger: null);
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             RestClientValidationExceptionFactory = new ClientValidationExceptionFactory();
@@ -80,7 +82,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments))
+                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), timeout: 30.Seconds(), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

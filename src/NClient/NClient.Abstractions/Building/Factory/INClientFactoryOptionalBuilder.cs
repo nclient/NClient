@@ -65,6 +65,12 @@ namespace NClient
         
         #endregion
         
+        #region Timeout
+
+        INClientFactoryOptionalBuilder<TRequest, TResponse> WithTimeout(TimeSpan timeout);
+
+        #endregion
+        
         #region Logging
         
         /// <summary>

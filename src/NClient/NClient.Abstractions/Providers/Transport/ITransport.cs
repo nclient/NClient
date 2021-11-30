@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace NClient.Providers.Transport
 {
@@ -11,6 +12,7 @@ namespace NClient.Providers.Transport
         /// Executes requests.
         /// </summary>
         /// <param name="transportRequest">The container for request data.</param>
-        Task<TResponse> ExecuteAsync(TRequest transportRequest);
+        /// <param name="cancellationToken">The cancellation token.</param>
+        Task<TResponse> ExecuteAsync(TRequest transportRequest, CancellationToken cancellationToken);
     }
 }

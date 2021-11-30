@@ -7,6 +7,7 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>
@@ -17,8 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Transport.Http.RestSharp\NClient.Providers.Transport.Http.RestSharp.csproj" />
-        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.Json.Newtonsoft\NClient.Providers.Serialization.Json.Newtonsoft.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Transport.RestSharp\NClient.Providers.Transport.RestSharp.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.NewtonsoftJson\NClient.Providers.Serialization.NewtonsoftJson.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient\NClient.csproj" />
         <ProjectReference Include="..\..\NClient\NClient.Tests\NClient.Tests.csproj" />
     </ItemGroup>

@@ -1,6 +1,9 @@
 name: Test release
 
 inputs:
+  solution:
+    description: 'Solution/project path'
+    required: true
   version-prefix:
     description: 'Version prefix'     
     required: true
@@ -33,19 +36,19 @@ runs:
       uses: jakejarvis/wait-action@master
       with:
         time: ${{ inputs.delay }}
-    - name: Setup latest .NET
+    - name: Setup all .NET versions
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
     - name: Try add GitHub NuGet source
       run: |
         if [[ "${{ inputs.custom-source}}" != "" ]]; then
+          dotnet nuget remove source nuget.org
           dotnet nuget add source --username ${{ inputs.custom-source-user }} --password ${{ inputs.custom-source-password }} --store-password-in-clear-text --name github ${{ inputs.custom-source}}
+          dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
         fi
       shell: bash
     - name: Restore dependencies and build
-      run: dotnet build --configuration TestRelease -warnaserror
+      run: dotnet build ${{ inputs.solution }} --configuration TestRelease -warnaserror
       shell: bash
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration TestRelease
+      run: dotnet test ${{ inputs.solution }} --no-build --verbosity normal --configuration TestRelease
       shell: bash

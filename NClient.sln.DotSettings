@@ -601,6 +601,7 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=EB8E5E1E91787046A8C20B6F96E8D2F0/Severity/@EntryValue">ERROR</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=EB8E5E1E91787046A8C20B6F96E8D2F0/SuppressionKey/@EntryValue">DateTimeNow</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=metadatas/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=nclient/@EntryIndexedValue">True</s:Boolean>
 	
 	
 	
