@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  solution: Tests.slnf
+  solution: NClient.sln
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
         uses: ./actions/build
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: ${{ env.solution }}
+          solution: Tests.slnf
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
