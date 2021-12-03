@@ -16,7 +16,7 @@ namespace NClient.DotNetTool
         [Option(shortName: 's', longName: "spec", Required = true, HelpText = "The OpenAPI spec file to use. Paths are relative to the project directory.")]
         public string Spec { get; }
 
-        [Option(shortName: 'o', longName: "output-dir", Required = false, HelpText = "The directory to put files in. Paths are relative to the project directory.", Default = "Facades")]
+        [Option(shortName: 'o', longName: "output-file", Required = false, HelpText = "The result. Paths are relative to the project directory.", Default = "Facades.cs")]
         public string OutputDirectoryPath { get; }
 
         [Option(shortName: 'p', longName: "project", Required = true, HelpText = "The project to use. Defaults to the current working directory.")]

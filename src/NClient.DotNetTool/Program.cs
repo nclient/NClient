@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NClient.DotNetTool.Generators;
 using NClient.DotNetTool.Loaders;
 
 namespace NClient.DotNetTool
@@ -37,31 +37,26 @@ namespace NClient.DotNetTool
 
             var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
 
-            var generatedFacades =
-                serviceProvider.GetRequiredService<IGenerator>().Generate(specification, opts.Namespace);
+            var generatedFacades = await 
+                serviceProvider.GetRequiredService<ISpecificationHandler>().Generate(specification, opts.Namespace);
 
-            if (generatedFacades.Count == 0)
+            if (string.IsNullOrEmpty(generatedFacades))
                 return;
 
             await WriteFacades(opts, generatedFacades);
         }
 
-        private static async Task WriteFacades(CommandLineOptions opts, Dictionary<string, string> generatedFacades)
+        private static async Task WriteFacades(CommandLineOptions opts, string generatedFacades)
         {
-            var outputDirectoryPath =
+            var outputFilePath =
                 Path.Combine(
                     new FileInfo(opts.ProjectPath).Directory?.FullName ?? throw new InvalidOperationException(),
                     opts.OutputDirectoryPath);
 
-            if (Directory.Exists(outputDirectoryPath))
-                Directory.Delete(outputDirectoryPath, recursive: true);
+            if (File.Exists(outputFilePath))
+                File.Delete(outputFilePath);
 
-            Directory.CreateDirectory(outputDirectoryPath);
-
-            foreach (var (fileName, fileContent) in generatedFacades)
-            {
-                await File.WriteAllTextAsync(Path.Combine(outputDirectoryPath, $"{fileName}.cs"), fileContent);
-            }
+            await File.WriteAllTextAsync(outputFilePath, generatedFacades);
         }
 
         private static IServiceProvider BuildServiceProvider()
@@ -69,7 +64,7 @@ namespace NClient.DotNetTool
             return new ServiceCollection()
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .AddSingleton<ILoaderFactory>(_ => new LoaderFactory())
-                .AddSingleton<IGenerator>(_ => new Generator())
+                .AddSingleton<ISpecificationHandler>(_ => new SpecificationHandler())
                 .BuildServiceProvider();
         }
     }    

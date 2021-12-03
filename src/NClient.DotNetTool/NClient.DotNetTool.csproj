@@ -21,7 +21,7 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-      <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
+      <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.14.8" />
     </ItemGroup>
 
 </Project>
