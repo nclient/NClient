@@ -1,8 +1,9 @@
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using NSwag.CodeGeneration.CSharp;
 
-namespace NClient.DotNetTool.Generators
+namespace NClient.Generation.CodeGenerator
 {
     public interface ISpecificationHandler
     {
@@ -23,6 +24,12 @@ namespace NClient.DotNetTool.Generators
                     Namespace = @namespace
                 }
             };
+            
+            settings.CSharpGeneratorSettings.TemplateFactory = new CustomTemplateFactory(settings.CSharpGeneratorSettings, new[]
+            {
+                typeof(SpecificationHandler).GetTypeInfo().Assembly,
+                typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
+            });
             
             var generator = new CSharpInterfaceGenerator(openApiDocument, settings);
             return generator.GenerateFile();

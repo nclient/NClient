@@ -21,7 +21,10 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-      <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.14.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NClient.CodeGeneration\NClient.Generation.CodeGenerator\NClient.Generation.CodeGenerator.csproj" />
     </ItemGroup>
 
 </Project>

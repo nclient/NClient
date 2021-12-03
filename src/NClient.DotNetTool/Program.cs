@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.DotNetTool.Generators;
 using NClient.DotNetTool.Loaders;
+using NClient.Generation.CodeGenerator;
 
 namespace NClient.DotNetTool
 {
@@ -37,13 +37,14 @@ namespace NClient.DotNetTool
 
             var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
 
-            var generatedFacades = await 
-                serviceProvider.GetRequiredService<ISpecificationHandler>().Generate(specification, opts.Namespace);
+            var specificationHandler = serviceProvider.GetRequiredService<ISpecificationHandler>();
+            
+            var code = await specificationHandler.Generate(specification, opts.Namespace);
 
-            if (string.IsNullOrEmpty(generatedFacades))
+            if (string.IsNullOrEmpty(code))
                 return;
 
-            await WriteFacades(opts, generatedFacades);
+            await WriteFacades(opts, code);
         }
 
         private static async Task WriteFacades(CommandLineOptions opts, string generatedFacades)
