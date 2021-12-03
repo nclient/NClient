@@ -7,13 +7,14 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+        <PackageReference Include="FluentAssertions" Version="6.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
         <PackageReference Include="Moq" Version="4.16.0" />
         <PackageReference Include="NUnit" Version="3.12.0" />

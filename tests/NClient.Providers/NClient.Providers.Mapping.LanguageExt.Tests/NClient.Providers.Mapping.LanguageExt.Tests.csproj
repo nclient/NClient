@@ -7,6 +7,7 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/test/$(Configuration)/$(AssemblyName)</OutputPath>

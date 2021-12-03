@@ -49,32 +49,32 @@ namespace NClient.Packages.Tests
             PackagesVersionProvider.GetCurrent("NClient.Providers.Mapping.LanguageExt").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Serialization_Json_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.System").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_SystemTextJson() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.SystemTextJson").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Serialization_Json_Newtonsoft() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Json.Newtonsoft").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_NewtonsoftJson() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.NewtonsoftJson").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
-        public void NClient_Providers_Serialization_MessagePack_MessagePackCSharp() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.MessagePack.MessagePackCSharp").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_MessagePack() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.MessagePack").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
-        public void NClient_Providers_Serialization_Protobuf_ProtobufNet() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Protobuf.ProtobufNet").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_ProtobufNet() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.ProtobufNet").Should().Be(PackagesVersionProvider.GetNew());
         
         [Test]
-        public void NClient_Providers_Serialization_Xml_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.Xml.System").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Serialization_SystemXml() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Serialization.SystemXml").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Transport_Http_System() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.System").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Transport_SystemNetHttp() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.SystemNetHttp").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
-        public void NClient_Providers_Transport_Http_RestSharp() =>
-            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.Http.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
+        public void NClient_Providers_Transport_RestSharp() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Transport.RestSharp").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Extensions_DependencyInjection() =>

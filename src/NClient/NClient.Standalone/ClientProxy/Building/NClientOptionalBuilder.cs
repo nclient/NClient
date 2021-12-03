@@ -131,6 +131,12 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithLogging(loggerFactory));
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTimeout(TimeSpan timeout)
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithTimeout(timeout));
+        }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers)
         {
@@ -178,6 +184,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.ResultBuilderProviders,
                 _context.TypedResultBuilderProviders,
                 _context.ResponseValidatorProviders,
+                _context.Timeout,
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null
                     ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
                     : _context.Loggers));

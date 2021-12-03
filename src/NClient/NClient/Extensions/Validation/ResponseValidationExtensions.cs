@@ -9,13 +9,13 @@ namespace NClient
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder) 
             where TClient : class
         {
-            return factoryOptionalBuilder.WithSystemResponseValidation();
+            return factoryOptionalBuilder.WithSystemNetHttpResponseValidation();
         }
         
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> factoryOptionalBuilder)
         {
-            return factoryOptionalBuilder.WithSystemResponseValidation();
+            return factoryOptionalBuilder.WithSystemNetHttpResponseValidation();
         }
     }
 }
