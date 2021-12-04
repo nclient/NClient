@@ -6,7 +6,7 @@ using NSwag;
 namespace NClient.CodeGeneration.Generator
 {
     /// <summary>The default template factory which loads templates from embedded resources.</summary>
-    public class DefaultTemplateFactory : NJsonSchema.CodeGeneration.DefaultTemplateFactory
+    internal class DefaultTemplateFactory : NJsonSchema.CodeGeneration.DefaultTemplateFactory
     {
         /// <summary>Initializes a new instance of the <see cref="DefaultTemplateFactory" /> class.</summary>
         /// <param name="settings">The settings.</param>

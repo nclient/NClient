@@ -6,7 +6,7 @@ using NSwag.CodeGeneration.CSharp.Models;
 namespace NClient.CodeGeneration.Generator.Models
 {
     /// <summary>The CSharp controller operation model.</summary>
-    public class CSharpInterfaceOperationModel : CSharpOperationModel
+    internal class CSharpInterfaceOperationModel : CSharpOperationModel
     {
         private readonly CSharpControllerGeneratorSettings _settings;
 

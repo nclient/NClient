@@ -13,7 +13,7 @@ using CSharpControllerTemplateModel = NClient.CodeGeneration.Generator.Models.CS
 namespace NClient.CodeGeneration.Generator
 {
     /// <summary>Generates the CSharp service client code. </summary>
-    public class CSharpInterfaceGenerator : CSharpGeneratorBase
+    internal class CSharpInterfaceGenerator : CSharpGeneratorBase
     {
         private readonly OpenApiDocument _document;
 
