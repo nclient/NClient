@@ -31,7 +31,7 @@ namespace NClient.CodeGeneration.Providers.NSwag
         {
             template = template.TrimEnd('!');
             var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Providers)}.{nameof(NSwag)}");
-            var resourceName = $"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(NSwag)}.Templates." + template + ".liquid";
+            var resourceName = $"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Providers)}.{nameof(NSwag)}.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);
             if (resource != null)
