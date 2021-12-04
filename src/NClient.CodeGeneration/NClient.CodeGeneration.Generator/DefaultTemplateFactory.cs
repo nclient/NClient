@@ -31,7 +31,7 @@ namespace NClient.CodeGeneration.Generator
         {
             template = template.TrimEnd('!');
             var assembly = GetLiquidAssembly("NClient.CodeGeneration.Generator");
-            var resourceName = "NClient.CodeGenerator.Templates." + template + ".liquid";
+            var resourceName = "NClient.CodeGeneration.Generator.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);
             if (resource != null)

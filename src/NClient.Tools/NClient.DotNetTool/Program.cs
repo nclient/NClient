@@ -39,7 +39,7 @@ namespace NClient.DotNetTool
 
             var specificationHandler = serviceProvider.GetRequiredService<ISpecificationHandler>();
             
-            var code = await specificationHandler.Generate(specification, opts.Namespace);
+            var code = await specificationHandler.GenerateAsync(specification, opts.Namespace);
 
             if (string.IsNullOrEmpty(code))
                 return;
