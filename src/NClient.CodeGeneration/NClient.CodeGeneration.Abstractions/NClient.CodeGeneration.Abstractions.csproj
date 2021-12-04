@@ -8,35 +8,26 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient</PackageTags>
+        <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
         <Description>NClient</Description>
         <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
-        <TargetFrameworks>net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
-        <ImplicitUsings>disable</ImplicitUsings>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.8.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag\NClient.CodeGeneration.Providers.NSwag.csproj" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,10 +2,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NClient.CodeGeneration.Abstractions;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 
-namespace NClient.Providers.CodeGeneration.NSwag
+namespace NClient.CodeGeneration.Providers.NSwag
 {
     public class NSwagGenerator : INClientGenerator
     {

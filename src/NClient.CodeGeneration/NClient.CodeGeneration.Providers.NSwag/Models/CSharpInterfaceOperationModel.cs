@@ -3,7 +3,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.Providers.CodeGeneration.NSwag.Models
+namespace NClient.CodeGeneration.Providers.NSwag.Models
 {
     /// <summary>The CSharp controller operation model.</summary>
     internal class CSharpInterfaceOperationModel : CSharpOperationModel

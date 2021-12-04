@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Providers.CodeGeneration.NSwag;
+using NClient.CodeGeneration.Abstractions;
+using NClient.CodeGeneration.Providers.NSwag;
 using NClient.DotNetTool.Loaders;
-using NClient.Providers.CodeGeneration;
 
 namespace NClient.DotNetTool
 {

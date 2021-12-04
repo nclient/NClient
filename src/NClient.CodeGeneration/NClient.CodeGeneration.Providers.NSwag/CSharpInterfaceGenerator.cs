@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using NClient.Providers.CodeGeneration.NSwag.Models;
+using NClient.CodeGeneration.Providers.NSwag.Models;
 using NJsonSchema.CodeGeneration;
 using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
@@ -10,7 +10,7 @@ using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.Providers.CodeGeneration.NSwag
+namespace NClient.CodeGeneration.Providers.NSwag
 {
     /// <summary>Generates the CSharp service client code. </summary>
     internal class CSharpInterfaceGenerator : CSharpGeneratorBase

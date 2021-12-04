@@ -10,7 +10,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
         <Description>NClient</Description>
-        <Authors>smolchanovsky</Authors>
+        <Authors>smolchanovsky;kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -45,7 +45,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
+      <ProjectReference Include="..\NClient.CodeGeneration.Abstractions\NClient.CodeGeneration.Abstractions.csproj" />
     </ItemGroup>
+
 
 </Project>

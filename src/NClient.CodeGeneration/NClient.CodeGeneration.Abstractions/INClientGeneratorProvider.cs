@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
-using NClient.Providers.Serialization;
 
-namespace NClient.Providers.CodeGeneration
+namespace NClient.CodeGeneration.Abstractions
 {
     /// <summary>
     /// A provider abstraction for a component that can create <see cref="INClientGenerator"/> instances.
@@ -9,7 +8,7 @@ namespace NClient.Providers.CodeGeneration
     public interface INClientGeneratorProvider
     {
         /// <summary>
-        /// Creates and configures an instance of <see cref="ISerializer"/> instance.
+        /// Creates and configures an instance of <see cref="INClientGenerator"/> instance.
         /// </summary>
         INClientGenerator Create(ILogger? logger);
     }

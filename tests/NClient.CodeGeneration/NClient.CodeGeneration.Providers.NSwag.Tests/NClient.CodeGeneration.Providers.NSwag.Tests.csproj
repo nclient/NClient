@@ -21,7 +21,7 @@
 
     
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.Providers.CodeGeneration.NSwag\NClient.Providers.CodeGeneration.NSwag.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag\NClient.CodeGeneration.Providers.NSwag.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
     
