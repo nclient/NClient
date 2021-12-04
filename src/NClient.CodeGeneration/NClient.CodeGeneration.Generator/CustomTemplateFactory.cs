@@ -41,7 +41,7 @@ namespace NClient.Generation.CodeGenerator
         {
             var trimmedTemplate = template.TrimEnd('!');
             var assembly = typeof(SpecificationHandler).GetTypeInfo().Assembly;
-            var resourceName = $"NClient.Generation.CodeGenerator.Templates.{trimmedTemplate}.liquid";
+            var resourceName = $"NClient.CodeGeneration.Generator.Templates.{trimmedTemplate}.liquid";
 
             var resourceNames = typeof(SpecificationHandler).GetTypeInfo().Assembly.GetManifestResourceNames();
 

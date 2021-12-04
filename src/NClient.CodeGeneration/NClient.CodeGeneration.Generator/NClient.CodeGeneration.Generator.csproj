@@ -8,7 +8,7 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;Core;Client;HTTP;Rest</PackageTags>
+        <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
         <Description>NClient</Description>
         <Authors>smolchanovsky</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -67,12 +67,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+        <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.14.8" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="13.14.8" />
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
