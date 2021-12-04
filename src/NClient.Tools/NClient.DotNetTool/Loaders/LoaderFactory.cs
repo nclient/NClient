@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 
 namespace NClient.DotNetTool.Loaders
 {
@@ -10,7 +9,7 @@ namespace NClient.DotNetTool.Loaders
             return Uri.TryCreate(opts.Spec, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
                     ? new NetworkLoader(uriResult)
-                    : new FileLoader(Path.Combine(new FileInfo(opts.ProjectPath).Directory?.FullName ?? throw new DirectoryNotFoundException(), opts.Spec));
+                    : new FileLoader(opts.Spec);
         }
     }
 }

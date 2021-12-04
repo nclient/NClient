@@ -50,15 +50,10 @@ namespace NClient.DotNetTool
 
         private static async Task WriteFacades(CommandLineOptions opts, string generatedFacades)
         {
-            var outputFilePath =
-                Path.Combine(
-                    new FileInfo(opts.ProjectPath).Directory?.FullName ?? throw new InvalidOperationException(),
-                    opts.OutputDirectoryPath);
+            if (File.Exists(opts.OutputPath))
+                File.Delete(opts.OutputPath);
 
-            if (File.Exists(outputFilePath))
-                File.Delete(outputFilePath);
-
-            await File.WriteAllTextAsync(outputFilePath, generatedFacades);
+            await File.WriteAllTextAsync(opts.OutputPath, generatedFacades);
         }
 
         private static IServiceProvider BuildServiceProvider()

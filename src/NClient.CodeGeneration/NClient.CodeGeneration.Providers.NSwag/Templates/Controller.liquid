@@ -1,5 +1,5 @@
 ﻿{% if GeneratePartialControllers -%}
-public interface I{{ Class }}Controller
+public interface INClientFacade
 {
 {%     for operation in Operations -%}
 {%         if operation.HasSummary -%}
