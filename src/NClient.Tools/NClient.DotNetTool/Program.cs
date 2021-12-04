@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.Annotations.CodeGeneration;
 using NClient.Providers.CodeGeneration.NSwag;
 using NClient.DotNetTool.Loaders;
+using NClient.Providers.CodeGeneration;
 
 namespace NClient.DotNetTool
 {
@@ -66,7 +66,11 @@ namespace NClient.DotNetTool
             return new ServiceCollection()
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .AddSingleton<ILoaderFactory>(_ => new LoaderFactory())
-                .AddSingleton<INClientGenerator>(_ => new NSwagGeneratorProvider())
+                .AddSingleton(_ =>
+                {
+                    //TODO: add logger
+                    return new NSwagGeneratorProvider().Create(null);
+                })
                 .BuildServiceProvider();
         }
     }    

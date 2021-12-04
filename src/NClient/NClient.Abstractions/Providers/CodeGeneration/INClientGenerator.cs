@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NClient.Annotations.CodeGeneration
+namespace NClient.Providers.CodeGeneration
 {
     public interface INClientGenerator
     {

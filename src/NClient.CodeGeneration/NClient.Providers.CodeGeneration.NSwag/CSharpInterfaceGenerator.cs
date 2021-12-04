@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using NClient.Providers.CodeGeneration.NSwag.Models;
 using NJsonSchema.CodeGeneration;
 using NJsonSchema.CodeGeneration.CSharp;
@@ -15,13 +16,15 @@ namespace NClient.Providers.CodeGeneration.NSwag
     internal class CSharpInterfaceGenerator : CSharpGeneratorBase
     {
         private readonly OpenApiDocument _document;
+        private readonly ILogger? _logger;
 
         /// <summary>Initializes a new instance of the <see cref="CSharpInterfaceGenerator" /> class.</summary>
         /// <param name="document">The Swagger document.</param>
         /// <param name="settings">The settings.</param>
+        /// <param name="logger">The logger (optional)</param>
         /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
-        public CSharpInterfaceGenerator(OpenApiDocument document, CSharpControllerGeneratorSettings settings)
-            : this(document, settings, CreateResolverWithExceptionSchema(settings.CSharpGeneratorSettings, document))
+        public CSharpInterfaceGenerator(OpenApiDocument document, CSharpControllerGeneratorSettings settings, ILogger? logger)
+            : this(document, settings, CreateResolverWithExceptionSchema(settings.CSharpGeneratorSettings, document), logger)
         {
         }
 
@@ -29,16 +32,18 @@ namespace NClient.Providers.CodeGeneration.NSwag
         /// <param name="document">The Swagger document.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="resolver">The resolver.</param>
+        /// <param name="logger">The logger (optional)</param>
         /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
-        public CSharpInterfaceGenerator(OpenApiDocument document, CSharpControllerGeneratorSettings settings, CSharpTypeResolver resolver)
+        private CSharpInterfaceGenerator(OpenApiDocument document, CSharpControllerGeneratorSettings settings, CSharpTypeResolver resolver, ILogger? logger)
             : base(document, settings, resolver)
         {
             _document = document ?? throw new ArgumentNullException(nameof(document));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _logger = logger;
         }
 
         /// <summary>Gets or sets the generator settings.</summary>
-        public CSharpControllerGeneratorSettings Settings { get; set; }
+        private CSharpControllerGeneratorSettings Settings { get; set; }
 
         /// <summary>Gets the base settings.</summary>
         public override ClientGeneratorBaseSettings BaseSettings => Settings;
@@ -49,15 +54,14 @@ namespace NClient.Providers.CodeGeneration.NSwag
         {
             var artifacts = base.GenerateAllClientTypes().ToList();
 
-            if (Settings.ControllerTarget == CSharpControllerTarget.AspNet &&
-                _document.Operations.Count(operation => operation.Operation.ActualParameters.Any(p => p.Kind == OpenApiParameterKind.Header)) > 0)
-            {
-                var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Controller.AspNet.FromHeaderAttribute", new object());
-                artifacts.Add(new CodeArtifact("FromHeaderAttribute", CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Utility, template));
+            if (Settings.ControllerTarget != CSharpControllerTarget.AspNet || _document.Operations.Count(operation => operation.Operation.ActualParameters.Any(p => p.Kind == OpenApiParameterKind.Header)) <= 0)
+                return artifacts;
+            
+            var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Controller.AspNet.FromHeaderAttribute", new object());
+            artifacts.Add(new CodeArtifact("FromHeaderAttribute", CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Utility, template));
 
-                template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Controller.AspNet.FromHeaderBinding", new object());
-                artifacts.Add(new CodeArtifact("FromHeaderBinding", CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Utility, template));
-            }
+            template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Controller.AspNet.FromHeaderBinding", new object());
+            artifacts.Add(new CodeArtifact("FromHeaderBinding", CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Utility, template));
 
             return artifacts;
         }
@@ -78,9 +82,6 @@ namespace NClient.Providers.CodeGeneration.NSwag
         /// <param name="operation">The operation.</param>
         /// <param name="settings">The settings.</param>
         /// <returns>The operation model.</returns>
-        protected override CSharpOperationModel CreateOperationModel(OpenApiOperation operation, ClientGeneratorBaseSettings settings)
-        {
-            return new CSharpInterfaceOperationModel(operation, (CSharpControllerGeneratorSettings) settings, this, (CSharpTypeResolver) Resolver);
-        }
+        protected override CSharpOperationModel CreateOperationModel(OpenApiOperation operation, ClientGeneratorBaseSettings settings) => new CSharpInterfaceOperationModel(operation, (CSharpControllerGeneratorSettings) settings, this, (CSharpTypeResolver) Resolver);
     }
 }

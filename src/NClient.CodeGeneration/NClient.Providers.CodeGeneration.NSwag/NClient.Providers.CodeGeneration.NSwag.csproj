@@ -45,7 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NClient\NClient.Annotations\NClient.Annotations.csproj" />
+      <ProjectReference Include="..\..\NClient\NClient.Abstractions\NClient.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>
