@@ -18,10 +18,12 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
     </ItemGroup>
-
     
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag\NClient.CodeGeneration.Providers.NSwag.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
     
