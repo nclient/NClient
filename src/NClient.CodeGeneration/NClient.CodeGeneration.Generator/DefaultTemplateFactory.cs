@@ -30,8 +30,8 @@ namespace NClient.CodeGeneration.Generator
         protected override string GetEmbeddedLiquidTemplate(string language, string template)
         {
             template = template.TrimEnd('!');
-            var assembly = GetLiquidAssembly("NClient.CodeGeneration.Generator");
-            var resourceName = "NClient.CodeGeneration.Generator.Templates." + template + ".liquid";
+            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Generator)}");
+            var resourceName = $"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Generator)}.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);
             if (resource != null)
