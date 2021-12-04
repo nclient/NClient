@@ -8,10 +8,10 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
 using NUnit.Framework;
 
-namespace NClient.CodeGeneration.Generator.Tests
+namespace NClient.Providers.CodeGeneration.NSwag.Tests
 {
   [Parallelizable]
-  public class SpecificationHandlerTest
+  public class NSwagGeneratorProviderTest
   {
     private Type Compile(string source)
     {
@@ -60,7 +60,7 @@ namespace NClient.CodeGeneration.Generator.Tests
 
     private string LoadSpec(string name)
     {
-      var resource = typeof(SpecificationHandlerTest).GetTypeInfo().Assembly.GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Generator)}.{nameof(Tests)}.Specifications.{name}") ?? throw new NullReferenceException("no open api spec");
+      var resource = typeof(NSwagGeneratorProviderTest).GetTypeInfo().Assembly.GetManifestResourceStream($"{nameof(NClient)}.{nameof(Providers)}.{nameof(CodeGeneration)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") ?? throw new NullReferenceException("no open api spec");
       resource.Should().NotBeNull();
       using var reader = new StreamReader(resource);
       reader.Should().NotBeNull();
@@ -69,7 +69,7 @@ namespace NClient.CodeGeneration.Generator.Tests
 
     private string GenerateSourceCode(string openApiSpec)
     {
-      var specificationHandler = new SpecificationHandler();
+      var specificationHandler = new NSwagGeneratorProvider();
       const string @namespace = "Test";
 
       var result = specificationHandler.GenerateAsync(openApiSpec, @namespace).GetAwaiter().GetResult();

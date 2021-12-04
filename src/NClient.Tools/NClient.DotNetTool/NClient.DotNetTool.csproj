@@ -36,7 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Generator\NClient.CodeGeneration.Generator.csproj" />
+      <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.Providers.CodeGeneration.NSwag\NClient.Providers.CodeGeneration.NSwag.csproj" />
     </ItemGroup>
 
     <ItemGroup>

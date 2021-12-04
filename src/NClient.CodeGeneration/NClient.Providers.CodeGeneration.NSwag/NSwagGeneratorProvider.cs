@@ -1,20 +1,17 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Annotations.CodeGeneration;
+using NSwag;
 using NSwag.CodeGeneration.CSharp;
 
-namespace NClient.CodeGeneration.Generator
+namespace NClient.Providers.CodeGeneration.NSwag
 {
-    public interface ISpecificationHandler
-    {
-        Task<string?> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default);
-    }
-    
-    public class SpecificationHandler : ISpecificationHandler
+    public class NSwagGeneratorProvider : INClientGenerator
     {
         public async Task<string?> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default)
         {
-            var openApiDocument = await NSwag.OpenApiDocument.FromJsonAsync(specification, cancellationToken);
+            var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
             var settings = new CSharpControllerGeneratorSettings
             {
@@ -28,7 +25,7 @@ namespace NClient.CodeGeneration.Generator
             
             settings.CSharpGeneratorSettings.TemplateFactory = new DefaultTemplateFactory(settings.CSharpGeneratorSettings, new[]
             {
-                typeof(SpecificationHandler).GetTypeInfo().Assembly,
+                typeof(NSwagGeneratorProvider).GetTypeInfo().Assembly,
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
             

@@ -4,7 +4,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.CodeGeneration.Generator.Models
+namespace NClient.Providers.CodeGeneration.NSwag.Models
 {
     /// <summary>The CSharp controller template model.</summary>
     internal class CSharpControllerTemplateModel : CSharpTemplateModelBase

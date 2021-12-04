@@ -19,11 +19,9 @@
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.CodeGeneration.Generator\NClient.CodeGeneration.Generator.csproj" />
-    </ItemGroup>
     
     <ItemGroup>
+        <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.Providers.CodeGeneration.NSwag\NClient.Providers.CodeGeneration.NSwag.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
     

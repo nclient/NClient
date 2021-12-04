@@ -44,4 +44,8 @@
         <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\NClient\NClient.Annotations\NClient.Annotations.csproj" />
+    </ItemGroup>
+
 </Project>

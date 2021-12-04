@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NClient.CodeGeneration.Generator.Models;
+using NClient.Providers.CodeGeneration.NSwag.Models;
 using NJsonSchema.CodeGeneration;
 using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
 using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
-using CSharpControllerTemplateModel = NClient.CodeGeneration.Generator.Models.CSharpControllerTemplateModel;
 
-namespace NClient.CodeGeneration.Generator
+namespace NClient.Providers.CodeGeneration.NSwag
 {
     /// <summary>Generates the CSharp service client code. </summary>
     internal class CSharpInterfaceGenerator : CSharpGeneratorBase
@@ -70,7 +69,7 @@ namespace NClient.CodeGeneration.Generator
         /// <returns>The code.</returns>
         protected override IEnumerable<CodeArtifact> GenerateClientTypes(string controllerName, string controllerClassName, IEnumerable<CSharpOperationModel> operations)
         {
-            var model = new CSharpControllerTemplateModel(controllerClassName, operations, _document, Settings);
+            var model = new Models.CSharpControllerTemplateModel(controllerClassName, operations, _document, Settings);
             var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Controller", model);
             yield return new CodeArtifact(model.Class, CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Client, template);
         }

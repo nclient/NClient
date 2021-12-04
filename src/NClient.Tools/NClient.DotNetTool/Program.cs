@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NClient.CodeGeneration.Generator;
+using NClient.Annotations.CodeGeneration;
+using NClient.Providers.CodeGeneration.NSwag;
 using NClient.DotNetTool.Loaders;
 
 namespace NClient.DotNetTool
@@ -37,7 +38,7 @@ namespace NClient.DotNetTool
 
             var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
 
-            var specificationHandler = serviceProvider.GetRequiredService<ISpecificationHandler>();
+            var specificationHandler = serviceProvider.GetRequiredService<INClientGenerator>();
             
             var code = await specificationHandler.GenerateAsync(specification, opts.Namespace);
 
@@ -65,7 +66,7 @@ namespace NClient.DotNetTool
             return new ServiceCollection()
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .AddSingleton<ILoaderFactory>(_ => new LoaderFactory())
-                .AddSingleton<ISpecificationHandler>(_ => new SpecificationHandler())
+                .AddSingleton<INClientGenerator>(_ => new NSwagGeneratorProvider())
                 .BuildServiceProvider();
         }
     }    

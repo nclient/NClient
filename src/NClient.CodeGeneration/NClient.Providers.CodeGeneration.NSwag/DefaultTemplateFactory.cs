@@ -3,7 +3,7 @@ using System.Reflection;
 using NJsonSchema.CodeGeneration;
 using NSwag;
 
-namespace NClient.CodeGeneration.Generator
+namespace NClient.Providers.CodeGeneration.NSwag
 {
     /// <summary>The default template factory which loads templates from embedded resources.</summary>
     internal class DefaultTemplateFactory : NJsonSchema.CodeGeneration.DefaultTemplateFactory
@@ -30,8 +30,8 @@ namespace NClient.CodeGeneration.Generator
         protected override string GetEmbeddedLiquidTemplate(string language, string template)
         {
             template = template.TrimEnd('!');
-            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Generator)}");
-            var resourceName = $"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Generator)}.Templates." + template + ".liquid";
+            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(Providers)}.{nameof(CodeGeneration)}.{nameof(NSwag)}");
+            var resourceName = $"{nameof(NClient)}.{nameof(Providers)}.{nameof(CodeGeneration)}.{nameof(NSwag)}.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);
             if (resource != null)
