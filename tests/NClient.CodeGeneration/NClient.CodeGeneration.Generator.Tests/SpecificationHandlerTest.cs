@@ -27,6 +27,7 @@ namespace NClient.CodeGeneration.Generator.Tests
         MetadataReference.CreateFromFile(typeof(System.Runtime.Serialization.EnumMemberAttribute).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonConvert).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.Validator).Assembly.Location),
+        MetadataReference.CreateFromFile(typeof(Annotations.FacadeAttribute).Assembly.Location),
         MetadataReference.CreateFromFile(ns.Location),
         MetadataReference.CreateFromFile(rt.Location)
       };
@@ -100,7 +101,7 @@ namespace NClient.CodeGeneration.Generator.Tests
       var type = Compile(source);
       var methods = type.GetMethods();
 
-      methods.Should().HaveCount(opsCount * 2);
+      methods.Should().HaveCount(opsCount);
     }
   }
 }

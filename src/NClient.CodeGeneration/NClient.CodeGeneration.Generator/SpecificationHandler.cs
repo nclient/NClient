@@ -19,6 +19,7 @@ namespace NClient.CodeGeneration.Generator
             var settings = new CSharpControllerGeneratorSettings
             {
                 GenerateClientInterfaces = true,
+                UseCancellationToken = true,
                 CSharpGeneratorSettings = 
                 {
                     Namespace = @namespace
