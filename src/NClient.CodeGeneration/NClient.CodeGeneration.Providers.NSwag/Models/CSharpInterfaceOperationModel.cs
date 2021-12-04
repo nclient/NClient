@@ -1,20 +1,15 @@
-﻿using NJsonSchema.CodeGeneration.CSharp;
+using NJsonSchema;
+using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
 namespace NClient.CodeGeneration.Providers.NSwag.Models
 {
-    /// <summary>The CSharp controller operation model.</summary>
-    internal class CSharpInterfaceOperationModel : CSharpOperationModel
+    internal class CSharpInterfaceOperationModel : CSharpControllerOperationModel
     {
         private readonly CSharpControllerGeneratorSettings _settings;
-
-        /// <summary>Initializes a new instance of the <see cref="CSharpInterfaceOperationModel" /> class.</summary>
-        /// <param name="operation">The operation.</param>
-        /// <param name="settings">The settings.</param>
-        /// <param name="generator">The generator.</param>
-        /// <param name="resolver">The resolver.</param>
+        
         public CSharpInterfaceOperationModel(OpenApiOperation operation, CSharpControllerGeneratorSettings settings,
             CSharpInterfaceGenerator generator, CSharpTypeResolver resolver)
             : base(operation, settings, generator, resolver)
@@ -22,23 +17,30 @@ namespace NClient.CodeGeneration.Providers.NSwag.Models
             _settings = settings;
         }
 
-        /// <summary>Gets or sets the type of the result.</summary>
-        public override string ResultType
+        protected override string ResolveParameterType(OpenApiParameter parameter)
         {
-            get
-            {
-                if (_settings.UseActionResultType)
-                    switch (SyncResultType)
-                    {
-                        case "void":
-                        case "FileResult":
-                            return "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult>";
-                        default:
-                            return "System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<" + SyncResultType + ">>";
-                    }
+            var schema = parameter.ActualSchema;
 
-                return base.ResultType;
+            if (parameter.IsBinaryBodyParameter)
+            {
+                if (schema.Type == JsonObjectType.Array && schema.Item.IsBinary)
+                    return "System.Collections.Generic.IEnumerable<byte[]>";
+                
+                return "byte[]";
             }
+
+            if (schema.Type == JsonObjectType.Array && schema.Item.IsBinary)
+                return "System.Collections.Generic.IEnumerable<byte[]>";
+
+            if (schema.IsBinary)
+            {
+                if (parameter.CollectionFormat == OpenApiParameterCollectionFormat.Multi && !schema.Type.HasFlag(JsonObjectType.Array))
+                    return "System.Collections.Generic.IEnumerable<byte[]>";
+
+                return "byte[]";
+            }
+
+            return base.ResolveParameterType(parameter);
         }
     }
 }

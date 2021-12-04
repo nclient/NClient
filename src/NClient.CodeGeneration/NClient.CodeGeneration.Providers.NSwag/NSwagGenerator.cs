@@ -26,6 +26,11 @@ namespace NClient.CodeGeneration.Providers.NSwag
                 CSharpGeneratorSettings = 
                 {
                     Namespace = @namespace
+                },
+                AdditionalNamespaceUsages = new[]
+                {
+                    "NClient.Annotations",
+                    "NClient.Annotations.Http"
                 }
             };
             
@@ -35,7 +40,7 @@ namespace NClient.CodeGeneration.Providers.NSwag
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
             
-            var generator = new CSharpInterfaceGenerator(openApiDocument, settings, _logger);
+            var generator = new CSharpInterfaceGenerator(openApiDocument, settings);
             return generator.GenerateFile();
         }
     }

@@ -27,12 +27,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Templates\Controller.AspNet.FromHeaderBinding.liquid" />
-        <EmbeddedResource Include="Templates\Controller.AspNet.FromHeaderAttribute.liquid" />
-        <EmbeddedResource Include="Templates\Controller.Class.Annotations.liquid" />
-        <EmbeddedResource Include="Templates\Controller.liquid" />
+        <EmbeddedResource Include="Templates\Interface.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Interface.liquid" />
         <EmbeddedResource Include="Templates\File.liquid" />
-        <EmbeddedResource Include="Templates\Controller.Method.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Interface.Method.Annotations.liquid" />
     </ItemGroup>
 
     <ItemGroup>
@@ -40,13 +38,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
-        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+        <ProjectReference Include="..\NClient.CodeGeneration.Abstractions\NClient.CodeGeneration.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NClient.CodeGeneration.Abstractions\NClient.CodeGeneration.Abstractions.csproj" />
+        <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
+        <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
-
 
 </Project>
