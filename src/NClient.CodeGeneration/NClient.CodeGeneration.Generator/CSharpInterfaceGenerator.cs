@@ -7,7 +7,7 @@ using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.Generation.CodeGenerator
+namespace NClient.CodeGeneration.Generator
 {
   public class CSharpInterfaceGenerator : CSharpClientGenerator
   {

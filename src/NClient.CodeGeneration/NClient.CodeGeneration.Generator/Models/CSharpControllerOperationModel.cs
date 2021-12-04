@@ -11,7 +11,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.Generation.CodeGenerator.Models
+namespace NClient.CodeGeneration.Generator.Models
 {
     /// <summary>The CSharp controller operation model.</summary>
     public class CSharpControllerOperationModel : CSharpOperationModel

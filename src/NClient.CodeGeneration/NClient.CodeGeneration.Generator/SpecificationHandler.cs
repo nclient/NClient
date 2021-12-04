@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NSwag.CodeGeneration.CSharp;
 
-namespace NClient.Generation.CodeGenerator
+namespace NClient.CodeGeneration.Generator
 {
     public interface ISpecificationHandler
     {

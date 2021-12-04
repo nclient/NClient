@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NClient.CodeGeneration.Generator;
 using NClient.DotNetTool.Loaders;
-using NClient.Generation.CodeGenerator;
 
 namespace NClient.DotNetTool
 {

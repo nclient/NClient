@@ -13,7 +13,7 @@ using System.Reflection;
 using NJsonSchema.CodeGeneration;
 using NSwag;
 
-namespace NClient.Generation.CodeGenerator
+namespace NClient.CodeGeneration.Generator
 {
     /// <summary>The default template factory which loads templates from embedded resources.</summary>
     public class CustomTemplateFactory : DefaultTemplateFactory
