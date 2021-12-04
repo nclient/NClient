@@ -16,7 +16,7 @@ namespace NClient.CodeGeneration.Generator
         {
             var openApiDocument = await NSwag.OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
-            var settings = new CSharpClientGeneratorSettings
+            var settings = new CSharpControllerGeneratorSettings
             {
                 GenerateClientInterfaces = true,
                 CSharpGeneratorSettings = 
@@ -25,7 +25,7 @@ namespace NClient.CodeGeneration.Generator
                 }
             };
             
-            settings.CSharpGeneratorSettings.TemplateFactory = new CustomTemplateFactory(settings.CSharpGeneratorSettings, new[]
+            settings.CSharpGeneratorSettings.TemplateFactory = new DefaultTemplateFactory(settings.CSharpGeneratorSettings, new[]
             {
                 typeof(SpecificationHandler).GetTypeInfo().Assembly,
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly

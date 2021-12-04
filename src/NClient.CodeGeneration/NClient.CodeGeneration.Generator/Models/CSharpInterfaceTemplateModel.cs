@@ -1,11 +1,3 @@
-//-----------------------------------------------------------------------
-// <copyright file="CSharpControllerTemplateModel.cs" company="NSwag">
-//     Copyright (c) Rico Suter. All rights reserved.
-// </copyright>
-// <license>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</license>
-// <author>Rico Suter, mail@rsuter.com</author>
-//-----------------------------------------------------------------------
-
 using System.Collections.Generic;
 using System.Linq;
 using NSwag;
