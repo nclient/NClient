@@ -14,14 +14,13 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
         
         protected override string GetToolchainVersion()
         {
-            return OpenApiDocument.ToolchainVersion + " (NJsonSchema v" + base.GetToolchainVersion() + ")";
+            return Assembly.GetExecutingAssembly().GetName().Version + " (NSwag v" + OpenApiDocument.ToolchainVersion + " (NJsonSchema v" + base.GetToolchainVersion() + "))";
         }
         
         protected override string GetEmbeddedLiquidTemplate(string language, string template)
         {
             template = template.TrimEnd('!') switch
             {
-                "Controller" => "Interface",
                 "Controller.Class.Annotations" => "Interface.Annotations",
                 "Controller.Method.Annotations" => "Interface.Method.Annotations",
                 _ => template

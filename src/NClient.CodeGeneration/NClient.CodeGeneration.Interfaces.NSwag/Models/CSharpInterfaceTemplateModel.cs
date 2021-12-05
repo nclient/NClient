@@ -24,7 +24,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Models
             InterfaceName = interfaceName;
             Operations = operations;
         }
-        
+
         public string InterfaceName { get; }
         
         public string NClientAnnotationsNamespace => "NClient.Annotations";
