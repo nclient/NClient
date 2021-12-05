@@ -19,6 +19,6 @@ namespace NClient.DotNetTool
         public string OutputPath { get; }
 
         [Option(shortName: 'n', longName: "namespace", Required = false, HelpText = "The namespace for generated files.", Default = "NClient.Facades")]
-        public string @Namespace { get; }
+        public string Namespace { get; }
     }
 }
