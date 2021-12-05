@@ -15,7 +15,7 @@ namespace NClient.CodeGeneration.Providers.NSwag
         {
             _logger = logger;
         }
-        public async Task<string?> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default)
+        public async Task<string> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default)
         {
             var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             

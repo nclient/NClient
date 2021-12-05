@@ -16,7 +16,7 @@ namespace NClient.DotNetTool
             _clientGenerator = clientGenerator;
         }
 
-        public async Task<string?> GenerateAsync(CommandLineOptions opts, string specification)
+        public async Task<string> GenerateAsync(CommandLineOptions opts, string specification)
         {
             return await _clientGenerator.GenerateAsync(specification, opts.Namespace);
         }
