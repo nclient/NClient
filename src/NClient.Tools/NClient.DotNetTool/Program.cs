@@ -15,45 +15,34 @@ namespace NClient.DotNetTool
     {
         public static async Task<int> Main(string[] args)
         {
+            var serviceProvider = BuildServiceProvider();
+
             return await Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .MapResult(async opts =>
                     {
+                        var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
                         try
                         {
-                            await Execution(opts);
+                            var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
+                            var result = await serviceProvider.GetRequiredService<GeneratorFacade>().GenerateAsync(opts, specification);
+                            await Save(opts, result);
                             return 0;
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
+                            logger.LogError(e, $"Generation error {e.Message}");
                             return -1;
                         }
                     },
                     _ => Task.FromResult(-1));
         }
 
-        private static async Task Execution(CommandLineOptions opts)
-        {
-            var serviceProvider = BuildServiceProvider();
-
-            var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
-
-            var specificationHandler = serviceProvider.GetRequiredService<INClientGenerator>();
-            
-            var code = await specificationHandler.GenerateAsync(specification, opts.Namespace);
-
-            if (string.IsNullOrEmpty(code))
-                return;
-
-            await WriteFacades(opts, code);
-        }
-
-        private static async Task WriteFacades(CommandLineOptions opts, string generatedFacades)
+        private static async Task Save(CommandLineOptions opts, string? sourceCode)
         {
             if (File.Exists(opts.OutputPath))
                 File.Delete(opts.OutputPath);
 
-            await File.WriteAllTextAsync(opts.OutputPath, generatedFacades);
+            await File.WriteAllTextAsync(opts.OutputPath, sourceCode);
         }
 
         private static IServiceProvider BuildServiceProvider()
@@ -61,11 +50,12 @@ namespace NClient.DotNetTool
             return new ServiceCollection()
                 .AddLogging(x => x.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .AddSingleton<ILoaderFactory>(_ => new LoaderFactory())
-                .AddSingleton(_ =>
+                .AddSingleton(serviceProvider =>
                 {
-                    //TODO: add logger
-                    return new NSwagGeneratorProvider().Create(null);
+                    var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<INClientGenerator>();
+                    return new NSwagGeneratorProvider().Create(logger);
                 })
+                .AddSingleton<GeneratorFacade>()
                 .BuildServiceProvider();
         }
     }    
