@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,8 +57,10 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
 
             var assemblyName = Path.GetRandomFileName();
             var ns = Assembly.Load("netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
-            var rt = Assembly.Load("System.Runtime, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
-
+            #if !NETFRAMEWORK
+            var rt = Assembly.Load("System.Runtime, Version=4.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+            #endif
+            
             MetadataReference[] references =
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -65,8 +68,11 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
                 MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonConvert).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.Validator).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Annotations.FacadeAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(ns.Location),
+                #if !NETFRAMEWORK
                 MetadataReference.CreateFromFile(rt.Location)
+                #endif
             };
 
             var compilation = CSharpCompilation.Create(
