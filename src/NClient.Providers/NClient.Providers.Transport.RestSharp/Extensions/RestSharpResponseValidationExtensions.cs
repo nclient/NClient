@@ -1,4 +1,4 @@
-﻿using NClient.Providers.Transport.Http.RestSharp;
+﻿using NClient.Providers.Transport.RestSharp;
 using RestSharp;
 
 // ReSharper disable once CheckNamespace
