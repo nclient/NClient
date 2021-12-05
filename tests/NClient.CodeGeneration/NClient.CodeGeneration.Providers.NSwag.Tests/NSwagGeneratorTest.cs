@@ -13,8 +13,10 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
 {
     public class MultipartComparator : IEqualityComparer<string>
     {
-        public bool Equals(string x, string y)
+        public bool Equals(string? x, string? y)
         {
+            if (x is null || y is null)
+                return false;
             return x.Contains(y);
         }
         public int GetHashCode(string obj)
@@ -95,7 +97,9 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
 
         private string LoadSpec(string name)
         {
-            var resource = typeof(NSwagGeneratorTest).GetTypeInfo().Assembly.GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Providers)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") ?? throw new NullReferenceException("no open api spec");
+            var resource = typeof(NSwagGeneratorTest).GetTypeInfo().Assembly
+                    .GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Providers)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") 
+                ?? throw new NullReferenceException("no open api spec");
             resource.Should().NotBeNull();
             using var reader = new StreamReader(resource);
             reader.Should().NotBeNull();
@@ -111,7 +115,7 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
 
             result.Should().NotBeNullOrEmpty();
 
-            return result!;
+            return result;
         }
 
         private Microsoft.OpenApi.Models.OpenApiDocument GetOpenApiDoc(string openApiSpec)
