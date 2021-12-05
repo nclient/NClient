@@ -53,7 +53,7 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
             var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
             var assemblyName = Path.GetRandomFileName();
-            var ns = Assembly.Load("netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
+            var ns = Assembly.Load("netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
             var rt = Assembly.Load("System.Runtime, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
 
             MetadataReference[] references =
