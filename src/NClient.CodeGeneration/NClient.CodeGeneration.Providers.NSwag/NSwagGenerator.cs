@@ -40,7 +40,7 @@ namespace NClient.CodeGeneration.Providers.NSwag
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
             
-            var generator = new CSharpInterfaceGenerator(openApiDocument, settings);
+            var generator = new CSharpInterfaceGenerator(openApiDocument, settings, _logger);
             return generator.GenerateFile();
         }
     }

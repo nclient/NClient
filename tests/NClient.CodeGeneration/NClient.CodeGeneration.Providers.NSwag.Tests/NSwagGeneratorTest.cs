@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,18 @@ using NUnit.Framework;
 
 namespace NClient.CodeGeneration.Providers.NSwag.Tests
 {
+    public class MultipartComparator : IEqualityComparer<string>
+    {
+        public bool Equals(string x, string y)
+        {
+            return x.Contains(y);
+        }
+        public int GetHashCode(string obj)
+        {
+            return base.GetHashCode();
+        }
+    }
+    
     [Parallelizable]
     public class NSwagGeneratorTest
     {
@@ -19,7 +32,13 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
             const string openApiSpecJson = @"swagger.json";
 
             var openApiSpec = LoadSpec(openApiSpecJson);
-            var opsCount = GetOpenApiDoc(openApiSpec).Paths.SelectMany(p => p.Value.Operations).Select(o => o.Value).Count();
+            var ops = GetOpenApiDoc(openApiSpec).Paths.SelectMany(p => p.Value.Operations).Select(o => o.Value).ToList();
+            var notAvailableIds = ops
+                .Where(o => o.RequestBody is not null && o.RequestBody.Content.Keys.Contains("multipart", new MultipartComparator()))
+                .Select(o => o.OperationId)
+                .ToList();
+            var availableOps = ops.Where(o => !notAvailableIds.Contains(o.OperationId)).ToList();
+            var opsCount = availableOps.Count;
 
             var source = GenerateSourceCode(openApiSpec);
 
