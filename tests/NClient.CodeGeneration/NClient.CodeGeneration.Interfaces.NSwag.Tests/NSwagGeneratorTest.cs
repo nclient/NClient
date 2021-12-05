@@ -104,7 +104,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
         private string LoadSpec(string name)
         {
             var resource = typeof(NSwagGeneratorTest).GetTypeInfo().Assembly
-                    .GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Providers)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") 
+                    .GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Interfaces)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") 
                 ?? throw new NullReferenceException("no open api spec");
             resource.Should().NotBeNull();
             using var reader = new StreamReader(resource);
