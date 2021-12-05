@@ -5,9 +5,9 @@ using NSwag;
 
 namespace NClient.CodeGeneration.Providers.NSwag
 {
-    internal class DefaultTemplateFactory : NJsonSchema.CodeGeneration.DefaultTemplateFactory
+    internal class InterfaceTemplateFactory : DefaultTemplateFactory
     {
-        public DefaultTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
+        public InterfaceTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
             : base(settings, assemblies)
         {
         }

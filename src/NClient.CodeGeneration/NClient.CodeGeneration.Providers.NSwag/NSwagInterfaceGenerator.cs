@@ -8,11 +8,11 @@ using NSwag.CodeGeneration.CSharp;
 
 namespace NClient.CodeGeneration.Providers.NSwag
 {
-    public class NSwagGenerator : INClientGenerator
+    public class NSwagInterfaceGenerator : INClientInterfaceGenerator
     {
         private readonly ILogger? _logger;
         
-        public NSwagGenerator(ILogger? logger)
+        public NSwagInterfaceGenerator(ILogger? logger)
         {
             _logger = logger;
         }
@@ -36,9 +36,9 @@ namespace NClient.CodeGeneration.Providers.NSwag
                 }
             };
             
-            settings.CSharpGeneratorSettings.TemplateFactory = new DefaultTemplateFactory(settings.CSharpGeneratorSettings, new[]
+            settings.CSharpGeneratorSettings.TemplateFactory = new InterfaceTemplateFactory(settings.CSharpGeneratorSettings, new[]
             {
-                typeof(NSwagGenerator).GetTypeInfo().Assembly,
+                typeof(NSwagInterfaceGenerator).GetTypeInfo().Assembly,
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
             

@@ -24,7 +24,7 @@ namespace NClient.DotNetTool
                         try
                         {
                             var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
-                            var result = await serviceProvider.GetRequiredService<GeneratorFacade>().GenerateAsync(opts, specification);
+                            var result = await serviceProvider.GetRequiredService<FacadeGenerator>().GenerateAsync(opts, specification);
                             await Save(opts, result);
                             return 0;
                         }
@@ -52,10 +52,10 @@ namespace NClient.DotNetTool
                 .AddSingleton<ILoaderFactory>(_ => new LoaderFactory())
                 .AddSingleton(serviceProvider =>
                 {
-                    var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<INClientGenerator>();
-                    return new NSwagGeneratorProvider().Create(logger);
+                    var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<INClientInterfaceGenerator>();
+                    return new NSwagInterfaceGeneratorProvider().Create(logger);
                 })
-                .AddSingleton<GeneratorFacade>()
+                .AddSingleton<FacadeGenerator>()
                 .BuildServiceProvider();
         }
     }    

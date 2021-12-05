@@ -114,7 +114,7 @@ namespace NClient.CodeGeneration.Providers.NSwag.Tests
 
         private string GenerateSourceCode(string openApiSpec)
         {
-            var specificationHandler = new NSwagGenerator(null);
+            var specificationHandler = new NSwagInterfaceGenerator(null);
             const string @namespace = "Test";
 
             var result = specificationHandler.GenerateAsync(openApiSpec, @namespace).GetAwaiter().GetResult();
