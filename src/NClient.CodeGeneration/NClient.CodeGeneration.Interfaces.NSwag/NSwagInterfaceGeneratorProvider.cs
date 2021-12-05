@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
 
-namespace NClient.CodeGeneration.Providers.NSwag
+namespace NClient.CodeGeneration.Interfaces.NSwag
 {
     public class NSwagInterfaceGeneratorProvider : INClientInterfaceGeneratorProvider
     {

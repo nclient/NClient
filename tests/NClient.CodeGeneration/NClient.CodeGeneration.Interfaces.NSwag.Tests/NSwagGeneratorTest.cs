@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
 using NUnit.Framework;
 
-namespace NClient.CodeGeneration.Providers.NSwag.Tests
+namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
 {
     public class MultipartComparator : IEqualityComparer<string>
     {

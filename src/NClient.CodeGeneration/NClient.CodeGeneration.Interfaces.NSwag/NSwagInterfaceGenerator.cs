@@ -6,7 +6,7 @@ using NClient.CodeGeneration.Abstractions;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 
-namespace NClient.CodeGeneration.Providers.NSwag
+namespace NClient.CodeGeneration.Interfaces.NSwag
 {
     public class NSwagInterfaceGenerator : INClientInterfaceGenerator
     {

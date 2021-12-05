@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag\NClient.CodeGeneration.Providers.NSwag.csproj" />
+        <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag\NClient.CodeGeneration.Interfaces.NSwag.csproj" />
     </ItemGroup>
 
     <ItemGroup>

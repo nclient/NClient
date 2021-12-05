@@ -5,7 +5,7 @@ using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
-using NClient.CodeGeneration.Providers.NSwag;
+using NClient.CodeGeneration.Interfaces.NSwag;
 using NClient.DotNetTool.Loaders;
 
 namespace NClient.DotNetTool

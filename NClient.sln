@@ -105,13 +105,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 tools", "01 tools", "{27
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 code-generation", "02 code-generation", "{B7047051-4DB6-400C-8D99-2AE50953D362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Providers.NSwag", "src\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag\NClient.CodeGeneration.Providers.NSwag.csproj", "{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Interfaces.NSwag", "src\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag\NClient.CodeGeneration.Interfaces.NSwag.csproj", "{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.DotNetTool", "src\NClient.Tools\NClient.DotNetTool\NClient.DotNetTool.csproj", "{53705807-535A-4770-9044-93E50B9ABE21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 code-generation", "03 code-generation", "{8A87573D-F567-429A-BC62-972F7B3C4F6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Providers.NSwag.Tests", "tests\NClient.CodeGeneration\NClient.CodeGeneration.Providers.NSwag.Tests\NClient.CodeGeneration.Providers.NSwag.Tests.csproj", "{DF4412E6-9FBE-4F40-A1C7-859F551830C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Interfaces.NSwag.Tests", "tests\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag.Tests\NClient.CodeGeneration.Interfaces.NSwag.Tests.csproj", "{DF4412E6-9FBE-4F40-A1C7-859F551830C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Abstractions", "src\NClient.CodeGeneration\NClient.CodeGeneration.Abstractions\NClient.CodeGeneration.Abstractions.csproj", "{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}"
 EndProject

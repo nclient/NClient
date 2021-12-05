@@ -4,7 +4,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.CodeGeneration.Providers.NSwag.Models
+namespace NClient.CodeGeneration.Interfaces.NSwag.Models
 {
     internal class CSharpInterfaceOperationModel : CSharpControllerOperationModel
     {
