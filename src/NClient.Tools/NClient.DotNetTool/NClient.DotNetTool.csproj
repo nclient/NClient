@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient</PackageTags>
-        <Description>NClient</Description>
+        <PackageTags>NClient;CodeGeneration;dotnet-tool</PackageTags>
+        <Description>DotNet CLI tool for generate interfaces of NClient</Description>
         <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>

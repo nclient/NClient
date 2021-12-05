@@ -8,8 +8,8 @@
         <PackageProjectUrl>https://nclient.github.io</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
-        <Description>NClient</Description>
+        <PackageTags>NClient;CodeGeneration;Abstractions;Client</PackageTags>
+        <Description>NClient code generation abstractions for your providers and extensions.</Description>
         <Authors>kingmidas74</Authors>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
@@ -21,6 +21,7 @@
         <Nullable>enable</Nullable>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <RootNamespace>NClient</RootNamespace>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
