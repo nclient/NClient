@@ -16,7 +16,9 @@ namespace NClient.DotNetTool.Loaders
         public async Task<string> Load()
         {
             using var client = new HttpClient();
-            return await client.GetStringAsync(_uri);
+            using var responseMessage = await client.GetAsync(_uri);
+            responseMessage.EnsureSuccessStatusCode();
+            return await responseMessage.Content.ReadAsStringAsync();
         }
     }
 }
