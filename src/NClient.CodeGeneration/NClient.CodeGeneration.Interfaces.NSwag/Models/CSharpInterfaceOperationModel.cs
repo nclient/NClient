@@ -16,6 +16,22 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Models
         {
             _settings = settings;
         }
+        
+        /// <summary>Gets or sets the type of the result.</summary>
+        public string ClientResultType
+        {
+            get
+            {
+                switch (SyncResultType)
+                {
+                    case "void":
+                    case "FileResult":
+                        return "System.Threading.Tasks.Task<NClient.Providers.Results.HttpResults.IHttpResponse>";
+                    default:
+                        return "System.Threading.Tasks.Task<NClient.Providers.Results.HttpResults.IHttpResponse<" + SyncResultType + ">>";
+                }
+            }
+        }
 
         protected override string ResolveParameterType(OpenApiParameter parameter)
         {

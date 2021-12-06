@@ -28,11 +28,6 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 CSharpGeneratorSettings = 
                 {
                     Namespace = @namespace
-                },
-                AdditionalNamespaceUsages = new[]
-                {
-                    "NClient.Annotations",
-                    "NClient.Annotations.Http"
                 }
             };
             
