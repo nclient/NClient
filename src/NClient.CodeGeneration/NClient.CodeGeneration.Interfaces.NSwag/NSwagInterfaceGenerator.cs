@@ -17,7 +17,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
             _logger = logger;
         }
         
-        public async Task<string> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default)
+        public async Task<string> GenerateAsync(string specification, string @namespace, string interfaceName, CancellationToken cancellationToken = default)
         {
             var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
@@ -28,7 +28,8 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 CSharpGeneratorSettings = 
                 {
                     Namespace = @namespace
-                }
+                },
+                ClassName = interfaceName
             };
             
             settings.CSharpGeneratorSettings.TemplateFactory = new InterfaceTemplateFactory(settings.CSharpGeneratorSettings, new[]

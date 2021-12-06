@@ -5,6 +5,6 @@ namespace NClient.CodeGeneration.Abstractions
 {
     public interface INClientInterfaceGenerator
     {
-        Task<string> GenerateAsync(string specification, string @namespace, CancellationToken cancellationToken = default);
+        Task<string> GenerateAsync(string specification, string @namespace, string interfaceName, CancellationToken cancellationToken = default);
     }
 }

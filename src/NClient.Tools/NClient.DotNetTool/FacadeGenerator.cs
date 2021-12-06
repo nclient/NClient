@@ -18,7 +18,7 @@ namespace NClient.DotNetTool
 
         public async Task<string> GenerateAsync(CommandLineOptions opts, string specification)
         {
-            return await _interfaceGenerator.GenerateAsync(specification, opts.Namespace);
+            return await _interfaceGenerator.GenerateAsync(specification, opts.Namespace, opts.FacadeName);
         }
     }
 }

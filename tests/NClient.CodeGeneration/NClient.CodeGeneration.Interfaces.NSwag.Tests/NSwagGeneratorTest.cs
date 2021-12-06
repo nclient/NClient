@@ -68,6 +68,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
                 MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonConvert).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.Validator).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Annotations.FacadeAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Providers.Results.HttpResults.HttpResponse).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(ns.Location),
                 #if !NETFRAMEWORK
@@ -97,7 +98,8 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
 
-            var type = assembly.GetTypes().Single(x => x.IsInterface);
+            // TODO: Check first
+            var type = assembly.GetTypes().Last(x => x.IsInterface);
             return type;
         }
 
@@ -117,7 +119,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             var specificationHandler = new NSwagInterfaceGenerator(null);
             const string @namespace = "Test";
 
-            var result = specificationHandler.GenerateAsync(openApiSpec, @namespace).GetAwaiter().GetResult();
+            var result = specificationHandler.GenerateAsync(openApiSpec, @namespace, interfaceName: "NClient").GetAwaiter().GetResult();
 
             result.Should().NotBeNullOrEmpty();
 

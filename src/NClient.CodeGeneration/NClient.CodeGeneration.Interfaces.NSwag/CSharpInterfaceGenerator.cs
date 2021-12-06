@@ -32,7 +32,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
             {
                 _logger?.LogWarning($"Multipart content currently not supported. Operation {notAvailableOperation.Summary ?? notAvailableOperation.ActualOperationName} was skipped!");
             }
-            var model = new CSharpInterfaceTemplateModel(interfaceName, availableOperations, _document, Settings);
+            var model = new CSharpInterfaceTemplateModel(interfaceDefinitionName, availableOperations, _document, Settings);
             var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Interface", model);
             yield return new CodeArtifact(model.InterfaceName, CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Client, template);
         }

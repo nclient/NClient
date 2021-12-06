@@ -24,6 +24,7 @@
     </ItemGroup>
     
     <ItemGroup>
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Mapping.HttpResponses\NClient.Providers.Mapping.HttpResponses.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
     
