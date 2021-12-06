@@ -22,7 +22,7 @@ namespace NClient.DotNetTool
         [Option(shortName: 'n', longName: "namespace", Required = false, HelpText = "The namespace for generated files.", Default = "NClient.Facades")]
         public string Namespace { get; }
         
-        [Option(shortName: 'f', longName: "facade", Required = false, HelpText = "The facade name.", Default = "NClient")]
+        [Option(shortName: 'f', longName: "facade", Required = false, HelpText = "The facade name.", Default = "{controller}")]
         public string FacadeName { get; }
     }
 }
