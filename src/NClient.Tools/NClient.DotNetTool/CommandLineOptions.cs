@@ -13,7 +13,7 @@ namespace NClient.DotNetTool
             FacadeName = facadeName;
         }
 
-        [Option(shortName: 's', longName: "spec", Required = true, HelpText = "The OpenAPI spec file to use. Paths are relative to the project directory.")]
+        [Option(shortName: 's', longName: "spec", Required = true, HelpText = "The OpenAPI spec file to use. Paths are relative to the project directory. You can also set a http URI as path")]
         public string Spec { get; }
 
         [Option(shortName: 'o', longName: "output-file", Required = false, HelpText = "The result. Paths are relative to the project directory.", Default = "./Facades.cs")]
