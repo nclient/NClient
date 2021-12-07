@@ -1,7 +1,7 @@
 ﻿using System;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Transport.Http.RestSharp
+namespace NClient.Providers.Transport.RestSharp
 {
     public class DefaultRestSharpResiliencePolicySettings : RestSharpResiliencePolicySettings
     {

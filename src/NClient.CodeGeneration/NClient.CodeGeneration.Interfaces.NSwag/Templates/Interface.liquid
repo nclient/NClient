@@ -1,0 +1,60 @@
+﻿{% if GeneratePartialInterfaces -%}
+
+[System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
+{% template Controller.Class.Annotations %}
+public partial interface I{{ InterfaceName }}Client : I{{ InterfaceName }}Facade
+{
+{%     for operation in Operations -%}
+{%         if operation.HasSummary -%}
+    /// <summary>{{ operation.Summary | csharpdocs }}</summary>
+{%         endif -%}
+{%         for parameter in operation.Parameters -%}
+{%             if parameter.HasDescription -%}
+    /// <param name="{{ parameter.VariableName }}">{{ parameter.Description | csharpdocs }}</param>
+{%             endif -%}
+{%         endfor -%}
+{%         if operation.HasResultDescription -%}
+    /// <returns>{{ operation.ResultDescription | csharpdocs }}</returns>
+{%         endif -%}
+{%         if operation.IsDeprecated -%}
+    [System.Obsolete]
+{%         endif -%}
+{% template Controller.Method.Annotations %}
+    [{{ NClientAnnotationsNamespace }}.Override]
+    new {{ operation.ClientResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.TypeInControllerInterface }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional and parameter.HasDefault == false %} = null{% endif %}{% if parameter.IsLast == false or UseCancellationToken %}, {% endif %}{% endfor %}{% if UseCancellationToken %}System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken){% endif %});
+
+{%      endfor -%}
+}
+
+[System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
+{% if HasBasePath -%}
+[{{ NClientAnnotationsHttpNamespace }}.HttpFacade]
+[{{ NClientAnnotationsNamespace }}.Path("{{ BasePath }}")]
+{% endif -%}
+{% template Controller.Class.Annotations %}
+[System.ComponentModel.Category("{{ InterfaceName }}")]
+public partial interface I{{ InterfaceName }}Facade{% if HasClientBaseInterface %} : {{ ClientBaseInterface }}{% endif %}
+{
+{%     for operation in Operations -%}
+{%         if operation.HasSummary -%}
+    /// <summary>{{ operation.Summary | csharpdocs }}</summary>
+{%         endif -%}
+{%         for parameter in operation.Parameters -%}
+{%             if parameter.HasDescription -%}
+    /// <param name="{{ parameter.VariableName }}">{{ parameter.Description | csharpdocs }}</param>
+{%             endif -%}
+{%         endfor -%}
+{%         if operation.HasResultDescription -%}
+    /// <returns>{{ operation.ResultDescription | csharpdocs }}</returns>
+{%         endif -%}
+{%         if operation.IsDeprecated -%}
+    [System.Obsolete]
+{%         endif -%}
+{% template Controller.Method.Annotations %}
+    [{{ NClientAnnotationsHttpNamespace }}.{{ operation.HttpMethodUpper }}Method("{{ operation.Path }}"{% if operation.HasRouteName %}, Name = "{{ operation.RouteName }}"{% endif %})]
+    {{ operation.ResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{% if parameter.IsQuery %}[{{ NClientAnnotationsHttpNamespace }}.QueryParam{% if parameter.IsValidIdentifier == false %}(Name = "{{ parameter.Name }}"){% endif %}] {% endif %}{% if parameter.IsHeader %}[{{ NClientAnnotationsHttpNamespace }}.HeaderParam{% if parameter.IsValidIdentifier == false %}(Name = "{{ parameter.Name }}"){% endif %}] {% endif %}{% if parameter.IsBody and parameter.IsBinaryBody == false %}[{{ NClientAnnotationsHttpNamespace }}.BodyParam] {% endif %}{% if GenerateModelValidationAttributes and parameter.IsRequired %}[{{ RequiredAttributeType }}] {% endif %}{{ parameter.TypeInControllerInterface }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional and parameter.HasDefault == false %} = null{% endif %}{% if parameter.IsLast == false or UseCancellationToken %}, {% endif %}{% endfor %}{% if UseCancellationToken %}System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken){% endif %});
+
+{%      endfor -%}
+}
+
+{% endif -%}

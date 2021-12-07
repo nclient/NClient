@@ -2,7 +2,7 @@
 using System.Net.Http;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Transport.Http.System
+namespace NClient.Providers.Transport.SystemNetHttp
 {
     public class DefaultSystemNetHttpResiliencePolicySettings : SystemNetHttpResiliencePolicySettings
     {
