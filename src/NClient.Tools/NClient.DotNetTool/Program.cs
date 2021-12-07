@@ -26,6 +26,8 @@ namespace NClient.DotNetTool
                             var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(opts).Load();
                             var result = await serviceProvider.GetRequiredService<FacadeGenerator>().GenerateAsync(opts, specification);
                             await Save(opts, result);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Generations is over! Please, see {opts.OutputPath} for result!");
                             return 0;
                         }
                         catch (Exception e)
