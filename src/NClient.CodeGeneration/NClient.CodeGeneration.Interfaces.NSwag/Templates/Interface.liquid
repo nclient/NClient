@@ -32,6 +32,7 @@ public partial interface I{{ InterfaceName }}Client : I{{ InterfaceName }}Facade
 [{{ NClientAnnotationsNamespace }}.Path("{{ BasePath }}")]
 {% endif -%}
 {% template Controller.Class.Annotations %}
+[System.ComponentModel.Category("{{ InterfaceName }}")]
 public partial interface I{{ InterfaceName }}Facade{% if HasClientBaseInterface %} : {{ ClientBaseInterface }}{% endif %}
 {
 {%     for operation in Operations -%}

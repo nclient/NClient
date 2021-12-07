@@ -40,6 +40,8 @@
     <ItemGroup>
       <EmbeddedResource Include="Specifications\swagger.json" />
       <EmbeddedResource Include="Specifications\swagger.yaml" />
+      <None Remove="Specifications\uber.json" />
+      <EmbeddedResource Include="Specifications\uber.json" />
     </ItemGroup>
 
 </Project>

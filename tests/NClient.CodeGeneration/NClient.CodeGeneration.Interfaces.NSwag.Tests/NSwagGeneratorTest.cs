@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
 using NUnit.Framework;
+using CategoryAttribute = System.ComponentModel.CategoryAttribute;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
 {
@@ -35,23 +36,39 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             const string openApiSpecJson = @"swagger.json";
 
             var openApiSpec = LoadSpec(openApiSpecJson);
-            var ops = GetOpenApiDoc(openApiSpec).Paths.SelectMany(p => p.Value.Operations).Select(o => o.Value).ToList();
+            var ops = GetOpenApiDoc(openApiSpec).Paths.SelectMany(p => p.Value.Operations).Select(o => o.Value).ToArray();
             var notAvailableIds = ops
                 .Where(o => o.RequestBody is not null && o.RequestBody.Content.Keys.Contains("multipart", new MultipartComparator()))
                 .Select(o => o.OperationId)
-                .ToList();
-            var availableOps = ops.Where(o => !notAvailableIds.Contains(o.OperationId)).ToList();
-            var opsCount = availableOps.Count;
+                .ToArray();
+            var availableOps = ops.Where(o => !notAvailableIds.Contains(o.OperationId)).ToArray();
 
             var source = GenerateSourceCode(openApiSpec);
 
-            var type = Compile(source);
-            var methods = type.GetMethods();
+            var types = Compile(source).ToArray();
 
-            methods.Should().HaveCount(opsCount);
+            var tags = availableOps.Select(o => o.Tags.First()).Distinct().ToArray();
+
+            foreach (var tag in tags)
+            {
+                var facadeInterface = types.Where(t => t.IsInterface && t.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(CategoryAttribute)) is not null).ToList();
+                var baseInterfaces = facadeInterface
+                    .Where(fi => string.Equals(typeof(CategoryAttribute)
+                        .GetProperty(nameof(CategoryAttribute.Category))!
+                        .GetValue(fi.GetCustomAttribute(typeof(CategoryAttribute)))!
+                        .ToString()!, tag.Name, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+                baseInterfaces.Should().ContainSingle();
+
+                var baseInterface = baseInterfaces.Single();
+
+                var inheritInterfaces = types.Where(t => t.IsInterface && t.GetInterface(baseInterface.FullName!) is not null);
+
+                inheritInterfaces.Should().ContainSingle();
+            }
         }
 
-        private Type Compile(string source)
+        private IEnumerable<Type> Compile(string source)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
@@ -70,6 +87,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
                 MetadataReference.CreateFromFile(typeof(Annotations.FacadeAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Providers.Results.HttpResults.HttpResponse).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(CategoryAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(ns.Location),
                 #if !NETFRAMEWORK
                 MetadataReference.CreateFromFile(rt.Location)
@@ -98,9 +116,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             ms.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(ms.ToArray());
 
-            // TODO: Check first
-            var type = assembly.GetTypes().Last(x => x.IsInterface);
-            return type;
+            return assembly.GetTypes();
         }
 
         private string LoadSpec(string name)

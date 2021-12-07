@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
+using NSwag.CodeGeneration.OperationNameGenerators;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag
 {
@@ -28,8 +29,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 CSharpGeneratorSettings = 
                 {
                     Namespace = @namespace
-                },
-                ClassName = interfaceName
+                }
             };
             
             settings.CSharpGeneratorSettings.TemplateFactory = new InterfaceTemplateFactory(settings.CSharpGeneratorSettings, new[]
@@ -37,6 +37,8 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 typeof(NSwagInterfaceGenerator).GetTypeInfo().Assembly,
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
+
+            settings.OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator();
             
             var generator = new CSharpInterfaceGenerator(openApiDocument, settings, _logger);
             return generator.GenerateFile();

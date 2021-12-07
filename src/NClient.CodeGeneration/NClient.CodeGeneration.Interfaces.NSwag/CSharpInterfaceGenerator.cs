@@ -34,7 +34,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
             }
             var model = new CSharpInterfaceTemplateModel(interfaceDefinitionName, availableOperations, _document, Settings);
             var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Interface", model);
-            yield return new CodeArtifact(model.InterfaceName, CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Client, template);
+            yield return new CodeArtifact(interfaceName, CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Client, template);
         }
         
         protected override CSharpOperationModel CreateOperationModel(OpenApiOperation operation, ClientGeneratorBaseSettings settings) => 
