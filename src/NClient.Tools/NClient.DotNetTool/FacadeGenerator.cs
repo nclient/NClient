@@ -16,7 +16,7 @@ namespace NClient.DotNetTool
             _interfaceGenerator = interfaceGenerator;
         }
 
-        public async Task<string> GenerateAsync(CommandLineOptions opts, string specification)
+        public async Task<string> GenerateAsync(GenerateInterfaceOptions opts, string specification)
         {
             return await _interfaceGenerator.GenerateAsync(specification, opts.Namespace, opts.FacadeName);
         }

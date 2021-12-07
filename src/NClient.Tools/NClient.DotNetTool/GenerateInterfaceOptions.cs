@@ -3,9 +3,10 @@ using CommandLine;
 namespace NClient.DotNetTool
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class CommandLineOptions
+    [Verb("interface", HelpText = "Generate interface facade for openAPI")]
+    public class GenerateInterfaceOptions
     {
-        public CommandLineOptions(string spec, string outputPath, string @namespace, string facadeName)
+        public GenerateInterfaceOptions(string spec, string outputPath, string @namespace, string facadeName)
         {
             Spec = spec;
             OutputPath = outputPath;
