@@ -1,8 +1,6 @@
 name: Sonarcloud analysis
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
   pull_request:
     types: [ assigned, review_requested, auto_merge_enabled ]
     branches: [ main, alpha-release, beta-release, release ]
@@ -12,7 +10,7 @@ env:
   
 jobs:
   build:
-    name: Build
+    name: Sonarcloud analysis
     runs-on: windows-latest
     steps:
       - name: Setup .NET 6.0
