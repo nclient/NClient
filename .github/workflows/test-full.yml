@@ -3,7 +3,7 @@ name: 'Test: Full'
 on:
   workflow_dispatch:
   pull_request:
-    types: assigned
+    types: [ assigned, review_requested, auto_merge_enabled ]
     branches: [ main, alpha-release, beta-release, release ]
 
 env:
