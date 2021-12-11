@@ -5,7 +5,12 @@
 ![Nuget](https://img.shields.io/nuget/dt/NClient)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nclient/NClient)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test:%20Full)
-![GitHub](https://img.shields.io/github/license/nclient/NClient)
+![GitHub](https://img.shields.io/github/license/nclient/NClient)  
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=coverage)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
 
 NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces. 
 The main difference between NClient and its analogues is that NClient lets you annotate ASP.NET controllers via interfaces and then use these interfaces to create clients. 
