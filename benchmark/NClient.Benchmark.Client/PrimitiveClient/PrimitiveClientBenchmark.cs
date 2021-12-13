@@ -8,10 +8,10 @@ using RestSharp;
 using WireMock.Server;
 
 // ReSharper disable RedundantNameQualifier
-namespace NClient.Benchmark.Client.PrimitiveApi
+namespace NClient.Benchmark.Client.PrimitiveClient
 {
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
-    public class PrimitiveApiClientBenchmark
+    public class PrimitiveClientBenchmark
     {
         private const int Id = 1;
         
@@ -20,9 +20,9 @@ namespace NClient.Benchmark.Client.PrimitiveApi
         private HttpClient _httpClient = null!;
         private RestSharp.RestClient _restSharpClient = null!;
         private FlurlClient _flurlClient = null!;
-        private IPrimitiveApiClient _nclient = null!;
-        private IPrimitiveApiClient _refitClient = null!;
-        private IPrimitiveApiClient _restEaseClient = null!;
+        private IPrimitiveClient _nclient = null!;
+        private IPrimitiveClient _refitClient = null!;
+        private IPrimitiveClient _restEaseClient = null!;
 
         [GlobalSetup]
         public void Setup()
@@ -32,9 +32,9 @@ namespace NClient.Benchmark.Client.PrimitiveApi
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
             _flurlClient = new FlurlClient(_api.Urls.First());
-            _nclient = NClientGallery.Clients.GetRest().For<IPrimitiveApiClient>(_api.Urls.First()).Build();
-            _refitClient = Refit.RestService.For<IPrimitiveApiClient>(_api.Urls.First());
-            _restEaseClient = RestEase.RestClient.For<IPrimitiveApiClient>(_api.Urls.First());
+            _nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(_api.Urls.First()).Build();
+            _refitClient = Refit.RestService.For<IPrimitiveClient>(_api.Urls.First());
+            _restEaseClient = RestEase.RestClient.For<IPrimitiveClient>(_api.Urls.First());
         }
         
         [Benchmark]
@@ -69,21 +69,21 @@ namespace NClient.Benchmark.Client.PrimitiveApi
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<IPrimitiveApiClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(_api.Urls.First()).Build();
             nclient.SendAsync(Id).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void Refit_CreateAndSend()
         {
-            var refitClient = Refit.RestService.For<IPrimitiveApiClient>(_api.Urls.First());
+            var refitClient = Refit.RestService.For<IPrimitiveClient>(_api.Urls.First());
             refitClient.SendAsync(Id).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_CreateAndSend()
         {
-            var restEasyClient = RestEase.RestClient.For<IPrimitiveApiClient>(_api.Urls.First());
+            var restEasyClient = RestEase.RestClient.For<IPrimitiveClient>(_api.Urls.First());
             restEasyClient.SendAsync(Id).GetAwaiter().GetResult();
         }
 

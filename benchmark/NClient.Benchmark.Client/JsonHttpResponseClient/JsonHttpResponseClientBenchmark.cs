@@ -11,10 +11,10 @@ using RestSharp;
 using WireMock.Server;
 
 // ReSharper disable RedundantNameQualifier
-namespace NClient.Benchmark.Client.JsonHttpResponseApi
+namespace NClient.Benchmark.Client.JsonHttpResponseClient
 {
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
-    public class JsonHttpResponseApiClientBenchmark
+    public class JsonHttpResponseClientBenchmark
     {
         private static readonly string[] Ids = { "id-1", "id-2", "id-3", "id-4" };
         
@@ -23,9 +23,9 @@ namespace NClient.Benchmark.Client.JsonHttpResponseApi
         private HttpClient _httpClient = null!;
         private RestSharp.RestClient _restSharpClient = null!;
         private FlurlClient _flurlClient = null!;
-        private INClientJsonHttpResponseApiClient _nclient = null!;
-        private IRefitJsonHttpResponseApiClient _refitClient = null!;
-        private IRestEaseJsonHttpResponseApiClient _restEaseClient = null!;
+        private INClientJsonHttpResponseClient _nclient = null!;
+        private IRefitJsonHttpResponseClient _refitClient = null!;
+        private IRestEaseJsonHttpResponseClient _restEaseClient = null!;
 
         [GlobalSetup]
         public void Setup()
@@ -35,9 +35,9 @@ namespace NClient.Benchmark.Client.JsonHttpResponseApi
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
             _flurlClient = new FlurlClient(_api.Urls.First());
-            _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseApiClient>(_api.Urls.First()).Build();
-            _refitClient = Refit.RestService.For<IRefitJsonHttpResponseApiClient>(_api.Urls.First());
-            _restEaseClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseApiClient>(_api.Urls.First());
+            _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
+            _refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
+            _restEaseClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
         }
         
         [Benchmark]
@@ -77,7 +77,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseApi
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseApiClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
             var response = nclient.SendAsync(Ids).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;
@@ -86,7 +86,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseApi
         [Benchmark]
         public void Refit_CreateAndSend()
         {
-            var refitClient = Refit.RestService.For<IRefitJsonHttpResponseApiClient>(_api.Urls.First());
+            var refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
             var response = refitClient.SendAsync(Ids).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
                 throw response.Error!;
@@ -96,7 +96,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseApi
         [Benchmark]
         public void RestEase_CreateAndSend()
         {
-            var restEasyClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseApiClient>(_api.Urls.First());
+            var restEasyClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
             var response = restEasyClient.SendAsync(Ids).GetAwaiter().GetResult();
             response.ResponseMessage.EnsureSuccessStatusCode();
             var _ = response.GetContent();

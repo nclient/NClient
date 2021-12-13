@@ -2,9 +2,9 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace NClient.Benchmark.Client.JsonHttpResponseApi
+namespace NClient.Benchmark.Client.JsonClient
 {
-    public static class JsonHttpResponseApiMock
+    public static class JsonApiMock
     {
         public static string EndpointPath => "api";
         

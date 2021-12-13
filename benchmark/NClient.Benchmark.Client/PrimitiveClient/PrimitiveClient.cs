@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using NClient.Annotations.Http;
 
-namespace NClient.Benchmark.Client.PrimitiveApi
+namespace NClient.Benchmark.Client.PrimitiveClient
 {
-    public interface IPrimitiveApiClient
+    public interface IPrimitiveClient
     {
         [GetMethod("/api")]
         [Refit.Get("/api")]

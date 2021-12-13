@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NClient.Annotations.Http;
 
-namespace NClient.Benchmark.Client.JsonApi
+namespace NClient.Benchmark.Client.JsonClient
 {
-    public interface IJsonApiClient
+    public interface IJsonClient
     {
         [PostMethod("/api")]
         [Refit.Post("/api")]

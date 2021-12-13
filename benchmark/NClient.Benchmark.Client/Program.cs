@@ -5,10 +5,10 @@ using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
-using NClient.Benchmark.Client.JsonApi;
-using NClient.Benchmark.Client.JsonHttpResponseApi;
-using NClient.Benchmark.Client.PrimitiveApi;
-using NClient.Benchmark.Client.PrimitiveHttpResponseApi;
+using NClient.Benchmark.Client.JsonClient;
+using NClient.Benchmark.Client.JsonHttpResponseClient;
+using NClient.Benchmark.Client.PrimitiveClient;
+using NClient.Benchmark.Client.PrimitiveHttpResponseClient;
 
 namespace NClient.Benchmark.Client
 {
@@ -18,10 +18,10 @@ namespace NClient.Benchmark.Client
         {
             var summaries = new[]
             {
-                new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveApiClientBenchmark>()),
-                new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveHttpResponseApiClientBenchmark>()),
-                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonApiClientBenchmark>()),
-                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonHttpResponseApiClientBenchmark>())
+                new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveClientBenchmark>()),
+                new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveHttpResponseClientBenchmark>()),
+                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonClientBenchmark>()),
+                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonHttpResponseClientBenchmark>())
             };
             
             var logger = ConsoleLogger.Default;

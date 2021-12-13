@@ -2,9 +2,9 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace NClient.Benchmark.Client.PrimitiveHttpResponseApi
+namespace NClient.Benchmark.Client.PrimitiveClient
 {
-    public static class PrimitiveHttpResponseApiMock
+    public static class PrimitiveApiMock
     {
         public static string EndpointPath => "api";
         public static string ParamName => "id";

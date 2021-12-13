@@ -11,10 +11,10 @@ using RestSharp;
 using WireMock.Server;
 
 // ReSharper disable RedundantNameQualifier
-namespace NClient.Benchmark.Client.JsonApi
+namespace NClient.Benchmark.Client.JsonClient
 {
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
-    public class JsonApiClientBenchmark
+    public class JsonClientBenchmark
     {
         private static readonly string[] Ids = { "id-1", "id-2", "id-3", "id-4" };
         
@@ -23,9 +23,9 @@ namespace NClient.Benchmark.Client.JsonApi
         private HttpClient _httpClient = null!;
         private RestSharp.RestClient _restSharpClient = null!;
         private FlurlClient _flurlClient = null!;
-        private IJsonApiClient _nclient = null!;
-        private IJsonApiClient _refitClient = null!;
-        private IJsonApiClient _restEaseClient = null!;
+        private IJsonClient _nclient = null!;
+        private IJsonClient _refitClient = null!;
+        private IJsonClient _restEaseClient = null!;
 
         [GlobalSetup]
         public void Setup()
@@ -35,9 +35,9 @@ namespace NClient.Benchmark.Client.JsonApi
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
             _flurlClient = new FlurlClient(_api.Urls.First());
-            _nclient = NClientGallery.Clients.GetRest().For<IJsonApiClient>(_api.Urls.First()).Build();
-            _refitClient = Refit.RestService.For<IJsonApiClient>(_api.Urls.First());
-            _restEaseClient = RestEase.RestClient.For<IJsonApiClient>(_api.Urls.First());
+            _nclient = NClientGallery.Clients.GetRest().For<IJsonClient>(_api.Urls.First()).Build();
+            _refitClient = Refit.RestService.For<IJsonClient>(_api.Urls.First());
+            _restEaseClient = RestEase.RestClient.For<IJsonClient>(_api.Urls.First());
         }
         
         [Benchmark]
@@ -74,21 +74,21 @@ namespace NClient.Benchmark.Client.JsonApi
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<IJsonApiClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<IJsonClient>(_api.Urls.First()).Build();
             nclient.SendAsync(Ids).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void Refit_CreateAndSend()
         {
-            var refitClient = Refit.RestService.For<IJsonApiClient>(_api.Urls.First());
+            var refitClient = Refit.RestService.For<IJsonClient>(_api.Urls.First());
             refitClient.SendAsync(Ids).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_CreateAndSend()
         {
-            var restEasyClient = RestEase.RestClient.For<IJsonApiClient>(_api.Urls.First());
+            var restEasyClient = RestEase.RestClient.For<IJsonClient>(_api.Urls.First());
             restEasyClient.SendAsync(Ids).GetAwaiter().GetResult();
         }
 
