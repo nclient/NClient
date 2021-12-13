@@ -406,4 +406,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {244A4C58-8FA7-496C-ABCF-72F333149A20}
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = benchmark\NClient.Benchmark.Client\.run\NClient.Benchmark.run.xml
+	EndGlobalSection
 EndGlobal
