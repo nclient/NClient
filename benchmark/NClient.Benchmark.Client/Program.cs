@@ -24,9 +24,11 @@ namespace NClient.Benchmark.Client
                 new Lazy<Summary>(() => BenchmarkRunner.Run<JsonHttpResponseApiClientBenchmark>())
             };
             
+            var logger = ConsoleLogger.Default;
             summaries.Select(x => x.Value).ToList().ForEach(summary =>
             {
-                var logger = ConsoleLogger.Default;
+                logger.WriteLine();
+                logger.WriteHeader($"// *** Collected benchmark summaries: the summary of the {summary.Title} benchmark");
                 MarkdownExporter.Console.ExportToLog(summary, logger);
                 ConclusionHelper.Print(logger, summary.BenchmarksCases.First()
                     .Config.GetCompositeAnalyser().Analyse(summary).ToList());

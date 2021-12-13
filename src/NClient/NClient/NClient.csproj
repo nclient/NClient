@@ -23,7 +23,6 @@
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <SolutionDir Condition="'$(SolutionDir)'==''">../../$(ProjectDir)</SolutionDir>
         <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
     </PropertyGroup>
 
