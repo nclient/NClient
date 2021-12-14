@@ -74,7 +74,7 @@ namespace NClient.Core.Helpers
 
         public static Type[] GetDeclaredInterfaces(this Type type)
         {
-            Type[] allInterfaces = type.GetInterfaces();
+            var allInterfaces = type.GetInterfaces();
             var selection = allInterfaces
                 .Where(x => !allInterfaces.Any(i => i.GetInterfaces().Contains(x)))
                 .Except(type.BaseType?.GetInterfaces() ?? Array.Empty<Type>());

@@ -27,7 +27,7 @@ namespace NClient.AspNetCore.Binding
         public void ExtendWithRouteParams(ModelBindingContext bindingContext, object model, IMemberNameSelector memberNameSelector)
         {
             foreach (var routeToken in bindingContext.ActionContext.RouteData.Values
-                .Where(routeDataValue => _objectMemberManager.IsMemberPath(routeDataValue.Key)))
+                         .Where(routeDataValue => _objectMemberManager.IsMemberPath(routeDataValue.Key)))
             {
                 var (objectName, memberPath) = _objectMemberManager.ParseNextPath(routeToken.Key);
                 if (!objectName.Equals(bindingContext.ModelName) && !objectName.Equals(bindingContext.OriginalModelName))
