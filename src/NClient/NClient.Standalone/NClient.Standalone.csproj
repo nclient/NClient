@@ -11,6 +11,7 @@
         <PackageTags>NClient;Standalone;Client;HTTP;Rest</PackageTags>
         <Description>NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces. The package provides the entire set of tools for creating clients but no third-party solutions.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

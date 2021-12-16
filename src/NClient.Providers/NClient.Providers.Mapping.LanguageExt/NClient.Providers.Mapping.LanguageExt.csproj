@@ -11,6 +11,7 @@
         <PackageTags>NClient;NClient.Providers;NClient.Providers.Results;LanguageExt</PackageTags>
         <Description>The provider that allows you to return the LanguageExt of a monad as responses.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

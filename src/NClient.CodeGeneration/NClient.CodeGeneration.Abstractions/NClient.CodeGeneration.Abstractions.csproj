@@ -11,6 +11,7 @@
         <PackageTags>NClient;CodeGeneration;Abstractions;Client</PackageTags>
         <Description>NClient code generation abstractions for your providers and extensions.</Description>
         <Authors>kingmidas74</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

@@ -11,6 +11,7 @@
         <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
         <Description>NSwag provider fo code generation of NClient</Description>
         <Authors>smolchanovsky;kingmidas74</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

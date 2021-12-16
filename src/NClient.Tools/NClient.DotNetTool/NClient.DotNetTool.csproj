@@ -11,6 +11,7 @@
         <PackageTags>NClient;CodeGeneration;dotnet-tool</PackageTags>
         <Description>DotNet CLI tool for generate interfaces of NClient</Description>
         <Authors>kingmidas74</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>
