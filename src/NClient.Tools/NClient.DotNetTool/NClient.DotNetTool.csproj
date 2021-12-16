@@ -9,7 +9,7 @@
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>NClient;CodeGeneration;dotnet-tool</PackageTags>
-        <Description>DotNet CLI tool for generate facades of NClient</Description>
+        <Description>DotNet CLI tool for generate facades of NClient.</Description>
         <Authors>kingmidas74</Authors>
         <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -39,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag\NClient.CodeGeneration.Interfaces.NSwag.csproj" />
+        <ProjectReference Include="..\..\NClient.CodeGeneration\NClient.CodeGeneration.Facades.NSwag\NClient.CodeGeneration.Facades.NSwag.csproj" />
     </ItemGroup>
 
     <ItemGroup>

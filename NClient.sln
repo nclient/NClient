@@ -105,7 +105,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 tools", "01 tools", "{27
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 code-generation", "02 code-generation", "{B7047051-4DB6-400C-8D99-2AE50953D362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Interfaces.NSwag", "src\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag\NClient.CodeGeneration.Interfaces.NSwag.csproj", "{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Facades.NSwag", "src\NClient.CodeGeneration\NClient.CodeGeneration.Facades.NSwag\NClient.CodeGeneration.Facades.NSwag.csproj", "{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.DotNetTool", "src\NClient.Tools\NClient.DotNetTool\NClient.DotNetTool.csproj", "{53705807-535A-4770-9044-93E50B9ABE21}"
 EndProject
