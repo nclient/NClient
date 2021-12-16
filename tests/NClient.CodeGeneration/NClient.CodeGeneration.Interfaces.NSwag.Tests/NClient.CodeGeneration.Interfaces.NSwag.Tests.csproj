@@ -16,6 +16,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.8.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="coverlet.msbuild" Version="3.0.3" />
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
     </ItemGroup>
     

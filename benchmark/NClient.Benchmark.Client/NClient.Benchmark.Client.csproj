@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <IsPackable>false</IsPackable>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <SolutionDir Condition="'$(SolutionDir)'==''">../../$(ProjectDir)</SolutionDir>
+        <OutputPath>$(SolutionDir)/bin/benchmark/$(Configuration)/$(AssemblyName)</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+        <PackageReference Include="Flurl" Version="3.0.2" />
+        <PackageReference Include="Flurl.Http" Version="3.2.0" />
+        <PackageReference Include="Refit" Version="6.1.15" />
+        <PackageReference Include="RestEase" Version="1.5.5" />
+        <PackageReference Include="RestSharp" Version="106.12.0" />
+        <PackageReference Include="WireMock.Net" Version="1.4.13" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\NClient\NClient\NClient.csproj" />
+    </ItemGroup>
+
+</Project>
