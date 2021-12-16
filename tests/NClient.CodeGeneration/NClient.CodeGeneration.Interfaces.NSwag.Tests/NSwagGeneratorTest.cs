@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
+using NClient.CodeGeneration.Facades.NSwag;
 using NUnit.Framework;
 using CategoryAttribute = System.ComponentModel.CategoryAttribute;
 

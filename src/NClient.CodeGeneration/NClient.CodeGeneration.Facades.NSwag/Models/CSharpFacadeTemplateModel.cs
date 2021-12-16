@@ -4,7 +4,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.CodeGeneration.Interfaces.NSwag.Models
+namespace NClient.CodeGeneration.Facades.NSwag.Models
 {
     internal class CSharpFacadeTemplateModel : CSharpTemplateModelBase
     {

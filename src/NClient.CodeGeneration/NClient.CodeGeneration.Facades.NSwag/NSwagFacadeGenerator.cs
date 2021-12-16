@@ -7,7 +7,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.OperationNameGenerators;
 
-namespace NClient.CodeGeneration.Interfaces.NSwag
+namespace NClient.CodeGeneration.Facades.NSwag
 {
     public class NSwagFacadeGenerator : INClientFacadeGenerator
     {

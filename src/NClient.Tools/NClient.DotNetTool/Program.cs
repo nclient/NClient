@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using NClient.CodeGeneration.Abstractions;
-using NClient.CodeGeneration.Interfaces.NSwag;
+using NClient.CodeGeneration.Facades.NSwag;
 using NClient.DotNetTool.Loaders;
 using NClient.DotNetTool.Logging;
 using NClient.DotNetTool.Options;

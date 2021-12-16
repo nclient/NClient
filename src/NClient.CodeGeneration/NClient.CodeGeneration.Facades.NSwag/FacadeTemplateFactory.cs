@@ -3,7 +3,7 @@ using System.Reflection;
 using NJsonSchema.CodeGeneration;
 using NSwag;
 
-namespace NClient.CodeGeneration.Interfaces.NSwag
+namespace NClient.CodeGeneration.Facades.NSwag
 {
     internal class FacadeTemplateFactory : DefaultTemplateFactory
     {
@@ -26,7 +26,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 _ => template
             };
             
-            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Interfaces)}.{nameof(NSwag)}");
+            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Facades)}.{nameof(NSwag)}");
             var resourceName = $"{assembly.GetName().Name}.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);

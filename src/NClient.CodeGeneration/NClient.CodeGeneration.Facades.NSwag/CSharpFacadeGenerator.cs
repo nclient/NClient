@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using NClient.CodeGeneration.Interfaces.NSwag.Models;
+using NClient.CodeGeneration.Facades.NSwag.Models;
 using NJsonSchema.CodeGeneration;
 using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
@@ -9,7 +9,7 @@ using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
-namespace NClient.CodeGeneration.Interfaces.NSwag
+namespace NClient.CodeGeneration.Facades.NSwag
 {
     internal class CSharpFacadeGenerator : CSharpControllerGenerator
     {
