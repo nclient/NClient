@@ -6,12 +6,12 @@ using NSwag.CodeGeneration.CSharp.Models;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag.Models
 {
-    internal class CSharpInterfaceOperationModel : CSharpControllerOperationModel
+    internal class CSharpFacadeOperationModel : CSharpControllerOperationModel
     {
         private readonly CSharpControllerGeneratorSettings _settings;
         
-        public CSharpInterfaceOperationModel(OpenApiOperation operation, CSharpControllerGeneratorSettings settings,
-            CSharpInterfaceGenerator generator, CSharpTypeResolver resolver)
+        public CSharpFacadeOperationModel(OpenApiOperation operation, CSharpControllerGeneratorSettings settings,
+            CSharpFacadeGenerator generator, CSharpTypeResolver resolver)
             : base(operation, settings, generator, resolver)
         {
             _settings = settings;

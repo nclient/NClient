@@ -43,14 +43,14 @@ namespace NClient.DotNetTool
                 with.IgnoreUnknownArguments = true;
             });
             
-            var mainParserResult = parser.ParseArguments<InterfaceOptions, int>(args);
+            var mainParserResult = parser.ParseArguments<FacadeOptions, int>(args);
             return await mainParserResult.MapResult(
-                (InterfaceOptions _) =>
+                (FacadeOptions _) =>
                 {
-                    var interfaceParserResult = parser.ParseArguments<InterfaceOptions.GenerateOptions, int>(args.Skip(1));
-                    return interfaceParserResult.MapResult(
-                        (InterfaceOptions.GenerateOptions generateOptions) => HandleInterfaceGenerateOptions(generateOptions), 
-                        interfaceErrors => HandleErrors(interfaceParserResult, interfaceErrors, showGreeting: false));
+                    var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
+                    return facadeParserResult.MapResult(
+                        (FacadeOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
+                        facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
                 },
                 errors =>
                 {
@@ -58,18 +58,18 @@ namespace NClient.DotNetTool
                     if (errorArrays.First().Tag != ErrorType.HelpRequestedError)
                         return HandleErrors(mainParserResult, errorArrays, showGreeting: true);
                     
-                    var interfaceParserResult = parser.ParseArguments<InterfaceOptions.GenerateOptions, int>(args.Skip(1));
-                    return interfaceParserResult.MapResult(
-                        (InterfaceOptions.GenerateOptions generateOptions) => HandleInterfaceGenerateOptions(generateOptions), 
-                        interfaceErrors => HandleErrors(interfaceParserResult, interfaceErrors, showGreeting: false));
+                    var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
+                    return facadeParserResult.MapResult(
+                        (FacadeOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
+                        facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
                 });
         }
 
-        private static Task<int> HandleInterfaceGenerateOptions(InterfaceOptions.GenerateOptions generateOptions)
+        private static Task<int> HandleFacadeGenerationOptions(FacadeOptions.GenerationOptions generationOptions)
         {
-            _serviceProvider = BuildServiceProvider(generateOptions.LogLevel); 
+            _serviceProvider = BuildServiceProvider(generationOptions.LogLevel); 
             _logger = _serviceProvider.GetRequiredService<ILogger<Program>>(); 
-            return RunGenerateInterfaceAsync(generateOptions);
+            return RunFacadeGenerationAsync(generationOptions);
         }
 
         private static Task<int> HandleErrors(ParserResult<object> parserResult, IEnumerable<Error> errors, bool showGreeting = false)
@@ -107,14 +107,14 @@ namespace NClient.DotNetTool
             return Task.FromResult(-1);
         }
 
-        private static async Task<int> RunGenerateInterfaceAsync(InterfaceOptions.GenerateOptions generateOptions)
+        private static async Task<int> RunFacadeGenerationAsync(FacadeOptions.GenerationOptions generationOptions)
         {
             try
             {
-                var specification = await _serviceProvider.GetRequiredService<ILoaderFactory>().Create(generateOptions).Load();
-                var result = await _serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generateOptions, specification);
-                await Save(generateOptions, result);
-                _logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generateOptions.OutputPath);
+                var specification = await _serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
+                var result = await _serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
+                await Save(generationOptions, result);
+                _logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
                 return 0;
             }
             catch (Exception e)
@@ -125,12 +125,12 @@ namespace NClient.DotNetTool
             }
         }
 
-        private static async Task Save(InterfaceOptions.GenerateOptions generateOptions, string sourceCode)
+        private static async Task Save(FacadeOptions.GenerationOptions generationOptions, string sourceCode)
         {
-            if (File.Exists(generateOptions.OutputPath))
-                File.Delete(generateOptions.OutputPath);
+            if (File.Exists(generationOptions.OutputPath))
+                File.Delete(generationOptions.OutputPath);
 
-            await File.WriteAllTextAsync(generateOptions.OutputPath, sourceCode);
+            await File.WriteAllTextAsync(generationOptions.OutputPath, sourceCode);
         }
 
         private static IServiceProvider BuildServiceProvider(LogLevel logLevel)
@@ -141,7 +141,7 @@ namespace NClient.DotNetTool
                     .AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>()
                     .SetMinimumLevel(logLevel))
                 .AddSingleton<ILoaderFactory, LoaderFactory>()
-                .AddSingleton(x => new NSwagInterfaceGeneratorProvider().Create(x.GetRequiredService<ILogger<INClientInterfaceGenerator>>()))
+                .AddSingleton(x => new NSwagFacadeGeneratorProvider().Create(x.GetRequiredService<ILogger<INClientFacadeGenerator>>()))
                 .AddSingleton<IFacadeGenerator, FacadeGenerator>()
                 .BuildServiceProvider();
         }

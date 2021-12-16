@@ -28,10 +28,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Templates\Interface.Annotations.liquid" />
-        <EmbeddedResource Include="Templates\Interface.liquid" />
+        <EmbeddedResource Include="Templates\Facade.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Facade.liquid" />
         <EmbeddedResource Include="Templates\File.liquid" />
-        <EmbeddedResource Include="Templates\Interface.Method.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Facade.Method.Annotations.liquid" />
     </ItemGroup>
 
     <ItemGroup>

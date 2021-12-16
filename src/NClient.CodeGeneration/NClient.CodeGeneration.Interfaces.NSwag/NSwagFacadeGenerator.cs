@@ -9,16 +9,16 @@ using NSwag.CodeGeneration.OperationNameGenerators;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag
 {
-    public class NSwagInterfaceGenerator : INClientInterfaceGenerator
+    public class NSwagFacadeGenerator : INClientFacadeGenerator
     {
         private readonly ILogger? _logger;
         
-        public NSwagInterfaceGenerator(ILogger? logger)
+        public NSwagFacadeGenerator(ILogger? logger)
         {
             _logger = logger;
         }
         
-        public async Task<string> GenerateAsync(string specification, string @namespace, string interfaceName, CancellationToken cancellationToken = default)
+        public async Task<string> GenerateAsync(string specification, string @namespace, string facadeName, CancellationToken cancellationToken = default)
         {
             var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
@@ -32,15 +32,15 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
                 }
             };
             
-            settings.CSharpGeneratorSettings.TemplateFactory = new InterfaceTemplateFactory(settings.CSharpGeneratorSettings, new[]
+            settings.CSharpGeneratorSettings.TemplateFactory = new FacadeTemplateFactory(settings.CSharpGeneratorSettings, new[]
             {
-                typeof(NSwagInterfaceGenerator).GetTypeInfo().Assembly,
+                typeof(NSwagFacadeGenerator).GetTypeInfo().Assembly,
                 typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
             });
 
             settings.OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator();
             
-            var generator = new CSharpInterfaceGenerator(openApiDocument, settings, _logger);
+            var generator = new CSharpFacadeGenerator(openApiDocument, settings, _logger);
             return generator.GenerateFile();
         }
     }

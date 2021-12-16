@@ -5,12 +5,12 @@ namespace NClient.DotNetTool.Loaders
 {
     public class LoaderFactory : ILoaderFactory
     {
-        public ISpecificationLoader Create(InterfaceOptions.GenerateOptions generateOptions)
+        public ISpecificationLoader Create(FacadeOptions.GenerationOptions generationOptions)
         {
-            return Uri.TryCreate(generateOptions.Spec, UriKind.Absolute, out var uriResult)
+            return Uri.TryCreate(generationOptions.Spec, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
                     ? new NetworkLoader(uriResult)
-                    : new FileLoader(generateOptions.Spec);
+                    : new FileLoader(generationOptions.Spec);
         }
     }
 }

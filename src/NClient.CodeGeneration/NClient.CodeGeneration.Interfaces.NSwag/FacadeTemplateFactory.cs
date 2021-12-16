@@ -5,9 +5,9 @@ using NSwag;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag
 {
-    internal class InterfaceTemplateFactory : DefaultTemplateFactory
+    internal class FacadeTemplateFactory : DefaultTemplateFactory
     {
-        public InterfaceTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
+        public FacadeTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
             : base(settings, assemblies)
         {
         }
@@ -21,8 +21,8 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
         {
             template = template.TrimEnd('!') switch
             {
-                "Controller.Class.Annotations" => "Interface.Annotations",
-                "Controller.Method.Annotations" => "Interface.Method.Annotations",
+                "Controller.Class.Annotations" => "Facade.Annotations",
+                "Controller.Method.Annotations" => "Facade.Method.Annotations",
                 _ => template
             };
             

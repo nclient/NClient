@@ -6,26 +6,26 @@ using NSwag.CodeGeneration.CSharp.Models;
 
 namespace NClient.CodeGeneration.Interfaces.NSwag.Models
 {
-    internal class CSharpInterfaceTemplateModel : CSharpTemplateModelBase
+    internal class CSharpFacadeTemplateModel : CSharpTemplateModelBase
     {
         private readonly CSharpControllerGeneratorSettings _settings;
         private readonly OpenApiDocument _document;
         
-        public CSharpInterfaceTemplateModel(
-            string interfaceName,
+        public CSharpFacadeTemplateModel(
+            string facadeName,
             IEnumerable<CSharpOperationModel> operations,
             OpenApiDocument document,
             CSharpControllerGeneratorSettings settings)
-            : base(interfaceName, settings)
+            : base(facadeName, settings)
         {
             _document = document;
             _settings = settings;
 
-            InterfaceName = interfaceName;
+            FacadeName = facadeName;
             Operations = operations;
         }
 
-        public string InterfaceName { get; }
+        public string FacadeName { get; }
         
         public string NClientAnnotationsNamespace => "NClient.Annotations";
         
