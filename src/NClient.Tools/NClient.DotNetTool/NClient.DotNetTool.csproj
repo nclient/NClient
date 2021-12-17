@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net462;net472;net48;net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -45,6 +45,12 @@
     <ItemGroup>
         <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
         <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+        <HintPath>..\..\..\..\..\..\..\..\..\..\usr\local\share\dotnet\sdk\6.0.100\Microsoft\Microsoft.NET.Build.Extensions\net461\lib\System.Net.Http.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

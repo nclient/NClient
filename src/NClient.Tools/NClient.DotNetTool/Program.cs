@@ -130,7 +130,12 @@ namespace NClient.DotNetTool
             if (File.Exists(generationOptions.OutputPath))
                 File.Delete(generationOptions.OutputPath);
 
+            #if NETFRAMEWORK
+            File.WriteAllText(generationOptions.OutputPath, sourceCode);
+            await Task.CompletedTask.ConfigureAwait(false);
+            #else
             await File.WriteAllTextAsync(generationOptions.OutputPath, sourceCode);
+            #endif
         }
 
         private static IServiceProvider BuildServiceProvider(LogLevel logLevel)
