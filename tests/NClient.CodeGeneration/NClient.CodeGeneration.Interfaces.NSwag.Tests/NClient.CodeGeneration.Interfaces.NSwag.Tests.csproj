@@ -21,7 +21,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag\NClient.CodeGeneration.Interfaces.NSwag.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient.CodeGeneration\NClient.CodeGeneration.Facades.NSwag\NClient.CodeGeneration.Facades.NSwag.csproj" />
     </ItemGroup>
     
     <ItemGroup>

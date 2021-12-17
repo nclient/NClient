@@ -1,15 +1,16 @@
 using System;
+using NClient.DotNetTool.Options;
 
 namespace NClient.DotNetTool.Loaders
 {
     public class LoaderFactory : ILoaderFactory
     {
-        public ISpecificationLoader Create(GenerateInterfaceOptions opts)
+        public ISpecificationLoader Create(FacadeOptions.GenerationOptions generationOptions)
         {
-            return Uri.TryCreate(opts.Spec, UriKind.Absolute, out var uriResult)
+            return Uri.TryCreate(generationOptions.Spec, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
                     ? new NetworkLoader(uriResult)
-                    : new FileLoader(opts.Spec);
+                    : new FileLoader(generationOptions.Spec);
         }
     }
 }

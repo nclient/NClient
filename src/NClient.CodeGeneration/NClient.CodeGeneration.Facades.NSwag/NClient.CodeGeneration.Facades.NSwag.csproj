@@ -9,8 +9,9 @@
         <RepositoryUrl>https://github.com/nclient/nclient</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>NClient;NClient.CodeGeneration</PackageTags>
-        <Description>NSwag provider fo code generation of NClient</Description>
+        <Description>NSwag provider of code generation of NClient facades.</Description>
         <Authors>smolchanovsky;kingmidas74</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -27,10 +28,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Templates\Interface.Annotations.liquid" />
-        <EmbeddedResource Include="Templates\Interface.liquid" />
+        <EmbeddedResource Include="Templates\Facade.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Facade.liquid" />
         <EmbeddedResource Include="Templates\File.liquid" />
-        <EmbeddedResource Include="Templates\Interface.Method.Annotations.liquid" />
+        <EmbeddedResource Include="Templates\Facade.Method.Annotations.liquid" />
     </ItemGroup>
 
     <ItemGroup>

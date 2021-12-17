@@ -1,24 +1,29 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
+using NClient.DotNetTool.Options;
 
 namespace NClient.DotNetTool
 {
-    // ReSharper disable once UnusedType.Global
-    public class FacadeGenerator
+    public interface IFacadeGenerator
+    {
+        Task<string> GenerateAsync(FacadeOptions.GenerationOptions generationOptions, string specification);
+    }
+    
+    public class FacadeGenerator : IFacadeGenerator
     {
         private readonly ILogger<FacadeGenerator> _logger;
-        private readonly INClientInterfaceGenerator _interfaceGenerator;
+        private readonly INClientFacadeGenerator _facadeGenerator;
         
-        public FacadeGenerator(INClientInterfaceGenerator interfaceGenerator, ILogger<FacadeGenerator> logger)
+        public FacadeGenerator(INClientFacadeGenerator facadeGenerator, ILogger<FacadeGenerator> logger)
         {
             _logger = logger;
-            _interfaceGenerator = interfaceGenerator;
+            _facadeGenerator = facadeGenerator;
         }
 
-        public async Task<string> GenerateAsync(GenerateInterfaceOptions opts, string specification)
+        public async Task<string> GenerateAsync(FacadeOptions.GenerationOptions generationOptions, string specification)
         {
-            return await _interfaceGenerator.GenerateAsync(specification, opts.Namespace, opts.FacadeName);
+            return await _facadeGenerator.GenerateAsync(specification, generationOptions.Namespace, generationOptions.FacadeName);
         }
     }
 }

@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
+using NClient.CodeGeneration.Facades.NSwag;
 using NUnit.Framework;
 using CategoryAttribute = System.ComponentModel.CategoryAttribute;
 
@@ -132,10 +133,10 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
 
         private string GenerateSourceCode(string openApiSpec)
         {
-            var specificationHandler = new NSwagInterfaceGenerator(null);
+            var specificationHandler = new NSwagFacadeGenerator(null);
             const string @namespace = "Test";
 
-            var result = specificationHandler.GenerateAsync(openApiSpec, @namespace, interfaceName: "NClient").GetAwaiter().GetResult();
+            var result = specificationHandler.GenerateAsync(openApiSpec, @namespace, facadeName: "NClient").GetAwaiter().GetResult();
 
             result.Should().NotBeNullOrEmpty();
 

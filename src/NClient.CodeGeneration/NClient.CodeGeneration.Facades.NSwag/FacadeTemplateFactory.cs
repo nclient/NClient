@@ -3,11 +3,11 @@ using System.Reflection;
 using NJsonSchema.CodeGeneration;
 using NSwag;
 
-namespace NClient.CodeGeneration.Interfaces.NSwag
+namespace NClient.CodeGeneration.Facades.NSwag
 {
-    internal class InterfaceTemplateFactory : DefaultTemplateFactory
+    internal class FacadeTemplateFactory : DefaultTemplateFactory
     {
-        public InterfaceTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
+        public FacadeTemplateFactory(CodeGeneratorSettingsBase settings, Assembly[] assemblies)
             : base(settings, assemblies)
         {
         }
@@ -21,12 +21,12 @@ namespace NClient.CodeGeneration.Interfaces.NSwag
         {
             template = template.TrimEnd('!') switch
             {
-                "Controller.Class.Annotations" => "Interface.Annotations",
-                "Controller.Method.Annotations" => "Interface.Method.Annotations",
+                "Controller.Class.Annotations" => "Facade.Annotations",
+                "Controller.Method.Annotations" => "Facade.Method.Annotations",
                 _ => template
             };
             
-            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Interfaces)}.{nameof(NSwag)}");
+            var assembly = GetLiquidAssembly($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Facades)}.{nameof(NSwag)}");
             var resourceName = $"{assembly.GetName().Name}.Templates." + template + ".liquid";
 
             var resource = assembly.GetManifestResourceStream(resourceName);

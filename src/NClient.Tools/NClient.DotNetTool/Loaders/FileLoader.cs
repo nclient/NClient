@@ -13,7 +13,11 @@ namespace NClient.DotNetTool.Loaders
         
         public Task<string> Load()
         {
+            #if NETFRAMEWORK
+            return Task.FromResult(File.ReadAllText(_path));
+            #else
             return File.ReadAllTextAsync(_path);
+            #endif
         }
     }
 }

@@ -2,7 +2,7 @@
 
 [System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
 {% template Controller.Class.Annotations %}
-public partial interface I{{ InterfaceName }}Client : I{{ InterfaceName }}Facade
+public partial interface I{{ FacadeName }}Client : I{{ FacadeName }}Facade
 {
 {%     for operation in Operations -%}
 {%         if operation.HasSummary -%}
@@ -32,8 +32,8 @@ public partial interface I{{ InterfaceName }}Client : I{{ InterfaceName }}Facade
 [{{ NClientAnnotationsNamespace }}.Path("{{ BasePath }}")]
 {% endif -%}
 {% template Controller.Class.Annotations %}
-[System.ComponentModel.Category("{{ InterfaceName }}")]
-public partial interface I{{ InterfaceName }}Facade{% if HasClientBaseInterface %} : {{ ClientBaseInterface }}{% endif %}
+[System.ComponentModel.Category("{{ FacadeName }}")]
+public partial interface I{{ FacadeName }}Facade{% if HasClientBaseInterface %} : {{ ClientBaseInterface }}{% endif %}
 {
 {%     for operation in Operations -%}
 {%         if operation.HasSummary -%}
