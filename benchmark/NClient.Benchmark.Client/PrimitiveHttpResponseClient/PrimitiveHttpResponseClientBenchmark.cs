@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using BenchmarkDotNet.Attributes;
 using Flurl.Http;
+using NClient.Benchmark.Client.Helpers;
+using NClient.Benchmark.Client.PrimitiveClient;
 using RestSharp;
 using WireMock.Server;
 
@@ -13,8 +15,6 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
     public class PrimitiveHttpResponseClientBenchmark
     {
-        private const int Id = 1;
-        
         private IWireMockServer _api = null!;
         
         private HttpClient _httpClient = null!;
@@ -27,7 +27,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [GlobalSetup]
         public void Setup()
         {
-            _api = PrimitiveHttpResponseApiMock.MockMethod(Id);
+            _api = PrimitiveApiMock.MockMethod();
             
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
@@ -42,7 +42,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         {
             var httpClient = new HttpClient();
             var result = httpClient
-                .GetAsync(Path.Combine(_api.Urls.First(), PrimitiveHttpResponseApiMock.EndpointPath + $"?{PrimitiveHttpResponseApiMock.ParamName}=" + Id))
+                .GetAsync(Path.Combine(_api.Urls.First(), PrimitiveApiMock.EndpointPath + $"?{PrimitiveApiMock.ParamName}=" + IdProvider.Get()))
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
@@ -53,8 +53,8 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void RestSharp_CreateAndSend()
         {
             var restSharpClient = new RestSharp.RestClient(_api.Urls.First());
-            var request = new RestSharp.RestRequest(PrimitiveHttpResponseApiMock.EndpointPath, DataFormat.Json);
-            request.AddQueryParameter(PrimitiveHttpResponseApiMock.ParamName, Id.ToString());
+            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath, DataFormat.Json);
+            request.AddQueryParameter(PrimitiveApiMock.ParamName, IdProvider.Get().ToString());
             var response = restSharpClient.ExecuteGetAsync<int>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)
                 throw response.ErrorException!;
@@ -65,7 +65,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void Flurl_CreateAndSend()
         {
             var flurlClient = new FlurlClient(_api.Urls.First());
-            var response = flurlClient.Request(PrimitiveHttpResponseApiMock.EndpointPath).SetQueryParam(PrimitiveHttpResponseApiMock.ParamName, Id).GetAsync().GetAwaiter().GetResult();
+            var response = flurlClient.Request(PrimitiveApiMock.EndpointPath).SetQueryParam(PrimitiveApiMock.ParamName, IdProvider.Get()).GetAsync().GetAwaiter().GetResult();
             response.GetJsonAsync<int>().GetAwaiter().GetResult();
         }
         
@@ -73,7 +73,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void NClient_CreateAndSend()
         {
             var nclient = NClientGallery.Clients.GetRest().For<INClientPrimitiveHttpResponseClient>(_api.Urls.First()).Build();
-            var response = nclient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = nclient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;
         }
@@ -82,7 +82,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void Refit_CreateAndSend()
         {
             var refitClient = Refit.RestService.For<IRefitPrimitiveHttpResponseClient>(_api.Urls.First());
-            var response = refitClient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = refitClient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
                 throw response.Error!;
             var _ = response.Content;
@@ -92,7 +92,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void RestEase_CreateAndSend()
         {
             var restEasyClient = RestEase.RestClient.For<IRestEasePrimitiveHttpResponseClient>(_api.Urls.First());
-            var response = restEasyClient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = restEasyClient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             response.ResponseMessage.EnsureSuccessStatusCode();
             var _ = response.GetContent();
         }
@@ -101,7 +101,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void HttpClient_Send()
         {
             var result = _httpClient
-                .GetAsync(Path.Combine(_api.Urls.First(), PrimitiveHttpResponseApiMock.EndpointPath + $"?{PrimitiveHttpResponseApiMock.ParamName}=" + Id))
+                .GetAsync(Path.Combine(_api.Urls.First(), PrimitiveApiMock.EndpointPath + $"?{PrimitiveApiMock.ParamName}=" + IdProvider.Get()))
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
@@ -111,8 +111,8 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void RestSharp_Send()
         {
-            var request = new RestSharp.RestRequest(PrimitiveHttpResponseApiMock.EndpointPath, DataFormat.Json);
-            request.AddQueryParameter(PrimitiveHttpResponseApiMock.ParamName, Id.ToString());
+            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath, DataFormat.Json);
+            request.AddQueryParameter(PrimitiveApiMock.ParamName, IdProvider.Get().ToString());
             var response = _restSharpClient.ExecuteGetAsync<int>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)
                 throw response.ErrorException!;
@@ -122,14 +122,14 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void Flurl_Send()
         {
-            var response = _flurlClient.Request(PrimitiveHttpResponseApiMock.EndpointPath).SetQueryParam(PrimitiveHttpResponseApiMock.ParamName, Id).GetAsync().GetAwaiter().GetResult();
+            var response = _flurlClient.Request(PrimitiveApiMock.EndpointPath).SetQueryParam(PrimitiveApiMock.ParamName, IdProvider.Get()).GetAsync().GetAwaiter().GetResult();
             response.GetJsonAsync<int>().GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void NClient_Send()
         {
-            var response = _nclient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = _nclient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;
         }
@@ -137,7 +137,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void Refit_Send()
         {
-            var response = _refitClient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = _refitClient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
                 throw response.Error!;
             var _ = response.Content;
@@ -146,7 +146,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void RestEase_Send()
         {
-            var response = _restEaseClient.SendAsync(Id).GetAwaiter().GetResult();
+            var response = _restEaseClient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             response.ResponseMessage.EnsureSuccessStatusCode();
             var _ = response.GetContent();
         }
