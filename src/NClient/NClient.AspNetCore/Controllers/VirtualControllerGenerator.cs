@@ -145,7 +145,7 @@ namespace NClient.AspNetCore.Controllers
                 }
             }
 
-            ILGenerator ilGenerator = methodBuilder.GetILGenerator();
+            var ilGenerator = methodBuilder.GetILGenerator();
             ilGenerator.Emit(OpCodes.Ret);
 
             return methodBuilder;
