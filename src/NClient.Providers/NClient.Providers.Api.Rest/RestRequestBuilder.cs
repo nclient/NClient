@@ -18,7 +18,7 @@ namespace NClient.Providers.Api.Rest
     {
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
-        private readonly ITransportMethodProvider _transportMethodProvider;
+        private readonly IRequestTypeProvider _requestTypeProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
         private readonly IToolset _toolset;
@@ -26,14 +26,14 @@ namespace NClient.Providers.Api.Rest
         public RestRequestBuilder(
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
-            ITransportMethodProvider transportMethodProvider,
+            IRequestTypeProvider requestTypeProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IClientValidationExceptionFactory clientValidationExceptionFactory,
             IToolset toolset)
         {
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
-            _transportMethodProvider = transportMethodProvider;
+            _requestTypeProvider = requestTypeProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
             _toolset = toolset;
@@ -44,7 +44,7 @@ namespace NClient.Providers.Api.Rest
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
+            var requestType = _requestTypeProvider.Get(methodInvocation.Method.Operation);
             var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
             var methodParameters = methodInvocation.Method.Params
                 .Select((methodParam, index) => new MethodParameter(
