@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <PackageId>$(AssemblyName)</PackageId>
+        <PackageId>dotnet-nclient</PackageId>
         <VersionPrefix>$(VersionPrefix)</VersionPrefix>
         <VersionSuffix>$(VersionSuffix)</VersionSuffix>
         <PackageIcon>logo.png</PackageIcon>
