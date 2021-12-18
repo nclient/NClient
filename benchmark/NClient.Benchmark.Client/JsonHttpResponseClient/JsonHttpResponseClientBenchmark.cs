@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using Flurl.Http;
+using NClient.Benchmark.Client.Helpers;
+using NClient.Benchmark.Client.JsonClient;
 using RestSharp;
 using WireMock.Server;
 
@@ -16,8 +18,6 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
     public class JsonHttpResponseClientBenchmark
     {
-        private static readonly string[] Ids = { "id-1", "id-2", "id-3", "id-4" };
-        
         private IWireMockServer _api = null!;
         
         private HttpClient _httpClient = null!;
@@ -30,7 +30,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [GlobalSetup]
         public void Setup()
         {
-            _api = JsonHttpResponseApiMock.MockMethod(Ids);
+            _api = JsonApiMock.MockMethod();
             
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
@@ -44,10 +44,10 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void HttpClient_CreateAndSend()
         {
             var httpClient = new HttpClient();
-            var json = JsonSerializer.Serialize(Ids);
+            var json = JsonSerializer.Serialize(ArrayProvider.Get());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = httpClient
-                .PostAsync(Path.Combine(_api.Urls.First(), JsonHttpResponseApiMock.EndpointPath), httpContent)
+                .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
@@ -58,8 +58,8 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void RestSharp_CreateAndSend()
         {
             var restSharpClient = new RestSharp.RestClient(_api.Urls.First());
-            var request = new RestSharp.RestRequest(JsonHttpResponseApiMock.EndpointPath, DataFormat.Json);
-            request.AddJsonBody(Ids);
+            var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath, DataFormat.Json);
+            request.AddJsonBody(ArrayProvider.Get());
             var response = restSharpClient.ExecutePostAsync<List<string>>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)
                 throw response.ErrorException!;
@@ -70,7 +70,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void Flurl_CreateAndSend()
         {
             var flurlClient = new FlurlClient(_api.Urls.First());
-            var response = flurlClient.Request(JsonHttpResponseApiMock.EndpointPath).PostJsonAsync(Ids).GetAwaiter().GetResult();
+            var response = flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.GetJsonAsync<List<string>>().GetAwaiter().GetResult();
         }
         
@@ -78,7 +78,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void NClient_CreateAndSend()
         {
             var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
-            var response = nclient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = nclient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;
         }
@@ -87,7 +87,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void Refit_CreateAndSend()
         {
             var refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
-            var response = refitClient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = refitClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
                 throw response.Error!;
             var _ = response.Content;
@@ -97,7 +97,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void RestEase_CreateAndSend()
         {
             var restEasyClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
-            var response = restEasyClient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = restEasyClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.ResponseMessage.EnsureSuccessStatusCode();
             var _ = response.GetContent();
         }
@@ -105,10 +105,10 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void HttpClient_Send()
         {
-            var json = JsonSerializer.Serialize(Ids);
+            var json = JsonSerializer.Serialize(ArrayProvider.Get());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = _httpClient
-                .PostAsync(Path.Combine(_api.Urls.First(), JsonHttpResponseApiMock.EndpointPath), httpContent)
+                .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
@@ -118,8 +118,8 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void RestSharp_Send()
         {
-            var request = new RestSharp.RestRequest(JsonHttpResponseApiMock.EndpointPath, DataFormat.Json);
-            request.AddJsonBody(Ids);
+            var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath, DataFormat.Json);
+            request.AddJsonBody(ArrayProvider.Get());
             var response = _restSharpClient.ExecutePostAsync<List<string>>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)
                 throw response.ErrorException!;
@@ -129,14 +129,14 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void Flurl_Send()
         {
-            var response = _flurlClient.Request(JsonHttpResponseApiMock.EndpointPath).PostJsonAsync(Ids).GetAwaiter().GetResult();
+            var response = _flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.GetJsonAsync<List<string>>().GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void NClient_Send()
         {
-            var response = _nclient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = _nclient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;
         }
@@ -144,7 +144,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void Refit_Send()
         {
-            var response = _refitClient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = _refitClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
                 throw response.Error!;
             var _ = response.Content;
@@ -153,7 +153,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void RestEase_Send()
         {
-            var response = _restEaseClient.SendAsync(Ids).GetAwaiter().GetResult();
+            var response = _restEaseClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.ResponseMessage.EnsureSuccessStatusCode();
             var _ = response.GetContent();
         }

@@ -3,28 +3,16 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using NClient.Providers.Transport.SystemNetHttp.Builders;
 
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.SystemNetHttp
 {
     internal class SystemNetHttpResponseBuilder : IResponseBuilder<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-
-        public SystemNetHttpResponseBuilder(IFinalHttpRequestBuilder finalHttpRequestBuilder)
-        {
-            _finalHttpRequestBuilder = finalHttpRequestBuilder;
-        }
-
         public async Task<IResponse> BuildAsync(IRequest request, 
             IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
-            var finalHttpRequest = await _finalHttpRequestBuilder
-                .BuildAsync(request, responseContext.Response.RequestMessage)
-                .ConfigureAwait(false);
 
             LoadLazyHeaders(responseContext.Response.Content?.Headers);
             
@@ -36,7 +24,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
                     new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));
 
-            var httpResponse = new Response(finalHttpRequest)
+            var httpResponse = new Response(request)
             {
                 Metadatas = new MetadataContainer(responseContext.Response.Headers
                     .SelectMany(header => header.Value

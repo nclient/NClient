@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using Flurl.Http;
+using NClient.Benchmark.Client.Helpers;
 using RestSharp;
 using WireMock.Server;
 
@@ -16,8 +17,6 @@ namespace NClient.Benchmark.Client.JsonClient
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
     public class JsonClientBenchmark
     {
-        private static readonly string[] Ids = { "id-1", "id-2", "id-3", "id-4" };
-        
         private IWireMockServer _api = null!;
         
         private HttpClient _httpClient = null!;
@@ -30,7 +29,7 @@ namespace NClient.Benchmark.Client.JsonClient
         [GlobalSetup]
         public void Setup()
         {
-            _api = JsonApiMock.MockMethod(Ids);
+            _api = JsonApiMock.MockMethod();
             
             _httpClient = new HttpClient();
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
@@ -44,7 +43,7 @@ namespace NClient.Benchmark.Client.JsonClient
         public void HttpClient_CreateAndSend()
         {
             var httpClient = new HttpClient();
-            var json = JsonSerializer.Serialize(Ids);
+            var json = JsonSerializer.Serialize(ArrayProvider.Get());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = httpClient
                 .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
@@ -59,7 +58,7 @@ namespace NClient.Benchmark.Client.JsonClient
         {
             var restSharpClient = new RestSharp.RestClient(_api.Urls.First());
             var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath, DataFormat.Json);
-            request.AddJsonBody(Ids);
+            request.AddJsonBody(ArrayProvider.Get());
             restSharpClient.PostAsync<List<string>>(request).GetAwaiter().GetResult();
         }
         
@@ -67,7 +66,7 @@ namespace NClient.Benchmark.Client.JsonClient
         public void Flurl_CreateAndSend()
         {
             var flurlClient = new FlurlClient(_api.Urls.First());
-            var response = flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(Ids).GetAwaiter().GetResult();
+            var response = flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.GetJsonAsync<List<string>>().GetAwaiter().GetResult();
         }
         
@@ -75,27 +74,27 @@ namespace NClient.Benchmark.Client.JsonClient
         public void NClient_CreateAndSend()
         {
             var nclient = NClientGallery.Clients.GetRest().For<IJsonClient>(_api.Urls.First()).Build();
-            nclient.SendAsync(Ids).GetAwaiter().GetResult();
+            nclient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void Refit_CreateAndSend()
         {
             var refitClient = Refit.RestService.For<IJsonClient>(_api.Urls.First());
-            refitClient.SendAsync(Ids).GetAwaiter().GetResult();
+            refitClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_CreateAndSend()
         {
             var restEasyClient = RestEase.RestClient.For<IJsonClient>(_api.Urls.First());
-            restEasyClient.SendAsync(Ids).GetAwaiter().GetResult();
+            restEasyClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void HttpClient_Send()
         {
-            var json = JsonSerializer.Serialize(Ids);
+            var json = JsonSerializer.Serialize(ArrayProvider.Get());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = _httpClient
                 .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
@@ -109,33 +108,33 @@ namespace NClient.Benchmark.Client.JsonClient
         public void RestSharp_Send()
         {
             var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath, DataFormat.Json);
-            request.AddJsonBody(Ids);
+            request.AddJsonBody(ArrayProvider.Get());
             _restSharpClient.PostAsync<List<string>>(request).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void Flurl_Send()
         {
-            var response = _flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(Ids).GetAwaiter().GetResult();
+            var response = _flurlClient.Request(JsonApiMock.EndpointPath).PostJsonAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.GetJsonAsync<List<string>>().GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void NClient_Send()
         {
-            _nclient.SendAsync(Ids).GetAwaiter().GetResult();
+            _nclient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void Refit_Send()
         {
-            _refitClient.SendAsync(Ids).GetAwaiter().GetResult();
+            _refitClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_Send()
         {
-            _restEaseClient.SendAsync(Ids).GetAwaiter().GetResult();
+            _restEaseClient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
         }
     }
 }

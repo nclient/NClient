@@ -9,17 +9,16 @@ namespace NClient.Benchmark.Client.PrimitiveClient
         public static string EndpointPath => "api";
         public static string ParamName => "id";
         
-        public static IWireMockServer MockMethod(int id)
+        public static IWireMockServer MockMethod()
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/" + EndpointPath)
-                    .WithParam(ParamName, id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")
                     .WithStatusCode(200)
-                    .WithBodyAsJson(id));
+                    .WithBodyAsJson(1));
 
             return api;
         }

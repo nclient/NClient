@@ -8,7 +8,7 @@ namespace NClient.Benchmark.Client.JsonClient
     {
         public static string EndpointPath => "api";
         
-        public static IWireMockServer MockMethod(string[] ids)
+        public static IWireMockServer MockMethod()
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -17,7 +17,7 @@ namespace NClient.Benchmark.Client.JsonClient
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")
                     .WithStatusCode(200)
-                    .WithBodyAsJson(ids));
+                    .WithBodyAsJson(new[] { "id-1", "id-2", "id-3", "id-4" }));
 
             return api;
         }
