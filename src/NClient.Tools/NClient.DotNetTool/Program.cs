@@ -40,7 +40,6 @@ namespace NClient.DotNetTool
             var parser = new Parser(with =>
             {
                 with.HelpWriter = null;
-                with.IgnoreUnknownArguments = true;
             });
             
             var mainParserResult = parser.ParseArguments<FacadeOptions, int>(args);
@@ -55,7 +54,8 @@ namespace NClient.DotNetTool
                 errors =>
                 {
                     var errorArrays = errors as Error[] ?? errors.ToArray();
-                    if (errorArrays.First().Tag != ErrorType.HelpRequestedError)
+                    var errorTag = errorArrays.First().Tag;
+                    if (errorTag is not ErrorType.HelpRequestedError && errorTag is not ErrorType.UnknownOptionError)
                         return HandleErrors(mainParserResult, errorArrays, showGreeting: true);
                     
                     var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
