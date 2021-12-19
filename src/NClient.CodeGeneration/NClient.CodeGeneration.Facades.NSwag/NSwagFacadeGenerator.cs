@@ -1,8 +1,11 @@
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
+using NClient.CodeGeneration.Abstractions.Enums;
+using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.OperationNameGenerators;
@@ -18,24 +21,36 @@ namespace NClient.CodeGeneration.Facades.NSwag
             _logger = logger;
         }
         
-        public async Task<string> GenerateAsync(string specification, string @namespace, string facadeName, CancellationToken cancellationToken = default)
+        public async Task<string> GenerateAsync(string specification, FacadeGenerationSettings generationSettings, CancellationToken cancellationToken = default)
         {
             var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
             var settings = new CSharpControllerGeneratorSettings
             {
                 GenerateClientInterfaces = true,
-                UseCancellationToken = true,
+                GenerateResponseClasses = false,
+
+                ClassName = generationSettings.Name.Replace("{facade}", "{controller}"),
+                GenerateModelValidationAttributes = generationSettings.UseModelValidationAttributes,
+                GenerateDtoTypes = generationSettings.UseDtoTypes,
+                UseCancellationToken = generationSettings.UseCancellationToken,
                 CSharpGeneratorSettings = 
                 {
-                    Namespace = @namespace
+                    Namespace = generationSettings.Namespace,
+                    GenerateNullableReferenceTypes = generationSettings.UseNullableReferenceTypes,
+                    JsonLibrary = generationSettings.SerializeType switch
+                    {
+                        SerializeType.SystemJsonText => CSharpJsonLibrary.SystemTextJson,
+                        SerializeType.NewtonsoftJson => CSharpJsonLibrary.NewtonsoftJson,
+                        { } => throw new NotSupportedException($"Serializer type '{generationSettings.SerializeType}' not supported.")
+                    }
                 }
             };
             
             settings.CSharpGeneratorSettings.TemplateFactory = new FacadeTemplateFactory(settings.CSharpGeneratorSettings, new[]
             {
                 typeof(NSwagFacadeGenerator).GetTypeInfo().Assembly,
-                typeof(NJsonSchema.CodeGeneration.CSharp.CSharpGenerator).GetTypeInfo().Assembly
+                typeof(CSharpGenerator).GetTypeInfo().Assembly
             });
 
             settings.OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator();
