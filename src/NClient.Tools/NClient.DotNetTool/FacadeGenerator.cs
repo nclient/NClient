@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NClient.CodeGeneration.Abstractions;
@@ -24,6 +25,14 @@ namespace NClient.DotNetTool
 
         public async Task<string> GenerateAsync(FacadeOptions.GenerationOptions generationOptions, string specification)
         {
+            var serializerType = (generationOptions.UseSystemTextJson, generationOptions.UseNewtonsoftJson) switch
+            {
+                { UseSystemTextJson: false, UseNewtonsoftJson: false } => SerializeType.SystemJsonText,
+                { UseSystemTextJson: true, UseNewtonsoftJson: false } => SerializeType.SystemJsonText,
+                { UseSystemTextJson: false, UseNewtonsoftJson: true } => SerializeType.NewtonsoftJson,
+                var x => throw new NotSupportedException($"Not supported serializer configuration: {nameof(x.UseSystemTextJson)} = {x.UseSystemTextJson}; {nameof(x.UseNewtonsoftJson)} = {x.UseNewtonsoftJson}")
+            };
+            
             var generationSettings = new FacadeGenerationSettings(
                 generationOptions.FacadeName, 
                 generationOptions.Namespace,
@@ -31,9 +40,7 @@ namespace NClient.DotNetTool
                 generationOptions.UseNullableReferenceTypes,
                 generationOptions.UseCancellationToken,
                 generationOptions.GenerateDtoTypes,
-                generationOptions.UseSystemTextJson 
-                    ? SerializeType.SystemJsonText 
-                    : SerializeType.NewtonsoftJson);
+                serializerType);
             return await _facadeGenerator.GenerateAsync(specification, generationSettings);
         }
     }

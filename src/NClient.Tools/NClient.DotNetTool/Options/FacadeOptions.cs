@@ -34,7 +34,7 @@ namespace NClient.DotNetTool.Options
             [Option(longName: "nullableEnable", Required = false, HelpText = "The flag indicating whether to generate Nullable Reference Type annotations.", Default = false)]
             public bool UseNullableReferenceTypes { get; }
             
-            [Option(longName: "systemTextJson", SetName = "serializer", Required = false, HelpText = "The flag indicating the use of the SystemTextJson library for serialization.", Default = true)]
+            [Option(longName: "systemTextJson", SetName = "serializer", Required = false, HelpText = "The flag indicating the use of the SystemTextJson library for serialization.", Default = false)]
             public bool UseSystemTextJson { get; }
             
             [Option(longName: "newtonsoftJson", SetName = "serializer", Required = false, HelpText = "The flag indicating the use of the NewtonsoftJson library for serialization.", Default = false)]
