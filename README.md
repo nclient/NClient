@@ -1,11 +1,12 @@
 # <img src="logo.png" width="50" height="50" align="left" alt="logo">NClient: automatic type-safe .NET HTTP client
 
-![Nuget](https://img.shields.io/nuget/v/NClient)
-![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/NClient?label=nuget-pre)
-![Nuget](https://img.shields.io/nuget/dt/NClient)
-![GitHub last commit](https://img.shields.io/github/last-commit/nclient/NClient)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test:%20Full)
-![GitHub](https://img.shields.io/github/license/nclient/NClient)  
+[![Nuget](https://img.shields.io/nuget/v/NClient)](https://www.nuget.org/packages/NClient/)
+[![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/NClient?label=nuget-pre)](https://www.nuget.org/packages/NClient/)
+[![Nuget](https://img.shields.io/nuget/dt/NClient)](https://www.nuget.org/packages/NClient/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/nclient/NClient)](https://github.com/nclient/NClient/branches)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nclient/NClient/Test:%20Full)](https://github.com/nclient/NClient/actions)
+[![Documentation](https://img.shields.io/badge/doc-wiki-brightgreen)](https://github.com/nclient/NClient/wiki)
+[![GitHub](https://img.shields.io/github/license/nclient/NClient)](https://github.com/nclient/NClient/blob/main/LICENSE)  
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nclient_NClient&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=nclient_NClient)
