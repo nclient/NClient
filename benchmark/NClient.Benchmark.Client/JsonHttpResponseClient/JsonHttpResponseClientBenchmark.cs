@@ -33,11 +33,22 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
             _api = JsonApiMock.MockMethod();
             
             _httpClient = new HttpClient();
+            HttpClient_Send();
+            
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
+            RestSharp_Send();
+            
             _flurlClient = new FlurlClient(_api.Urls.First());
+            Flurl_Send();
+            
             _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
+            NClient_Send();
+            
             _refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
+            Refit_Send();
+            
             _restEaseClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
+            RestEase_Send();
         }
         
         [Benchmark]

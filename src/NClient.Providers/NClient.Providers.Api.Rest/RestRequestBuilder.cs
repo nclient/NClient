@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NClient.Annotations;
+using NClient.Core.AspNetRouting;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -16,9 +19,11 @@ namespace NClient.Providers.Api.Rest
 {
     internal class RestRequestBuilder : IRequestBuilder
     {
+        private readonly ConcurrentDictionary<MethodInfo, RouteTemplate> _routeTemplatesCache;
+        
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
-        private readonly ITransportMethodProvider _transportMethodProvider;
+        private readonly IRequestTypeProvider _requestTypeProvider;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
         private readonly IToolset _toolset;
@@ -26,14 +31,16 @@ namespace NClient.Providers.Api.Rest
         public RestRequestBuilder(
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
-            ITransportMethodProvider transportMethodProvider,
+            IRequestTypeProvider requestTypeProvider,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IClientValidationExceptionFactory clientValidationExceptionFactory,
             IToolset toolset)
         {
+            _routeTemplatesCache = new ConcurrentDictionary<MethodInfo, RouteTemplate>();
+
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
-            _transportMethodProvider = transportMethodProvider;
+            _requestTypeProvider = requestTypeProvider;
             _objectToKeyValueConverter = objectToKeyValueConverter;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
             _toolset = toolset;
@@ -44,8 +51,12 @@ namespace NClient.Providers.Api.Rest
         {
             cancellationToken.ThrowIfCancellationRequested();
             
-            var requestType = _transportMethodProvider.Get(methodInvocation.Method.Operation);
-            var routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
+            var requestType = _requestTypeProvider.Get(methodInvocation.Method.Operation);
+            if (!_routeTemplatesCache.TryGetValue(methodInvocation.Method.Info, out var routeTemplate))
+            {
+                routeTemplate = _routeTemplateProvider.Get(methodInvocation.Method);
+                _routeTemplatesCache.TryAdd(methodInvocation.Method.Info, routeTemplate);
+            }
             var methodParameters = methodInvocation.Method.Params
                 .Select((methodParam, index) => new MethodParameter(
                     methodParam.Name,

@@ -29,11 +29,22 @@ namespace NClient.Benchmark.Client.PrimitiveClient
             _api = PrimitiveApiMock.MockMethod();
             
             _httpClient = new HttpClient();
+            HttpClient_Send();
+            
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
+            RestSharp_Send();
+            
             _flurlClient = new FlurlClient(_api.Urls.First());
+            Flurl_Send();
+            
             _nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(_api.Urls.First()).Build();
+            NClient_Send();
+            
             _refitClient = Refit.RestService.For<IPrimitiveClient>(_api.Urls.First());
+            Refit_Send();
+            
             _restEaseClient = RestEase.RestClient.For<IPrimitiveClient>(_api.Urls.First());
+            RestEase_Send();
         }
         
         [Benchmark]
