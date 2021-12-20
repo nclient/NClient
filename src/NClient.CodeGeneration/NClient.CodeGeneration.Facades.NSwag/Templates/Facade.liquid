@@ -2,6 +2,7 @@
 
 [System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
 {% template Controller.Class.Annotations %}
+[System.ComponentModel.Category("{{ FacadeName }}")]
 public partial interface I{{ FacadeName }}Client : I{{ FacadeName }}Facade
 {
 {%     for operation in Operations -%}

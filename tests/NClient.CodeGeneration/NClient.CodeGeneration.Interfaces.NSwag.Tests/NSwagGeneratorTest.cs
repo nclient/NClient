@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
+using NClient.Annotations.Http;
 using NClient.CodeGeneration.Abstractions;
 using NClient.CodeGeneration.Abstractions.Enums;
 using NClient.CodeGeneration.Facades.NSwag;
@@ -56,6 +57,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             {
                 var facadeInterface = types.Where(t => t.IsInterface && t.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(CategoryAttribute)) is not null).ToList();
                 var baseInterfaces = facadeInterface
+                    .Where(x => x.GetCustomAttribute<HttpFacadeAttribute>() is not null)
                     .Where(fi => string.Equals(typeof(CategoryAttribute)
                         .GetProperty(nameof(CategoryAttribute.Category))!
                         .GetValue(fi.GetCustomAttribute(typeof(CategoryAttribute)))!
