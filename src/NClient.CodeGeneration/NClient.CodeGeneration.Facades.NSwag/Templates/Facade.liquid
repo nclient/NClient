@@ -1,9 +1,13 @@
-﻿{% if GeneratePartialInterfaces -%}
+﻿{% if GenerateClients -%}
 
 [System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
 {% template Controller.Class.Annotations %}
 [System.ComponentModel.Category("{{ FacadeName }}")]
+{% if GenerateFacades -%}
 public partial interface I{{ FacadeName }}Client : I{{ FacadeName }}Facade
+{% else %}
+public partial interface I{{ FacadeName }}Client
+{% endif -%}
 {
 {%     for operation in Operations -%}
 {%         if operation.HasSummary -%}
@@ -22,10 +26,14 @@ public partial interface I{{ FacadeName }}Client : I{{ FacadeName }}Facade
 {%         endif -%}
 {% template Controller.Method.Annotations %}
     [{{ NClientAnnotationsNamespace }}.Override]
-    new {{ operation.ClientResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.TypeInControllerInterface }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional and parameter.HasDefault == false %} = null{% endif %}{% if parameter.IsLast == false or UseCancellationToken %}, {% endif %}{% endfor %}{% if UseCancellationToken %}System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken){% endif %});
+    {% if GenerateFacades -%}new {% endif -%}{{ operation.ClientResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.TypeInControllerInterface }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional and parameter.HasDefault == false %} = null{% endif %}{% if parameter.IsLast == false or UseCancellationToken %}, {% endif %}{% endfor %}{% if UseCancellationToken %}System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken){% endif %});
 
 {%      endfor -%}
 }
+
+{% endif -%}
+
+{% if GenerateFacades -%}
 
 [System.CodeDom.Compiler.GeneratedCode("NClient", "{{ ToolchainVersion }}")]
 {% if HasBasePath -%}

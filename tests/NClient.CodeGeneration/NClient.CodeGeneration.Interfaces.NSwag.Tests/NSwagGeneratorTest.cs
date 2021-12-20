@@ -145,6 +145,8 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             var generationSettings = new FacadeGenerationSettings(
                 name: "{facade}",
                 @namespace,
+                generateClients: true,
+                generateFacades: true,
                 useModelValidationAttributes: true,
                 useNullableReferenceTypes: false,
                 useCancellationToken: true,

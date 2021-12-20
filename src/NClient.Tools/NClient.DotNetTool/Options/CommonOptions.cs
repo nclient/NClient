@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace NClient.DotNetTool.Options
 {
-    public class CommonOptions
+    public abstract class CommonOptions
     {
-        public CommonOptions(LogLevel logLevel)
+        protected CommonOptions(LogLevel logLevel)
         {
             LogLevel = logLevel;
         }

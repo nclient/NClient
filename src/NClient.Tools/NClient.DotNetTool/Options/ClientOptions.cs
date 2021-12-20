@@ -4,21 +4,21 @@ using Microsoft.Extensions.Logging;
 namespace NClient.DotNetTool.Options
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    [Verb("facade", HelpText = "Interface facade for OpenAPI")]
-    public class FacadeOptions
+    [Verb("client", HelpText = "Client interface for OpenAPI")]
+    public class ClientOptions
     {
-        [Verb("generate", HelpText = "Generate interface facade for OpenAPI")]
+        [Verb("generate", HelpText = "Generate client interface for OpenAPI")]
         public class GenerationOptions : CommonGenerationOptions
         {
-            [Option(shortName: 'n', longName: "name", Required = false, HelpText = "The facade name.", Default = "{facade}")]
-            public string FacadeName { get; }
+            [Option(shortName: 'n', longName: "name", Required = false, HelpText = "The client name.", Default = "{client}")]
+            public string ClientName { get; }
             
-            [Option(longName: "withClients", Required = false, HelpText = "The flag indicating whether to add client interfaces.", Default = false)]
-            public bool GenerateClients { get; }
+            [Option(longName: "withFacades", Required = false, HelpText = "The flag indicating whether to add facade interfaces.", Default = false)]
+            public bool GenerateFacades { get; }
 
             public GenerationOptions(
-                string facadeName, bool generateClients,
-                string spec, string outputPath, string @namespace,
+                string clientName, bool generateFacades,
+                string spec, string outputPath, string @namespace, 
                 bool useModelValidationAttributes, bool useNullableReferenceTypes,
                 bool generateDtoTypes, bool useCancellationToken,
                 bool useSystemTextJson, bool useNewtonsoftJson,
@@ -28,8 +28,8 @@ namespace NClient.DotNetTool.Options
                 useSystemTextJson, useNewtonsoftJson,
                 logLevel)
             {
-                FacadeName = facadeName;
-                GenerateClients = generateClients;
+                ClientName = clientName;
+                GenerateFacades = generateFacades;
             }
         }
     }

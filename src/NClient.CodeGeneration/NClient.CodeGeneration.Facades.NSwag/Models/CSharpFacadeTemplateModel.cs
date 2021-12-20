@@ -1,21 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using NSwag;
-using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
 
 namespace NClient.CodeGeneration.Facades.NSwag.Models
 {
     internal class CSharpFacadeTemplateModel : CSharpTemplateModelBase
     {
-        private readonly CSharpControllerGeneratorSettings _settings;
+        private readonly CSharpFacadeGeneratorSettings _settings;
         private readonly OpenApiDocument _document;
         
         public CSharpFacadeTemplateModel(
             string facadeName,
             IEnumerable<CSharpOperationModel> operations,
             OpenApiDocument document,
-            CSharpControllerGeneratorSettings settings)
+            CSharpFacadeGeneratorSettings settings)
             : base(facadeName, settings)
         {
             _document = document;
@@ -25,6 +24,10 @@ namespace NClient.CodeGeneration.Facades.NSwag.Models
             Operations = operations;
         }
 
+        public bool GenerateClients => _settings.GenerateClients;
+        
+        public bool GenerateFacades => _settings.GenerateFacades;
+        
         public string FacadeName { get; }
         
         public string NClientAnnotationsNamespace => "NClient.Annotations";
@@ -47,8 +50,6 @@ namespace NClient.CodeGeneration.Facades.NSwag.Models
 
         public bool GenerateOptionalParameters => _settings.GenerateOptionalParameters;
 
-        public bool GeneratePartialInterfaces => _settings.ControllerStyle == CSharpControllerStyle.Partial;
-        
         public bool UseCancellationToken => _settings.UseCancellationToken;
 
         public bool GenerateModelValidationAttributes => _settings.GenerateModelValidationAttributes;
