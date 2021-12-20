@@ -56,7 +56,7 @@ Do you like it? Give us a star! ⭐
 
 **Features:** Dynamic templated routing; Static routing; Dynamic query parameters; Collections as query parameters; Dynamic headers; Static headers; Dynamic body; Auto serialization and deserialization; HTTP/Transport context; Authentication; Asynchronous requests; Timeouts; Cancellation requests; Resilience policy; Response validation; Response mapping; File upload/download; Generic interfaces; Interface inheritance; Client factory; Versioning; Handling; Logging.
 
-## Table of Contents
+## 📖 Table of Contents
 - [Why use NClient?](#why)
 - [How to install?](#install)
 - [Requirements](#requirements)
@@ -70,7 +70,7 @@ Do you like it? Give us a star! ⭐
 
 <a name="why" />  
 
-## Why use NClient?
+## 🚀 Why use NClient?
 Creating clients for web services can be quite a challenge because, in addition to data transfer, you need to implement query building, 
 serialization, retry policy, mapping, error handling, logging — and this is not to mention the maintenance that comes with each update of your APIs.
 What if you could create clients with a fraction of the effort? This is exactly what NClient hopes to achieve by allowing you to create clients declaratively.
@@ -79,7 +79,7 @@ By the way, you can [contribute](#contributing) to the NClient, not just use it 
 
 <a name="install" />  
 
-## How to install?
+## 🏁 How to install?
 The easiest way is to install [NClient package](https://www.nuget.org/packages/NClient) using Nuget:
 ```
 dotnet add package NClient
@@ -87,12 +87,12 @@ dotnet add package NClient
 
 <a name="requirements" />
 
-## Requirements
+## 🚧 Requirements
 Use of the NClient library requires .NET Standard 2.0 or higher. The NClient controllers can be used with ASP.NET Core and .NET Core 3.1 target or higher.
 
 <a name="usage" />  
 
-## How to use?
+## 👩🏼‍💻 How to use?
 First you have to create an interface describing available endpoints and input/output data of a service via annotations. After that, you can select the required type of client in `NClientGallery` and then set additional settings for it if it`s necessary.
 
 <a name="usage-non-aspnet" />
@@ -211,24 +211,24 @@ WeatherForecast forecast = await client.GetAsync(DateTime.Now);
 
 <a name="documentation" />  
 
-## Documentation
+## 🗄 Documentation
 You can find NClient documentation on the [Wiki](https://github.com/nclient/NClient/wiki).
 
 <a name="sample-applications" />  
 
-## Samples of applications
+## 👩🏼‍🏫 Samples of applications
 See samples of applications in the [NClient.Samples](https://github.com/nclient/NClient.Samples) project.
 
 <a name="contributing" />  
 
-## Contributing
+## ❤️ Contributing
 You’re thinking about contributing to NClient? Great! We love to receive contributions from the community! The simplest contribution is to give this project a star ⭐.  
 Helping with documentation, pull requests, issues, commentary or anything else is also very welcome. Please review our [contribution guide](CONTRIBUTING.md).  
 It's worth getting in touch with us to discuss changes in case of any questions. We can also give advice on the easiest way to do things.
 
 <a name="nuget" />  
 
-## NuGet Packages
+## 📦 NuGet Packages
 
 ### Main
 - [NClient](https://www.nuget.org/packages/NClient): Tools for creating clients from interfaces including third-party.
