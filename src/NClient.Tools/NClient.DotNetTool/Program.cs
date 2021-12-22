@@ -118,8 +118,9 @@ namespace NClient.DotNetTool
         {
             _serviceProvider = BuildServiceProvider(LogLevel.Trace);
             _logger = _serviceProvider.GetRequiredService<ILogger<Program>>();
-                    
-            if (errors.Any(x => x.Tag is ErrorType.HelpVerbRequestedError or ErrorType.HelpRequestedError or ErrorType.NoVerbSelectedError))
+
+            bool IsHelpRequested(ErrorType errorType) => errorType is ErrorType.HelpVerbRequestedError or ErrorType.HelpRequestedError or ErrorType.NoVerbSelectedError;
+            if (errors.Any(x => IsHelpRequested(x.Tag)))
                 return OnHelpRequested(parserResult, showGreeting);
             return OnError(parserResult);
         }
