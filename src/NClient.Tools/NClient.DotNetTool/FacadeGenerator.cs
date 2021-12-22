@@ -23,7 +23,7 @@ namespace NClient.DotNetTool
             _facadeGenerator = facadeGenerator;
         }
 
-        public async Task<string> GenerateAsync(CommonGenerationOptions generationOptions, string specification)
+        public Task<string> GenerateAsync(CommonGenerationOptions generationOptions, string specification)
         {
             var generationSettings = new FacadeGenerationSettings(
                 name: (generationOptions as ClientOptions.GenerationOptions)?.ClientName 
@@ -37,7 +37,7 @@ namespace NClient.DotNetTool
                 generationOptions.UseCancellationToken,
                 generationOptions.GenerateDtoTypes,
                 GetSerializerType(generationOptions.UseSystemTextJson, generationOptions.UseNewtonsoftJson));
-            return await _facadeGenerator.GenerateAsync(specification, generationSettings);
+            return _facadeGenerator.GenerateAsync(specification, generationSettings);
         }
 
         private static SerializeType GetSerializerType(bool useSystemTextJson, bool useNewtonsoftJson)

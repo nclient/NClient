@@ -35,7 +35,7 @@ namespace NClient.CodeGeneration.Facades.NSwag
                 
                 ClassName = generationSettings.Name
                     .Replace("{facade}", "{controller}")
-                    .Replace("{client}", "{controller}")
+                    .Replace("{client}", "{controller}"),
                 GenerateModelValidationAttributes = generationSettings.UseModelValidationAttributes,
                 GenerateDtoTypes = generationSettings.UseDtoTypes,
                 UseCancellationToken = generationSettings.UseCancellationToken,
