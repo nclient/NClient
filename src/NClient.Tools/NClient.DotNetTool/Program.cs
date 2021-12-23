@@ -62,8 +62,8 @@ namespace NClient.DotNetTool
                 errors =>
                 {
                     var errorArrays = errors as Error[] ?? errors.ToArray();
-                    var errorTag = errorArrays.First().Tag;
-                    if (args.Length == 0 || errorTag is not ErrorType.HelpRequestedError && errorTag is not ErrorType.UnknownOptionError)
+                    bool IsFirstVerbError(ErrorType errorType) => args.Length == 0 || errorType is not ErrorType.HelpRequestedError && errorType is not ErrorType.UnknownOptionError;
+                    if (IsFirstVerbError(errorArrays.First().Tag))
                         return HandleErrors(mainParserResult, errorArrays, showGreeting: true);
 
                     var facadeVerb = typeof(FacadeOptions).GetCustomAttribute<VerbAttribute>()?.Name
