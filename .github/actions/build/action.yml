@@ -1,0 +1,34 @@
+name: Build .NET project
+
+inputs:
+  target-framework:
+    description: 'Target .NET framework'
+    required: false
+    default: ''
+  solution:
+    description: 'Solution/project path'
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Setup latest .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies and build
+      if: inputs.target-framework == ''
+      run: dotnet build ${{ inputs.solution }} --configuration Release -warnaserror
+      shell: bash
+    - name: Restore dependencies and build (only ${{ inputs.target-framework }} projects)
+      if: inputs.target-framework != ''
+      run: dotnet build ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --configuration Release -warnaserror
+      shell: bash
+    - name: Compress build artifact
+      run: tar cvzf build-artifacts-${{ inputs.target-framework }}.tar.gz bin
+      shell: bash
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifacts-${{ inputs.target-framework }}
+        path: build-artifacts-${{ inputs.target-framework }}.tar.gz

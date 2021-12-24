@@ -12,6 +12,7 @@
         <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;MessagePack</PackageTags>
         <Description>The provider that allows you to use the MessagePack serializer.</Description>
         <Authors>kingmidas74</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

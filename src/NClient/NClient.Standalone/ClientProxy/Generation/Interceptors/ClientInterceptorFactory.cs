@@ -44,26 +44,19 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
     {
-        private readonly IMethodBuilder _methodBuilder;
         private readonly IProxyGenerator _proxyGenerator;
         private readonly IGuidProvider _guidProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
+        private readonly IAttributeMapper _attributeMapper;
+        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
             _guidProvider = new GuidProvider();
             _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
-
-            var attributeMapper = new AttributeMapper();
-            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
-
-            _methodBuilder = new MethodBuilder(
-                new OperationAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
-                new MetadataAttributeProvider(clientValidationExceptionFactory),
-                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
+            _attributeMapper = new AttributeMapper();
+            _clientValidationExceptionFactory = new ClientValidationExceptionFactory();
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
@@ -81,13 +74,20 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             TimeSpan? timeout,
             ILogger<TClient>? logger = null)
         {
+            var methodBuilder = new MethodBuilder(
+                new OperationAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
+                new PathAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
+                new MetadataAttributeProvider(_clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(_attributeMapper, _clientValidationExceptionFactory)));
+            
             var serializer = serializerProvider.Create(logger);
             var toolset = new Toolset(serializer, logger);
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
                 resource,
                 _guidProvider,
-                _methodBuilder,
+                methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
                 requestBuilderProvider.Create(toolset),

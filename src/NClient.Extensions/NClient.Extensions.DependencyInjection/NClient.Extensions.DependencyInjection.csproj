@@ -11,6 +11,7 @@
         <PackageTags>NClient;NClient.Extensions;DependencyInjection</PackageTags>
         <Description>Extension methods that make it easy to add clients in ServiceCollection.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

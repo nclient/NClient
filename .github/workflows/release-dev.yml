@@ -26,13 +26,13 @@ jobs:
       uses: actions/checkout@v2
     - id: release-info
       name: Release info
-      uses: ./actions/release-info
+      uses: ./.github/actions/release-info
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
         version-patch: ${{ github.event.inputs.version-patch }}
     - name: Push packaget to NuGet
-      uses: ./actions/push
+      uses: ./.github/actions/push
       with:
         solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
@@ -49,13 +49,13 @@ jobs:
       uses: actions/checkout@v2
     - id: release-info
       name: Release info
-      uses: ./actions/release-info
+      uses: ./.github/actions/release-info
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
         version-patch: ${{ github.event.inputs.version-patch }}
     - name: Test release
-      uses: ./actions/test-release
+      uses: ./.github/actions/test-release
       with:
         solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
