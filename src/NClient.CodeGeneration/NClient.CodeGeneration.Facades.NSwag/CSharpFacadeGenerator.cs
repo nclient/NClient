@@ -16,7 +16,7 @@ namespace NClient.CodeGeneration.Facades.NSwag
         private readonly OpenApiDocument _document;
         private readonly ILogger? _logger;
         
-        public CSharpFacadeGenerator(OpenApiDocument document, CSharpControllerGeneratorSettings settings, ILogger? logger)
+        public CSharpFacadeGenerator(OpenApiDocument document, CSharpFacadeGeneratorSettings settings, ILogger? logger)
             : base(document, settings, CreateResolverWithExceptionSchema(settings.CSharpGeneratorSettings, document))
         {
             _document = document;
@@ -32,7 +32,7 @@ namespace NClient.CodeGeneration.Facades.NSwag
             {
                 _logger?.LogWarning($"Multipart content currently not supported. Operation {notAvailableOperation.Summary ?? notAvailableOperation.ActualOperationName} was skipped!");
             }
-            var model = new CSharpFacadeTemplateModel(facadeDefinitionName, availableOperations, _document, Settings);
+            var model = new CSharpFacadeTemplateModel(facadeDefinitionName, availableOperations, _document, (CSharpFacadeGeneratorSettings) Settings);
             var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Facade", model);
             yield return new CodeArtifact(facadeName, CodeArtifactType.Class, CodeArtifactLanguage.CSharp, CodeArtifactCategory.Client, template);
         }

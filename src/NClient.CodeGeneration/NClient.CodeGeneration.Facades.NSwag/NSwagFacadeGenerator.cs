@@ -7,7 +7,6 @@ using NClient.CodeGeneration.Abstractions;
 using NClient.CodeGeneration.Abstractions.Enums;
 using NJsonSchema.CodeGeneration.CSharp;
 using NSwag;
-using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.OperationNameGenerators;
 
 namespace NClient.CodeGeneration.Facades.NSwag
@@ -25,12 +24,18 @@ namespace NClient.CodeGeneration.Facades.NSwag
         {
             var openApiDocument = await OpenApiDocument.FromJsonAsync(specification, cancellationToken);
             
-            var settings = new CSharpControllerGeneratorSettings
+            var settings = new CSharpFacadeGeneratorSettings
             {
                 GenerateClientInterfaces = true,
                 GenerateResponseClasses = false,
-
-                ClassName = generationSettings.Name.Replace("{facade}", "{controller}"),
+                OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator(),
+                
+                GenerateClients = generationSettings.GenerateClients,
+                GenerateFacades = generationSettings.GenerateFacades,
+                
+                ClassName = generationSettings.Name
+                    .Replace("{facade}", "{controller}")
+                    .Replace("{client}", "{controller}"),
                 GenerateModelValidationAttributes = generationSettings.UseModelValidationAttributes,
                 GenerateDtoTypes = generationSettings.UseDtoTypes,
                 UseCancellationToken = generationSettings.UseCancellationToken,
@@ -52,9 +57,7 @@ namespace NClient.CodeGeneration.Facades.NSwag
                 typeof(NSwagFacadeGenerator).GetTypeInfo().Assembly,
                 typeof(CSharpGenerator).GetTypeInfo().Assembly
             });
-
-            settings.OperationNameGenerator = new MultipleClientsFromFirstTagAndOperationIdGenerator();
-            
+ 
             var generator = new CSharpFacadeGenerator(openApiDocument, settings, _logger);
             return generator.GenerateFile();
         }
