@@ -14,12 +14,12 @@ namespace NClient.Annotations
         private double Timeout { get; }
         
         /// <summary>
-        /// Creates a new <see cref="TimeoutAttribute"/> with the given timespan value.
+        /// Creates a new <see cref="TimeoutAttribute"/> with the given seconds value.
         /// </summary>
-        /// <param name="timeSpan">The timeout value</param>
-        public TimeoutAttribute(TimeSpan timeSpan)
+        /// <param name="seconds">The timeout value</param>
+        public TimeoutAttribute(double seconds)
         {
-            Timeout = timeSpan.TotalSeconds;
+            Timeout = seconds;
         }
     }
 }
