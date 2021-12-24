@@ -44,6 +44,17 @@ namespace NClient.Providers.Results.HttpResults
             base.EnsureSuccess();
             return this;
         }
+        
+        /// <summary>
+        /// Deconstruct object
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="httpResponse"></param>
+        public void Deconstruct(out TData? value, out IHttpResponse? httpResponse)
+        {
+            value = Data;
+            httpResponse = GetRawResponse();
+        }
     }
 
     public interface IHttpResponse
