@@ -9,7 +9,7 @@ namespace NClient.DotNetTool
 {
     public interface IFacadeGenerator
     {
-        Task<string> GenerateAsync(CommonGenerationOptions generationOptions, string specification);
+        Task<string> GenerateAsync(InterfaceGenerationOptions generationOptions, string specification);
     }
     
     public class FacadeGenerator : IFacadeGenerator
@@ -23,15 +23,15 @@ namespace NClient.DotNetTool
             _facadeGenerator = facadeGenerator;
         }
 
-        public Task<string> GenerateAsync(CommonGenerationOptions generationOptions, string specification)
+        public Task<string> GenerateAsync(InterfaceGenerationOptions generationOptions, string specification)
         {
             var generationSettings = new FacadeGenerationSettings(
-                name: (generationOptions as ClientOptions.GenerationOptions)?.ClientName 
-                ?? (generationOptions as FacadeOptions.GenerationOptions)?.FacadeName
+                name: (generationOptions as GenerationOptions.ClientOptions)?.ClientName 
+                ?? (generationOptions as GenerationOptions.FacadeOptions)?.FacadeName
                 ?? "{controller}", 
                 generationOptions.Namespace,
-                generateClients: (generationOptions as FacadeOptions.GenerationOptions)?.GenerateClients ?? false,
-                generateFacades: (generationOptions as ClientOptions.GenerationOptions)?.GenerateFacades ?? false,
+                generateClients: (generationOptions as GenerationOptions.FacadeOptions)?.GenerateClients ?? false,
+                generateFacades: (generationOptions as GenerationOptions.ClientOptions)?.GenerateFacades ?? false,
                 generationOptions.UseModelValidationAttributes,
                 generationOptions.UseNullableReferenceTypes,
                 generationOptions.UseCancellationToken,

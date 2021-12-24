@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NClient.DotNetTool.Options
 {
-    public abstract class CommonGenerationOptions : CommonOptions
+    public abstract class InterfaceGenerationOptions : CommonOptions
     {
         [Option(shortName: 'a', longName: "api", Required = true, HelpText = "The OpenAPI spec file to use. Paths are relative to the project directory. You can also set a http URI as path")]
         public virtual string Spec { get; }
@@ -32,7 +32,7 @@ namespace NClient.DotNetTool.Options
         [Option(longName: "nullableEnable", Required = false, HelpText = "The flag indicating whether to generate Nullable Reference Type annotations.", Default = false)]
         public virtual bool UseNullableReferenceTypes { get; }
         
-        protected CommonGenerationOptions(
+        protected InterfaceGenerationOptions(
             string spec, string outputPath, string @namespace,
             bool useModelValidationAttributes, bool useNullableReferenceTypes,
             bool generateDtoTypes, bool useCancellationToken,

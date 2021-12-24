@@ -5,7 +5,7 @@ namespace NClient.DotNetTool.Loaders
 {
     public class LoaderFactory : ILoaderFactory
     {
-        public ISpecificationLoader Create(CommonGenerationOptions generationOptions)
+        public ISpecificationLoader Create(InterfaceGenerationOptions generationOptions)
         {
             return Uri.TryCreate(generationOptions.Spec, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)

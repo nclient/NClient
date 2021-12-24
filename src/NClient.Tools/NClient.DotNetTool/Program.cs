@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
@@ -43,61 +42,38 @@ namespace NClient.DotNetTool
                 with.HelpWriter = null;
             });
             
-            var mainParserResult = parser.ParseArguments<FacadeOptions, ClientOptions, int>(args);
+            var mainParserResult = parser.ParseArguments<GenerationOptions, int>(args);
             return await mainParserResult.MapResult(
-                (FacadeOptions _) =>
+                (GenerationOptions _) =>
                 {
-                    var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
-                    return facadeParserResult.MapResult(
-                        (FacadeOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
-                        facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
-                },
-                (ClientOptions _) =>
-                {
-                    var clientParserResult = parser.ParseArguments<ClientOptions.GenerationOptions, int>(args.Skip(1));
-                    return clientParserResult.MapResult(
-                        (ClientOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
-                        facadeErrors => HandleErrors(clientParserResult, facadeErrors, showGreeting: false));
+                    var generationParserResult = parser.ParseArguments<GenerationOptions.FacadeOptions, GenerationOptions.ClientOptions, int>(args.Skip(1));
+                    return generationParserResult.MapResult(
+                        (GenerationOptions.FacadeOptions facadeGenerationOptions) => HandleFacadeGenerationOptions(facadeGenerationOptions), 
+                        (GenerationOptions.ClientOptions clientGenerationOptions) => HandleFacadeGenerationOptions(clientGenerationOptions), 
+                        generationErrors => HandleErrors(generationParserResult, generationErrors, showGreeting: false));
                 },
                 errors =>
                 {
                     var errorArrays = errors as Error[] ?? errors.ToArray();
-                    bool IsFirstVerbError(ErrorType errorType) => args.Length == 0 || errorType is not ErrorType.HelpRequestedError && errorType is not ErrorType.UnknownOptionError;
-                    if (IsFirstVerbError(errorArrays.First().Tag))
+                    bool IsNoVerbError(ErrorType errorType) => args.Length == 0 || errorType is not ErrorType.HelpRequestedError && errorType is not ErrorType.UnknownOptionError;
+                    if (IsNoVerbError(errorArrays.First().Tag))
                         return HandleErrors(mainParserResult, errorArrays, showGreeting: true);
 
-                    var facadeVerb = typeof(FacadeOptions).GetCustomAttribute<VerbAttribute>()?.Name
-                        ?? throw new InvalidOperationException("The attribute with the verb was not found for the facade.");
-                    if (args.First() == facadeVerb)
-                    {
-                        var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
-                        return facadeParserResult.MapResult(
-                            _ => Task.FromResult(0),
-                            facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
-                    }
-
-                    var clientVerb = typeof(ClientOptions).GetCustomAttribute<VerbAttribute>()?.Name
-                        ?? throw new InvalidOperationException("The attribute with the verb was not found for the facade.");
-                    if (args.First() == clientVerb)
-                    {
-                        var clientParserResult = parser.ParseArguments<ClientOptions.GenerationOptions, int>(args.Skip(1));
-                        return clientParserResult.MapResult(
-                            _ => Task.FromResult(0),
-                            clientErrors => HandleErrors(clientParserResult, clientErrors, showGreeting: false));
-                    }
-
-                    throw new NotSupportedException("Invalid arguments.");
+                    var generationParserResult = parser.ParseArguments<GenerationOptions.FacadeOptions, GenerationOptions.ClientOptions, int>(args.Skip(1));
+                    return generationParserResult.MapResult(
+                        _ => Task.FromResult(0),
+                        generationErrors => HandleErrors(generationParserResult, generationErrors, showGreeting: false));
                 });
         }
 
-        private static Task<int> HandleFacadeGenerationOptions(CommonGenerationOptions generationOptions)
+        private static Task<int> HandleFacadeGenerationOptions(InterfaceGenerationOptions generationOptions)
         {
             _serviceProvider = BuildServiceProvider(generationOptions.LogLevel); 
             _logger = _serviceProvider.GetRequiredService<ILogger<Program>>(); 
             return RunFacadeGenerationAsync(generationOptions);
         }
         
-        private static async Task<int> RunFacadeGenerationAsync(CommonGenerationOptions generationOptions)
+        private static async Task<int> RunFacadeGenerationAsync(InterfaceGenerationOptions generationOptions)
         {
             try
             {
