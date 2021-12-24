@@ -61,6 +61,7 @@ namespace NClient.Providers.Api.Rest.Tests
                 new UseVersionAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new PathAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MetadataAttributeProvider(ClientValidationExceptionFactory),
+                new TimeoutAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
         }
 
