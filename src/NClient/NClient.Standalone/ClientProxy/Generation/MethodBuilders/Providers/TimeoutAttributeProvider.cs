@@ -9,7 +9,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 {
     internal interface ITimeoutAttributeProvider
     {
-        TimeoutAttribute? Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
+        ITimeoutAttribute? Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods);
     }
 
     internal class TimeoutAttributeProvider : ITimeoutAttributeProvider
@@ -25,7 +25,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
         }
 
-        public TimeoutAttribute? Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
+        public ITimeoutAttribute? Get(MethodInfo method, IEnumerable<MethodInfo> overridingMethods)
         {
             return Find(method) ?? overridingMethods.Select(Find).FirstOrDefault();
         }
