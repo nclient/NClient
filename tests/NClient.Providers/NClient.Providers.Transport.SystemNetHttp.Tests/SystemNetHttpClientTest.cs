@@ -136,7 +136,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new Response(finalRequest)
             {
-                Content = new Content(bytes, ContentEncodingHeader.Value, new MetadataContainer(new[]
+                Content = new Content(bytes: bytes, encoding: ContentEncodingHeader.Value, headerContainer: new MetadataContainer(new[]
                 {
                     ContentTypeHeader,
                     ContentEncodingHeader,
@@ -184,9 +184,9 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var request = new Request(RequestId, EndpointUri.ToString(), method)
             {
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(content),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(content),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
                         new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
@@ -199,9 +199,9 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
             {
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(content),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(content),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
                         new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),

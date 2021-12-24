@@ -42,7 +42,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
 
             if (request.Content is not null)
             {
-                httpRequestMessage.Content = new ByteArrayContent(request.Content.Bytes);
+                httpRequestMessage.Content = new StreamContent(request.Content.GetContentAsStream());
                 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {

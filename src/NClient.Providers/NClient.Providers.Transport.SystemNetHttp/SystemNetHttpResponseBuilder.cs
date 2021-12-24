@@ -19,9 +19,9 @@ namespace NClient.Providers.Transport.SystemNetHttp
             var content = responseContext.Response.Content is null 
                 ? new Content() 
                 : new Content(
-                    await responseContext.Response.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
-                    responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
-                    new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
+                    bytes: await responseContext.Response.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
+                    encoding: responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
+                    headerContainer: new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));
 
             var httpResponse = new Response(request)

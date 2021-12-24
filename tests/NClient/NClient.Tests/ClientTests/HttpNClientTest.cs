@@ -35,9 +35,9 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -63,9 +63,9 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -91,9 +91,9 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -119,9 +119,9 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    encoding: Encoding.UTF8.WebName,
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -146,9 +146,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(""),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -172,9 +171,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(""),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -198,9 +196,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(""),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -224,9 +221,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    bytes: Encoding.UTF8.GetBytes(""),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
