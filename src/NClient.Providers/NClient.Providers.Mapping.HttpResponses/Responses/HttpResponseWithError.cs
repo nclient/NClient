@@ -20,7 +20,6 @@ namespace NClient.Providers.Results.HttpResults
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
-        /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
         public HttpResponseWithError(HttpResponse httpResponse, TData? data, TError? error)
@@ -36,6 +35,19 @@ namespace NClient.Providers.Results.HttpResults
         {
             base.EnsureSuccess();
             return this;
+        }
+
+        /// <summary>
+        /// Deconstruct object
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="error"></param>
+        /// <param name="httpResponse"></param>
+        public void Deconstruct(out TData? value, out TError? error, out IHttpResponse? httpResponse)
+        {
+            value = Data;
+            error = Error;
+            httpResponse = GetRawResponse();
         }
     }
     
@@ -76,6 +88,17 @@ namespace NClient.Providers.Results.HttpResults
         {
             base.EnsureSuccess();
             return this;
+        }
+
+        /// <summary>
+        /// Deconstruct object
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="httpResponse"></param>
+        public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        {
+            error = Error;
+            httpResponse = GetRawResponse();
         }
     }
 }

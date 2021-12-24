@@ -18,5 +18,11 @@ namespace NClient.Providers.Mapping.Results
             Value = value;
             Error = error;
         }
+        
+        public void Deconstruct(out TValue? value, out TError? error)
+        {
+            value = Value;
+            error = Error;
+        }
     }
 }

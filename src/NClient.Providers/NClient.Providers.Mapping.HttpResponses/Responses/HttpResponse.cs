@@ -112,6 +112,7 @@ namespace NClient.Providers.Results.HttpResults
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
+        /// <param name="httpResponseMessage">The HTTP response message that the response belongs to.</param>
         public HttpResponse(
             IHttpRequest httpRequest, 
             HttpResponseMessage httpResponseMessage)
@@ -142,6 +143,12 @@ namespace NClient.Providers.Results.HttpResults
             
             _httpResponseMessage = httpResponse._httpResponseMessage;
         }
+
+        /// <summary>
+        /// Get raw http response message
+        /// </summary>
+        /// <returns></returns>
+        protected IHttpResponse GetRawResponse() => this;
 
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
