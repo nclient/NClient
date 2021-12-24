@@ -28,6 +28,8 @@ namespace NClient.Invocation
         
         public IMetadataAttribute[] MetadataAttributes { get; set; }
         
+        public ITimeoutAttribute? TimeoutAttribute { get; set; }
+        
         public IMethodParam[] Params { get; }
         
         /// <summary>

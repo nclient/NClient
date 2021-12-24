@@ -24,6 +24,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
         private readonly IUseVersionAttributeProvider _useVersionAttributeProvider;
         private readonly IPathAttributeProvider _pathAttributeProvider;
         private readonly IHeaderAttributeProvider _headerAttributeProvider;
+        private readonly ITimeoutAttributeProvider _timeoutAttributeProvider;
         private readonly IMethodParamBuilder _methodParamBuilder;
 
         public MethodBuilder(
@@ -31,6 +32,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             IUseVersionAttributeProvider useVersionAttributeProvider,
             IPathAttributeProvider pathAttributeProvider,
             IHeaderAttributeProvider headerAttributeProvider,
+            ITimeoutAttributeProvider timeoutAttributeProvider,
             IMethodParamBuilder methodParamBuilder)
         {
             _cache = new ConcurrentDictionary<MethodInfo, Method>();
@@ -38,6 +40,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             _useVersionAttributeProvider = useVersionAttributeProvider;
             _pathAttributeProvider = pathAttributeProvider;
             _headerAttributeProvider = headerAttributeProvider;
+            _timeoutAttributeProvider = timeoutAttributeProvider;
             _methodParamBuilder = methodParamBuilder;
         }
 
@@ -72,7 +75,8 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
-                MetadataAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams)
+                MetadataAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams),
+                TimeoutAttribute = _timeoutAttributeProvider.Get(methodInfo, overridingMethods)
             };
 
             _cache.TryAdd(methodInfo, method);

@@ -79,6 +79,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new UseVersionAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
                 new PathAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
                 new MetadataAttributeProvider(_clientValidationExceptionFactory),
+                new TimeoutAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(_attributeMapper, _clientValidationExceptionFactory)));
             
             var serializer = serializerProvider.Create(logger);
