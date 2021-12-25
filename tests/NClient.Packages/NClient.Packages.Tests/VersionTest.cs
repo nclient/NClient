@@ -79,5 +79,13 @@ namespace NClient.Packages.Tests
         [Test]
         public void NClient_Extensions_DependencyInjection() =>
             PackagesVersionProvider.GetCurrent("NClient.Extensions.DependencyInjection").Should().Be(PackagesVersionProvider.GetNew());
+        
+        [Test]
+        public void NClient_CodeGeneration_Abstractions() =>
+            PackagesVersionProvider.GetCurrent("NClient.CodeGeneration.Abstractions").Should().Be(PackagesVersionProvider.GetNew());
+        
+        [Test]
+        public void NClient_CodeGeneration_Facades_NSwag() =>
+            PackagesVersionProvider.GetCurrent("NClient.CodeGeneration.Facades.NSwag").Should().Be(PackagesVersionProvider.GetNew());
     }
 }
