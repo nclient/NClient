@@ -32,13 +32,6 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 
         private TimeoutAttribute? Find(MethodInfo method)
         {
-            var attributes = method
-                .GetCustomAttributes()
-                .Select(x => _attributeMapper.TryMap(x))
-                .ToArray();
-            if (attributes.Any(x => x is IPathAttribute))
-                throw _clientValidationExceptionFactory.MethodAttributeNotSupported(nameof(IPathAttribute));
-///WTF
             var timeoutAttributes = method
                 .GetCustomAttributes()
                 .Select(x => _attributeMapper.TryMap(x))
