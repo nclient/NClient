@@ -92,9 +92,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
-                var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, cancellationToken)
-                    .ConfigureAwait(false);
 
+                using var timeoutTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(method.TimeoutAttribute?.Seconds ?? 0));
+
+                var combinedCts = method.TimeoutAttribute is null ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, CancellationToken.None) : CancellationTokenSource.CreateLinkedTokenSource(timeoutTokenSource.Token, cancellationToken);
+                
+                var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, combinedCts.Token)
+                    .ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return result;
             }

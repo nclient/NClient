@@ -20,6 +20,7 @@ namespace NClient.Invocation
         IOperationAttribute Operation { get; }
         IPathAttribute? PathAttribute { get; }
         IUseVersionAttribute? UseVersionAttribute { get; }
+        ITimeoutAttribute? TimeoutAttribute { get; }
         IMetadataAttribute[] MetadataAttributes { get; }
         IMethodParam[] Params { get; }
         /// <summary>
