@@ -9,8 +9,6 @@ namespace NClient.Annotations
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class TimeoutAttribute : Attribute, ITimeoutAttribute
     {
-        public int Order { get; set; }
-        
         public double Seconds { get; }
         
         /// <summary>
