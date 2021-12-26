@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace NClient.Providers.Transport.RestSharp
             
             var response = new Response(request)
             {
-                Content = new Content(bytes: responseContext.Response.RawBytes, encoding: responseContext.Response.ContentEncoding, headerContainer: new MetadataContainer(contentHeaders)),
+                Content = new Content(streamContent: new MemoryStream(responseContext.Response.RawBytes), encoding: responseContext.Response.ContentEncoding, headerContainer: new MetadataContainer(contentHeaders)),
                 StatusCode = (int) responseContext.Response.StatusCode,
                 Endpoint = responseContext.Response.ResponseUri.ToString(),
                 Metadatas = new MetadataContainer(responseHeaders),

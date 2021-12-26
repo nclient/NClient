@@ -44,7 +44,7 @@ namespace NClient.Providers.Transport.RestSharp
 
             if (request.Content is not null)
             {
-                restRequest.AddParameter(_toolset.Serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
+                restRequest.AddParameter(_toolset.Serializer.ContentType, request.Content.StreamContent, ParameterType.RequestBody);
 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {

@@ -111,24 +111,34 @@ namespace NClient.Sandbox.Client
 
             var httpResponseWithText = await _fileClient.GetTextFileAsync(id: 1);
             _programLogger.LogInformation("The text file was received.");
+
+            await using var textMemoryStream = new MemoryStream();
+            await new StreamReader(httpResponseWithText.Content.StreamContent).BaseStream.CopyToAsync(textMemoryStream);
+            var textBytes = textMemoryStream.ToArray();
+                
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
             {
-                await textFileStream.WriteAsync(httpResponseWithText.Content.Bytes);
+                await textFileStream.WriteAsync(textBytes);
                 _programLogger.LogInformation("The text file was saved.");
             }
 
-            await _fileClient.PostTextFileAsync(httpResponseWithText.Content.Bytes!);
+            await _fileClient.PostTextFileAsync(textBytes!);
             _programLogger.LogInformation("The text file has been sent.");
 
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
+            
+            await using var imageMemoryStream = new MemoryStream();
+            await new StreamReader(httpResponseWithImage.Content.StreamContent).BaseStream.CopyToAsync(imageMemoryStream);
+            var imageBytes = imageMemoryStream.ToArray();
+            
             _programLogger.LogInformation("The image was received.");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
             {
-                await imageStream.WriteAsync(httpResponseWithImage.Content.Bytes);
+                await imageStream.WriteAsync(imageBytes);
                 _programLogger.LogInformation("The image was saved.");
             }
 
-            await _fileClient.PostImageFileAsync(httpResponseWithImage.Content.Bytes!);
+            await _fileClient.PostImageFileAsync(imageBytes);
             _programLogger.LogInformation("The image has been sent.");
 
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -151,7 +152,7 @@ namespace NClient.Standalone.Client
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            return _serializer.Deserialize(response.Content.ToString(), dataType);
+            return _serializer.Deserialize(await new StreamReader(response.Content.StreamContent).ReadToEndAsync(), dataType);
         }
         
         public async Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, 
@@ -165,7 +166,8 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
+            var dataObject = TryGetDataObject(dataType, response.Content.StreamContent, transportResponseContext);
+            var s = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
             return BuildResponseWithData(dataObject, dataType, response);
         }
         
@@ -180,7 +182,7 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
             
-            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, response.Content.StreamContent, transportResponseContext);
             return BuildResponseWithError(errorObject, errorType, response);
         }
         
@@ -195,8 +197,8 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
-            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
+            var dataObject = TryGetDataObject(dataType, response.Content.StreamContent, transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, response.Content.StreamContent, transportResponseContext);
             return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response);
         }
 
@@ -243,17 +245,17 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
         
-        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private object? TryGetDataObject(Type dataType, Stream data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return _responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(data, dataType)
+                ? _serializer.Deserialize(new StreamReader(data).ReadToEnd(), dataType)
                 : null;
         }
 
-        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private object? TryGetErrorObject(Type errorType, Stream data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return !_responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(data, errorType)
+                ? _serializer.Deserialize(new StreamReader(data).ReadToEnd(), errorType)
                 : null;
         }
         

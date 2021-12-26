@@ -29,7 +29,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             if (transportRequest.TryGetTimeout() is null)
                 transportRequest.SetTimeout(httpClient.Timeout);
             
-            return await httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
+            return await httpClient.SendAsync(transportRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         }
     }
 }

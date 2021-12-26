@@ -90,7 +90,7 @@ namespace NClient.Providers.Transport
         public Response(IRequest transportRequest)
         {
             Ensure.IsNotNull(transportRequest, nameof(transportRequest));
-
+            
             Request = transportRequest;
             Content = new Content();
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());

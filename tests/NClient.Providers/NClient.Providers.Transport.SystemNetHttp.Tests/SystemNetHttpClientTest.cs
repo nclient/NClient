@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -53,7 +54,9 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, 
                 HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
+            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas).Excluding(r => r.Content.StreamContent).Excluding(r => r.Request.Content!.StreamContent));
+            ((MemoryStream) response.Content.StreamContent).ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Content.StreamContent).ToArray());
+            ((MemoryStream) response.Request.Content?.StreamContent!)?.ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Request.Content?.StreamContent!)?.ToArray());
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Metadatas, x => x.WithoutStrictOrdering());
         }
@@ -136,7 +139,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new Response(finalRequest)
             {
-                Content = new Content(bytes: bytes, encoding: ContentEncodingHeader.Value, headerContainer: new MetadataContainer(new[]
+                Content = new Content(streamContent: new MemoryStream(bytes), encoding: ContentEncodingHeader.Value, headerContainer: new MetadataContainer(new[]
                 {
                     ContentTypeHeader,
                     ContentEncodingHeader,
@@ -184,7 +187,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var request = new Request(RequestId, EndpointUri.ToString(), method)
             {
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(content),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes(content)),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {
@@ -199,7 +202,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
             {
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(content),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes(content)),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {

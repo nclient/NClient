@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,6 +16,15 @@ using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
+    public static class StreamExtensions
+    {
+        public static void ResetStreamReader(this StreamReader? sr, long position = 0)
+        {
+            if (sr is null) return;
+            sr.BaseStream.Position = position;
+        }
+    }
+    
     [Parallelizable]
     public class HttpNClientTest
     {
@@ -31,11 +41,11 @@ namespace NClient.Tests.ClientTests
             var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.GetAsync(id));
 
-            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
+            var expectedResponse = new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {
@@ -46,7 +56,10 @@ namespace NClient.Tests.ClientTests
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
                 IsSuccessful = true
-            }, ExcludeInessentialFields);
+            };
+            result.Should().BeEquivalentTo(expectedResponse, ExcludeInessentialFields);
+            ((MemoryStream) result.Content.StreamContent).ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Content.StreamContent).ToArray());
+            ((MemoryStream) result.Request.Content?.StreamContent!)?.ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Request.Content?.StreamContent!)?.ToArray());
         }
 
         [Test]
@@ -63,7 +76,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {
@@ -87,22 +100,24 @@ namespace NClient.Tests.ClientTests
             var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.Get(id));
 
-            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
+            var expectedResponse = new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
-                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
                 IsSuccessful = true
-            }, ExcludeInessentialFields);
+            };
+            result.Should().BeEquivalentTo(expectedResponse, ExcludeInessentialFields);
+            var str = new StreamReader(expectedResponse.Content.StreamContent).ReadToEnd();
+            str.Should().Be("T");
         }
 
         [Test]
@@ -115,22 +130,24 @@ namespace NClient.Tests.ClientTests
             var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.Get(id));
 
-            result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
+            var expectedResponse = new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     encoding: Encoding.UTF8.WebName,
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentEncoding, "utf-8"),
-                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
-                        new Metadata(HttpKnownHeaderNames.ContentLength, "18")
+                        new Metadata(HttpKnownHeaderNames.ContentType, "application/json")
                     })),
                 ProtocolVersion = new Version("1.1"),
                 StatusDescription = "OK",
                 IsSuccessful = true
-            }, ExcludeInessentialFields);
+            };
+            result.Should().BeEquivalentTo(expectedResponse, ExcludeInessentialFields);
+            ((MemoryStream) result.Content.StreamContent).ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Content.StreamContent).ToArray());
+            ((MemoryStream) result.Request.Content?.StreamContent!)?.ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Request.Content?.StreamContent!)?.ToArray());
         }
 
         [Test]
@@ -146,7 +163,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(""),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -171,7 +188,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(""),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -196,7 +213,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(""),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -221,7 +238,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    bytes: Encoding.UTF8.GetBytes(""),
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
                     headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
@@ -255,6 +272,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.StreamContent)
+                .Excluding(x => x.Request.Content!.StreamContent)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -264,6 +283,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.StreamContent)
+                .Excluding(x => x.Request.Content!.StreamContent)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -273,6 +294,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.StreamContent)
+                .Excluding(x => x.Request.Content!.StreamContent)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -282,6 +305,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.StreamContent)
+                .Excluding(x => x.Request.Content!.StreamContent)
                 .Excluding(x => x.Endpoint);
         }
     }

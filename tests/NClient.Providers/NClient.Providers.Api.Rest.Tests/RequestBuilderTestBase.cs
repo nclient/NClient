@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -116,7 +117,8 @@ namespace NClient.Providers.Api.Rest.Tests
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                actualRequest.Content!.Bytes.Should().BeEquivalentTo(contentBytes);
+                ((MemoryStream) actualRequest.Content!.StreamContent).ToArray().Should().BeEquivalentTo(contentBytes);
+                
                 actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
                 actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
                 {
