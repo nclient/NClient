@@ -23,13 +23,21 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+    - name: Setting version-patch env variable
+      run: |
+        if [[ "${{ github.event.inputs.version-patch }}" != "" ]]; then
+          echo "version-patch=${{ github.event.inputs.version-patch }}" >> $GITHUB_ENV
+        else
+          echo "version-patch=${{ github.run_id }}" >> $GITHUB_ENV
+        fi
+      shell: bash
     - id: release-info
       name: Release info
       uses: ./.github/actions/release-info
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
-        version-patch: ${{ github.event.inputs.version-patch }}
+        version-patch: ${{ env.version-patch }}
     - name: Push packaget to NuGet
       uses: ./.github/actions/push
       with:
