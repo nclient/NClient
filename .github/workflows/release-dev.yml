@@ -5,10 +5,10 @@ on:
     inputs:
       version-prefix:
         description: 'Version'
-        required: true
+        required: false
       version-patch:
         description: 'Patch number'     
-        required: true
+        required: false
 
 env:
   solution: NClient.sln
@@ -18,7 +18,6 @@ env:
 jobs:
   
   release:
-    if: ${{ github.event.inputs.version-prefix }} != '' && ${{ github.event.inputs.version-patch }} != ''
     environment: release-dev
     runs-on: ubuntu-latest
     steps:
