@@ -36,8 +36,10 @@ runs:
       uses: jakejarvis/wait-action@master
       with:
         time: ${{ inputs.delay }}
-    - name: Setup all .NET versions
+    - name: Setup latest .NET
       uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
     - name: Try add GitHub NuGet source
       run: |
         if [[ "${{ inputs.custom-source}}" != "" ]]; then
