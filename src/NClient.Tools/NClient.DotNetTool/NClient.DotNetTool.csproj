@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net5.0;net6.0;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
