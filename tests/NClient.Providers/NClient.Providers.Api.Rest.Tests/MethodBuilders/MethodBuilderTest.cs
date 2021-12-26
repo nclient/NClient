@@ -43,7 +43,7 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
             var timeoutAttributeProviderMock = new Mock<ITimeoutAttributeProvider>();
-            timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
+            timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(timeoutAttribute);
             var headerAttributeProviderMock = new Mock<IHeaderAttributeProvider>();
             headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))

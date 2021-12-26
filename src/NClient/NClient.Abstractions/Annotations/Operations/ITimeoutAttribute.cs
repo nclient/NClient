@@ -5,8 +5,8 @@ namespace NClient.Annotations
     public interface ITimeoutAttribute
     {
         /// <summary>
-        /// The timeout value in seconds
+        /// The timeout value in milliseconds
         /// </summary>
-        double Seconds { get; }
+        double Milliseconds { get; }
     }
 }

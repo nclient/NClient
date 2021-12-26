@@ -87,15 +87,15 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
                 httpRequest = await _requestBuilder
-                    .BuildAsync(requestId, _resource, methodInvocation, _timeout, cancellationToken)
+                    .BuildAsync(requestId, _resource, methodInvocation, cancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
 
-                using var timeoutTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(method.TimeoutAttribute?.Seconds ?? 0));
+                using var timeoutTokenSource = new CancellationTokenSource(_timeout ?? TimeSpan.FromMilliseconds(method.TimeoutAttribute?.Milliseconds ?? 0));
 
-                var combinedCts = method.TimeoutAttribute is null ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, CancellationToken.None) : CancellationTokenSource.CreateLinkedTokenSource(timeoutTokenSource.Token, cancellationToken);
+                var combinedCts = method.TimeoutAttribute is null && _timeout is null ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, CancellationToken.None) : CancellationTokenSource.CreateLinkedTokenSource(timeoutTokenSource.Token, cancellationToken);
                 
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, combinedCts.Token)
                     .ConfigureAwait(false);

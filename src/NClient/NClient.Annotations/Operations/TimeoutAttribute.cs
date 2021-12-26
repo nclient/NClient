@@ -6,18 +6,18 @@ namespace NClient.Annotations
     /// <summary>
     /// Identifies an action that restrict by timeout.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class TimeoutAttribute : Attribute, ITimeoutAttribute
     {
-        public double Seconds { get; }
+        public double Milliseconds { get; }
         
         /// <summary>
-        /// Creates a new <see cref="TimeoutAttribute"/> with the given seconds value.
+        /// Creates a new <see cref="TimeoutAttribute"/> with the given milliseconds value.
         /// </summary>
-        /// <param name="seconds">The timeout value</param>
-        public TimeoutAttribute(double seconds)
+        /// <param name="milliseconds">The timeout value</param>
+        public TimeoutAttribute(double milliseconds)
         {
-            Seconds = seconds;
+            Milliseconds = milliseconds;
         }
     }
 }
