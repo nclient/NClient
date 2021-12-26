@@ -34,12 +34,6 @@ namespace NClient.Providers.Transport
             base.EnsureSuccess();
             return this;
         }
-
-        public void Deconstruct(out TData? data, out IContent? content)
-        {
-            data = Data;
-            content = Content;
-        }
     }
 
     /// <summary>

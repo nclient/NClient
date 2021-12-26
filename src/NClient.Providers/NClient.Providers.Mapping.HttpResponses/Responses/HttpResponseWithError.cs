@@ -47,7 +47,7 @@ namespace NClient.Providers.Results.HttpResults
         {
             value = Data;
             error = Error;
-            httpResponse = GetRawResponse();
+            httpResponse = this;
         }
     }
     
@@ -98,7 +98,7 @@ namespace NClient.Providers.Results.HttpResults
         public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
         {
             error = Error;
-            httpResponse = GetRawResponse();
+            httpResponse = this;
         }
     }
 }

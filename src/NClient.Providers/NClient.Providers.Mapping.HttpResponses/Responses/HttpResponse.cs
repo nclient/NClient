@@ -53,7 +53,7 @@ namespace NClient.Providers.Results.HttpResults
         public void Deconstruct(out TData? value, out IHttpResponse? httpResponse)
         {
             value = Data;
-            httpResponse = GetRawResponse();
+            httpResponse = this;
         }
     }
 
@@ -154,12 +154,6 @@ namespace NClient.Providers.Results.HttpResults
             
             _httpResponseMessage = httpResponse._httpResponseMessage;
         }
-
-        /// <summary>
-        /// Get raw http response message
-        /// </summary>
-        /// <returns></returns>
-        protected IHttpResponse GetRawResponse() => this;
 
         /// <summary>
         /// Throws an exception if the IsSuccessful property for the HTTP response is false.
