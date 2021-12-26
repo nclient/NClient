@@ -28,7 +28,7 @@ runs:
   steps:
     - id: version-prefix-generator
       run: |
-        if [[ "${{ inputs.version-prefix || }}" != "" ]]; then
+        if [[ "${{ inputs.version-prefix || '' }}" != "" ]]; then
           echo "::set-output name=version-prefix::${{ inputs.version-prefix }}"
         else
           echo "::set-output name=version-prefix::${{ env.default-version-prefix }}"
@@ -36,7 +36,7 @@ runs:
       shell: bash
     - id: version-patch-setter
       run: |
-        if [[ "${{ inputs.version-patch || }}" != "" ]]; then
+        if [[ "${{ inputs.version-patch || '' }}" != "" ]]; then
           echo "version-patch=${{ inputs.version-patch }}" >> $GITHUB_ENV
         else
           echo "version-patch=${{ env.default-version-patch }}" >> $GITHUB_ENV
