@@ -32,6 +32,8 @@
         <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
+        <PackageReference Include="NClient.CodeGeneration.Abstractions" Version="*-*"/>
+        <PackageReference Include="NClient.CodeGeneration.Facades.NSwag" Version="*-*"/>
     </ItemGroup>
 
     <ItemGroup>
