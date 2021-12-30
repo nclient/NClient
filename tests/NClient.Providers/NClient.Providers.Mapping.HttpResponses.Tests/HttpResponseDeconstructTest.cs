@@ -20,6 +20,11 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             _fixture.Customize(new AutoMoqCustomization());
+            _fixture.Customizations.Add(
+                new StringGenerator(() =>
+                    Guid.NewGuid().ToString().Substring(0, 10)));
+            _fixture.Customizations.Add(
+                new CharSequenceGenerator(() => Guid.NewGuid().ToString().ToCharArray()));
         }
 
         [Test]
