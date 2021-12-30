@@ -272,59 +272,5 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).Error.Should().Be(expectedError);
         }
-        
-        [Test]
-        public async Task Build_FailureHttpResponse_HttpResponseWithDataAndError_Should_Deconstruct()
-        {
-            var httpRequestMessage = new HttpRequestMessage();
-            var httpResponseMessage = new HttpResponseMessage
-            {
-                Content = new StreamContent(new MemoryStream()),
-                StatusCode = HttpStatusCode.NotFound
-            };
-            var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
-            const string expectedError = "error";
-            _serializerMockSetup.Returns(expectedError);
-
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(
-                typeof(HttpResponseWithError<BasicEntity, string>), responseContext, _serializerMock.Object, CancellationToken.None);
-            
-            actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Error.Should().Be(expectedError);
-            
-            var (_, error, httpResponse) = (HttpResponseWithError<BasicEntity, string>) actualResult;
-
-            error.Should().Be(expectedError);
-            httpResponse.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
-        }
-        
-        [Test]
-        public async Task Build_SuccessHttpResponse_IHttpResponseWithData_Should_Deconstruct()
-        {
-            var httpRequestMessage = new HttpRequestMessage();
-            var httpResponseMessage = new HttpResponseMessage
-            {
-                Content = new StreamContent(new MemoryStream()),
-                StatusCode = HttpStatusCode.OK
-            };
-            var responseContext = new ResponseContext<HttpRequestMessage, HttpResponseMessage>(httpRequestMessage, httpResponseMessage);
-            var expectedData = new BasicEntity { Id = 1, Value = 2 };
-            _serializerMockSetup.Returns(expectedData);
-
-            var actualResult = await _responseToHttpResponseMapper.MapAsync(
-                typeof(IHttpResponse<BasicEntity>), responseContext, _serializerMock.Object, CancellationToken.None);
-            
-            actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
-            ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponse<BasicEntity>) actualResult!).Data.Should().Be(expectedData);
-
-            var (entity, httpResponse) = (HttpResponse<BasicEntity>) actualResult;
-
-            entity.Should().BeOfType<BasicEntity>();
-            entity!.Id.Should().Be(1);
-
-            httpResponse.Should().BeOfType<HttpResponse<BasicEntity>>();
-        }
     }
 }
