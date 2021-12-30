@@ -2,6 +2,7 @@ using System;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using FluentAssertions;
+using Moq;
 using NClient.Providers.Results.HttpResults;
 using NClient.Providers.Transport;
 using NUnit.Framework;
@@ -20,11 +21,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             _fixture.Customize(new AutoMoqCustomization());
-            _fixture.Customizations.Add(
-                new StringGenerator(() =>
-                    Guid.NewGuid().ToString().Substring(0, 10)));
-            _fixture.Customizations.Add(
-                new CharSequenceGenerator(() => Guid.NewGuid().ToString().ToCharArray()));
+            _fixture.Register((Mock<char[]> m) => m.Object);
         }
 
         [Test]
