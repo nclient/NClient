@@ -12,6 +12,8 @@ namespace NClient.Providers.Results.HttpResults
         /// The object obtained as a result of deserialization of the body.
         /// </summary>
         TValue? Data { get; }
+
+        void Deconstruct(out TValue? value, out IHttpResponse? httpResponse);
     }
     
     /// <summary>

@@ -4,6 +4,13 @@ namespace NClient.Providers.Results.HttpResults
 {
     public interface IHttpResponseWithError<TValue, TError> : IHttpResponseWithError<TError>, IHttpResponse<TValue>
     {
+        /// <summary>
+        /// Deconstruction
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="error"></param>
+        /// <param name="httpResponse"></param>
+        void Deconstruct(out TValue? value, out TError? error, out IHttpResponse? httpResponse);
     }
     
     /// <summary>
@@ -49,6 +56,17 @@ namespace NClient.Providers.Results.HttpResults
             error = Error;
             httpResponse = this;
         }
+        
+        /// <summary>
+        /// Deconstruction
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="httpResponse"></param>
+        public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        {
+            error = Error;
+            httpResponse = this;
+        }
     }
     
     public interface IHttpResponseWithError<TError> : IHttpResponse
@@ -57,6 +75,13 @@ namespace NClient.Providers.Results.HttpResults
         /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.
         /// </summary>
         TError? Error { get; }
+
+        /// <summary>
+        /// Deconstruction
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="httpResponse"></param>
+        void Deconstruct(out TError? error, out IHttpResponse? httpResponse);
     }
 
     /// <summary>
