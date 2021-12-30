@@ -10,6 +10,7 @@ namespace NClient.Standalone.Tests.Clients
     public interface ITimeoutClientWithMetadata : ITimeoutClient
     {
         [GetMethod]
+        [Timeout(1)]
         new int Get(int id);
         
         [GetMethod]

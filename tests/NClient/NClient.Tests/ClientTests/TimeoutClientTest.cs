@@ -19,7 +19,7 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient { Timeout = 1.Microseconds() };
+            var httpClient = new HttpClient();
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
