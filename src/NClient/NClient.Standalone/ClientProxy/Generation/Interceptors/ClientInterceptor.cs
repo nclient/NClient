@@ -96,7 +96,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 using var timeoutTokenSource = new CancellationTokenSource(_timeout ?? TimeSpan.FromMilliseconds(method.TimeoutAttribute?.Milliseconds ?? 0));
 
                 var combinedCts = method.TimeoutAttribute is null && _timeout is null ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, CancellationToken.None) : CancellationTokenSource.CreateLinkedTokenSource(timeoutTokenSource.Token, cancellationToken);
-                
+                combinedCts.Token.ThrowIfCancellationRequested();
                 var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, combinedCts.Token)
                     .ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
