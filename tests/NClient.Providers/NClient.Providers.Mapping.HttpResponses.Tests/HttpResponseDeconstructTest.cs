@@ -2,7 +2,6 @@ using System;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using FluentAssertions;
-using Moq;
 using NClient.Providers.Results.HttpResults;
 using NClient.Providers.Transport;
 using NUnit.Framework;
@@ -21,14 +20,13 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             _fixture.Customize(new AutoMoqCustomization());
-            _fixture.Register((Mock<char[]> m) => m.Object);
         }
 
         [Test]
         public void IResponseWithDataAndError_Deconstruct()
         {
             var resultData = _fixture.Create<Int32>();
-            var error = _fixture.Build<string>().Create();
+            var error = _fixture.Create<string>();
             var response = new ResponseWithError<Int32, string>(_fixture.Build<Response>().Create(), _fixture.Build<Request>().Create(), resultData, error);
 
             var (data, err) = response;
@@ -50,7 +48,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         public void IHttpResponseWithDataAndError_Deconstruct()
         {
             var resultData = _fixture.Create<Int32>();
-            var error = _fixture.Build<string>().Create();
+            var error = _fixture.Create<string>();
             var response = new HttpResponseWithError<Int32, string>(_fixture.Create<HttpResponse>(), resultData, error);
             
             var (data, err, _) = response;
