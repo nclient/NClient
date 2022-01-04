@@ -1,0 +1,20 @@
+name: 'Notification: PR'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ assigned, opened, synchronize, reopened, review_requested ]
+  pull_request_review:
+    types: [ edited, dismissed ]
+
+jobs:
+  notification:
+    name: Notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send telegram message on pr events
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_RECIPIENT }}
+          token: ${{ secrets.TELEGRAM_BOT_API }}
+          message: The '${{ github.actor }}' changed PR № ${{ github.event.number}} (${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number}})
