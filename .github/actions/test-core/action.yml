@@ -52,6 +52,6 @@ runs:
         github_token: ${{ inputs.github_token }}
         gist_name: test_for_${{ inputs.target-framework }}.md
         gist_badge_label: 'Tests: %Counters_passed%/%Counters_total%'
-        gist_token: ${{ github_token.gist_token }}
+        gist_token: ${{ inputs.gist_token }}
       #run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
-      shell: bash
+      #shell: bash
