@@ -2,10 +2,7 @@ name: 'Notification: Check'
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [ assigned, opened, synchronize, reopened, review_requested ]
-  pull_request_review:
-    types: [ edited, dismissed ]
+  issues:
 
 jobs:
   notification:
