@@ -11,7 +11,8 @@ using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
-    [Parallelizable]
+    //TODO: check all exceptions
+    //[Parallelizable]
     public class TimeoutClientTest
     {
         [Test]
@@ -19,7 +20,7 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient { Timeout = 1.Microseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
@@ -37,7 +38,7 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient { Timeout = 1.Microseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()

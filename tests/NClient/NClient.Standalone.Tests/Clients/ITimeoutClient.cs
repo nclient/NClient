@@ -14,7 +14,6 @@ namespace NClient.Standalone.Tests.Clients
         new int Get(int id);
         
         [GetMethod]
-        [Timeout(1)]
         new Task<int> GetAsync(int id);
     }
 }
