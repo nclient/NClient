@@ -27,7 +27,7 @@ namespace NClient.Tests.ClientTests
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
                 .Build();
-            #if NETFRAMEWORK
+            #if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
@@ -66,7 +66,7 @@ namespace NClient.Tests.ClientTests
                 .WithTimeout(1.Microseconds())
                 .Build();
 
-            #if NETFRAMEWORK
+            #if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<OperationCanceledException>();
