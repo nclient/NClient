@@ -27,10 +27,15 @@ namespace NClient.Tests.ClientTests
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
                 .Build();
-
+            #if NETFRAMEWORK
+            nclient.Invoking(x => x.Get(id))
+                .Should()
+                .ThrowExactly<TaskCanceledException>();
+            #else
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<OperationCanceledException>();
+            #endif
         }
         
         [Test]
@@ -61,9 +66,15 @@ namespace NClient.Tests.ClientTests
                 .WithTimeout(1.Microseconds())
                 .Build();
 
+            #if NETFRAMEWORK
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<OperationCanceledException>();
+            #else
+            nclient.Invoking(x => x.Get(id))
+                .Should()
+                .ThrowExactly<TaskCanceledException>();
+            #endif
         }
         
         [Test]
