@@ -17,4 +17,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_RECIPIENT }}
           token: ${{ secrets.TELEGRAM_BOT_API }}
-          message: The '${{ github.actor }}' changed PR № ${{ github.event.number}} (${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number}})
+          message: The '${{ github.actor }}' changed PR № ${{ github.event.number }} (${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number }})
