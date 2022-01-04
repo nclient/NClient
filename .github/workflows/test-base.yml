@@ -24,7 +24,7 @@ jobs:
           target-framework: ${{ matrix.target-frameworks }}
           solution: Tests.slnf
           
-  test-dotnet-core:
+  test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:
@@ -41,7 +41,7 @@ jobs:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}
           
-  test-dotnet-framework:
+  test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:

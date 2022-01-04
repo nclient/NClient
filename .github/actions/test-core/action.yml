@@ -11,7 +11,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set the required terget .NET Core version
+    - name: Set the required target .NET Core version
       run: |
         if [[ "${{ inputs.target-framework }}" == "netcoreapp3.1" ]]; then
           echo "dotnet-version=3.1.x" >> $GITHUB_ENV
