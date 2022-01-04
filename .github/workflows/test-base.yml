@@ -39,7 +39,9 @@ jobs:
         uses: ./.github/actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: ${{ env.solution }}
+          solution: ./${{ env.solution }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gist_token: ${{ secrets.GIST_TOKEN }}
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -56,20 +58,6 @@ jobs:
         uses: ./.github/actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: ${{ env.solution }}
+          solution: ./${{ env.solution }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gist_token: ${{ secrets.GIST_TOKEN }}
-      - name: Generate report for ${{ matrix.target-frameworks }}
-        uses: zyborg/dotnet-tests-report@v1
-        with:
-          test_results_path: ${{ matrix.target-frameworks }}.trx
-          no_build: true
-          msbuild_verbosity: normal
-          extra_test_parameters: '--framework ${{ matrix.target-frameworks }} --configuration Release'
-          report_name: Test for ${{ matrix.target-frameworks }}
-          report_title: Test for ${{ matrix.target-frameworks }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          gist_name: test_for_${{ matrix.target-frameworks }}.md
-          gist_badge_label: 'Tests: %Counters_passed%/%Counters_total%'
-          gist_token: ${{ secrets.GIST_TOKEN }}
-          
