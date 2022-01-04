@@ -57,3 +57,5 @@ jobs:
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gist_token: ${{ secrets.GIST_TOKEN }}

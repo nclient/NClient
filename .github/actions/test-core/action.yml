@@ -7,6 +7,12 @@ inputs:
   solution:
     description: 'Solution/project path'
     required: true
+  github_token:
+    description: 'GITHUB_TOKEN'
+    required: true
+  gist_token:
+    description: 'gist_token'
+    required: true
     
 runs:
   using: "composite"
@@ -43,9 +49,9 @@ runs:
         extra_test_parameters: '--framework ${{ inputs.target-framework }} --configuration Release'
         report_name: Test for ${{ inputs.target-framework }}
         report_title: Test for ${{ inputs.target-framework }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.github_token }}
         gist_name: test_for_${{ inputs.target-framework }}.md
         gist_badge_label: 'Tests: %Counters_passed%/%Counters_total%'
-        gist_token: ${{ secrets.GIST_TOKEN }}
+        gist_token: ${{ github_token.gist_token }}
       #run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
-      #shell: bash
+      shell: bash
