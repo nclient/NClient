@@ -43,7 +43,7 @@ runs:
     - name: Test with ${{ inputs.target-framework }}
       uses: zyborg/dotnet-tests-report@v1
       with:
-        project_path: ${{ inputs.solution }}
+        #project_path: ${{ inputs.solution }}
         no_build: true
         msbuild_verbosity: normal
         extra_test_parameters: '--framework ${{ inputs.target-framework }} --configuration Release'
