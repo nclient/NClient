@@ -1,8 +1,9 @@
-name: 'Notification: Check'
+name: 'Notification: Issue'
 
 on:
   workflow_dispatch:
   issues:
+    types: [ opened, edited, milestoned ]
 
 jobs:
   notification:
@@ -10,9 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send telegram message on issue events
-        run: echo "$GITHUB_CONTEXT"
-        #uses: appleboy/telegram-action@master
-        #with:
-        #  to: ${{ secrets.TELEGRAM_RECIPIENT }}
-        #  token: ${{ secrets.TELEGRAM_BOT_API }}
-        #  message: The '${{ github.actor }}' changed issue № ${{ github.issue.number }} (${{ github.server_url }}/${{ github.repository }}/issues/${{ github.issue.number }})
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_RECIPIENT }}
+          token: ${{ secrets.TELEGRAM_BOT_API }}
+          message: The '${{ github.actor }}' changed issue № ${{ github.event.number }} (${{ github.server_url }}/${{ github.repository }}/issues/${{ github.event.number }})
