@@ -14,4 +14,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_RECIPIENT }}
           token: ${{ secrets.TELEGRAM_BOT_API }}
-          message: The '${{ github.actor }}' changed issue № ${{ github.event.number }} (${{ github.server_url }}/${{ github.repository }}/issues/${{ github.event.number }})
+          message: The '${{ github.actor }}' changed issue № ${{ github.issue.number }} (${{ github.server_url }}/${{ github.repository }}/issues/${{ github.issue.number }})
