@@ -3,9 +3,6 @@ name: 'Notification: PR'
 on:
   workflow_dispatch:
   pull_request:
-    types: [ assigned, opened, synchronize, reopened, review_requested ]
-  pull_request_review:
-    types: [ edited, dismissed ]
 
 jobs:
   notification:
@@ -17,4 +14,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_RECIPIENT }}
           token: ${{ secrets.TELEGRAM_BOT_API }}
-          message: The '${{ github.actor }}' changed PR № ${{ github.event.number }} (${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number }})
+          message: The '${{ github.actor }}' changed PR ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number }}
