@@ -3,7 +3,6 @@ name: 'Notification: Issue'
 on:
   workflow_dispatch:
   issues:
-    types: [ opened, edited, milestoned ]
 
 jobs:
   notification:
