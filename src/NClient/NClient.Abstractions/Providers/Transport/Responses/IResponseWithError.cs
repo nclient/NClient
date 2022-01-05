@@ -4,6 +4,7 @@ namespace NClient.Providers.Transport
 {
     public interface IResponseWithError<TValue, TError> : IResponseWithError<TError>, IResponse<TValue>
     {
+        void Deconstruct(out TValue? data, out TError? error);
     }
     
     public interface IResponseWithError<TError> : IResponse
