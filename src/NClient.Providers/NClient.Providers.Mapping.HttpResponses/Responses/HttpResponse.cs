@@ -12,6 +12,8 @@ namespace NClient.Providers.Results.HttpResults
         /// The object obtained as a result of deserialization of the body.
         /// </summary>
         TValue? Data { get; }
+
+        void Deconstruct(out TValue? value, out IHttpResponse? httpResponse);
     }
     
     /// <summary>
@@ -43,6 +45,17 @@ namespace NClient.Providers.Results.HttpResults
         {
             base.EnsureSuccess();
             return this;
+        }
+        
+        /// <summary>
+        /// Deconstruct object
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="httpResponse"></param>
+        public void Deconstruct(out TData? value, out IHttpResponse? httpResponse)
+        {
+            value = Data;
+            httpResponse = this;
         }
     }
 
@@ -112,6 +125,7 @@ namespace NClient.Providers.Results.HttpResults
         /// Creates the container for HTTP response data.
         /// </summary>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
+        /// <param name="httpResponseMessage">The HTTP response message that the response belongs to.</param>
         public HttpResponse(
             IHttpRequest httpRequest, 
             HttpResponseMessage httpResponseMessage)
