@@ -28,7 +28,7 @@ jobs:
         if [[ "${{ github.event.inputs.version-patch }}" != "" ]]; then
           echo "version-patch=${{ github.event.inputs.version-patch }}" >> $GITHUB_ENV
         else
-          echo "version-patch=${{ github.run_id }}" >> $GITHUB_ENV
+          echo "version-patch=${{ github.run_number }}" >> $GITHUB_ENV
         fi
       shell: bash
     - id: release-info
@@ -59,7 +59,7 @@ jobs:
         if [[ "${{ github.event.inputs.version-patch }}" != "" ]]; then
           echo "version-patch=${{ github.event.inputs.version-patch }}" >> $GITHUB_ENV
         else
-          echo "version-patch=${{ github.run_id }}" >> $GITHUB_ENV
+          echo "version-patch=${{ github.run_number }}" >> $GITHUB_ENV
         fi
       shell: bash
     - id: release-info
