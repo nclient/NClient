@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -11,39 +10,33 @@ using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
-    //TODO: check all exceptions
-    //[Parallelizable]
+    [Parallelizable]
     public class TimeoutClientTest
     {
         [Test]
-        public void TimeoutClient_GetWithHttpClientTimeout_ThrowOperationCanceledException()
+        public void TimeoutClient_GetWithHttpClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient { Timeout = 1.Microseconds() };
+            var httpClient = new HttpClient { Timeout = 1.Seconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
                 .Build();
-            #if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
+            
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
-            #else
-            nclient.Invoking(x => x.Get(id))
-                .Should()
-                .ThrowExactly<OperationCanceledException>();
-            #endif
         }
         
         [Test]
-        public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_ThrowOperationCanceledException()
+        public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient { Timeout = 1.Microseconds() };
+            var httpClient = new HttpClient { Timeout = 1.Seconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
@@ -53,43 +46,37 @@ namespace NClient.Tests.ClientTests
 
             await nclient.Invoking(x => x.GetAsync(id))
                 .Should()
-                .ThrowExactlyAsync<OperationCanceledException>();
+                .ThrowExactlyAsync<TaskCanceledException>();
         }
         
         [Test]
-        public void TimeoutClient_GetWithTimeout_ThrowOperationCanceledException()
+        public void TimeoutClient_GetWithTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(1.Microseconds())
+                .WithTimeout(1.Seconds())
                 .Build();
-
-            #if !NETSTANDARD2_0 && !NET5_0 && !NET6_0
-            nclient.Invoking(x => x.Get(id))
-                .Should()
-                .ThrowExactly<OperationCanceledException>();
-            #else
+            
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
-            #endif
         }
         
         [Test]
-        public async Task TimeoutClient_GetAsyncWithTimeout_ThrowOperationCanceledException()
+        public async Task TimeoutClient_GetAsyncWithTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(1.Microseconds())
+                .WithTimeout(1.Seconds())
                 .Build();
 
             await nclient.Invoking(x => x.GetAsync(id))
                 .Should()
-                .ThrowExactlyAsync<OperationCanceledException>();
+                .ThrowExactlyAsync<TaskCanceledException>();
         }
     }
 }
