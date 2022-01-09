@@ -86,19 +86,21 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 methodInvocation = _clientMethodInvocationProvider.Get(method, explicitInvocation);
 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
+                using var timeoutCancellationTokenSource = method.TimeoutAttribute is null && _timeout is null 
+                    ? new CancellationTokenSource() 
+                    : new CancellationTokenSource(_timeout ?? TimeSpan.FromMilliseconds(method.TimeoutAttribute!.Milliseconds));
+                using var combinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
+                var combinedCancellationToken = combinedCancellationTokenSource.Token;
+                combinedCancellationToken.ThrowIfCancellationRequested();
+                    
                 httpRequest = await _requestBuilder
-                    .BuildAsync(requestId, _resource, methodInvocation, cancellationToken)
+                    .BuildAsync(requestId, _resource, methodInvocation, combinedCancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
 
-                using var timeoutTokenSource = new CancellationTokenSource(_timeout ?? TimeSpan.FromMilliseconds(method.TimeoutAttribute?.Milliseconds ?? 0));
-
-                var combinedCts = method.TimeoutAttribute is null && _timeout is null 
-                    ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, CancellationToken.None) 
-                    : CancellationTokenSource.CreateLinkedTokenSource(timeoutTokenSource.Token, cancellationToken);
-                var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, combinedCts.Token).ConfigureAwait(false);
+                var result = await ExecuteHttpResponseAsync(httpRequest, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return result;
             }
