@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient { Timeout = 1.Seconds() };
+            var httpClient = new HttpClient { Timeout = 100.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
@@ -36,7 +37,7 @@ namespace NClient.Tests.ClientTests
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
-            var httpClient = new HttpClient { Timeout = 1.Seconds() };
+            var httpClient = new HttpClient { Timeout = 100.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
                 .UsingRestApi()
@@ -56,12 +57,27 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(1.Seconds())
+                .WithTimeout(100.Milliseconds())
                 .Build();
             
             nclient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
+        }
+        
+        [Test]
+        public void TimeoutClient_GetWithTimeout_ThrowOperationCanceledException()
+        {
+            const int id = 1;
+            using var api = TimeoutApiMockFactory.MockGetMethod(id);
+            var nclient = NClientGallery.Clients.GetRest()
+                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .WithTimeout(0.Milliseconds())
+                .Build();
+            
+            nclient.Invoking(x => x.Get(id))
+                .Should()
+                .ThrowExactly<OperationCanceledException>();
         }
         
         [Test]
@@ -71,12 +87,27 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id);
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(1.Seconds())
+                .WithTimeout(100.Milliseconds())
                 .Build();
 
             await nclient.Invoking(x => x.GetAsync(id))
                 .Should()
                 .ThrowExactlyAsync<TaskCanceledException>();
+        }
+        
+        [Test]
+        public async Task TimeoutClient_GetAsyncWithTimeout_ThrowOperationCanceledException()
+        {
+            const int id = 1;
+            using var api = TimeoutApiMockFactory.MockGetMethod(id);
+            var nclient = NClientGallery.Clients.GetRest()
+                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .WithTimeout(0.Milliseconds())
+                .Build();
+
+            await nclient.Invoking(x => x.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<OperationCanceledException>();
         }
     }
 }
