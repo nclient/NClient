@@ -28,7 +28,7 @@ namespace NClient.Tests.ClientTests
             
             nclient.Invoking(x => x.Get(id))
                 .Should()
-                .NotThrow();
+                .ThrowExactly<TaskCanceledException>();
         }
         
         [Test]
@@ -46,7 +46,7 @@ namespace NClient.Tests.ClientTests
 
             await nclient.Invoking(x => x.GetAsync(id))
                 .Should()
-                .NotThrowAsync();
+                .ThrowExactlyAsync<TaskCanceledException>();
         }
         
         [Test]

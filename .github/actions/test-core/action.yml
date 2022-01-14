@@ -11,9 +11,16 @@ inputs:
     description: 'GITHUB_TOKEN'
     required: true
   gist_token:
-    description: 'gist_token'
+    description: 'GIST_TOKEN'
     required: true
     
+outputs:
+  test-status:
+    description: 'Test status'
+    value: ${{ steps.test-run.outputs.test-status }}
+    
+description: Action for test-core
+
 runs:
   using: "composite"
   steps:
@@ -41,15 +48,10 @@ runs:
       run: tar -xvzf build-artifacts-${{ inputs.target-framework }}.tar.gz
       shell: bash
     - name: Test with ${{ inputs.target-framework }}
-      uses: zyborg/dotnet-tests-report@v1
-      with:
-        project_path: ${{ inputs.solution }}
-        no_build: true
-        msbuild_verbosity: normal
-        extra_test_parameters: '--framework ${{ inputs.target-framework }} --configuration Release'
-        report_name: Test for ${{ inputs.target-framework }}
-        report_title: Test for ${{ inputs.target-framework }}
-        github_token: ${{ inputs.github_token }}
-        gist_name: test_for_${{ inputs.target-framework }}.md
-        gist_badge_label: 'Tests: %Counters_passed%/%Counters_total%'
-        gist_token: ${{ inputs.gist_token }}
+      id: test-run
+      run: (dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release && echo "::set-output name=test-status::0") || echo "::set-output name=test-status::1"
+      shell: bash
+    - name: Check on failures
+      if: steps.test-run.outputs.test-status == 1
+      run: exit 1
+      shell: bash
