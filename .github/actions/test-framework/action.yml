@@ -7,19 +7,6 @@ inputs:
   solution:
     description: 'Solution/project path'
     required: true
-  github_token:
-    description: 'GITHUB_TOKEN'
-    required: true
-  gist_token:
-    description: 'GIST_TOKEN'
-    required: true
-
-outputs:
-  test-status:
-    description: 'Test status'
-    value: ${{ steps.test-run.outputs.test-status }}
-
-description: Action for test-core
     
 runs:
   using: "composite"
@@ -45,13 +32,8 @@ runs:
       with:
         name: build-artifacts-${{ inputs.target-framework }}
     - name: Extract build artifacts
-      run: tar -xvzf build-artifacts-${{ inputs.target-framework }}.tar.gz
+      run: tar -xzf build-artifacts-${{ inputs.target-framework }}.tar.gz
       shell: bash
     - name: Test with ${{ inputs.target-framework }}
-      id: test-run
-      run: (dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release && echo "::set-output name=test-status::0") || echo "::set-output name=test-status::1"
-      shell: bash
-    - name: Check on failures
-      if: steps.test-run.outputs.test-status == 1
-      run: exit 1
+      run: dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash

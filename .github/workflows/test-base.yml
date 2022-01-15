@@ -39,9 +39,7 @@ jobs:
         uses: ./.github/actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: ./${{ env.solution }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          gist_token: ${{ secrets.GIST_TOKEN }}
+          solution: ${{ env.solution }}
           
   test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
@@ -58,6 +56,4 @@ jobs:
         uses: ./.github/actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
-          solution: ./${{ env.solution }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          gist_token: ${{ secrets.GIST_TOKEN }}
+          solution: ${{ env.solution }}
