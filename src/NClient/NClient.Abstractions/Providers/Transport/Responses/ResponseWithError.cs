@@ -33,6 +33,12 @@ namespace NClient.Providers.Transport
             base.EnsureSuccess();
             return this;
         }
+
+        public void Deconstruct(out TData? data, out TError? error)
+        {
+            data = Data;
+            error = Error;
+        }
     }
 
     /// <summary>
@@ -64,6 +70,12 @@ namespace NClient.Providers.Transport
         {
             base.EnsureSuccess();
             return this;
+        }
+
+        public void Deconstruct(out IContent? content, out TError? error)
+        {
+            content = Content;
+            error = Error;
         }
     }
 }

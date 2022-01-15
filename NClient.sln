@@ -351,8 +351,7 @@ Global
 		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97E9E39C-F507-4387-8420-A31E7204D9DE}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
-		{97E9E39C-F507-4387-8420-A31E7204D9DE}.TestRelease|Any CPU.Build.0 = Debug|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
