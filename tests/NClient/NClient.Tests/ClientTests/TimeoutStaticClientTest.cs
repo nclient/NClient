@@ -13,7 +13,7 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class TimeoutStaticClientTest
     {
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutStaticClient_GetWithHttpClientTimeout_NotThrow()
         {
             const int id = 1;
@@ -31,7 +31,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutStaticClient_GetAsyncWithHttpClientTimeout_NotThrow()
         {
             const int id = 1;
@@ -49,7 +49,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactlyAsync<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutStaticClient_GetWithTimeout_NotThrow()
         {
             const int id = 1;
@@ -64,7 +64,7 @@ namespace NClient.Tests.ClientTests
                 .NotThrow();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutStaticClient_GetAsyncWithTimeout_NotThrow()
         {
             const int id = 1;
@@ -79,7 +79,7 @@ namespace NClient.Tests.ClientTests
                 .NotThrowAsync();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutStaticClient_GetWithStaticTimeout_NotThrow()
         {
             const int id = 1;
@@ -93,7 +93,7 @@ namespace NClient.Tests.ClientTests
                 .NotThrow();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutStaticClient_GetAsyncWithStaticTimeout_NotThrow()
         {
             const int id = 1;
@@ -107,7 +107,7 @@ namespace NClient.Tests.ClientTests
                 .NotThrowAsync();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutStaticClient_GetWithStaticTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -120,8 +120,8 @@ namespace NClient.Tests.ClientTests
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
         }
-
-        [Test]
+        
+        [Test, Retry(3)]
         public async Task TimeoutStaticClient_GetAsyncWithStaticTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -135,7 +135,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactlyAsync<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutStaticClient_GetWithStaticMethodTimeout_AndNotThrow()
         {
             const int id = 1;
@@ -149,7 +149,7 @@ namespace NClient.Tests.ClientTests
                 .NotThrow();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutStaticClient_GetAsyncWithStaticInterfaceTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;

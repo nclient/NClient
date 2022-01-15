@@ -15,7 +15,7 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class TimeoutClientTest
     {
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutClient_GetWithHttpClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -33,7 +33,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -51,7 +51,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactlyAsync<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutClient_GetWithTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -66,7 +66,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutClient_GetWithTimeout_ThrowOperationCanceledException()
         {
             const int id = 1;
@@ -82,7 +82,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<OperationCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutClient_GetAsyncWithTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
@@ -97,7 +97,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactlyAsync<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutClient_GetAsyncWithTimeout_ThrowOperationCanceledException()
         {
             const int id = 1;
@@ -113,7 +113,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactlyAsync<OperationCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public void TimeoutClient_GetWithHttpClientTimeout_NotThrow()
         {
             const int id = 1;
@@ -132,7 +132,7 @@ namespace NClient.Tests.ClientTests
                 .ThrowExactly<TaskCanceledException>();
         }
         
-        [Test]
+        [Test, Retry(3)]
         public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_NotThrow()
         {
             const int id = 1;
