@@ -7,6 +7,7 @@ using FluentAssertions.Extensions;
 using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -72,7 +73,8 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(0.Milliseconds())
+                .WithHandling(new DelayClientHandler(200.Milliseconds()))
+                .WithTimeout(100.Milliseconds())
                 .Build();
             
             nclient.Invoking(x => x.Get(id))
@@ -102,7 +104,8 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
                 .For<ITimeoutClientWithMetadata>(api.Urls.First())
-                .WithTimeout(0.Milliseconds())
+                .WithHandling(new DelayClientHandler(200.Milliseconds()))
+                .WithTimeout(100.Milliseconds())
                 .Build();
 
             await nclient.Invoking(x => x.GetAsync(id))
