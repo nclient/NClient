@@ -1,17 +1,20 @@
-name: 'Notification: PR'
+name: 'Notifications'
 
 on:
   workflow_dispatch:
+  push:
   pull_request:
+  issues:
+  fork:
+  watch:
 
 jobs:
   notification:
     name: Notification
     runs-on: ubuntu-latest
     steps:
-      - name: Send telegram message on pr events
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_RECIPIENT }}
-          token: ${{ secrets.TELEGRAM_BOT_API }}
-          message: The '${{ github.actor }}' changed PR ${{ github.server_url }}/${{ github.repository }}/pull/${{ github.event.number }}
+      - name: telegram-notify
+        uses: cofob/telegram-actions@v1.3
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_API }}
+          BOT_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
