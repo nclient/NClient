@@ -14,7 +14,7 @@ namespace NClient.Tests.ClientTests
     public class TimeoutStaticClientTest
     {
         [Test, Retry(3)]
-        public void TimeoutStaticClient_GetWithHttpClientTimeout_NotThrow()
+        public void Get_CustomTransportTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -32,7 +32,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public async Task TimeoutStaticClient_GetAsyncWithHttpClientTimeout_NotThrow()
+        public async Task GetAsync_CustomTransportTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -50,7 +50,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public void TimeoutStaticClient_GetWithTimeout_NotThrow()
+        public void Get_IncreasingClientTimeout_NotThrow()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -65,7 +65,7 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test, Retry(3)]
-        public async Task TimeoutStaticClient_GetAsyncWithTimeout_NotThrow()
+        public async Task GetAsync_IncreasingClientTimeout_NotThrow()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -80,63 +80,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public void TimeoutStaticClient_GetWithStaticTimeout_NotThrow()
-        {
-            const int id = 1;
-            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Microseconds());
-            var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
-                .Build();
-            
-            nclient.Invoking(x => x.Get(id))
-                .Should()
-                .NotThrow();
-        }
-
-        [Test, Retry(3)]
-        public async Task TimeoutStaticClient_GetAsyncWithStaticTimeout_NotThrow()
-        {
-            const int id = 1;
-            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Microseconds());
-            var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
-                .Build();
-
-            await nclient.Invoking(x => x.GetAsync(id))
-                .Should()
-                .NotThrowAsync();
-        }
-        
-        [Test, Retry(3)]
-        public void TimeoutStaticClient_GetWithStaticTimeout_ThrowTaskCanceledException()
-        {
-            const int id = 1;
-            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
-            var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
-                .Build();
-            
-            nclient.Invoking(x => x.Get(id))
-                .Should()
-                .ThrowExactly<TaskCanceledException>();
-        }
-        
-        [Test, Retry(3)]
-        public async Task TimeoutStaticClient_GetAsyncWithStaticTimeout_ThrowTaskCanceledException()
-        {
-            const int id = 1;
-            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
-            var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
-                .Build();
-
-            await nclient.Invoking(x => x.GetAsync(id))
-                .Should()
-                .ThrowExactlyAsync<TaskCanceledException>();
-        }
-        
-        [Test, Retry(3)]
-        public void TimeoutStaticClient_GetWithStaticMethodTimeout_AndNotThrow()
+        public void Get_MethodStaticTimeout_NotThrow()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 0.5.Seconds());
@@ -150,7 +94,35 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test, Retry(3)]
-        public async Task TimeoutStaticClient_GetAsyncWithStaticInterfaceTimeout_ThrowTaskCanceledException()
+        public async Task GetAsync_InterfaceStaticTimeout_NotThrow()
+        {
+            const int id = 1;
+            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Microseconds());
+            var nclient = NClientGallery.Clients.GetRest()
+                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
+                .Build();
+
+            await nclient.Invoking(x => x.GetAsync(id))
+                .Should()
+                .NotThrowAsync();
+        }
+        
+        [Test, Retry(3)]
+        public void Get_MethodStaticTimeout_ThrowTaskCanceledException()
+        {
+            const int id = 1;
+            using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
+            var nclient = NClientGallery.Clients.GetRest()
+                .For<ITimeoutStaticClientWithMetadata>(api.Urls.First())
+                .Build();
+            
+            nclient.Invoking(x => x.Get(id))
+                .Should()
+                .ThrowExactly<TaskCanceledException>();
+        }
+
+        [Test, Retry(3)]
+        public async Task GetAsync_InterfaceStaticTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 0.5.Seconds());

@@ -16,7 +16,7 @@ namespace NClient.Tests.ClientTests
     public class TimeoutClientTest
     {
         [Test, Retry(3)]
-        public void TimeoutClient_GetWithHttpClientTimeout_ThrowTaskCanceledException()
+        public void Get_CustomTransportTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -34,7 +34,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_ThrowTaskCanceledException()
+        public async Task GetAsync_CustomTransportTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -52,7 +52,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public void TimeoutClient_GetWithTimeout_ThrowTaskCanceledException()
+        public void Get_DefaultTransportTimeoutWithClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -67,7 +67,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public void TimeoutClient_GetWithTimeout_ThrowOperationCanceledException()
+        public void Get_DefaultTransportTimeoutWithClientTimeout_ThrowOperationCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -83,7 +83,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public async Task TimeoutClient_GetAsyncWithTimeout_ThrowTaskCanceledException()
+        public async Task GetAsync_DefaultTransportTimeoutWithClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -98,7 +98,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public async Task TimeoutClient_GetAsyncWithTimeout_ThrowOperationCanceledException()
+        public async Task GetAsync_DefaultTransportTimeoutWithClientTimeout_ThrowOperationCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -114,7 +114,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public void TimeoutClient_GetWithHttpClientTimeout_NotThrow()
+        public void Get_CustomTransportTimeoutWithClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 100.Milliseconds());
@@ -133,7 +133,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test, Retry(3)]
-        public async Task TimeoutClient_GetAsyncWithHttpClientTimeout_NotThrow()
+        public async Task GetAsync_CustomTransportTimeoutWithClientTimeout_ThrowTaskCanceledException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 100.Milliseconds());
