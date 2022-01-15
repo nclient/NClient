@@ -54,12 +54,12 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
-            _proxyGenerator = proxyGenerator;
-            _timeoutSelector = new TimeoutSelector();
-            _guidProvider = new GuidProvider();
-            _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
-            _attributeMapper = new AttributeMapper();
             _clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
+            _proxyGenerator = proxyGenerator;
+            _timeoutSelector = new TimeoutSelector(_clientValidationExceptionFactory);
+            _guidProvider = new GuidProvider();
+            _attributeMapper = new AttributeMapper();
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(

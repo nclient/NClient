@@ -7,7 +7,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
     internal class StubTransport : ITransport<IRequest, IResponse>
     {
-        public TimeSpan Timeout => TimeSpan.FromSeconds(1.5);
+        public TimeSpan Timeout => System.Threading.Timeout.InfiniteTimeSpan;
         
         public Task<IResponse> ExecuteAsync(IRequest transportRequest, CancellationToken cancellationToken)
         {

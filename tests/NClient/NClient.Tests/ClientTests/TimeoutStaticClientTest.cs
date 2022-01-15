@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
+using NClient.Exceptions;
 using NClient.Providers.Api.Rest.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
@@ -14,7 +15,7 @@ namespace NClient.Tests.ClientTests
     public class TimeoutStaticClientTest
     {
         [Test, Retry(3)]
-        public void Get_CustomTransportTimeout_ThrowTaskCanceledException()
+        public void Get_CustomTransportTimeout_ThrowClientValidationException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -28,11 +29,11 @@ namespace NClient.Tests.ClientTests
             
             nclient.Invoking(x => x.Get(id))
                 .Should()
-                .ThrowExactly<TaskCanceledException>();
+                .ThrowExactly<ClientValidationException>();
         }
         
         [Test, Retry(3)]
-        public async Task GetAsync_CustomTransportTimeout_ThrowTaskCanceledException()
+        public async Task GetAsync_CustomTransportTimeout_ThrowClientValidationException()
         {
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
@@ -46,7 +47,7 @@ namespace NClient.Tests.ClientTests
 
             await nclient.Invoking(x => x.GetAsync(id))
                 .Should()
-                .ThrowExactlyAsync<TaskCanceledException>();
+                .ThrowExactlyAsync<ClientValidationException>();
         }
         
         [Test, Retry(3)]
