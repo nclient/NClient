@@ -48,7 +48,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
 
-            return new SystemNetHttpTransport(_httpClientFactory, _httpClientName);
+            return new SystemNetHttpTransport(_httpClientFactory.CreateClient(_httpClientName));
         }
     }
 }

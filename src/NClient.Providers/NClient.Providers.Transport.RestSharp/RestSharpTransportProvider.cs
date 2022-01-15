@@ -23,8 +23,13 @@ namespace NClient.Providers.Transport.RestSharp
         public ITransport<IRestRequest, IRestResponse> Create(IToolset toolset)
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
+            
+            var restClient = new RestClient
+            {
+                Authenticator = _authenticator
+            };
 
-            return new RestSharpTransport(_authenticator);
+            return new RestSharpTransport(restClient);
         }
     }
 }
