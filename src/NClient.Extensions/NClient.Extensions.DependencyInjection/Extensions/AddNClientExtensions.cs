@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
@@ -29,7 +30,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
                 return preConfiguredBuilder.Build();
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
                 return implementationFactory(preConfiguredBuilder);
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder<TClient>(serviceProvider, host, httpClientName);
                 return implementationFactory(serviceProvider, preConfiguredBuilder);
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         private static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredBuilder<TClient>(
@@ -83,6 +84,11 @@ namespace NClient.Extensions.DependencyInjection
             where TClient : class
         {
             return new NClientInjectedBuilder(serviceProvider, httpClientName).For<TClient>(host);
+        }
+        
+        private static void ConfigureDefaultHttpClient(HttpClient httpClient)
+        {
+            httpClient.Timeout = Timeout.InfiniteTimeSpan;
         }
     }
 }

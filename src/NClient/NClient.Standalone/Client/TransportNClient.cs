@@ -15,6 +15,7 @@ namespace NClient.Standalone.Client
 {
     internal interface ITransportNClient<TRequest, TResponse>
     {
+        TimeSpan Timeout { get; }
         Task<TResult> GetResultAsync<TResult>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<TResponse> GetOriginalResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<IResponse> GetHttpResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
@@ -40,6 +41,8 @@ namespace NClient.Standalone.Client
         private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _resultBuilders;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
+
+        public TimeSpan Timeout => _transport.Timeout;
 
         public TransportNClient(
             ISerializer serializer,

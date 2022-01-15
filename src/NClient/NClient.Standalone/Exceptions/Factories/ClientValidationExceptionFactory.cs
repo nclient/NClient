@@ -1,9 +1,12 @@
-﻿using NClient.Exceptions;
+﻿using System;
+using System.Threading;
+using NClient.Exceptions;
 
 namespace NClient.Standalone.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {
+        ClientValidationException TransportTimeoutShouldBeInfinite(TimeSpan transportTimeout);
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException MultipleAttributeForClientNotSupported(string attributeName);
         ClientValidationException MultipleParameterAttributeNotSupported(string parameterName);
@@ -14,6 +17,9 @@ namespace NClient.Standalone.Exceptions.Factories
 
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
     {
+        public ClientValidationException TransportTimeoutShouldBeInfinite(TimeSpan transportTimeout) =>
+            new($"The transport timeout should be infinite, but it is equal to {transportTimeout.Milliseconds} ms. Use {nameof(Timeout.InfiniteTimeSpan)}.");
+        
         public ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames) =>
             new($"Header parameters duplicate static metadatas. Header names: {string.Join(",", headerNames)}");
 

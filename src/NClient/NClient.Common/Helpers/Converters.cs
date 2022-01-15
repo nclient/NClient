@@ -13,7 +13,7 @@ namespace NClient.Common.Helpers
 
         public static byte[] GetBytes(string source)
         {
-            byte[] result = new byte[source.Length];
+            var result = new byte[source.Length];
             Buffer.BlockCopy(source.ToCharArray(), 0, result, 0, result.Length);
             return result;
         }

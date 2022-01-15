@@ -4,7 +4,7 @@ using NClient.Exceptions;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Transport.Http.System
+namespace NClient.Providers.Transport.SystemNetHttp
 {
     public class DefaultSystemNetHttpResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers;
@@ -28,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
                 return preConfiguredBuilder.Build();
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
                 return implementationFactory(preConfiguredBuilder);
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         /// <summary>
@@ -74,12 +75,17 @@ namespace NClient.Extensions.DependencyInjection
             {
                 var preConfiguredBuilder = CreatePreConfiguredBuilder(serviceProvider, factoryName, httpClientName);
                 return implementationFactory(serviceProvider, preConfiguredBuilder);
-            }).AddHttpClient(httpClientName);
+            }).AddHttpClient(httpClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         private static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> CreatePreConfiguredBuilder(IServiceProvider serviceProvider, string factoryName, string httpClientName)
         {
             return new NClientFactoryInjectedBuilder(serviceProvider, httpClientName).For(factoryName);
+        }
+
+        private static void ConfigureDefaultHttpClient(HttpClient httpClient)
+        {
+            httpClient.Timeout = Timeout.InfiniteTimeSpan;
         }
     }
 }

@@ -32,6 +32,8 @@
         <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*"/>
         <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*"/>
         <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
+        <PackageReference Include="NClient.CodeGeneration.Abstractions" Version="*-*"/>
+        <PackageReference Include="NClient.CodeGeneration.Facades.NSwag" Version="*-*"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -41,7 +43,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="3.16.1"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0"/>
-        <PackageReference Include="WireMock.Net" Version="1.4.6"/>
+        <PackageReference Include="WireMock.Net" Version="1.4.13"/>
     </ItemGroup>
 
 </Project>

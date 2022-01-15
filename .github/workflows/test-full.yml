@@ -3,7 +3,7 @@ name: 'Test: Full'
 on:
   workflow_dispatch:
   pull_request:
-    types: assigned
+    types: [ assigned, review_requested, auto_merge_enabled ]
     branches: [ main, alpha-release, beta-release, release ]
 
 env:
@@ -20,12 +20,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Build with ${{ matrix.target-frameworks }}
-        uses: ./actions/build
+        uses: ./.github/actions/build
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: Tests.slnf
           
-  test-dotnet-core:
+  test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:
@@ -37,12 +37,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/test-framework
+        uses: ./.github/actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}
           
-  test-dotnet-framework:
+  test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:
@@ -54,7 +54,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/test-core
+        uses: ./.github/actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}

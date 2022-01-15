@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NClient.Providers.Transport.RestSharp.Builders;
 using NClient.Providers.Transport.RestSharp.Helpers;
 using RestSharp;
 
@@ -11,21 +10,12 @@ namespace NClient.Providers.Transport.RestSharp
     internal class RestSharpResponseBuilder : IResponseBuilder<IRestRequest, IRestResponse>
     {
         private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
-        
-        private readonly IFinalHttpRequestBuilder _finalHttpRequestBuilder;
-
-        public RestSharpResponseBuilder(IFinalHttpRequestBuilder finalHttpRequestBuilder)
-        {
-            _finalHttpRequestBuilder = finalHttpRequestBuilder;
-        }
 
         public Task<IResponse> BuildAsync(IRequest request, 
             IResponseContext<IRestRequest, IRestResponse> responseContext, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
-            var finalRequest = _finalHttpRequestBuilder.Build(request, responseContext.Response.Request);
-            
+
             var allHeaders = responseContext.Response.Headers
                 .Where(x => x.Name != null)
                 .Select(x => new Metadata(x.Name!, x.Value?.ToString() ?? ""))
@@ -37,7 +27,7 @@ namespace NClient.Providers.Transport.RestSharp
                 .Where(x => ContentHeaderNames.Contains(x.Name))
                 .ToArray();
             
-            var response = new Response(finalRequest)
+            var response = new Response(request)
             {
                 Content = new Content(responseContext.Response.RawBytes, responseContext.Response.ContentEncoding, new MetadataContainer(contentHeaders)),
                 StatusCode = (int) responseContext.Response.StatusCode,
