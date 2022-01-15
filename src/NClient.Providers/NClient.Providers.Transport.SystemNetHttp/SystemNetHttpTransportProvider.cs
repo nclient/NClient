@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading;
 using NClient.Common.Helpers;
 using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
@@ -17,7 +18,10 @@ namespace NClient.Providers.Transport.SystemNetHttp
         /// </summary>
         public SystemNetHttpTransportProvider()
         {
-            _httpClientFactory = new SystemNetHttpClientFactory(new HttpClient());
+            _httpClientFactory = new SystemNetHttpClientFactory(new HttpClient
+            {
+                Timeout = Timeout.InfiniteTimeSpan
+            });
         }
 
         /// <summary>

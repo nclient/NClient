@@ -16,6 +16,7 @@ using NClient.Providers.Validation;
 using NClient.Standalone.Client;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.ClientProxy.Generation.Helpers;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
@@ -45,6 +46,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
     internal class ClientInterceptorFactory : IClientInterceptorFactory
     {
         private readonly IProxyGenerator _proxyGenerator;
+        private readonly ITimeoutSelector _timeoutSelector;
         private readonly IGuidProvider _guidProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IAttributeMapper _attributeMapper;
@@ -53,6 +55,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
             _proxyGenerator = proxyGenerator;
+            _timeoutSelector = new TimeoutSelector();
             _guidProvider = new GuidProvider();
             _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
             _attributeMapper = new AttributeMapper();
@@ -87,6 +90,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
                 resource,
+                _timeoutSelector,
                 _guidProvider,
                 methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),

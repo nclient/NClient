@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System.Threading;
+using NClient.Common.Helpers;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -26,7 +27,8 @@ namespace NClient.Providers.Transport.RestSharp
             
             var restClient = new RestClient
             {
-                Authenticator = _authenticator
+                Authenticator = _authenticator,
+                Timeout = Timeout.InfiniteTimeSpan.Milliseconds
             };
 
             return new RestSharpTransport(restClient);
