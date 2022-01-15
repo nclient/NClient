@@ -23,7 +23,7 @@ namespace NClient.DotNetTool.Logging
                 LogLevel.Error or LogLevel.Critical => ConsoleColor.Red,
                 LogLevel.Warning => ConsoleColor.Yellow,
                 LogLevel.None => ConsoleColor.Green,
-                _ => ConsoleColor.White
+                _ => ConsoleColor.Black
             };
 
             textWriter.WriteLine(message);
