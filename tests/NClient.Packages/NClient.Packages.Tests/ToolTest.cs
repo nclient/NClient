@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
+using NClient.Packages.Tests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Packages.Tests
@@ -16,7 +17,7 @@ namespace NClient.Packages.Tests
         public async Task Install()
         {
             var installResult = await ExecuteBashCommandAsync(
-                command: "dotnet tool install --global dotnet-nclient", 
+                command: $"dotnet tool install --global dotnet-nclient --version {PackagesVersionProvider.GetNew()}", 
                 timeout: 10.Seconds());
             
             installResult.Error.Should().BeEmpty();
