@@ -14,36 +14,36 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NClient" Version="*-*"/>
-        <PackageReference Include="NClient.Core" Version="*-*"/>
-        <PackageReference Include="NClient.Abstractions" Version="*-*"/>
-        <PackageReference Include="NClient.Annotations" Version="*-*"/>
-        <PackageReference Include="NClient.Standalone" Version="*-*"/>
-        <PackageReference Include="NClient.AspNetCore" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.RestSharp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Transport.SystemNetHttp" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.MessagePack" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.NewtonsoftJson" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.ProtobufNet" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*"/>
-        <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*"/>
-        <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*"/>
-        <PackageReference Include="NClient.CodeGeneration.Abstractions" Version="*-*"/>
-        <PackageReference Include="NClient.CodeGeneration.Facades.NSwag" Version="*-*"/>
+        <PackageReference Include="NClient" Version="*-*" />
+        <PackageReference Include="NClient.Core" Version="*-*" />
+        <PackageReference Include="NClient.Abstractions" Version="*-*" />
+        <PackageReference Include="NClient.Annotations" Version="*-*" />
+        <PackageReference Include="NClient.Standalone" Version="*-*" />
+        <PackageReference Include="NClient.AspNetCore" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Api.Rest" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Transport.RestSharp" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Transport.SystemNetHttp" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Resilience.Polly" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Mapping.LanguageExt" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Mapping.HttpResponses" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Serialization.MessagePack" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Serialization.NewtonsoftJson" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Serialization.ProtobufNet" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Serialization.SystemTextJson" Version="*-*" />
+        <PackageReference Include="NClient.Providers.Serialization.SystemXml" Version="*-*" />
+        <PackageReference Include="NClient.Extensions.DependencyInjection" Version="*-*" />
+        <PackageReference Include="NClient.CodeGeneration.Abstractions" Version="*-*" />
+        <PackageReference Include="NClient.CodeGeneration.Facades.NSwag" Version="*-*" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.2.0"/>
-        <PackageReference Include="Moq" Version="4.16.0"/>
-        <PackageReference Include="NUnit" Version="3.12.0"/>
-        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0"/>
-        <PackageReference Include="WireMock.Net" Version="1.4.13"/>
+        <PackageReference Include="FluentAssertions" Version="6.2.0" />
+        <PackageReference Include="Moq" Version="4.16.0" />
+        <PackageReference Include="NUnit" Version="3.12.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+        <PackageReference Include="WireMock.Net" Version="1.4.13" />
     </ItemGroup>
 
 </Project>
