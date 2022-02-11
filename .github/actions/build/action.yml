@@ -8,6 +8,9 @@ inputs:
   solution:
     description: 'Solution/project path'
     required: true
+  pack-as-tool:
+    description: 'Enable PackAsTool property'
+    required: true
     
 runs:
   using: "composite"
@@ -22,7 +25,7 @@ runs:
       shell: bash
     - name: Restore dependencies and build (only ${{ inputs.target-framework }} projects)
       if: inputs.target-framework != ''
-      run: dotnet build ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --configuration Release -warnaserror
+      run: dotnet build ${{ inputs.solution }} /p:PackAsTool=${{ inputs.pack-as-tool }} --framework ${{ inputs.target-framework }} --configuration Release -warnaserror
       shell: bash
     - name: Compress build artifact
       run: tar cvzf build-artifacts-${{ inputs.target-framework }}.tar.gz bin
