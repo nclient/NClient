@@ -16,8 +16,10 @@ namespace NClient.Packages.Tests
         [Test]
         public async Task Install()
         {
+            var toolVersion = PackagesVersionProvider.GetNew();
+
             var installResult = await ExecuteBashCommandAsync(
-                command: $"dotnet tool install --global dotnet-nclient --version {PackagesVersionProvider.GetNew()}", 
+                command: $"dotnet tool install --global dotnet-nclient --version {toolVersion}", 
                 timeout: 10.Seconds());
             
             installResult.Error.Should().BeEmpty();
@@ -27,20 +29,19 @@ namespace NClient.Packages.Tests
                 timeout: 5.Seconds());
             
             gettingVersionResult.Error.Should().BeEmpty();
-            gettingVersionResult.Output.Should().MatchRegex("NClient.DotNetTool *.");
+            gettingVersionResult.Output.Should().MatchRegex($"NClient.DotNetTool {toolVersion}*.");
         }
         
         private async Task<(string? Output, string? Error)> ExecuteBashCommandAsync(string command, TimeSpan timeout)
         {
             using var cancellationTokenSource = new CancellationTokenSource(timeout);
-            var isWindowsOs = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = isWindowsOs ? "cmd.exe" : "/bin/bash",
-                    Arguments = isWindowsOs ? "/C \"" + command + "\"" : "-c \"" + command + "\"",
+                    FileName = "dotnet",
+                    Arguments = command,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
