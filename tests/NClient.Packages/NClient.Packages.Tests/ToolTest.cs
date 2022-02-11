@@ -52,9 +52,9 @@ namespace NClient.Packages.Tests
             await process.WaitForExitAsync(cancellationTokenSource.Token);
 
             var output = await process.StandardOutput.ReadToEndAsync();
-            Console.WriteLine(output);
+            TestContext.WriteLine(output);
             var error = await process.StandardError.ReadToEndAsync();
-            Console.WriteLine(error);
+            TestContext.WriteLine(error);
             return (output, error);
         }
     }
