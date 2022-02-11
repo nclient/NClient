@@ -25,7 +25,7 @@ runs:
       shell: bash
     - name: Restore dependencies and build (only ${{ inputs.target-framework }} projects)
       if: inputs.target-framework != ''
-      run: dotnet build ${{ inputs.solution }} /p:PackAsTool=${{ inputs.pack-as-tool }} --framework ${{ inputs.target-framework }} --configuration Release -warnaserror
+      run: dotnet build ${{ inputs.solution }} -p:PackAsTool=${{ inputs.pack-as-tool }} --framework ${{ inputs.target-framework }} --configuration Release -warnaserror
       shell: bash
     - name: Compress build artifact
       run: tar cvzf build-artifacts-${{ inputs.target-framework }}.tar.gz bin
