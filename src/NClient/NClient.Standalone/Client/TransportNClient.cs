@@ -165,9 +165,9 @@ namespace NClient.Standalone.Client
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
-            
-            var dataObject = TryGetDataObject(dataType, response.Content.StreamContent, transportResponseContext);
-            var s = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+
+            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             return BuildResponseWithData(dataObject, dataType, response);
         }
         
@@ -181,8 +181,9 @@ namespace NClient.Standalone.Client
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
-            
-            var errorObject = TryGetErrorObject(errorType, response.Content.StreamContent, transportResponseContext);
+
+            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
             return BuildResponseWithError(errorObject, errorType, response);
         }
         
@@ -196,9 +197,11 @@ namespace NClient.Standalone.Client
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
+
+            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
             
-            var dataObject = TryGetDataObject(dataType, response.Content.StreamContent, transportResponseContext);
-            var errorObject = TryGetErrorObject(errorType, response.Content.StreamContent, transportResponseContext);
+            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
             return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response);
         }
 
@@ -245,17 +248,17 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
         
-        private object? TryGetDataObject(Type dataType, Stream data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return _responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(new StreamReader(data).ReadToEnd(), dataType)
+                ? _serializer.Deserialize(data, dataType)
                 : null;
         }
 
-        private object? TryGetErrorObject(Type errorType, Stream data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return !_responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(new StreamReader(data).ReadToEnd(), errorType)
+                ? _serializer.Deserialize(data, errorType)
                 : null;
         }
         
