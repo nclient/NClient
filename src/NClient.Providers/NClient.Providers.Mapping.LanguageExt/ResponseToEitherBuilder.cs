@@ -18,19 +18,21 @@ namespace NClient.Providers.Mapping.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
+        public async Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
             ISerializer serializer, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            var stringContent = await responseContext.Response.Content.ReadToEndAsync().ConfigureAwait(false);
             
             if (responseContext.Response.IsSuccessful)
             {
-                var value = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[1]);
-                return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
+                var value = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
+                return await Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
             }
             
-            var error = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[0]);
-            return Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
+            var error = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
+            return await Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
         }
 
         private object? BuildEither(Type leftType, object? left, Type rightType, object? right)

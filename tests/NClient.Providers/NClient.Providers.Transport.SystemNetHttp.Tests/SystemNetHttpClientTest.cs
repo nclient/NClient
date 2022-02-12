@@ -55,8 +55,8 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas).Excluding(r => r.Content.StreamContent).Excluding(r => r.Request.Content!.StreamContent));
-            ((MemoryStream) response.Content.StreamContent).ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Content.StreamContent).ToArray());
-            ((MemoryStream) response.Request.Content?.StreamContent!)?.ToArray().Should().BeEquivalentTo(((MemoryStream) expectedResponse.Request.Content?.StreamContent!)?.ToArray());
+            
+            (await response.Content.ReadToEndAsync()).Should().BeEquivalentTo(await expectedResponse.Content.ReadToEndAsync());
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Metadatas, x => x.WithoutStrictOrdering());
         }

@@ -280,7 +280,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
-            result.Content.ToString().Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
+            (await result.Content.ReadToEndAsync().ConfigureAwait(false)).Should().BeEquivalentTo(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]

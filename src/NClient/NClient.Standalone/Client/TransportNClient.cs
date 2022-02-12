@@ -166,7 +166,8 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
+            
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             return BuildResponseWithData(dataObject, dataType, response);
         }
@@ -182,7 +183,8 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
+            
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
             return BuildResponseWithError(errorObject, errorType, response);
         }
@@ -198,7 +200,7 @@ namespace NClient.Standalone.Client
                 .BuildAsync(request, transportResponseContext, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await new StreamReader(response.Content.StreamContent).ReadToEndAsync();
+            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);

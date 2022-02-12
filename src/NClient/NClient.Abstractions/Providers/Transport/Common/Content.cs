@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
@@ -38,5 +39,7 @@ namespace NClient.Providers.Transport
         /// Gets string representation of response content.
         /// </summary>
         public override string ToString() => throw new NotImplementedException();
+
+        public async Task<string> ReadToEndAsync() => await new StreamReader(StreamContent).ReadToEndAsync().ConfigureAwait(false);
     }
 }
