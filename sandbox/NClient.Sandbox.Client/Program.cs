@@ -113,7 +113,7 @@ namespace NClient.Sandbox.Client
             _programLogger.LogInformation("The text file was received.");
 
             await using var textMemoryStream = new MemoryStream();
-            await new StreamReader(httpResponseWithText.Content.StreamContent).BaseStream.CopyToAsync(textMemoryStream);
+            await new StreamReader(httpResponseWithText.Content.Stream).BaseStream.CopyToAsync(textMemoryStream);
             var textBytes = textMemoryStream.ToArray();
                 
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
@@ -128,7 +128,7 @@ namespace NClient.Sandbox.Client
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
             
             await using var imageMemoryStream = new MemoryStream();
-            await new StreamReader(httpResponseWithImage.Content.StreamContent).BaseStream.CopyToAsync(imageMemoryStream);
+            await new StreamReader(httpResponseWithImage.Content.Stream).BaseStream.CopyToAsync(imageMemoryStream);
             var imageBytes = imageMemoryStream.ToArray();
             
             _programLogger.LogInformation("The image was received.");

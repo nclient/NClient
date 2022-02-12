@@ -14,7 +14,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets stream representation of response content
         /// </summary>
-        public Stream StreamContent { get; }
+        public Stream Stream { get; }
 
         /// <summary>
         /// Gets response content encoding.
@@ -29,7 +29,7 @@ namespace NClient.Providers.Transport
         [SuppressMessage("ReSharper", "UnusedVariable")]
         public Content(Stream? streamContent = null, string? encoding = null, IMetadataContainer? headerContainer = null)
         {
-            StreamContent = streamContent ?? new MemoryStream(Array.Empty<byte>());
+            Stream = streamContent ?? new MemoryStream(Array.Empty<byte>());
             Encoding = string.IsNullOrEmpty(encoding) ? Encoding.UTF8 : Encoding.GetEncoding(encoding);
             Metadatas = headerContainer ?? new MetadataContainer(Array.Empty<IMetadata>());
         }

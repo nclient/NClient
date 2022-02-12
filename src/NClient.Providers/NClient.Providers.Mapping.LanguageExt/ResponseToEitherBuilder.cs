@@ -24,7 +24,7 @@ namespace NClient.Providers.Mapping.LanguageExt
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var stringContent = await new StreamReader(responseContext.Response.Content.StreamContent).ReadToEndAsync().ConfigureAwait(false);
+            var stringContent = await new StreamReader(responseContext.Response.Content.Stream).ReadToEndAsync().ConfigureAwait(false);
             
             if (responseContext.Response.IsSuccessful)
             {

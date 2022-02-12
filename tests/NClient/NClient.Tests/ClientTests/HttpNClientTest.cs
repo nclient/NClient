@@ -256,8 +256,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Content.StreamContent)
-                .Excluding(x => x.Request.Content!.StreamContent)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -267,8 +267,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Content.StreamContent)
-                .Excluding(x => x.Request.Content!.StreamContent)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -278,8 +278,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Content.StreamContent)
-                .Excluding(x => x.Request.Content!.StreamContent)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Endpoint);
         }
 
@@ -289,8 +289,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Content.StreamContent)
-                .Excluding(x => x.Request.Content!.StreamContent)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Endpoint);
         }
     }

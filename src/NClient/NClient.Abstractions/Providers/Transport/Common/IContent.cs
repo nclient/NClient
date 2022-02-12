@@ -9,7 +9,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets stream representation of response content
         /// </summary>
-        Stream StreamContent { get; }
+        Stream Stream { get; }
         
         /// <summary>
         /// Gets response content encoding.

@@ -117,7 +117,7 @@ namespace NClient.Providers.Api.Rest.Tests
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                ((MemoryStream) actualRequest.Content!.StreamContent).ToArray().Should().BeEquivalentTo(contentBytes);
+                ((MemoryStream) actualRequest.Content!.Stream).ToArray().Should().BeEquivalentTo(contentBytes);
                 
                 actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
                 actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
