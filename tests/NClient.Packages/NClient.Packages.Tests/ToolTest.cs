@@ -18,21 +18,21 @@ namespace NClient.Packages.Tests
         {
             var toolVersion = PackagesVersionProvider.GetNew();
 
-            var installResult = await ExecuteBashCommandAsync(
-                command: $"dotnet tool install --global dotnet-nclient --version {toolVersion}", 
+            var installResult = await ExecuteDotnetCommandAsync(
+                command: $"tool install --global dotnet-nclient --version {toolVersion}", 
                 timeout: 10.Seconds());
             
             installResult.Error.Should().BeEmpty();
             
-            var gettingVersionResult = await ExecuteBashCommandAsync(
-                command: "dotnet nclient --version",
+            var gettingVersionResult = await ExecuteDotnetCommandAsync(
+                command: "nclient --version",
                 timeout: 5.Seconds());
             
             gettingVersionResult.Error.Should().BeEmpty();
             gettingVersionResult.Output.Should().MatchRegex($"NClient.DotNetTool {toolVersion}*.");
         }
         
-        private async Task<(string? Output, string? Error)> ExecuteBashCommandAsync(string command, TimeSpan timeout)
+        private async Task<(string? Output, string? Error)> ExecuteDotnetCommandAsync(string command, TimeSpan timeout)
         {
             using var cancellationTokenSource = new CancellationTokenSource(timeout);
             
