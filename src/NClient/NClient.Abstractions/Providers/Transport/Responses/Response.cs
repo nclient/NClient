@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -20,8 +21,8 @@ namespace NClient.Providers.Transport
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
-        public Response(IResponse response, IRequest request, TData? data)
-            : base(response, request)
+        public Response(IResponse response, IRequest request, TData? data, string stringContent)
+            : base(response, request, stringContent)
         {
             Data = data;
         }
@@ -102,11 +103,11 @@ namespace NClient.Providers.Transport
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
         }
 
-        internal Response(IResponse response, IRequest request) : this(request)
+        internal Response(IResponse response, IRequest request, string stringContent) : this(request)
         {
             Ensure.IsNotNull(response, nameof(response));
             
-            Content = response.Content;
+            Content = new Content(new MemoryStream(response.Content.Encoding?.GetBytes(stringContent) ?? Array.Empty<byte>()), response.Content.Encoding.WebName, response.Content.Metadatas);
             StatusCode = response.StatusCode;
             StatusDescription = response.StatusDescription;
             Endpoint = response.Endpoint;

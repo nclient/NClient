@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NClient.Core.Extensions;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -173,7 +174,7 @@ namespace NClient.Standalone.Client
             var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
-            return BuildResponseWithData(dataObject, dataType, response);
+            return BuildResponseWithData(dataObject, dataType, response, stringContent);
         }
         
         public async Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, 
@@ -190,7 +191,7 @@ namespace NClient.Standalone.Client
             var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
             
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithError(errorObject, errorType, response);
+            return BuildResponseWithError(errorObject, errorType, response, stringContent);
         }
         
         public async Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, 
@@ -208,7 +209,7 @@ namespace NClient.Standalone.Client
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response);
+            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response, stringContent);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, 
@@ -268,22 +269,22 @@ namespace NClient.Standalone.Client
                 : null;
         }
         
-        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response)
+        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response, string stringContent)
         {
             var genericResponseType = typeof(Response<>).MakeGenericType(dataType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, stringContent);
         }
         
-        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response)
+        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response, string stringContent)
         {
             var genericResponseType = typeof(ResponseWithError<>).MakeGenericType(errorType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error, stringContent);
         }
         
-        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response)
+        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response, string stringContent)
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error, stringContent);
         }
     }
 }

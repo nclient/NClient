@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
@@ -15,13 +14,11 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets response content encoding.
         /// </summary>
-        Encoding? Encoding { get; }
+        Encoding Encoding { get; }
         
         /// <summary>
         /// Gets metadata returned by server with the response content.
         /// </summary>
         IMetadataContainer Metadatas { get; }
-
-        Task<string> ReadToEndAsync();
     }
 }

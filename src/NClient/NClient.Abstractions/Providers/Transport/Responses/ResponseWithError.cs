@@ -19,8 +19,8 @@ namespace NClient.Providers.Transport
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the response is false.</param>
-        public ResponseWithError(IResponse response, IRequest request, TData? data, TError? error)
-            : base(response, request, data)
+        public ResponseWithError(IResponse response, IRequest request, TData? data, TError? error, string stringContent)
+            : base(response, request, data, stringContent)
         {
             Error = error;
         }
@@ -57,8 +57,9 @@ namespace NClient.Providers.Transport
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the response is false.</param>
-        public ResponseWithError(IResponse response, IRequest request, TError? error)
-            : base(response, request)
+        /// <param name="stringContent">Content of stream</param>
+        public ResponseWithError(IResponse response, IRequest request, TError? error, string stringContent)
+            : base(response, request, stringContent)
         {
             Error = error;
         }

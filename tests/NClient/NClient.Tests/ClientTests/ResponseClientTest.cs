@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using NClient.Core.Extensions;
 using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
@@ -110,7 +111,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
-            result.Content.ToString().Should().Be(JsonSerializer.Serialize(BadRequestError));
+            (await result.Content.ReadToEndAsync()).Should().Be(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]

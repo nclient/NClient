@@ -15,7 +15,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             cancellationToken.ThrowIfCancellationRequested();
 
             LoadLazyHeaders(responseContext.Response.Content?.Headers);
-            
+
             var content = responseContext.Response.Content is null 
                 ? new Content() 
                 : new Content(

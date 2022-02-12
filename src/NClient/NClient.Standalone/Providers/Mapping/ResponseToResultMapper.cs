@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Core.Extensions;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
