@@ -33,10 +33,5 @@ namespace NClient.Providers.Transport
             Encoding = string.IsNullOrEmpty(encoding) ? Encoding.UTF8 : Encoding.GetEncoding(encoding);
             Metadatas = headerContainer ?? new MetadataContainer(Array.Empty<IMetadata>());
         }
-
-        /// <summary>
-        /// Gets string representation of response content.
-        /// </summary>
-        public override string ToString() => throw new NotImplementedException();
     }
 }
