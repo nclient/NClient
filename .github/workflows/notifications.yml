@@ -1,0 +1,20 @@
+name: 'Notifications'
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+  issues:
+  fork:
+  watch:
+
+jobs:
+  notification:
+    name: Notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: telegram-notify
+        uses: cofob/telegram-actions@v1.3
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_API }}
+          BOT_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

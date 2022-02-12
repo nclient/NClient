@@ -9,6 +9,13 @@ namespace NClient.Providers.Transport
         /// The object obtained as a result of deserialization of the body.
         /// </summary>
         TValue? Data { get; }
+
+        /// <summary>
+        /// Deconstruction
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="response"></param>
+        void Deconstruct(out TValue? data, out IResponse response);
     }
     
     public interface IResponse

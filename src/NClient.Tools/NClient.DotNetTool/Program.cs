@@ -19,9 +19,6 @@ namespace NClient.DotNetTool
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class Program
     {
-        private static IServiceProvider _serviceProvider = null!;
-        private static ILogger<Program> _logger = null!;
-
         private const string HelpLogo = @"
             _--~~--_
           /~/_|  |_\~\
@@ -68,40 +65,41 @@ namespace NClient.DotNetTool
 
         private static Task<int> HandleFacadeGenerationOptions(InterfaceGenerationOptions generationOptions)
         {
-            _serviceProvider = BuildServiceProvider(generationOptions.LogLevel); 
-            _logger = _serviceProvider.GetRequiredService<ILogger<Program>>(); 
-            return RunFacadeGenerationAsync(generationOptions);
+            using var serviceProvider = BuildServiceProvider(generationOptions.LogLevel);
+            return RunFacadeGenerationAsync(generationOptions, serviceProvider);
         }
         
-        private static async Task<int> RunFacadeGenerationAsync(InterfaceGenerationOptions generationOptions)
+        private static async Task<int> RunFacadeGenerationAsync(InterfaceGenerationOptions generationOptions, ServiceProvider serviceProvider)
         {
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            
             try
             {
-                var specification = await _serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
-                var result = await _serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
-                await _serviceProvider.GetRequiredService<ISaver>().SaveAsync(result, generationOptions.OutputPath);
-                _logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
+                var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
+                var result = await serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
+                await serviceProvider.GetRequiredService<ISaver>().SaveAsync(result, generationOptions.OutputPath);
+                logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
                 return 0;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Generation error {Message}", e.Message);
+                logger.LogError(e, "Generation error {Message}", e.Message);
                 return -1;
             }
         }
 
         private static Task<int> HandleErrors<T>(ParserResult<T> parserResult, IEnumerable<Error> errors, bool showGreeting = false)
         {
-            _serviceProvider = BuildServiceProvider(LogLevel.Trace);
-            _logger = _serviceProvider.GetRequiredService<ILogger<Program>>();
+            using var serviceProvider = BuildServiceProvider(LogLevel.Trace);
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
             bool IsHelpRequested(ErrorType errorType) => errorType is ErrorType.HelpVerbRequestedError or ErrorType.HelpRequestedError or ErrorType.NoVerbSelectedError;
             if (errors.Any(x => IsHelpRequested(x.Tag)))
-                return OnHelpRequested(parserResult, showGreeting);
-            return OnError(parserResult);
+                return OnHelpRequested(parserResult, showGreeting, logger);
+            return OnError(parserResult, logger);
         }
 
-        private static Task<int> OnHelpRequested<T>(ParserResult<T> parserResult, bool showGreeting = false)
+        private static Task<int> OnHelpRequested<T>(ParserResult<T> parserResult, bool showGreeting, ILogger logger)
         {
             var helpText = HelpText.AutoBuild(parserResult, helpText =>
             {
@@ -110,11 +108,11 @@ namespace NClient.DotNetTool
                 return helpText;
             }, _ => _, verbsIndex: true);
             
-            _logger.LogInformation(helpText);
+            logger.LogInformation(helpText);
             return Task.FromResult(0);
         }
         
-        private static Task<int> OnError<T>(ParserResult<T> parserResult)
+        private static Task<int> OnError<T>(ParserResult<T> parserResult, ILogger logger)
         {
             var helpText = HelpText.AutoBuild(parserResult, helpText =>
             {
@@ -122,11 +120,11 @@ namespace NClient.DotNetTool
                 return HelpText.DefaultParsingErrorsHandler(parserResult, helpText);
             }, _ => _, verbsIndex: true);
             
-            _logger.LogInformation(helpText);
+            logger.LogInformation(helpText);
             return Task.FromResult(-1);
         }
 
-        private static IServiceProvider BuildServiceProvider(LogLevel logLevel)
+        private static ServiceProvider BuildServiceProvider(LogLevel logLevel)
         {
             return new ServiceCollection()
                 .AddLogging(x => x

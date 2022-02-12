@@ -48,7 +48,7 @@ namespace NClient.Providers.Api.Rest
         }
 
         public Task<IRequest> BuildAsync(Guid requestId, string resource, 
-            IMethodInvocation methodInvocation, TimeSpan? timeout, CancellationToken cancellationToken)
+            IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
@@ -69,10 +69,7 @@ namespace NClient.Providers.Api.Rest
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
             var endpoint = PathHelper.Combine(resource, route);
-            var request = new Request(requestId, endpoint, requestType)
-            {
-                Timeout = timeout
-            };
+            var request = new Request(requestId, endpoint, requestType);
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)

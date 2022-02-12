@@ -1,29 +1,26 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
-using RestSharp.Authenticators;
 
 namespace NClient.Providers.Transport.RestSharp
 {
     internal class RestSharpTransport : ITransport<IRestRequest, IRestResponse>
     {
-        private readonly IAuthenticator? _authenticator;
+        private readonly IRestClient _restClient;
 
-        public RestSharpTransport(IAuthenticator? authenticator = null)
+        public TimeSpan Timeout => TimeSpan.FromMilliseconds(_restClient.Timeout);
+
+        public RestSharpTransport(IRestClient restClient)
         {
-            _authenticator = authenticator;
+            _restClient = restClient;
         }
 
         public async Task<IRestResponse> ExecuteAsync(IRestRequest transportRequest, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
-            var restClient = new RestClient
-            {
-                Authenticator = _authenticator
-            };
-            
-            return await restClient.ExecuteAsync(transportRequest, cancellationToken).ConfigureAwait(false);
+
+            return await _restClient.ExecuteAsync(transportRequest, cancellationToken).ConfigureAwait(false);
         }
     }
 }
