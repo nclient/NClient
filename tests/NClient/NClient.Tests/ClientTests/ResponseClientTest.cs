@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -111,9 +110,7 @@ namespace NClient.Tests.ClientTests
             result.Should().NotBeNull();
             using var assertionScope = new AssertionScope();
             result.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
-            var stringContent = await new StreamReader(result.Content.StreamContent).ReadToEndAsync();
-            
-            stringContent.Should().Be(JsonSerializer.Serialize(BadRequestError));
+            result.Content.ToString().Should().Be(JsonSerializer.Serialize(BadRequestError));
         }
 
         [Test]

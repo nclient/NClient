@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -155,7 +154,9 @@ namespace NClient.Standalone.Client
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            return _serializer.Deserialize(await new StreamReader(response.Content.StreamContent).ReadToEndAsync(), dataType);
+            var stringContent = (response.IsSuccessful ? await response.Content.ReadToEndAsync().ConfigureAwait(false) : response.ErrorMessage) ?? string.Empty;
+            
+            return _serializer.Deserialize(stringContent, dataType);
         }
         
         public async Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, 

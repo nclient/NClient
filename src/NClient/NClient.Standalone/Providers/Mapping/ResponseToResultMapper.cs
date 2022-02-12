@@ -18,19 +18,21 @@ namespace NClient.Providers.Mapping.Results
                 || resultType.GetGenericTypeDefinition() == typeof(Result<,>);
         }
         
-        public Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
+        public async Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
             ISerializer serializer, CancellationToken cancellationToken)
         {
             var genericResultType = typeof(Result<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 
+            var stringContent = await responseContext.Response.Content.ReadToEndAsync().ConfigureAwait(false);
+            
             if (responseContext.Response.IsSuccessful)
             {
-                var value = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[0]);
-                return Task.FromResult<object?>(Activator.CreateInstance(genericResultType, value, default));
+                var value = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
+                return await Task.FromResult<object?>(Activator.CreateInstance(genericResultType, value, default));
             }
             
-            var error = serializer.Deserialize(responseContext.Response.Content.ToString(), resultType.GetGenericArguments()[1]);
-            return Task.FromResult<object?>(Activator.CreateInstance(genericResultType, default, error));
+            var error = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
+            return await Task.FromResult<object?>(Activator.CreateInstance(genericResultType, default, error));
         }
     }
 }
