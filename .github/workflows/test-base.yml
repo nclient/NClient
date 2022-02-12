@@ -23,6 +23,7 @@ jobs:
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: Tests.slnf
+          pack-as-tool: false
           
   test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
