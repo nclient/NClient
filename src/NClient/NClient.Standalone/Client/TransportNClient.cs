@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using NClient.Core.Extensions;
+using NClient.Common.Helpers;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -95,7 +95,7 @@ namespace NClient.Standalone.Client
                     .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
@@ -107,7 +107,9 @@ namespace NClient.Standalone.Client
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            var stringContent = (response.IsSuccessful ? await response.Content.ReadToEndAsync().ConfigureAwait(false) : response.ErrorMessage) ?? string.Empty;
+            var stringContent = await responseContext.Response.Content.Stream
+                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
             
             return _serializer.Deserialize(stringContent, dataType);
         }
@@ -120,7 +122,7 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             return await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: false, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -132,14 +134,15 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
-            var materializedResponse = new Response(response, request, stringContent);
-            
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
+
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
-            return BuildResponseWithData(dataObject, dataType, materializedResponse);
+            return BuildResponseWithData(dataObject, dataType, response);
         }
         
         public async Task<IResponse> GetResponseWithErrorAsync(IRequest request, Type errorType, 
@@ -150,14 +153,15 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
-            var materializedResponse = new Response(response, request, stringContent);
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
             
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithError(errorObject, errorType, materializedResponse);
+            return BuildResponseWithError(errorObject, errorType, response);
         }
         
         public async Task<IResponse> GetResponseWithDataOrErrorAsync(IRequest request, Type dataType, Type errorType, 
@@ -168,15 +172,16 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
 
-            var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
-            var materializedResponse = new Response(response, request, stringContent);
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithDataOrError(dataObject, dataType, errorObject, errorType, materializedResponse);
+            return BuildResponseWithDataOrError(dataObject, dataType, errorObject, errorType, response);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, 

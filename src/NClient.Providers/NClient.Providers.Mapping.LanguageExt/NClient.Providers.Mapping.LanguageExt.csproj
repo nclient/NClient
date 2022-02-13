@@ -44,6 +44,9 @@
         <Compile Include="..\..\NClient\NClient.Common\Helpers\Ensure.cs">
             <Link>Common\Ensure.cs</Link>
         </Compile>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\StreamExtenstions.cs">
+            <Link>Common\StreamExtenstions.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Core.Extensions;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
@@ -118,7 +118,7 @@ namespace NClient.Providers.Api.Rest.Tests
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                (await actualRequest.Content!.ReadToEndAsync()).Should().BeEquivalentTo(stringContent);
+                (await actualRequest.Content!.Stream.ReadToEndAsync(actualRequest.Content.Encoding)).Should().BeEquivalentTo(stringContent);
                 
                 actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
                 actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]

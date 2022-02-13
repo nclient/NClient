@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using NClient.Core.Extensions;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Testing.Common.Entities;
@@ -53,14 +53,15 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var httpRequestMessage = await transportRequestBuilder.BuildAsync(request, CancellationToken.None);
             var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage, CancellationToken.None);
             var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, 
-                HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
+                HttpResponseMessage>(httpRequestMessage, httpResponseMessage), allocateMemoryForContent: true, CancellationToken.None);
             
             response.Should().BeEquivalentTo(expectedResponse, x => x
                 .Excluding(r => r.Metadatas)
                 .Excluding(r => r.Content.Stream)
                 .Excluding(r => r.Request.Content!.Stream));
             
-            (await response.Content.ReadToEndAsync()).Should().BeEquivalentTo(await expectedResponse.Content.ReadToEndAsync());
+            (await response.Content.Stream.ReadToEndAsync(response.Content.Encoding))
+                .Should().BeEquivalentTo(await expectedResponse.Content.Stream.ReadToEndAsync(expectedResponse.Content.Encoding));
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Metadatas, x => x.WithoutStrictOrdering());
         }
@@ -84,14 +85,10 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             
             var response = new Response(finalRequest)
             {
-                #if NETFRAMEWORK
                 Content = new Content(headerContainer: new MetadataContainer(new[]
                 {
                     EmptyContentLengthMetadata
                 })),
-                #else
-                Content = new Content(headerContainer: new MetadataContainer(Array.Empty<IMetadata>())),
-                #endif
                 StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Endpoint = EndpointUri.ToString(),

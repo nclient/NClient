@@ -13,7 +13,8 @@ namespace NClient.Providers.Transport.RestSharp
         private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
 
         public Task<IResponse> BuildAsync(IRequest request, 
-            IResponseContext<IRestRequest, IRestResponse> responseContext, CancellationToken cancellationToken)
+            IResponseContext<IRestRequest, IRestResponse> responseContext, bool allocateMemoryForContent,
+            CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
@@ -24,7 +24,9 @@ namespace NClient.Providers.Mapping.LanguageExt
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var stringContent = await new StreamReader(responseContext.Response.Content.Stream).ReadToEndAsync().ConfigureAwait(false);
+            var stringContent = await responseContext.Response.Content.Stream
+                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
             
             if (responseContext.Response.IsSuccessful)
             {

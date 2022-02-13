@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <PackageId>$(AssemblyName)</PackageId>
@@ -60,6 +60,12 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Compile Include="..\NClient.Common\Helpers\StreamExtenstions.cs">
+            <Link>Common\StreamExtenstions.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>

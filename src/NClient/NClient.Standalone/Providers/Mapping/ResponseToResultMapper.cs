@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NClient.Core.Extensions;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
@@ -24,7 +24,9 @@ namespace NClient.Providers.Mapping.Results
         {
             var genericResultType = typeof(Result<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
 
-            var stringContent = await responseContext.Response.Content.ReadToEndAsync().ConfigureAwait(false);
+            var stringContent = await responseContext.Response.Content.Stream
+                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
             
             if (responseContext.Response.IsSuccessful)
             {

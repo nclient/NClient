@@ -6,6 +6,7 @@ namespace NClient.Providers.Transport
     public interface IResponseBuilder<TRequest, TResponse>
     {
         Task<IResponse> BuildAsync(IRequest request, 
-            IResponseContext<TRequest, TResponse> responseContext, CancellationToken cancellationToken);
+            IResponseContext<TRequest, TResponse> responseContext, bool allocateMemoryForContent,
+            CancellationToken cancellationToken);
     }
 }

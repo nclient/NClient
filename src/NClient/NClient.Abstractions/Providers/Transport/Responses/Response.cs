@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -103,16 +102,7 @@ namespace NClient.Providers.Transport
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
         }
 
-        internal Response(IResponse response, IRequest request, string stringContent) 
-            : this(response, request)
-        {
-            Content = new Content(
-                new MemoryStream(response.Content.Encoding.GetBytes(stringContent)), 
-                response.Content.Encoding.WebName, 
-                response.Content.Metadatas);
-        }
-
-        protected Response(IResponse response, IRequest request) 
+        internal Response(IResponse response, IRequest request) 
             : this(request)
         {
             Ensure.IsNotNull(response, nameof(response));
