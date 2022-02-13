@@ -106,7 +106,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponse<BasicEntity>) actualResult!).Data.Should().Be(expectedData);
+            ((HttpResponse<BasicEntity>) actualResult).Data.Should().Be(expectedData);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponse<BasicEntity>) actualResult!).Data.Should().Be(expectedData);
+            ((HttpResponse<BasicEntity>) actualResult).Data.Should().Be(expectedData);
         }
         
         [Test]
@@ -146,7 +146,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponse<BasicEntity>>();
             ((HttpResponse<BasicEntity>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponse<BasicEntity>) actualResult!).Data.Should().BeNull();
+            ((HttpResponse<BasicEntity>) actualResult).Data.Should().BeNull();
         }
         
         [Test]
@@ -165,7 +165,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<string>) actualResult!).Error.Should().BeNull();
+            ((HttpResponseWithError<string>) actualResult).Error.Should().BeNull();
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<string>) actualResult!).Error.Should().BeNull();
+            ((HttpResponseWithError<string>) actualResult).Error.Should().BeNull();
         }
         
         [Test]
@@ -205,7 +205,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<string>>();
             ((HttpResponseWithError<string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<string>) actualResult!).Error.Should().Be(expectedError);
+            ((HttpResponseWithError<string>) actualResult).Error.Should().Be(expectedError);
         }
         
         [Test]
@@ -226,8 +226,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Data.Should().Be(expectedData);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Error.Should().BeNull();
+            ((HttpResponseWithError<BasicEntity, string>) actualResult).Data.Should().Be(expectedData);
+            ((HttpResponseWithError<BasicEntity, string>) actualResult).Error.Should().BeNull();
         }
 
         [Test]
@@ -248,8 +248,8 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Data.Should().Be(expectedData);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Error.Should().BeNull();
+            ((HttpResponseWithError<BasicEntity, string>) actualResult).Data.Should().Be(expectedData);
+            ((HttpResponseWithError<BasicEntity, string>) actualResult).Error.Should().BeNull();
         }
         
         [Test]
@@ -270,7 +270,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
             
             actualResult.Should().BeOfType<HttpResponseWithError<BasicEntity, string>>();
             ((HttpResponseWithError<BasicEntity, string>) actualResult!).StatusCode.Should().Be(httpResponseMessage.StatusCode);
-            ((HttpResponseWithError<BasicEntity, string>) actualResult!).Error.Should().Be(expectedError);
+            ((HttpResponseWithError<BasicEntity, string>) actualResult).Error.Should().Be(expectedError);
         }
     }
 }
