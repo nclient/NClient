@@ -57,7 +57,7 @@ namespace NClient.Providers.Transport
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the response is false.</param>
-        /// <param name="stringContent">Content of stream</param>
+        /// <param name="stringContent">The string value of the content.</param>
         public ResponseWithError(IResponse response, IRequest request, TError? error, string stringContent)
             : base(response, request, stringContent)
         {
