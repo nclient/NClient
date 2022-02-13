@@ -172,9 +172,10 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
 
             var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
+            var materializedResponse = new Response(response, request, stringContent);
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
-            return BuildResponseWithData(dataObject, dataType, response, stringContent);
+            return BuildResponseWithData(dataObject, dataType, materializedResponse);
         }
         
         public async Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, 
@@ -189,9 +190,10 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
 
             var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
+            var materializedResponse = new Response(response, request, stringContent);
             
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithError(errorObject, errorType, response, stringContent);
+            return BuildResponseWithError(errorObject, errorType, materializedResponse);
         }
         
         public async Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, 
@@ -206,10 +208,11 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
 
             var stringContent = await response.Content.ReadToEndAsync().ConfigureAwait(false);
+            var materializedResponse = new Response(response, request, stringContent);
             
             var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response, stringContent);
+            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, materializedResponse);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, 
@@ -254,7 +257,7 @@ namespace NClient.Standalone.Client
             _logger?.LogDebug("Response received. Request id: '{requestId}'.", request.Id);
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
-        
+
         private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return _responseValidator.IsSuccess(transportResponseContext)
@@ -269,22 +272,22 @@ namespace NClient.Standalone.Client
                 : null;
         }
         
-        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response, string stringContent)
+        private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response)
         {
             var genericResponseType = typeof(Response<>).MakeGenericType(dataType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, stringContent);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data);
         }
         
-        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response, string stringContent)
+        private static IResponse BuildResponseWithError(object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<>).MakeGenericType(errorType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error, stringContent);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error);
         }
         
-        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response, string stringContent)
+        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
-            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error, stringContent);
+            return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
         }
     }
 }

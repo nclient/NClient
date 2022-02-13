@@ -30,7 +30,10 @@ namespace NClient.Providers.Transport.RestSharp
             
             var response = new Response(request)
             {
-                Content = new Content(streamContent: new MemoryStream(responseContext.Response.RawBytes), encoding: responseContext.Response.ContentEncoding, headerContainer: new MetadataContainer(contentHeaders)),
+                Content = new Content(
+                    new MemoryStream(responseContext.Response.RawBytes), 
+                    responseContext.Response.ContentEncoding, 
+                    new MetadataContainer(contentHeaders)),
                 StatusCode = (int) responseContext.Response.StatusCode,
                 Endpoint = responseContext.Response.ResponseUri.ToString(),
                 Metadatas = new MetadataContainer(responseHeaders),

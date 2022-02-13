@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text;
 using AutoFixture;
@@ -25,9 +24,12 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         [Test]
         public void IResponseWithDataAndError_Deconstruct()
         {
-            var resultData = _fixture.Create<Int32>();
+            var resultData = _fixture.Create<int>();
             var error = _fixture.Create<string>();
-            var response = new ResponseWithError<Int32, string>(_fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), _fixture.Build<Request>().Create(), resultData, error, resultData.ToString());
+            var response = new ResponseWithError<int, string>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), 
+                _fixture.Build<Request>().Create(), 
+                resultData, error);
 
             var (data, err) = response;
             data.Should().Be(resultData);
@@ -37,8 +39,11 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         [Test]
         public void IResponseWithData_Deconstruct()
         {
-            var resultData = _fixture.Create<Int32>();
-            var response = new Response<Int32>(_fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), _fixture.Build<Request>().Create(), resultData, resultData.ToString());
+            var resultData = _fixture.Create<int>();
+            var response = new Response<int>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), 
+                _fixture.Build<Request>().Create(), 
+                resultData);
 
             var (responseData, _) = response;
             responseData.Should().Be(resultData);

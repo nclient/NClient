@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace NClient.Providers.Transport.RestSharp
             _toolset = toolset;
         }
 
-        public Task<IRestRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
+        public async Task<IRestRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
@@ -41,7 +42,8 @@ namespace NClient.Providers.Transport.RestSharp
 
             if (request.Content is not null)
             {
-                restRequest.AddParameter(_toolset.Serializer.ContentType, request.Content.Stream, ParameterType.RequestBody);
+                var stringContent = await new StreamReader(request.Content.Stream, request.Content.Encoding).ReadToEndAsync().ConfigureAwait(false);
+                restRequest.AddParameter(_toolset.Serializer.ContentType, stringContent, ParameterType.RequestBody);
 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {
@@ -49,7 +51,7 @@ namespace NClient.Providers.Transport.RestSharp
                 }
             }
 
-            return Task.FromResult((IRestRequest) restRequest);
+            return restRequest;
         }
     }
 }

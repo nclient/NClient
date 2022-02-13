@@ -19,7 +19,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             var content = responseContext.Response.Content is null 
                 ? new Content() 
                 : new Content(
-                    streamContent: await responseContext.Response.Content.ReadAsStreamAsync(),
+                    streamContent: await responseContext.Response.Content.ReadAsStreamAsync().ConfigureAwait(false),
                     encoding: responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
                     headerContainer: new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));

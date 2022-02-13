@@ -29,11 +29,11 @@ namespace NClient.Providers.Mapping.LanguageExt
             if (responseContext.Response.IsSuccessful)
             {
                 var value = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
-                return await Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value));
+                return BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value);
             }
             
             var error = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
-            return await Task.FromResult(BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null));
+            return BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null);
         }
 
         private object? BuildEither(Type leftType, object? left, Type rightType, object? right)

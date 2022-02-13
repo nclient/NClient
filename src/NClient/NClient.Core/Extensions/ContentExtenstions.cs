@@ -8,7 +8,7 @@ namespace NClient.Core.Extensions
     {
         internal static async Task<string> ReadToEndAsync(this IContent content)
         {
-            return await new StreamReader(content.Stream).ReadToEndAsync().ConfigureAwait(false);    
+            return await new StreamReader(content.Stream, content.Encoding).ReadToEndAsync().ConfigureAwait(false);    
         }
     }
 }

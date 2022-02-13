@@ -21,9 +21,8 @@ namespace NClient.Providers.Transport
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
-        /// <param name="stringContent">The string value of the content.</param>
-        public Response(IResponse response, IRequest request, TData? data, string stringContent)
-            : base(response, request, stringContent)
+        public Response(IResponse response, IRequest request, TData? data) 
+            : base(response, request)
         {
             Data = data;
         }
@@ -104,11 +103,21 @@ namespace NClient.Providers.Transport
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
         }
 
-        internal Response(IResponse response, IRequest request, string stringContent) : this(request)
+        internal Response(IResponse response, IRequest request, string stringContent) 
+            : this(response, request)
+        {
+            Content = new Content(
+                new MemoryStream(response.Content.Encoding.GetBytes(stringContent)), 
+                response.Content.Encoding.WebName, 
+                response.Content.Metadatas);
+        }
+
+        protected Response(IResponse response, IRequest request) 
+            : this(request)
         {
             Ensure.IsNotNull(response, nameof(response));
             
-            Content = new Content(new MemoryStream(response.Content.Encoding.GetBytes(stringContent)), response.Content.Encoding.WebName, response.Content.Metadatas);
+            Content = response.Content;
             StatusCode = response.StatusCode;
             StatusDescription = response.StatusDescription;
             Endpoint = response.Endpoint;

@@ -108,7 +108,7 @@ namespace NClient.Providers.Api.Rest
             {
                 var bodyJson = _toolset.Serializer.Serialize(bodyParams.SingleOrDefault()?.Value);
                 var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
-                request.Content = new Content(streamContent: new MemoryStream(bodyBytes), encoding: Encoding.UTF8.WebName, headerContainer: new MetadataContainer
+                request.Content = new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, new MetadataContainer
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
                     new Metadata("Content-Type", _toolset.Serializer.ContentType),

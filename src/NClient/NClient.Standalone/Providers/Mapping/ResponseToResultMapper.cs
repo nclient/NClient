@@ -29,11 +29,11 @@ namespace NClient.Providers.Mapping.Results
             if (responseContext.Response.IsSuccessful)
             {
                 var value = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
-                return await Task.FromResult<object?>(Activator.CreateInstance(genericResultType, value, default));
+                return Activator.CreateInstance(genericResultType, value, default);
             }
             
             var error = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
-            return await Task.FromResult<object?>(Activator.CreateInstance(genericResultType, default, error));
+            return Activator.CreateInstance(genericResultType, default, error);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace NClient.Tests.ClientTests
             var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.GetAsync(id));
 
-            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity, stringContent: "{\"Id\":1,\"Value\":2}")
+            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
@@ -60,7 +60,7 @@ namespace NClient.Tests.ClientTests
             var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.GetAsync(id));
 
-            result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null, stringContent: "{\"Id\":1,\"Value\":2}")
+            result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
@@ -88,7 +88,7 @@ namespace NClient.Tests.ClientTests
             var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.Get(id));
 
-            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity, stringContent: "{\"Id\":1,\"Value\":2}")
+            result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
@@ -116,7 +116,7 @@ namespace NClient.Tests.ClientTests
             var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.Get(id));
 
-            result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null, stringContent: "{\"Id\":1,\"Value\":2}")
+            result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
@@ -168,7 +168,7 @@ namespace NClient.Tests.ClientTests
             var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<Error>(client => client.PostAsync(entity));
 
-            httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null, string.Empty)
+            httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
@@ -218,7 +218,7 @@ namespace NClient.Tests.ClientTests
             var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<Error>(client => client.Post(entity));
 
-            httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null, string.Empty)
+            httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
