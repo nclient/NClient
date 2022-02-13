@@ -55,7 +55,10 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, 
                 HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas).Excluding(r => r.Content.Stream).Excluding(r => r.Request.Content!.Stream));
+            response.Should().BeEquivalentTo(expectedResponse, x => x
+                .Excluding(r => r.Metadatas)
+                .Excluding(r => r.Content.Stream)
+                .Excluding(r => r.Request.Content!.Stream));
             
             (await response.Content.ReadToEndAsync()).Should().BeEquivalentTo(await expectedResponse.Content.ReadToEndAsync());
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
