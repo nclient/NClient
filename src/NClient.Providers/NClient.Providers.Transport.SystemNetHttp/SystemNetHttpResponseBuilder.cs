@@ -56,7 +56,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             return memoryStream;
         }
         
-        private static void LoadLazyHeaders(HttpContentHeaders httpContentHeaders = null)
+        private static void LoadLazyHeaders(HttpContentHeaders httpContentHeaders)
         {
             // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
             // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.
