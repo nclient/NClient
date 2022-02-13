@@ -209,7 +209,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         }
         
         [Test]
-        public async Task Build_SuccessHttpResponse_HttpResponseWithDataAndError()
+        public async Task Build_SuccessHttpResponse_HttpResponseWithDataOrError()
         {
             var httpRequestMessage = new HttpRequestMessage();
             var httpResponseMessage = new HttpResponseMessage
@@ -231,7 +231,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         }
 
         [Test]
-        public async Task Build_SuccessHttpResponse_IHttpResponseWithDataAndError()
+        public async Task Build_SuccessHttpResponse_IHttpResponseWithDataOrError()
         {
             var httpRequestMessage = new HttpRequestMessage();
             var httpResponseMessage = new HttpResponseMessage
@@ -253,7 +253,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         }
         
         [Test]
-        public async Task Build_FailureHttpResponse_HttpResponseWithDataAndError()
+        public async Task Build_FailureHttpResponse_HttpResponseWithDataOrError()
         {
             var httpRequestMessage = new HttpRequestMessage();
             var httpResponseMessage = new HttpResponseMessage
