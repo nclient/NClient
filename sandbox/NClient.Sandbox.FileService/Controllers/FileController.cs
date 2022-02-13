@@ -22,7 +22,7 @@ namespace NClient.Sandbox.FileService.Controllers
 
         public async Task<IActionResult> GetTextFileAsync(long id)
         {
-            _logger.LogInformation($"File with an id '{id}'was requested.");
+            _logger.LogInformation("File with an id '{Id}'was requested", id);
 
             if (id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -37,13 +37,13 @@ namespace NClient.Sandbox.FileService.Controllers
             if (fileBytes.Length == 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-            _logger.LogInformation("File was saved (not really).");
+            _logger.LogInformation("File was saved (not really)");
             return Task.CompletedTask;
         }
 
         public async Task<IActionResult> GetImageAsync(long id)
         {
-            _logger.LogInformation($"File with an id '{id}' was requested.");
+            _logger.LogInformation("File with an id '{Id}' was requested", id);
 
             if (id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -58,7 +58,7 @@ namespace NClient.Sandbox.FileService.Controllers
             if (fileBytes.Length == 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-            _logger.LogInformation("File was saved (not really).");
+            _logger.LogInformation("File was saved (not really)");
             return Task.CompletedTask;
         }
     }

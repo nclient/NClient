@@ -225,13 +225,13 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Endpoint, request.Id);
+            _logger?.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}' (request id: '{RequestId}')", request.Type, request.Endpoint, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
-                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
+                _logger?.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
                 transportRequest = await _transportRequestBuilder
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
@@ -246,15 +246,15 @@ namespace NClient.Standalone.Client
                     .HandleResponseAsync(transportResponse, cancellationToken)
                     .ConfigureAwait(false);
                 
-                _logger?.LogDebug("Request attempt finished. Request id: '{requestId}'.", request.Id);
+                _logger?.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", request.Id);
+                _logger?.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
                 throw;
             }
             
-            _logger?.LogDebug("Response received. Request id: '{requestId}'.", request.Id);
+            _logger?.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 
