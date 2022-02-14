@@ -24,7 +24,7 @@ namespace NClient.Tests.ClientTests
         private const string MemoryStreamTypeName = nameof(MemoryStream);
 
         [Test]
-        public async Task GetResponseAsync_ResponseWithSuccessCode_ChunkedEncodingReadStream()
+        public async Task GetResponseAsync_ResponseWithSuccessCode_TransportStream()
         {
             const int id = 1;
             using var api = ResponseStreamApiMockFactory.MockSuccessGetMethod(id);
@@ -36,7 +36,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task GetResponseAsync_ResponseWithFailureCode_ChunkedEncodingReadStream()
+        public async Task GetResponseAsync_ResponseWithFailureCode_TransportStream()
         {
             const HttpStatusCode errorCode = HttpStatusCode.NotFound;
             using var api = ResponseStreamApiMockFactory.MockFailureGetMethod(HttpStatusCode.NotFound);
