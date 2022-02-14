@@ -16,7 +16,11 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class ResponseStreamClientTest
     {
-        private const string ChunkedEncodingReadStreamTypeName = "ChunkedEncodingReadStream";
+        #if NETFRAMEWORK
+        private const string TransportStreamTypeName = "ReadOnlyStream";
+        #else
+        private const string TransportStreamTypeName = "ChunkedEncodingReadStream";
+        #endif
         private const string MemoryStreamTypeName = nameof(MemoryStream);
 
         [Test]
@@ -28,7 +32,7 @@ namespace NClient.Tests.ClientTests
             var response = await NClientGallery.Clients.GetRest().For<IResponseStreamClientWithMetaData>(api.Urls.First()).Build()
                 .GetResponseAsync();
 
-            await AssertSuccessResponseAsync(response, ChunkedEncodingReadStreamTypeName, id.ToString());
+            await AssertSuccessResponseAsync(response, TransportStreamTypeName, id.ToString());
         }
         
         [Test]
@@ -40,7 +44,7 @@ namespace NClient.Tests.ClientTests
             var response = await NClientGallery.Clients.GetRest().For<IResponseStreamClientWithMetaData>(api.Urls.First()).Build()
                 .GetResponseAsync();
 
-            await AssertFailureResponseAsync(response, ChunkedEncodingReadStreamTypeName, errorCode);
+            await AssertFailureResponseAsync(response, TransportStreamTypeName, errorCode);
         }
         
         [Test]
