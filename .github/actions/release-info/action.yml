@@ -34,7 +34,7 @@ runs:
       shell: bash
     - id: version-patch-setter
       env:
-        default-version-patch: 1
+        default-version-patch: 2
       run: |
         if [[ "${{ inputs.version-patch || '' }}" != "" ]]; then
           echo "version-patch=${{ inputs.version-patch }}" >> $GITHUB_ENV

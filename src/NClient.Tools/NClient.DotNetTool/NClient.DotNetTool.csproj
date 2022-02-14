@@ -13,7 +13,6 @@
         <Authors>kingmidas74</Authors>
         <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>dotnet-nclient</ToolCommandName>
     </PropertyGroup>
@@ -29,6 +28,10 @@
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PackAsTool)' != 'true'">
+        <TargetFrameworks>net462;net472;net48;$(TargetFrameworks)</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
