@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -80,15 +82,27 @@ namespace NClient.Providers.Transport.SystemNetHttp
 
         private static HttpRequestException? TryGetException(HttpResponseMessage httpResponseMessage)
         {
-            try
-            {
-                httpResponseMessage.EnsureSuccessStatusCode();
+            if (httpResponseMessage.IsSuccessStatusCode)
                 return null;
-            }
-            catch (HttpRequestException e)
-            {
-                return e;
-            }
+            
+            #if NET5_0_OR_GREATER
+            return new HttpRequestException(
+                GetErrorMessage(httpResponseMessage.StatusCode, httpResponseMessage.ReasonPhrase), 
+                inner: null, 
+                httpResponseMessage.StatusCode);
+            #else
+            return new HttpRequestException(
+                GetErrorMessage(httpResponseMessage.StatusCode, httpResponseMessage.ReasonPhrase), 
+                inner: null);
+            #endif
+        }
+        
+        private static string GetErrorMessage(HttpStatusCode httpStatusCode, string reasonPhrase)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture, 
+                format: "Response status code does not indicate success: {0} ({1}).", 
+                httpStatusCode, reasonPhrase);
         }
     }
 }
