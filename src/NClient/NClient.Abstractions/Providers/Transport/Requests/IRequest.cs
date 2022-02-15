@@ -4,7 +4,7 @@ using System.Collections.Generic;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    public interface IRequest
+    public interface IRequest : IDisposable
     {
         /// <summary>
         /// Gets the request id.

@@ -18,7 +18,7 @@ namespace NClient.Providers.Transport
         void Deconstruct(out TValue? data, out IResponse response);
     }
     
-    public interface IResponse
+    public interface IResponse : IDisposable
     {
         /// <summary>
         /// The request that the response belongs to.

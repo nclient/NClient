@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -26,7 +27,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
                     headerContainer: new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));
 
-            var httpResponse = new Response(request)
+            var response = new Response(request, disposeWith: new IDisposable[] { responseContext.Request, responseContext.Response })
             {
                 Metadatas = new MetadataContainer(responseContext.Response.Headers
                     .SelectMany(header => header.Value
@@ -40,26 +41,26 @@ namespace NClient.Providers.Transport.SystemNetHttp
             };
             
             var exception = TryGetException(responseContext.Response);
-            httpResponse.ErrorMessage = exception?.Message;
-            httpResponse.ErrorException = exception;
+            response.ErrorMessage = exception?.Message;
+            response.ErrorException = exception;
             
-            return httpResponse;
+            return response;
         }
 
-        private static async Task<Stream> GetStreamContentAsync(HttpResponseMessage transportResponse, bool allocateMemoryForContent)
+        private static async Task<Stream> GetStreamContentAsync(HttpResponseMessage httpResponseMessage, bool allocateMemoryForContent)
         {
             Stream stream;
             if (allocateMemoryForContent)
             {
-                var bytes = await transportResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var bytes = await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 stream = new MemoryStream(bytes);
             }
             else
             {
-                stream = await transportResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
             }
 
-            LoadLazyHeaders(transportResponse.Content.Headers);
+            LoadLazyHeaders(httpResponseMessage.Content.Headers);
             return stream;
         }
         

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -47,6 +48,9 @@ namespace NClient.Providers.Transport
     /// </summary>
     public class Response : IResponse
     {
+        private bool _disposed;
+        private readonly IEnumerable<IDisposable> _disposeWith;
+        
         /// <summary>
         /// The request that the response belongs to.
         /// </summary>
@@ -92,14 +96,17 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Creates the container for response data.
         /// </summary>
-        /// <param name="transportRequest">The request that the response belongs to.</param>
-        public Response(IRequest transportRequest)
+        /// <param name="request">The request that the response belongs to.</param>
+        /// <param name="disposeWith">Objects to be disposed along with the response.</param>
+        public Response(IRequest request, IEnumerable<IDisposable>? disposeWith = null)
         {
-            Ensure.IsNotNull(transportRequest, nameof(transportRequest));
+            Ensure.IsNotNull(request, nameof(request));
             
-            Request = transportRequest;
+            Request = request;
             Content = new Content();
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
+            
+            _disposeWith = disposeWith ?? Array.Empty<IDisposable>();
         }
 
         internal Response(IResponse response, IRequest request) 
@@ -126,6 +133,26 @@ namespace NClient.Providers.Transport
             if (!IsSuccessful)
                 throw ErrorException!;
             return this;
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Content.Stream.Dispose();
+                Request.Dispose();
+                foreach (var disposable in _disposeWith)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
     }
 }
