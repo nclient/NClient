@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.SystemNetHttp
@@ -40,7 +39,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 IsSuccessful = responseContext.Response.IsSuccessStatusCode
             };
             
-            var exception = TryGetException(responseContext.Response);
+            var exception = responseContext.Response.TryGetException();
             response.ErrorMessage = exception?.Message;
             response.ErrorException = exception;
             
@@ -79,31 +78,6 @@ namespace NClient.Providers.Transport.SystemNetHttp
             var unusedLastModified = httpContentHeaders.LastModified;
             var unusedContentMd5 = httpContentHeaders.ContentMD5;
             var unusedExpires = httpContentHeaders.Expires;
-        }
-
-        private static HttpRequestException? TryGetException(HttpResponseMessage httpResponseMessage)
-        {
-            if (httpResponseMessage.IsSuccessStatusCode)
-                return null;
-            
-            #if NET5_0_OR_GREATER
-            return new HttpRequestException(
-                GetErrorMessage(httpResponseMessage.StatusCode, httpResponseMessage.ReasonPhrase), 
-                inner: null, 
-                httpResponseMessage.StatusCode);
-            #else
-            return new HttpRequestException(
-                GetErrorMessage(httpResponseMessage.StatusCode, httpResponseMessage.ReasonPhrase), 
-                inner: null);
-            #endif
-        }
-        
-        private static string GetErrorMessage(HttpStatusCode httpStatusCode, string reasonPhrase)
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture, 
-                format: "Response status code does not indicate success: {0} ({1}).", 
-                httpStatusCode, reasonPhrase);
         }
     }
 }
