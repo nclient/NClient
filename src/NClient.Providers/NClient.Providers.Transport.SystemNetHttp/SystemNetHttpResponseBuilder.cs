@@ -44,16 +44,21 @@ namespace NClient.Providers.Transport.SystemNetHttp
             return httpResponse;
         }
 
-        private static async Task<Stream> GetStreamContentAsync(HttpResponseMessage transportResponse, bool allocateMemoryForContent) 
+        private static async Task<Stream> GetStreamContentAsync(HttpResponseMessage transportResponse, bool allocateMemoryForContent)
         {
-            if (allocateMemoryForContent == false)
-                return await transportResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            
-            var bytes = await transportResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-            var memoryStream = new MemoryStream(bytes);
+            Stream stream;
+            if (allocateMemoryForContent)
+            {
+                var bytes = await transportResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                stream = new MemoryStream(bytes);
+            }
+            else
+            {
+                stream = await transportResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            }
 
             LoadLazyHeaders(transportResponse.Content.Headers);
-            return memoryStream;
+            return stream;
         }
         
         private static void LoadLazyHeaders(HttpContentHeaders httpContentHeaders)
