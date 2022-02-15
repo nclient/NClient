@@ -11,6 +11,7 @@
         <PackageTags>NClient;Api;AspNet;Client;HTTP;Rest</PackageTags>
         <Description>NClient add-on that allows you to annotate controllers via interfaces. You can use these interfaces to create clients using the main NClient package.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

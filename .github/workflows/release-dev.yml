@@ -5,10 +5,10 @@ on:
     inputs:
       version-prefix:
         description: 'Version'
-        required: true
+        required: false
       version-patch:
         description: 'Patch number'     
-        required: true
+        required: false
 
 env:
   solution: NClient.sln
@@ -18,21 +18,28 @@ env:
 jobs:
   
   release:
-    if: ${{ github.event.inputs.version-prefix }} != '' && ${{ github.event.inputs.version-patch }} != ''
     environment: release-dev
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+    - name: Setting version-patch env variable
+      run: |
+        if [[ "${{ github.event.inputs.version-patch }}" != "" ]]; then
+          echo "version-patch=${{ github.event.inputs.version-patch }}" >> $GITHUB_ENV
+        else
+          echo "version-patch=${{ github.run_number }}" >> $GITHUB_ENV
+        fi
+      shell: bash
     - id: release-info
       name: Release info
-      uses: ./actions/release-info
+      uses: ./.github/actions/release-info
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
-        version-patch: ${{ github.event.inputs.version-patch }}
+        version-patch: ${{ env.version-patch }}
     - name: Push packaget to NuGet
-      uses: ./actions/push
+      uses: ./.github/actions/push
       with:
         solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}
@@ -47,15 +54,23 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+    - name: Setting version-patch env variable
+      run: |
+        if [[ "${{ github.event.inputs.version-patch }}" != "" ]]; then
+          echo "version-patch=${{ github.event.inputs.version-patch }}" >> $GITHUB_ENV
+        else
+          echo "version-patch=${{ github.run_number }}" >> $GITHUB_ENV
+        fi
+      shell: bash
     - id: release-info
       name: Release info
-      uses: ./actions/release-info
+      uses: ./.github/actions/release-info
       with:
         release-type: ${{ env.release-type }}
         version-prefix: ${{ github.event.inputs.version-prefix }}
-        version-patch: ${{ github.event.inputs.version-patch }}
+        version-patch: ${{ env.version-patch }}
     - name: Test release
-      uses: ./actions/test-release
+      uses: ./.github/actions/test-release
       with:
         solution: ${{ env.solution }}
         version-prefix: ${{ steps.release-info.outputs.version-prefix }}

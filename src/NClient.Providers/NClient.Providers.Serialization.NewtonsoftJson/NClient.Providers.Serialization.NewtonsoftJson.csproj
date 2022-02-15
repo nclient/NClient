@@ -11,6 +11,7 @@
         <PackageTags>NClient;NClient.Providers;NClient.Providers.Serialization;Json;Newtonsoft</PackageTags>
         <Description>The provider that allows you to use the Newtonsoft.Json serializer.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

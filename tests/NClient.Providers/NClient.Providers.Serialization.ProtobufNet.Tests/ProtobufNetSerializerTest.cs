@@ -34,7 +34,7 @@ namespace NClient.Providers.Serialization.ProtobufNet.Tests
             var serializer = new ProtobufNetSerializerProvider().Create(logger: null);
 
             var serializerString = serializer.Serialize(obj);
-            byte[] bytes = Converters.GetBytes(serializerString);
+            var bytes = Converters.GetBytes(serializerString);
 
             var actualResult = Serializer.Deserialize(type, new MemoryStream(bytes));
 

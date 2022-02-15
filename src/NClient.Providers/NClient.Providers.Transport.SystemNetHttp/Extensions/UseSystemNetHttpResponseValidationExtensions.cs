@@ -1,5 +1,5 @@
 ﻿using System.Net.Http;
-using NClient.Providers.Transport.Http.System;
+using NClient.Providers.Transport.SystemNetHttp;
 
 // ReSharper disable once CheckNamespace
 namespace NClient

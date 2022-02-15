@@ -3,7 +3,7 @@ using NClient.Providers.Resilience;
 using RestSharp;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Transport.Http.RestSharp
+namespace NClient.Providers.Transport.RestSharp
 {
     public class RestSharpResiliencePolicySettings : IResiliencePolicySettings<IRestRequest, IRestResponse>
     {

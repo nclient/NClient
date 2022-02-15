@@ -26,9 +26,6 @@ namespace NClient.Providers.Transport.RestSharp
             
             var method = _restSharpMethodMapper.Map(request.Type);
             var restRequest = new RestRequest(request.Endpoint, method, DataFormat.Json);
-            
-            if (request.Timeout.HasValue)
-                restRequest.Timeout = (int) request.Timeout.Value.TotalMilliseconds;
 
             foreach (var param in request.Parameters)
             {
