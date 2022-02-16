@@ -7,7 +7,7 @@ namespace NClient.Providers.Mapping.Results
     {
         public IResponseMapper<IRequest, IResponse> Create(IToolset toolset)
         {
-            return new ResponseToResultMapper();
+            return new ResponseToResultMapper(toolset);
         }
     }
 }

@@ -91,7 +91,7 @@ namespace NClient.Standalone.Client
 
             if (_typedResultBuilders.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } typedResultBuilder)
                 return await typedResultBuilder
-                    .MapAsync(dataType, transportResponseContext, _serializer, cancellationToken)
+                    .MapAsync(dataType, transportResponseContext, cancellationToken)
                     .ConfigureAwait(false);
             
             var response = await _responseBuilder
@@ -101,7 +101,7 @@ namespace NClient.Standalone.Client
 
             if (_resultBuilders.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } resultBuilder)
                 return await resultBuilder
-                    .MapAsync(dataType, responseContext, _serializer, cancellationToken)
+                    .MapAsync(dataType, responseContext, cancellationToken)
                     .ConfigureAwait(false);
             
             if (!_responseValidator.IsSuccess(transportResponseContext))

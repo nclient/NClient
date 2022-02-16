@@ -6,7 +6,7 @@ namespace NClient.Providers.Mapping.HttpResponses
     {
         public IResponseMapper<HttpRequestMessage, HttpResponseMessage> Create(IToolset toolset)
         {
-            return new ResponseToHttpResponseMapper();
+            return new ResponseToHttpResponseMapper(toolset);
         }
     }
 }

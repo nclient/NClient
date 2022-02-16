@@ -6,7 +6,7 @@ namespace NClient.Providers.Mapping.LanguageExt
     {
         public IResponseMapper<IRequest, IResponse> Create(IToolset toolset)
         {
-            return new ResponseToEitherBuilder();
+            return new ResponseToEitherBuilder(toolset);
         }
     }
 }

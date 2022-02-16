@@ -4,13 +4,19 @@ using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping.LanguageExt
 {
     public class ResponseToEitherBuilder : IResponseMapper<IRequest, IResponse>
     {
+        private readonly IToolset _toolset;
+        
+        public ResponseToEitherBuilder(IToolset toolset)
+        {
+            _toolset = toolset;
+        }
+        
         public bool CanMap(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
         {
             if (!resultType.IsGenericType)
@@ -19,8 +25,7 @@ namespace NClient.Providers.Mapping.LanguageExt
             return resultType.GetGenericTypeDefinition() == typeof(Either<,>);
         }
         
-        public async Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, 
-            ISerializer serializer, CancellationToken cancellationToken)
+        public async Task<object?> MapAsync(Type resultType, IResponseContext<IRequest, IResponse> responseContext, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -30,11 +35,11 @@ namespace NClient.Providers.Mapping.LanguageExt
             
             if (responseContext.Response.IsSuccessful)
             {
-                var value = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
+                var value = _toolset.Serializer.Deserialize(stringContent, resultType.GetGenericArguments()[1]);
                 return BuildEither(resultType.GetGenericArguments()[0], left: null, resultType.GetGenericArguments()[1], right: value);
             }
             
-            var error = serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
+            var error = _toolset.Serializer.Deserialize(stringContent, resultType.GetGenericArguments()[0]);
             return BuildEither(resultType.GetGenericArguments()[0], left: error, resultType.GetGenericArguments()[1], right: null);
         }
 
