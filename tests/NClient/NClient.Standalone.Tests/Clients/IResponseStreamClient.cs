@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
@@ -20,5 +21,8 @@ namespace NClient.Standalone.Tests.Clients
         
         [GetMethod]
         new Task<IResponseWithError<int, string>> GetResponseWithDataOrErrorAsync();
+        
+        [GetMethod]
+        new Task<Stream> GetStreamAsync();
     }
 }

@@ -118,6 +118,30 @@ namespace NClient.Tests.ClientTests
 
             await AssertFailureResponseAsync(response, MemoryStreamTypeName, errorCode);
         }
+        
+        [Test]
+        public async Task GetStreamAsync_ResponseWithSuccessCode_TransportStream()
+        {
+            const int id = 1;
+            using var api = ResponseStreamApiMockFactory.MockSuccessGetMethod(id);
+
+            var stream = await NClientGallery.Clients.GetRest().For<IResponseStreamClientWithMetaData>(api.Urls.First()).Build()
+                .GetStreamAsync();
+            
+            (await stream.ReadToEndAsync(Encoding.UTF8)).Should().Be(id.ToString());
+        }
+        
+        [Test]
+        public async Task GetStreamAsync_ResponseWithFailureCode_TransportStream()
+        {
+            const HttpStatusCode errorCode = HttpStatusCode.NotFound;
+            using var api = ResponseStreamApiMockFactory.MockFailureGetMethod(HttpStatusCode.NotFound);
+
+            var stream = await NClientGallery.Clients.GetRest().For<IResponseStreamClientWithMetaData>(api.Urls.First()).Build()
+                .GetStreamAsync();
+            
+            (await stream.ReadToEndAsync(Encoding.UTF8)).Should().Be($"\"{errorCode.ToString()}\"");
+        }
 
         private static async Task AssertSuccessResponseAsync(IResponse response, string streamTypeName, string stringContent)
         {
