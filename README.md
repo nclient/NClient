@@ -240,7 +240,7 @@ It's worth getting in touch with us to discuss changes in case of any questions.
 ## 📦 NuGet Packages
 
 ### Main
-- [NClient](https://www.nuget.org/packages/NClient): Tools for creating clients from interfaces including third-party.
+- [NClient](https://www.nuget.org/packages/NClient): Package for creating clients from interfaces including third-party.
 - [NClient.Standalone](https://www.nuget.org/packages/NClient.Standalone): The same as NClient package, but without third-party.
 - [NClient.AspNetCore](https://www.nuget.org/packages/NClient.AspNetCore): Allows you to annotate controllers via interfaces.
 - [NClient.Abstractions](https://www.nuget.org/packages/NClient.Abstractions): Abstractions for clients and providers.
@@ -248,6 +248,9 @@ It's worth getting in touch with us to discuss changes in case of any questions.
 
 ### Extensions
 - [NClient.Extensions.DependencyInjection](https://www.nuget.org/packages/NClient.Extensions.DependencyInjection): Extension methods for registration of clients in ServiceCollection.
+
+### Tools
+- [dotnet-nclient](https://www.nuget.org/packages/dotnet-nclient): The tool for generating interfaces and DTO's by the OpenAPI (Swagger) specification.
 
 ### Providers
 - [NClient.Providers.Api.Rest](https://www.nuget.org/packages/NClient.Providers.Api.Rest): The provider that allows you to create clients for the REST API.
