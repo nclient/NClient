@@ -4,6 +4,6 @@ namespace NClient.DotNetTool.Loaders
 {
     public interface ILoaderFactory
     {
-        ISpecificationLoader Create(FacadeOptions.GenerationOptions generationOptions);
+        ISpecificationLoader Create(InterfaceGenerationOptions generationOptions);
     }
 }

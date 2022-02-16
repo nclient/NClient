@@ -7,11 +7,11 @@ inputs:
   solution:
     description: 'Solution/project path'
     required: true
-    
+
 runs:
   using: "composite"
   steps:
-    - name: Set the required terget .NET Core version
+    - name: Set the required target .NET Core version
       run: |
         if [[ "${{ inputs.target-framework }}" == "netcoreapp3.1" ]]; then
           echo "dotnet-version=3.1.x" >> $GITHUB_ENV
@@ -32,8 +32,8 @@ runs:
       with:
         name: build-artifacts-${{ inputs.target-framework }}
     - name: Extract build artifacts
-      run: tar -xvzf build-artifacts-${{ inputs.target-framework }}.tar.gz
+      run: tar -xzf build-artifacts-${{ inputs.target-framework }}.tar.gz
       shell: bash
     - name: Test with ${{ inputs.target-framework }}
-      run: dotnet test ${{ inputs.solution }} --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
+      run: dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash

@@ -1,21 +1,20 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using NClient.Common.Helpers;
-using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 namespace NClient.Providers.Transport.SystemNetHttp
 {
     internal class SystemNetHttpTransport : ITransport<HttpRequestMessage, HttpResponseMessage>
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly string _httpClientName;
+        private readonly HttpClient _httpClient;
+        
+        public TimeSpan Timeout => _httpClient.Timeout;
 
-        public SystemNetHttpTransport(IHttpClientFactory httpClientFactory, string? httpClientName = null)
+        public SystemNetHttpTransport(HttpClient httpClient)
         {
-            _httpClientFactory = httpClientFactory;
-            _httpClientName = httpClientName ?? Options.DefaultName;
+            _httpClient = httpClient;
         }
 
         public async Task<HttpResponseMessage> ExecuteAsync(HttpRequestMessage transportRequest, CancellationToken cancellationToken)
@@ -23,13 +22,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             Ensure.IsNotNull(transportRequest, nameof(transportRequest));
             cancellationToken.ThrowIfCancellationRequested();
 
-            var httpClient = _httpClientFactory.CreateClient(_httpClientName);
-            if (transportRequest.TryGetTimeout() is { } timeout && httpClient.Timeout != timeout)
-                httpClient.Timeout = timeout;
-            if (transportRequest.TryGetTimeout() is null)
-                transportRequest.SetTimeout(httpClient.Timeout);
-            
-            return await httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
+            return await _httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
         }
     }
 }

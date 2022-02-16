@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
@@ -13,15 +12,13 @@ using NClient.CodeGeneration.Facades.NSwag;
 using NClient.DotNetTool.Loaders;
 using NClient.DotNetTool.Logging;
 using NClient.DotNetTool.Options;
+using NClient.DotNetTool.Savers;
 
 namespace NClient.DotNetTool
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class Program
     {
-        private static IServiceProvider _serviceProvider = null!;
-        private static ILogger<Program> _logger = null!;
-
         private const string HelpLogo = @"
             _--~~--_
           /~/_|  |_\~\
@@ -40,49 +37,69 @@ namespace NClient.DotNetTool
             var parser = new Parser(with =>
             {
                 with.HelpWriter = null;
-                with.IgnoreUnknownArguments = true;
             });
             
-            var mainParserResult = parser.ParseArguments<FacadeOptions, int>(args);
+            var mainParserResult = parser.ParseArguments<GenerationOptions, int>(args);
             return await mainParserResult.MapResult(
-                (FacadeOptions _) =>
+                (GenerationOptions _) =>
                 {
-                    var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
-                    return facadeParserResult.MapResult(
-                        (FacadeOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
-                        facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
+                    var generationParserResult = parser.ParseArguments<GenerationOptions.FacadeOptions, GenerationOptions.ClientOptions, int>(args.Skip(1));
+                    return generationParserResult.MapResult(
+                        (GenerationOptions.FacadeOptions facadeGenerationOptions) => HandleFacadeGenerationOptions(facadeGenerationOptions), 
+                        (GenerationOptions.ClientOptions clientGenerationOptions) => HandleFacadeGenerationOptions(clientGenerationOptions), 
+                        generationErrors => HandleErrors(generationParserResult, generationErrors, showGreeting: false));
                 },
                 errors =>
                 {
                     var errorArrays = errors as Error[] ?? errors.ToArray();
-                    if (errorArrays.First().Tag != ErrorType.HelpRequestedError)
+                    bool IsNoVerbError(ErrorType errorType) => args.Length == 0 || errorType is not ErrorType.HelpRequestedError && errorType is not ErrorType.UnknownOptionError;
+                    if (IsNoVerbError(errorArrays.First().Tag))
                         return HandleErrors(mainParserResult, errorArrays, showGreeting: true);
-                    
-                    var facadeParserResult = parser.ParseArguments<FacadeOptions.GenerationOptions, int>(args.Skip(1));
-                    return facadeParserResult.MapResult(
-                        (FacadeOptions.GenerationOptions generateOptions) => HandleFacadeGenerationOptions(generateOptions), 
-                        facadeErrors => HandleErrors(facadeParserResult, facadeErrors, showGreeting: false));
+
+                    var generationParserResult = parser.ParseArguments<GenerationOptions.FacadeOptions, GenerationOptions.ClientOptions, int>(args.Skip(1));
+                    return generationParserResult.MapResult(
+                        _ => Task.FromResult(0),
+                        generationErrors => HandleErrors(generationParserResult, generationErrors, showGreeting: false));
                 });
         }
 
-        private static Task<int> HandleFacadeGenerationOptions(FacadeOptions.GenerationOptions generationOptions)
+        private static Task<int> HandleFacadeGenerationOptions(InterfaceGenerationOptions generationOptions)
         {
-            _serviceProvider = BuildServiceProvider(generationOptions.LogLevel); 
-            _logger = _serviceProvider.GetRequiredService<ILogger<Program>>(); 
-            return RunFacadeGenerationAsync(generationOptions);
+            using var serviceProvider = BuildServiceProvider(generationOptions.LogLevel);
+            return RunFacadeGenerationAsync(generationOptions, serviceProvider);
+        }
+        
+        private static async Task<int> RunFacadeGenerationAsync(InterfaceGenerationOptions generationOptions, ServiceProvider serviceProvider)
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            
+            try
+            {
+                var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
+                var result = await serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
+                await serviceProvider.GetRequiredService<ISaver>().SaveAsync(result, generationOptions.OutputPath);
+                logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Generation error {Message}", e.Message);
+                return -1;
+            }
         }
 
-        private static Task<int> HandleErrors(ParserResult<object> parserResult, IEnumerable<Error> errors, bool showGreeting = false)
+        private static Task<int> HandleErrors<T>(ParserResult<T> parserResult, IEnumerable<Error> errors, bool showGreeting = false)
         {
-            _serviceProvider = BuildServiceProvider(LogLevel.Trace);
-            _logger = _serviceProvider.GetRequiredService<ILogger<Program>>();
-                    
-            if (errors.Any(x => x.Tag is ErrorType.HelpVerbRequestedError or ErrorType.NoVerbSelectedError))
-                return OnHelpRequested(parserResult, showGreeting);
-            return OnError(parserResult);
+            using var serviceProvider = BuildServiceProvider(LogLevel.Trace);
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+            bool IsHelpRequested(ErrorType errorType) => errorType is ErrorType.HelpVerbRequestedError or ErrorType.HelpRequestedError or ErrorType.NoVerbSelectedError;
+            if (errors.Any(x => IsHelpRequested(x.Tag)))
+                return OnHelpRequested(parserResult, showGreeting, logger);
+            return OnError(parserResult, logger);
         }
 
-        private static Task<int> OnHelpRequested<T>(ParserResult<T> parserResult, bool showGreeting = false)
+        private static Task<int> OnHelpRequested<T>(ParserResult<T> parserResult, bool showGreeting, ILogger logger)
         {
             var helpText = HelpText.AutoBuild(parserResult, helpText =>
             {
@@ -91,11 +108,11 @@ namespace NClient.DotNetTool
                 return helpText;
             }, _ => _, verbsIndex: true);
             
-            _logger.LogInformation(helpText);
+            logger.LogInformation(helpText);
             return Task.FromResult(0);
         }
         
-        private static Task<int> OnError<T>(ParserResult<T> parserResult)
+        private static Task<int> OnError<T>(ParserResult<T> parserResult, ILogger logger)
         {
             var helpText = HelpText.AutoBuild(parserResult, helpText =>
             {
@@ -103,42 +120,11 @@ namespace NClient.DotNetTool
                 return HelpText.DefaultParsingErrorsHandler(parserResult, helpText);
             }, _ => _, verbsIndex: true);
             
-            _logger.LogInformation(helpText);
+            logger.LogInformation(helpText);
             return Task.FromResult(-1);
         }
 
-        private static async Task<int> RunFacadeGenerationAsync(FacadeOptions.GenerationOptions generationOptions)
-        {
-            try
-            {
-                var specification = await _serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
-                var result = await _serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
-                await Save(generationOptions, result);
-                _logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                _logger.LogError(e, "Generation error {Message}", e.Message);
-                return -1;
-            }
-        }
-
-        private static async Task Save(FacadeOptions.GenerationOptions generationOptions, string sourceCode)
-        {
-            if (File.Exists(generationOptions.OutputPath))
-                File.Delete(generationOptions.OutputPath);
-
-            #if NETFRAMEWORK
-            File.WriteAllText(generationOptions.OutputPath, sourceCode);
-            await Task.CompletedTask.ConfigureAwait(false);
-            #else
-            await File.WriteAllTextAsync(generationOptions.OutputPath, sourceCode);
-            #endif
-        }
-
-        private static IServiceProvider BuildServiceProvider(LogLevel logLevel)
+        private static ServiceProvider BuildServiceProvider(LogLevel logLevel)
         {
             return new ServiceCollection()
                 .AddLogging(x => x
@@ -146,6 +132,7 @@ namespace NClient.DotNetTool
                     .AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>()
                     .SetMinimumLevel(logLevel))
                 .AddSingleton<ILoaderFactory, LoaderFactory>()
+                .AddSingleton<ISaver, FileSaver>()
                 .AddSingleton(x => new NSwagFacadeGeneratorProvider().Create(x.GetRequiredService<ILogger<INClientFacadeGenerator>>()))
                 .AddSingleton<IFacadeGenerator, FacadeGenerator>()
                 .BuildServiceProvider();

@@ -31,10 +31,6 @@ namespace NClient.Providers.Transport
         /// </summary>
         IMetadataContainer Metadatas { get; }
         /// <summary>
-        /// The request duration timeout.
-        /// </summary>
-        TimeSpan? Timeout { get; }
-        /// <summary>
         /// Adds URI parameter.
         /// </summary>
         /// <param name="name">The parameter name.</param>

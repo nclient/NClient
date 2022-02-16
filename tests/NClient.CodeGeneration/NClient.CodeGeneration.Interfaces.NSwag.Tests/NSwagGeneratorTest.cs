@@ -8,6 +8,9 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.OpenApi.Readers;
+using NClient.Annotations.Http;
+using NClient.CodeGeneration.Abstractions;
+using NClient.CodeGeneration.Abstractions.Enums;
 using NClient.CodeGeneration.Facades.NSwag;
 using NUnit.Framework;
 using CategoryAttribute = System.ComponentModel.CategoryAttribute;
@@ -54,6 +57,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             {
                 var facadeInterface = types.Where(t => t.IsInterface && t.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(CategoryAttribute)) is not null).ToList();
                 var baseInterfaces = facadeInterface
+                    .Where(x => x.GetCustomAttribute<HttpFacadeAttribute>() is not null)
                     .Where(fi => string.Equals(typeof(CategoryAttribute)
                         .GetProperty(nameof(CategoryAttribute.Category))!
                         .GetValue(fi.GetCustomAttribute(typeof(CategoryAttribute)))!
@@ -83,8 +87,10 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Runtime.Serialization.EnumMemberAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Text.Json.JsonSerializer).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Newtonsoft.Json.JsonConvert).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.Validator).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.BindRequiredAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Annotations.FacadeAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Providers.Results.HttpResults.HttpResponse).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(GeneratedCodeAttribute).Assembly.Location),
@@ -124,7 +130,7 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
         {
             var resource = typeof(NSwagGeneratorTest).GetTypeInfo().Assembly
                     .GetManifestResourceStream($"{nameof(NClient)}.{nameof(CodeGeneration)}.{nameof(Interfaces)}.{nameof(NSwag)}.{nameof(Tests)}.Specifications.{name}") 
-                ?? throw new NullReferenceException("no open api spec");
+                ?? throw new NullReferenceException("No open api spec.");
             resource.Should().NotBeNull();
             using var reader = new StreamReader(resource);
             reader.Should().NotBeNull();
@@ -136,7 +142,17 @@ namespace NClient.CodeGeneration.Interfaces.NSwag.Tests
             var specificationHandler = new NSwagFacadeGenerator(null);
             const string @namespace = "Test";
 
-            var result = specificationHandler.GenerateAsync(openApiSpec, @namespace, facadeName: "NClient").GetAwaiter().GetResult();
+            var generationSettings = new FacadeGenerationSettings(
+                name: "{facade}",
+                @namespace,
+                generateClients: true,
+                generateFacades: true,
+                useModelValidationAttributes: true,
+                useNullableReferenceTypes: false,
+                useCancellationToken: true,
+                useDtoTypes: true,
+                serializeType: SerializeType.SystemJsonText);
+            var result = specificationHandler.GenerateAsync(openApiSpec, generationSettings).GetAwaiter().GetResult();
 
             result.Should().NotBeNullOrEmpty();
 

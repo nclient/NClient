@@ -11,6 +11,7 @@ using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
+using TimeoutAttribute = NClient.Annotations.TimeoutAttribute;
 
 namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
 {
@@ -29,6 +30,7 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
             var methodAttribute = new GetMethodAttribute();
             var useVersionAttribute = (UseVersionAttribute) null!;
             var pathAttribute = (PathAttribute) null!;
+            var timeoutAttribute = (TimeoutAttribute) null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<IMethodParam>();
             var methodAttributeProviderMock = new Mock<IOperationAttributeProvider>();
@@ -40,6 +42,9 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
             var pathAttributeProviderMock = new Mock<IPathAttributeProvider>();
             pathAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>()))
                 .Returns(pathAttribute);
+            var timeoutAttributeProviderMock = new Mock<ITimeoutAttributeProvider>();
+            timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
+                .Returns(timeoutAttribute);
             var headerAttributeProviderMock = new Mock<IHeaderAttributeProvider>();
             headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))
                 .Returns(headerAttributes);
@@ -51,6 +56,7 @@ namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
                 useVersionAttributeProviderMock.Object,
                 pathAttributeProviderMock.Object,
                 headerAttributeProviderMock.Object,
+                timeoutAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);
 
             var actualResult = methodBuilder.Build(clientType, methodInfo, returnType);

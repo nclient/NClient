@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NClient.Providers.Transport
@@ -8,6 +9,11 @@ namespace NClient.Providers.Transport
     /// </summary>
     public interface ITransport<TRequest, TResponse>
     {
+        /// <summary>
+        /// Gets the timespan to wait before the request times out.
+        /// </summary>
+        public TimeSpan Timeout { get; }
+        
         /// <summary>
         /// Executes requests.
         /// </summary>

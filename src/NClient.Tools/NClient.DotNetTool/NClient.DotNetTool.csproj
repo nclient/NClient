@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <PackageId>$(AssemblyName)</PackageId>
+        <PackageId>dotnet-nclient</PackageId>
         <VersionPrefix>$(VersionPrefix)</VersionPrefix>
         <VersionSuffix>$(VersionSuffix)</VersionSuffix>
         <PackageIcon>logo.png</PackageIcon>
@@ -13,13 +13,12 @@
         <Authors>kingmidas74</Authors>
         <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>dotnet-nclient</ToolCommandName>
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net472;net48;net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -29,6 +28,10 @@
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <OutputPath>$(SolutionDir)/bin/src/$(Configuration)/$(AssemblyName)</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PackAsTool)' != 'true'">
+        <TargetFrameworks>net462;net472;net48;$(TargetFrameworks)</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>

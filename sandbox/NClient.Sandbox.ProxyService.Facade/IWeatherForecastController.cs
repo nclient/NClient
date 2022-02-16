@@ -11,7 +11,7 @@ namespace NClient.Sandbox.ProxyService.Facade
     [Version("1.0"), Version("2.0"), Version("3.0")]
     public interface IWeatherForecastController
     {
-        [GetMethod("{filter.id}")]
+        [GetMethod("{filter.id}"), Timeout(100)]
         [Response(typeof(WeatherForecastDto), HttpStatusCode.OK)]
         [Response(typeof(void), HttpStatusCode.BadRequest)]
         [Response(typeof(void), HttpStatusCode.NotFound)]
