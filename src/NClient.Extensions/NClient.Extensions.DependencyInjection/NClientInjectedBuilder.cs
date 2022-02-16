@@ -39,6 +39,7 @@ namespace NClient.Extensions.DependencyInjection
                 .WithoutHandling()
                 .WithoutResilience()
                 .WithResponseToHttpResponseMapping()
+                .WithResponseToStreamMapping()
                 .WithResponseToResultMapping()
                 .WithLogging(loggerFactory);
         }
