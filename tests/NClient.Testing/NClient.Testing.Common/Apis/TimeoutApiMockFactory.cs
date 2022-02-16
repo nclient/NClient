@@ -1,4 +1,4 @@
-﻿using FluentAssertions.Extensions;
+﻿using System;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -7,7 +7,7 @@ namespace NClient.Testing.Common.Apis
 {
     public class TimeoutApiMockFactory
     {
-        public static IWireMockServer MockGetMethod(int id)
+        public static IWireMockServer MockGetMethod(int id, TimeSpan delay)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -16,7 +16,7 @@ namespace NClient.Testing.Common.Apis
                     .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()
-                    .WithDelay(3.Seconds())
+                    .WithDelay(delay)
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(id));

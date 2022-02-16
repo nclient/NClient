@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
-using FluentAssertions.Extensions;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
@@ -61,6 +60,7 @@ namespace NClient.Providers.Api.Rest.Tests
                 new UseVersionAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new PathAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MetadataAttributeProvider(ClientValidationExceptionFactory),
+                new TimeoutAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
         }
 
@@ -82,7 +82,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), timeout: 30.Seconds(), CancellationToken.None)
+                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

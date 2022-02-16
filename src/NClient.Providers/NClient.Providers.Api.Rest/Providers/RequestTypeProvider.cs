@@ -5,12 +5,12 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api.Rest.Providers
 {
-    internal interface ITransportMethodProvider
+    internal interface IRequestTypeProvider
     {
         RequestType Get(IOperationAttribute operationAttribute);
     }
 
-    internal class RequestTypeProvider : ITransportMethodProvider
+    internal class RequestTypeProvider : IRequestTypeProvider
     {
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 

@@ -11,6 +11,7 @@
         <PackageTags>NClient;Client;HTTP;Rest</PackageTags>
         <Description>NClient is an automatic type-safe .NET HTTP client that can call web API methods using annotated interfaces.</Description>
         <Authors>smolchanovsky</Authors>
+        <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) NClient</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

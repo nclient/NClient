@@ -9,31 +9,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient", "src\NClient\NCli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Standalone", "src\NClient\NClient.Standalone\NClient.Standalone.csproj", "{9E0CCD00-B93F-46C8-BEBC-2BA0909C7410}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "providers", "providers", "{DCB997FD-29F4-48D9-8348-093761DA42E7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 providers", "04 providers", "{DCB997FD-29F4-48D9-8348-093761DA42E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Providers.Transport.RestSharp", "src\NClient.Providers\NClient.Providers.Transport.RestSharp\NClient.Providers.Transport.RestSharp.csproj", "{C42DB132-AFCE-4283-83AF-7E271580C0B2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Providers.Resilience.Polly", "src\NClient.Providers\NClient.Providers.Resilience.Polly\NClient.Providers.Resilience.Polly.csproj", "{6B4E7185-DF75-483F-BC12-2AE38F50CAB8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions", "extensions", "{336F274F-FA15-4928-A48F-EE57BEF866F5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 extensions", "03 extensions", "{336F274F-FA15-4928-A48F-EE57BEF866F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Extensions.DependencyInjection", "src\NClient.Extensions\NClient.Extensions.DependencyInjection\NClient.Extensions.DependencyInjection.csproj", "{85EC205F-DF7E-4AAE-B024-C4AE47B98328}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F3AF19D7-1D80-4449-98CC-96BC13FF8103}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 tests", "06 tests", "{F3AF19D7-1D80-4449-98CC-96BC13FF8103}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Core.Tests", "tests\NClient\NClient.Core.Tests\NClient.Core.Tests.csproj", "{DEE11369-E9B1-4A95-B07B-A15F0C1C21BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Tests", "tests\NClient\NClient.Tests\NClient.Tests.csproj", "{230329AF-8249-495A-AEFF-96DE1B17D1BF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions", "extensions", "{07EF5913-BA3B-4231-A2F6-9323D10C18EE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 extensions", "06 extensions", "{07EF5913-BA3B-4231-A2F6-9323D10C18EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Extensions.DependencyInjection.Tests", "tests\NClient.Extensions\NClient.Extensions.DependencyInjection.Tests\NClient.Extensions.DependencyInjection.Tests.csproj", "{2991216E-79A7-4A29-8986-7FB5BA0BDBD7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{C9ED014C-EC92-4FAA-A53D-6D0500B640F0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 common", "01 common", "{C9ED014C-EC92-4FAA-A53D-6D0500B640F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Testing.Common", "tests\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj", "{44FD29DF-2B1E-4EB3-9E90-D31E42788862}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{A5E78E9F-AF5D-4521-9A60-800F172A5CA3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 packages", "02 packages", "{A5E78E9F-AF5D-4521-9A60-800F172A5CA3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Packages.Tests", "tests\NClient.Packages\NClient.Packages.Tests\NClient.Packages.Tests.csproj", "{B0130050-BC45-4CC5-8C8E-81041441F3C7}"
 EndProject
@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Standalone.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.AspNetCore.Tests", "tests\NClient\NClient.AspNetCore.Tests\NClient.AspNetCore.Tests.csproj", "{10AAC2C5-73D8-4808-912F-7584E652F5D9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{FA3E8CC3-EE01-4E00-8B83-4650EA50E215}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 sandbox", "05 sandbox", "{FA3E8CC3-EE01-4E00-8B83-4650EA50E215}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NClient.Sandbox.Client", "sandbox\NClient.Sandbox.Client\NClient.Sandbox.Client.csproj", "{6AAE4CE4-9D9C-438F-9586-43B8A3EB7B5F}"
 EndProject
@@ -69,11 +69,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Sandbox.FileService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Sandbox.FileService.Facade", "sandbox\NClient.Sandbox.FileService.Facade\NClient.Sandbox.FileService.Facade.csproj", "{68902399-1298-43F9-849F-57294A568A94}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "providers", "providers", "{B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 providers", "07 providers", "{B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Transport.SystemNetHttp.Tests", "tests\NClient.Providers\NClient.Providers.Transport.SystemNetHttp.Tests\NClient.Providers.Transport.SystemNetHttp.Tests.csproj", "{9FF695D9-C2EB-4161-A79C-EC0EAF68D37D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{AEC33EA4-4C52-4043-9938-A7043AE3E0FC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05 api", "05 api", "{AEC33EA4-4C52-4043-9938-A7043AE3E0FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Api.Tests", "tests\NClient.Api\NClient.Api.Tests\NClient.Api.Tests.csproj", "{8D4A9F4C-6D28-4D14-8B25-46BBBFE8ED88}"
 EndProject
@@ -100,6 +100,28 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.ProtobufNet", "src\NClient.Providers\NClient.Providers.Serialization.ProtobufNet\NClient.Providers.Serialization.ProtobufNet.csproj", "{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.ProtobufNet.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.ProtobufNet.Tests\NClient.Providers.Serialization.ProtobufNet.Tests.csproj", "{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 tools", "01 tools", "{274810D1-A5B8-412B-AD61-72EF89F6D937}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 code-generation", "02 code-generation", "{B7047051-4DB6-400C-8D99-2AE50953D362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Facades.NSwag", "src\NClient.CodeGeneration\NClient.CodeGeneration.Facades.NSwag\NClient.CodeGeneration.Facades.NSwag.csproj", "{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.DotNetTool", "src\NClient.Tools\NClient.DotNetTool\NClient.DotNetTool.csproj", "{53705807-535A-4770-9044-93E50B9ABE21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 code-generation", "04 code-generation", "{8A87573D-F567-429A-BC62-972F7B3C4F6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Interfaces.NSwag.Tests", "tests\NClient.CodeGeneration\NClient.CodeGeneration.Interfaces.NSwag.Tests\NClient.CodeGeneration.Interfaces.NSwag.Tests.csproj", "{DF4412E6-9FBE-4F40-A1C7-859F551830C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.CodeGeneration.Abstractions", "src\NClient.CodeGeneration\NClient.CodeGeneration.Abstractions\NClient.CodeGeneration.Abstractions.csproj", "{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 benchmark", "07 benchmark", "{FD8C88D4-E6FF-4A83-8898-62E390AEF8F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Benchmark.Client", "benchmark\NClient.Benchmark.Client\NClient.Benchmark.Client.csproj", "{97E9E39C-F507-4387-8420-A31E7204D9DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 tools", "03 tools", "{7BA62D11-E7B6-4879-903E-AC718C79DA96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.DotNetTool.Tests", "tests\NClient.Tools\NClient.DotNetTool.Tests\NClient.DotNetTool.Tests.csproj", "{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -291,22 +313,54 @@ Global
 		{908AB05B-91D3-4198-B475-20B9629E40B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{908AB05B-91D3-4198-B475-20B9629E40B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{908AB05B-91D3-4198-B475-20B9629E40B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{908AB05B-91D3-4198-B475-20B9629E40B7}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{908AB05B-91D3-4198-B475-20B9629E40B7}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{649471DF-3CCD-42F0-9035-5BF694134529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{649471DF-3CCD-42F0-9035-5BF694134529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{649471DF-3CCD-42F0-9035-5BF694134529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{649471DF-3CCD-42F0-9035-5BF694134529}.Release|Any CPU.Build.0 = Release|Any CPU
-		{649471DF-3CCD-42F0-9035-5BF694134529}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{649471DF-3CCD-42F0-9035-5BF694134529}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.TestRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{53705807-535A-4770-9044-93E50B9ABE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53705807-535A-4770-9044-93E50B9ABE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53705807-535A-4770-9044-93E50B9ABE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53705807-535A-4770-9044-93E50B9ABE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53705807-535A-4770-9044-93E50B9ABE21}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97E9E39C-F507-4387-8420-A31E7204D9DE}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -350,8 +404,19 @@ Global
 		{649471DF-3CCD-42F0-9035-5BF694134529} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 		{EC0A387A-AAEE-44EF-8AB0-6EF2D745E772} = {DCB997FD-29F4-48D9-8348-093761DA42E7}
 		{B10DCE0F-7BF1-4D0C-AAFD-F4D1D0CBD4A3} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
+		{F06FA409-9525-49B0-BA6B-7BFD2F94C7DF} = {B7047051-4DB6-400C-8D99-2AE50953D362}
+		{53705807-535A-4770-9044-93E50B9ABE21} = {274810D1-A5B8-412B-AD61-72EF89F6D937}
+		{8A87573D-F567-429A-BC62-972F7B3C4F6B} = {F3AF19D7-1D80-4449-98CC-96BC13FF8103}
+		{DF4412E6-9FBE-4F40-A1C7-859F551830C2} = {8A87573D-F567-429A-BC62-972F7B3C4F6B}
+		{5C4EB54B-1E0C-4CF0-8698-2E1A00E064F0} = {B7047051-4DB6-400C-8D99-2AE50953D362}
+		{97E9E39C-F507-4387-8420-A31E7204D9DE} = {FD8C88D4-E6FF-4A83-8898-62E390AEF8F5}
+		{7BA62D11-E7B6-4879-903E-AC718C79DA96} = {F3AF19D7-1D80-4449-98CC-96BC13FF8103}
+		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25} = {7BA62D11-E7B6-4879-903E-AC718C79DA96}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {244A4C58-8FA7-496C-ABCF-72F333149A20}
+	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = benchmark\NClient.Benchmark.Client\.run\NClient.Benchmark.run.xml
 	EndGlobalSection
 EndGlobal

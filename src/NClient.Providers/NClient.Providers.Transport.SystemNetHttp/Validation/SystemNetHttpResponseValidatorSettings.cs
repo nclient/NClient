@@ -3,7 +3,7 @@ using System.Net.Http;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
-namespace NClient.Providers.Transport.Http.System
+namespace NClient.Providers.Transport.SystemNetHttp
 {
     public class SystemNetHttpResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {

@@ -19,12 +19,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Build with ${{ matrix.target-frameworks }}
-        uses: ./actions/build
+        uses: ./.github/actions/build
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: Tests.slnf
+          pack-as-tool: false
           
-  test-dotnet-core:
+  test-dotnet-framework:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:
@@ -36,12 +37,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/test-framework
+        uses: ./.github/actions/test-framework
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}
           
-  test-dotnet-framework:
+  test-dotnet-core:
     name: Test with ${{ matrix.target-frameworks }} on ${{ matrix.os }}
     needs: build
     strategy:
@@ -53,7 +54,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Test with ${{ matrix.target-frameworks }}
-        uses: ./actions/test-core
+        uses: ./.github/actions/test-core
         with:
           target-framework: ${{ matrix.target-frameworks }}
           solution: ${{ env.solution }}

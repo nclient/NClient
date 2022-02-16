@@ -1,0 +1,83 @@
+name: Sonarcloud analysis
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ assigned, review_requested, auto_merge_enabled ]
+    branches: [ main, alpha-release, beta-release, release ]
+     
+env:
+  solution: NClient.sln
+  
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - name: Setup .NET 6.0
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v1
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Begin SonarCloud scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"nclient_NClient" `
+            /o:"nclient" `
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.cs.nunit.reportsPaths="**/TestResults/TestResult-*.xml" `
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.*.opencover.xml" `
+            /d:sonar.coverage.exclusions=benchmark/**,sandbox/**,tests/**
+      - name: Build solution
+        shell: powershell
+        run: dotnet build ${{ env.solution }} --configuration Release
+      - name: Test solution
+        shell: powershell
+        run: |
+          dotnet test ${{ env.solution }} `
+            -c Release `
+            -r '${{ github.workspace }}/reports' `
+            --framework net6.0 `
+            --no-build `
+            --nologo `
+            --logger "nunit;LogFilePath=TestResults/TestResult-{assembly}.xml" `
+            /p:CollectCoverage=true `
+            /p:CoverletOutputFormat=opencover `
+            /p:CoverletOutput=TestResults/
+      - name: End SonarCloud scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
