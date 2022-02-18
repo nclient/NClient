@@ -4,6 +4,6 @@ namespace NClient.DotNetTool.Loaders
 {
     public interface ISpecificationLoader
     {
-        Task<string> Load();
+        Task<string> LoadAsync();
     }
 }

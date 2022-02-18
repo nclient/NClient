@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace NClient.DotNetTool.Logging
 {
-    public class SimpleConsoleFormatter : ConsoleFormatter
+    public class ToolConsoleFormatter : ConsoleFormatter
     {
         private const string DefaultForegroundColor = "\x1B[39m\x1B[22m"; // reset to default foreground color
 
-        public SimpleConsoleFormatter() : base(nameof(SimpleConsoleFormatter))
+        public ToolConsoleFormatter() : base(nameof(ToolConsoleFormatter))
         {
         }
         
@@ -20,7 +20,7 @@ namespace NClient.DotNetTool.Logging
             if (message is null)
                 return;
 
-            var consoleColor = GetLogLevelConsoleColors(logEntry.LogLevel);
+            var consoleColor = GetLogLevelConsoleColors(logEntry.LogLevel, logEntry.EventId);
 
             if (consoleColor is not null)
                 textWriter.WriteLine(GetForegroundColorEscapeCode(consoleColor.Value));
@@ -31,16 +31,18 @@ namespace NClient.DotNetTool.Logging
                 textWriter.WriteLine(DefaultForegroundColor);
         }
         
-        private ConsoleColor? GetLogLevelConsoleColors(LogLevel logLevel)
+        private static ConsoleColor? GetLogLevelConsoleColors(LogLevel logLevel, EventId eventId)
         {
             if (Console.IsOutputRedirected)
                 return null;
+
+            if (eventId == LogEvents.Done)
+                return ConsoleColor.Green;
 
             return logLevel switch
             {
                 LogLevel.Error or LogLevel.Critical => ConsoleColor.Red,
                 LogLevel.Warning => ConsoleColor.Yellow,
-                LogLevel.None => ConsoleColor.Green,
                 _ => null
             };
         }
