@@ -110,7 +110,7 @@ dotnet tool install --global dotnet-nclient
 ```
 #### Step 3: Generate the interface describing the API of the web service
 ```
-dotnet nclient facade generate --api path/to/product-service-swagger.json --output MyProject/Client.cs
+dotnet nclient generate facade --api path/to/product-service-swagger.json --output MyProject/Client.cs
 ```
 This command will generate an interface for the API using the OpenAPI (Swagger) specification:
 ```C#
