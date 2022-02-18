@@ -13,7 +13,7 @@ namespace NClient.DotNetTool.Loaders
             _uri = uri;
         }
         
-        public async Task<string> Load()
+        public async Task<string> LoadAsync()
         {
             using var client = new HttpClient();
             using var responseMessage = await client.GetAsync(_uri);

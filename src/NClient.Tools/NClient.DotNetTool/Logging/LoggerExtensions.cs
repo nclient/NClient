@@ -6,7 +6,8 @@ namespace NClient.DotNetTool.Logging
     {
         public static void LogDone(this ILogger logger, string message, params object[] args)
         {
-            logger.Log(LogLevel.None, message, args);
+            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+            logger.LogInformation(LogEvents.Done, message, args);
         }
     }
 }
