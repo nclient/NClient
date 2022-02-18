@@ -2,9 +2,10 @@ name: 'Notifications'
 
 on:
   workflow_dispatch:
-  push:
   pull_request:
-  issues:
+    types: [ opened, closed, reopened, ready_for_review, review_requested ]
+  issues: 
+    types: [ opened, edited, deleted, closed, reopened ]
   fork:
   watch:
 
@@ -14,7 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: telegram-notify
-        uses: cofob/telegram-actions@v1.3
-        env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_API }}
-          BOT_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_API }}
+          message: |
+            Hello there,
+            There is new ${{ github.event_name }} in NClient by ${{ github.actor }}.
