@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
@@ -37,6 +38,7 @@ namespace NClient.DotNetTool
             var parser = new Parser(with =>
             {
                 with.HelpWriter = null;
+                with.IgnoreUnknownArguments = true;
             });
             
             var mainParserResult = parser.ParseArguments<GenerationOptions, int>(args);
@@ -75,15 +77,19 @@ namespace NClient.DotNetTool
             
             try
             {
-                var specification = await serviceProvider.GetRequiredService<ILoaderFactory>().Create(generationOptions).Load();
-                var result = await serviceProvider.GetRequiredService<IFacadeGenerator>().GenerateAsync(generationOptions, specification);
-                await serviceProvider.GetRequiredService<ISaver>().SaveAsync(result, generationOptions.OutputPath);
-                logger.LogDone("Generations is over! Please, see {OutputPath} for result!", generationOptions.OutputPath);
+                var loaderFactory = serviceProvider.GetRequiredService<ILoaderFactory>();
+                var facadeGenerator = serviceProvider.GetRequiredService<IFacadeGenerator>();
+                var saver = serviceProvider.GetRequiredService<ISaver>();
+                
+                var specification = await loaderFactory.Create(generationOptions).LoadAsync();
+                var result = await facadeGenerator.GenerateAsync(generationOptions, specification);
+                await saver.SaveAsync(result, generationOptions.OutputPath);
+                logger.LogDone("Generations is over. Please, see '{OutputPath}' for result", Path.GetFullPath(generationOptions.OutputPath));
                 return 0;
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Generation error {Message}", e.Message);
+                logger.LogError(e, "Generation error: {Message}", e.Message);
                 return -1;
             }
         }
@@ -108,7 +114,7 @@ namespace NClient.DotNetTool
                 return helpText;
             }, _ => _, verbsIndex: true);
             
-            logger.LogInformation(helpText);
+            logger.LogInformation("{HelpText}", helpText);
             return Task.FromResult(0);
         }
         
@@ -120,7 +126,7 @@ namespace NClient.DotNetTool
                 return HelpText.DefaultParsingErrorsHandler(parserResult, helpText);
             }, _ => _, verbsIndex: true);
             
-            logger.LogInformation(helpText);
+            logger.LogInformation("{HelpText}", helpText);
             return Task.FromResult(-1);
         }
 
@@ -128,8 +134,8 @@ namespace NClient.DotNetTool
         {
             return new ServiceCollection()
                 .AddLogging(x => x
-                    .AddConsole(opts => opts.FormatterName = nameof(SimpleConsoleFormatter))
-                    .AddConsoleFormatter<SimpleConsoleFormatter, ConsoleFormatterOptions>()
+                    .AddConsole(opts => opts.FormatterName = nameof(ToolConsoleFormatter))
+                    .AddConsoleFormatter<ToolConsoleFormatter, ConsoleFormatterOptions>()
                     .SetMinimumLevel(logLevel))
                 .AddSingleton<ILoaderFactory, LoaderFactory>()
                 .AddSingleton<ISaver, FileSaver>()
