@@ -12,7 +12,6 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient client to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection, 
@@ -30,7 +29,6 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient client to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IServiceCollection AddCustomNClient<TClient>(this IServiceCollection serviceCollection,

@@ -9,8 +9,7 @@ namespace NClient.Extensions.DependencyInjection
     public static class AddCustomNClientFactoryExtensions
     {
         private static readonly IGuidProvider GuidProvider = new GuidProvider();
-
-        // TODO: doc
+        
         /// <summary>
         /// Adds a NClient factory to the DI container.
         /// </summary>
