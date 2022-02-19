@@ -4,13 +4,13 @@ namespace NClient
 {
     public interface IClientFactoryGallery
     {
-        INClientFactoryRestBuilder GetRest();
+        IRestNClientFactoryBuilder GetRest();
         INClientFactoryBuilder GetCustom();
     }
     
     public class ClientFactoryGallery : IClientFactoryGallery
     {
-        public INClientFactoryRestBuilder GetRest() => new NClientFactoryRestBuilder();
+        public IRestNClientFactoryBuilder GetRest() => new RestNClientFactoryBuilder();
         public INClientFactoryBuilder GetCustom() => new NClientFactoryBuilder();
     }
 }

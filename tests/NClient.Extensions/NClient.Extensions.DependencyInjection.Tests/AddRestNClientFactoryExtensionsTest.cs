@@ -9,50 +9,51 @@ using Polly;
 namespace NClient.Extensions.DependencyInjection.Tests
 {
     [Parallelizable]
-    public class AddNClientFactoryExtensionsTest
+    public class AddRestNClientFactoryExtensionsTest
     {
         [Test]
-        public void AddNClientFactory_WithoutHttpClientAndLogging_NotBeNull()
+        public void AddRestNClientFactory_WithoutHttpClientAndLogging_NotBeNull()
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddNClientFactory();
+            serviceCollection.AddRestNClientFactory();
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClientFactory_WithLogging_NotBeNull()
+        public void AddRestNClientFactory_WithLogging_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory();
+            serviceCollection.AddRestNClientFactory();
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClientFactory_Builder_NotBeNull()
+        public void AddRestNClientFactory_Builder_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder
-                .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
+            serviceCollection.AddRestNClientFactory()
+                .ConfigureNClient(builder => builder
+                    .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)));
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
         }
 
         [Test]
-        public void AddNClientFactory_BuilderWithCustomSettings_NotBeNull()
+        public void AddRestNClientFactory_BuilderWithCustomSettings_NotBeNull()
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddNClientFactory(builder => builder
-                .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>())
-                .Build());
+            serviceCollection.AddRestNClientFactory()
+                .ConfigureNClient(builder => builder
+                    .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
