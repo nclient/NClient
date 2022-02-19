@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Providers.Api;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
@@ -8,12 +9,12 @@ namespace NClient.Standalone.ClientProxy.Building
     internal class NClientTransportBuilder<TClient> : INClientTransportBuilder<TClient>
         where TClient : class
     {
-        private readonly string _host;
+        private readonly Uri _baseUri;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
 
-        public NClientTransportBuilder(string host, IRequestBuilderProvider requestBuilderProvider)
+        public NClientTransportBuilder(Uri baseUri, IRequestBuilderProvider requestBuilderProvider)
         {
-            _host = host;
+            _baseUri = baseUri;
             _requestBuilderProvider = requestBuilderProvider;
         }
         
@@ -27,7 +28,7 @@ namespace NClient.Standalone.ClientProxy.Building
             Ensure.IsNotNull(responseBuilderProvider, nameof(responseBuilderProvider));
             
             return new NClientSerializationBuilder<TClient, TRequest, TResponse>(new BuilderContext<TRequest, TResponse>()
-                .WithHost(_host)
+                .WithBaseUri(_baseUri)
                 .WithRequestBuilderProvider(_requestBuilderProvider)
                 .WithTransport(transportProvider, transportRequestBuilderProvider, responseBuilderProvider));
         }

@@ -22,7 +22,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
     public class SystemNetHttpClientTest
     {
         private static readonly Uri Host = new("http://localhost:5022");
-        private static readonly Uri EndpointUri = new(Host, "api/method");
+        private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
         private static readonly ISerializer Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
@@ -61,14 +61,14 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         private static TestCaseData ExecutionHeadRequestTestCase()
         {
             const RequestType method = RequestType.Check;
-            var request = new Request(RequestId, EndpointUri.ToString(), method)
+            var request = new Request(RequestId, Resource, method)
             {
                 Content = null,
                 Timeout = 1.Minutes() + 40.Seconds()
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
+            var finalRequest = new Request(RequestId, Resource, method)
             {
                 Content = null,
                 Timeout = 1.Minutes() + 40.Seconds()
@@ -87,7 +87,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 #endif
                 StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
-                Endpoint = EndpointUri.ToString(),
+                Resource = Resource,
                 Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
@@ -102,7 +102,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(EndpointUri.PathAndQuery)
+                        .WithPath(Resource.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingHead())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
@@ -118,14 +118,14 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         private static TestCaseData ExecutionGetRequestTestCase()
         {
             const RequestType method = RequestType.Read;
-            var request = new Request(RequestId, EndpointUri.ToString(), method)
+            var request = new Request(RequestId, Resource, method)
             {
                 Content = null,
                 Timeout = 1.Minutes() + 40.Seconds()
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
+            var finalRequest = new Request(RequestId, Resource, method)
             {
                 Content = null,
                 Timeout = 1.Minutes() + 40.Seconds()
@@ -144,7 +144,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 })),
                 StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
-                Endpoint = EndpointUri.ToString(),
+                Resource = Resource,
                 Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
@@ -159,7 +159,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(EndpointUri.PathAndQuery)
+                        .WithPath(Resource.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingGet())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
@@ -181,7 +181,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             const RequestType method = RequestType.Create;
             var content = Serializer.Serialize(Data);
             
-            var request = new Request(RequestId, EndpointUri.ToString(), method)
+            var request = new Request(RequestId, Resource, method)
             {
                 Content = new Content(
                     Encoding.UTF8.GetBytes(content),
@@ -196,7 +196,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             };
             request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
             
-            var finalRequest = new Request(RequestId, EndpointUri.ToString(), method)
+            var finalRequest = new Request(RequestId, Resource, method)
             {
                 Content = new Content(
                     Encoding.UTF8.GetBytes(content),
@@ -219,7 +219,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 })),
                 StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
-                Endpoint = EndpointUri.ToString(),
+                Resource = Resource,
                 Metadatas = new MetadataContainer(new[]
                 {
                     ServerHeader
@@ -234,7 +234,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             {
                 var server = WireMockServer.Start(Host.ToString());
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(EndpointUri.PathAndQuery)
+                        .WithPath(Resource.PathAndQuery)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
                         .WithBody(new JsonMatcher(Data))

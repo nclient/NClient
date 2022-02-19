@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -32,13 +33,13 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
             _httpClient = new HttpClient();
             HttpClient_Send();
             
-            _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
+            _restSharpClient = new RestSharp.RestClient(new Uri(_api.Urls.First()));
             RestSharp_Send();
             
             _flurlClient = new FlurlClient(_api.Urls.First());
             Flurl_Send();
             
-            _nclient = NClientGallery.Clients.GetRest().For<INClientPrimitiveHttpResponseClient>(_api.Urls.First()).Build();
+            _nclient = NClientGallery.Clients.GetRest().For<INClientPrimitiveHttpResponseClient>(new Uri(_api.Urls.First())).Build();
             NClient_Send();
             
             _refitClient = Refit.RestService.For<IRefitPrimitiveHttpResponseClient>(_api.Urls.First());
@@ -83,7 +84,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<INClientPrimitiveHttpResponseClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<INClientPrimitiveHttpResponseClient>(new Uri(_api.Urls.First())).Build();
             var response = nclient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;

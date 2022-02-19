@@ -7,6 +7,6 @@ namespace NClient.Providers.Api
 {
     public interface IRequestBuilder
     {
-        Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
+        Task<IRequest> BuildAsync(Guid requestId, Uri baseUri, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
     }
 }

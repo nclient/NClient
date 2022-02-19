@@ -13,7 +13,7 @@ namespace NClient.Providers.Transport
         /// <summary>
         /// Gets the resource used for the request. Should not include query.
         /// </summary>
-        string Endpoint { get; }
+        Uri Resource { get; }
         /// <summary>
         /// Gets request type.
         /// </summary>

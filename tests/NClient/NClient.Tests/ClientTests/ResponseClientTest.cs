@@ -8,6 +8,7 @@ using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -24,7 +25,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetAsync(id);
 
             result.Should().Be(id);
@@ -36,7 +37,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -49,7 +50,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -62,7 +63,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.GetAsync(id))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -75,7 +76,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseAsync(id);
 
             result.Should().NotBeNull();
@@ -90,7 +91,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseAsync(id);
 
             result.Should().NotBeNull();
@@ -104,7 +105,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseAsync(id);
 
             result.Should().NotBeNull();
@@ -119,7 +120,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseAsync(id);
 
             result.Should().NotBeNull();
@@ -133,7 +134,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseWithErrorAsync(id);
 
             result.Should().NotBeNull();
@@ -149,7 +150,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequest(id);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.GetResponseWithErrorAsync(id))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -162,7 +163,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockGetMethodWithBadRequestAndError(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseWithErrorAsync(id);
 
             result.Should().NotBeNull();
@@ -177,7 +178,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetResponseWithErrorAsync(id);
 
             result.Should().NotBeNull();
@@ -192,7 +193,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -204,7 +205,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -217,7 +218,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -230,7 +231,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.PostAsync(entity))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -243,7 +244,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethod(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseAsync(entity);
 
             result.Should().NotBeNull();
@@ -257,7 +258,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseAsync(entity);
 
             result.Should().NotBeNull();
@@ -271,7 +272,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseAsync(entity);
 
             result.Should().NotBeNull();
@@ -286,7 +287,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseAsync(entity);
 
             result.Should().NotBeNull();
@@ -300,7 +301,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethod(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseWithErrorAsync(entity);
 
             result.Should().NotBeNull();
@@ -315,7 +316,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequest(entity);
 
-            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            (await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                     .Invoking(async x => await x.PostResponseWithErrorAsync(entity))
                     .Should()
                     .ThrowAsync<ClientRequestException>())
@@ -328,7 +329,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockPostMethodWithBadRequestAndError(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseWithErrorAsync(entity);
 
             result.Should().NotBeNull();
@@ -343,7 +344,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ResponseApiMockFactory.MockInternalServerError();
 
-            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .PostResponseWithErrorAsync(entity);
 
             result.Should().NotBeNull();

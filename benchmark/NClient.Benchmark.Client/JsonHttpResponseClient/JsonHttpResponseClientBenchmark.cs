@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
             _flurlClient = new FlurlClient(_api.Urls.First());
             Flurl_Send();
             
-            _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
+            _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(new Uri(_api.Urls.First())).Build();
             NClient_Send();
             
             _refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
@@ -88,7 +89,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(new Uri(_api.Urls.First())).Build();
             var response = nclient.SendAsync(ArrayProvider.Get()).GetAwaiter().GetResult();
             response.EnsureSuccess();
             var _ = response.Data;

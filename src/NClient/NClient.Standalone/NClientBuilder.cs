@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building;
 
 // ReSharper disable once CheckNamespace
@@ -9,10 +10,10 @@ namespace NClient
     /// </summary>
     public class NClientBuilder : INClientBuilder
     {
-        public INClientApiBuilder<TClient> For<TClient>(string host) where TClient : class
+        public INClientApiBuilder<TClient> For<TClient>(Uri baseUri) where TClient : class
         {
-            Ensure.IsNotNull(host, nameof(host));
-            return new NClientApiBuilder<TClient>(host);
+            Ensure.IsNotNull(baseUri, nameof(baseUri));
+            return new NClientApiBuilder<TClient>(baseUri);
         }
     }
 }

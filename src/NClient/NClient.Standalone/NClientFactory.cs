@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -20,10 +21,10 @@ namespace NClient
             _builderContext = builderContext;
         }
         
-        public TClient Create<TClient>(string host) where TClient : class
+        public TClient Create<TClient>(Uri baseUri) where TClient : class
         {
-            Ensure.IsNotNull(host, nameof(host));
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithHost(host)).Build();
+            Ensure.IsNotNull(baseUri, nameof(baseUri));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithBaseUri(baseUri)).Build();
         }
     }
 }

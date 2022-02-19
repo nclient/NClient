@@ -5,6 +5,7 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -18,7 +19,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = CancellationApiMockFactory.MockGetMethod(id);
 
-            var result = NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Get(id, CancellationToken.None);
 
             result.Should().Be(id);
@@ -36,7 +37,7 @@ namespace NClient.Tests.ClientTests
                 source.Cancel();
             }, CancellationToken.None);
             
-            NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First()).Build()
+            NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Invoking(client => client.Get(id, source.Token))
                 .Should()
                 .ThrowExactly<TaskCanceledException>();
@@ -49,7 +50,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = CancellationApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetAsync(id, CancellationToken.None);
 
             result.Should().Be(id);
@@ -62,7 +63,7 @@ namespace NClient.Tests.ClientTests
             using var api = CancellationApiMockFactory.MockGetMethodWithDelay(id);
             var source = new CancellationTokenSource();
             
-            var resultTask = NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First()).Build()
+            var resultTask = NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetAsync(id, source.Token);
             source.Cancel();
             

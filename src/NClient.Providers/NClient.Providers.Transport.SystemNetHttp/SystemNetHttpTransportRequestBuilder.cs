@@ -24,7 +24,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             
             var parameters = request.Parameters
                 .ToDictionary(x => x.Name, x => x.Value!.ToString());
-            var uri = new Uri(QueryHelpers.AddQueryString(request.Endpoint, parameters));
+            var uri = new Uri(QueryHelpers.AddQueryString(request.Resource.ToString(), parameters));
 
             var httpRequestMessage = new HttpRequestMessage
             {

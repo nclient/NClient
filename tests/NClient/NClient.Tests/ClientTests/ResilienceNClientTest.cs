@@ -10,6 +10,7 @@ using NClient.Providers.Resilience.Polly;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -28,7 +29,7 @@ namespace NClient.Tests.ClientTests
                     shouldRetry: context => !context.Response.IsSuccessStatusCode));
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .Build();
 
             returnClient.Invoking(x => x.AsResilient().Invoke(client => client.Get(1), resiliencePolicy))
@@ -48,7 +49,7 @@ namespace NClient.Tests.ClientTests
                     shouldRetry: context => !context.Response.IsSuccessStatusCode));
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .Build();
 
             returnClient.Invoking(x => x.AsResilient().Invoke(client => client.Get(id), resiliencePolicy))
@@ -63,7 +64,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithoutResilience()
                 .Build();
 
@@ -79,7 +80,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .WithoutResilience()
                 .Build();
@@ -96,7 +97,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -113,7 +114,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -129,7 +130,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockInternalServerError();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -145,7 +146,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockInternalServerError();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -162,7 +163,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .WithResilience(x => x
                     .ForMethod(client => (Action<BasicEntity>) client.Post)
@@ -182,7 +183,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -199,7 +200,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -216,7 +217,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -233,7 +234,7 @@ namespace NClient.Tests.ClientTests
             api.AllowPartialMapping();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -248,7 +249,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockInternalServerError();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
@@ -266,7 +267,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithResilience(selector => selector
                     .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
@@ -285,7 +286,7 @@ namespace NClient.Tests.ClientTests
             {
                 NClientGallery.Clients
                     .GetRest()
-                    .For<IReturnClientWithMetadata>(api.Urls.First())
+                    .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                     .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
@@ -300,7 +301,7 @@ namespace NClient.Tests.ClientTests
             {
                 NClientGallery.Clients
                     .GetRest()
-                    .For<IReturnClientWithMetadata>(api.Urls.First())
+                    .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                     .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
@@ -324,7 +325,7 @@ namespace NClient.Tests.ClientTests
             {
                 NClientGallery.Clients
                     .GetRest()
-                    .For<IReturnClientWithMetadata>(api.Urls.First())
+                    .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                     .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
@@ -339,7 +340,7 @@ namespace NClient.Tests.ClientTests
             {
                 NClientGallery.Clients
                     .GetRest()
-                    .For<IReturnClientWithMetadata>(api.Urls.First())
+                    .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                     .WithResilience(selector => selector
                         .ForMethod(x => (Func<int, BasicEntity>) x.Get)
                         .Use(getDelay: _ => 0.Seconds())
@@ -359,7 +360,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds()))
@@ -376,7 +377,7 @@ namespace NClient.Tests.ClientTests
             using var api = ReturnApiMockFactory.MockInternalServerError();
             var returnClient = NClientGallery.Clients
                 .GetRest()
-                .For<IReturnClientWithMetadata>(api.Urls.First())
+                .For<IReturnClientWithMetadata>(api.Urls.First().ToUri())
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds())

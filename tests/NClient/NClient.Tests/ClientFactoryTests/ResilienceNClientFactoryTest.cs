@@ -7,6 +7,7 @@ using NClient.Exceptions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientFactoryTests
@@ -24,7 +25,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithoutResilience()
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -40,7 +41,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithoutResilience()
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -55,7 +56,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
@@ -71,7 +72,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
                 .NotThrow();
@@ -86,7 +87,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.GetIHttpResponse(id))
                 .Should()
                 .NotThrow();
@@ -101,7 +102,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.GetHttpResponseMessage(id))
                 .Should()
                 .NotThrow();
@@ -120,7 +121,7 @@ namespace NClient.Tests.ClientFactoryTests
                     .DoNotUse())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -136,7 +137,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
@@ -152,7 +153,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -168,7 +169,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
@@ -184,7 +185,7 @@ namespace NClient.Tests.ClientFactoryTests
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Post(entity))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -200,7 +201,7 @@ namespace NClient.Tests.ClientFactoryTests
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id: 1))
                 .Should()
                 .ThrowExactly<ClientRequestException>();
@@ -217,7 +218,7 @@ namespace NClient.Tests.ClientFactoryTests
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
@@ -237,14 +238,14 @@ namespace NClient.Tests.ClientFactoryTests
             using var assertionScope = new AssertionScope();
             using (var api = ReturnApiMockFactory.MockInternalServerError())
             {
-                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
                 returnClient.Invoking(x => x.Get(id: 1))
                     .Should()
                     .ThrowExactly<ClientRequestException>();
             }
             using (var api = ReturnApiMockFactory.MockInternalServerError())
             {
-                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
                 returnClient.Invoking(x => x.Post(new BasicEntity()))
                     .Should()
                     .ThrowExactly<ClientRequestException>();
@@ -267,14 +268,14 @@ namespace NClient.Tests.ClientFactoryTests
             using var assertionScope = new AssertionScope();
             using (var api = ReturnApiMockFactory.MockFlakyGetMethod(id, entity))
             {
-                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
                 returnClient.Invoking(x => x.Get(id))
                     .Should()
                     .NotThrow();
             }
             using (var api = ReturnApiMockFactory.MockFlakyPostMethod(entity))
             {
-                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+                var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
                 returnClient.Invoking(x => x.Post(entity))
                     .Should()
                     .NotThrow();
@@ -292,7 +293,7 @@ namespace NClient.Tests.ClientFactoryTests
                     .Use(getDelay: _ => 0.Seconds()))
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id))
                 .Should()
                 .NotThrow();
@@ -310,7 +311,7 @@ namespace NClient.Tests.ClientFactoryTests
                     .DoNotUse())
                 .Build();
 
-            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First());
+            var returnClient = returnClientFactory.Create<IReturnClientWithMetadata>(api.Urls.First().ToUri());
             returnClient.Invoking(x => x.Get(id: 1))
                 .Should()
                 .ThrowExactly<ClientRequestException>();

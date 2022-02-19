@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Building
@@ -6,18 +7,18 @@ namespace NClient.Standalone.ClientProxy.Building
     internal class NClientApiBuilder<TClient> : INClientApiBuilder<TClient>
         where TClient : class
     {
-        private readonly string _host;
+        private readonly Uri _baseUri;
         
-        public NClientApiBuilder(string host)
+        public NClientApiBuilder(Uri baseUri)
         {
-            _host = host;
+            _baseUri = baseUri;
         }
         
         public INClientTransportBuilder<TClient> UsingCustomApi(IRequestBuilderProvider requestBuilderProvider)
         {
             Ensure.IsNotNull(requestBuilderProvider, nameof(requestBuilderProvider));
             
-            return new NClientTransportBuilder<TClient>(_host, requestBuilderProvider);
+            return new NClientTransportBuilder<TClient>(_baseUri, requestBuilderProvider);
         }
     }
 }

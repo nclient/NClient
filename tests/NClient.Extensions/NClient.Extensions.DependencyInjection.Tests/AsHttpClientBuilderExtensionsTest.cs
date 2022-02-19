@@ -3,6 +3,7 @@ using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Extensions.DependencyInjection.Tests
@@ -15,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000", clientName: "testClient")
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri(), clientName: "testClient")
                 .AsHttpClientBuilder()
                 .ConfigureHttpClient(x => x.DefaultRequestHeaders.Add(name: "Name", value: "Value"));
             

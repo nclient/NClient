@@ -46,7 +46,7 @@ namespace NClient.Providers.Api.Rest
             _toolset = toolset;
         }
 
-        public Task<IRequest> BuildAsync(Guid requestId, string resource, 
+        public Task<IRequest> BuildAsync(Guid requestId, Uri baseUri, 
             IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -67,8 +67,8 @@ namespace NClient.Providers.Api.Rest
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
-            var endpoint = PathHelper.Combine(resource, route);
-            var request = new Request(requestId, endpoint, requestType);
+            var resource = new Uri(PathHelper.Combine(baseUri.ToString(), route));
+            var request = new Request(requestId, resource, requestType);
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)

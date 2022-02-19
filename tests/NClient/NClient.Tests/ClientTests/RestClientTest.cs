@@ -4,6 +4,7 @@ using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -17,7 +18,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = RestApiMockFactory.MockIntGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetAsync(id);
 
             result.Should().Be(id);
@@ -29,7 +30,7 @@ namespace NClient.Tests.ClientTests
             const string id = "1";
             using var api = RestApiMockFactory.MockStringGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .GetAsync(id);
 
             result.Should().Be(id);
@@ -41,7 +42,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = RestApiMockFactory.MockPostMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -53,7 +54,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = RestApiMockFactory.MockPutMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -65,7 +66,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = RestApiMockFactory.MockDeleteMethod(id);
 
-            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IRestClientWithMetadata>(api.Urls.First().ToUri()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();

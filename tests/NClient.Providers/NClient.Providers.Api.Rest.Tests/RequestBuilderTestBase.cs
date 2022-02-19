@@ -17,6 +17,7 @@ using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -76,13 +77,13 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
-            return BuildRequest(host: "http://localhost:5000", method, arguments);
+            return BuildRequest(baseUri: "http://localhost:5000".ToUri(), method, arguments);
         }
 
-        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
+        internal IRequest BuildRequest(Uri baseUri, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, baseUri, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }
@@ -98,7 +99,7 @@ namespace NClient.Providers.Api.Rest.Tests
             var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
-            actualRequest.Endpoint.Should().Be(uri.ToString());
+            actualRequest.Resource.Should().Be(uri.ToString());
             actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(metadatas?.Concat(new[]

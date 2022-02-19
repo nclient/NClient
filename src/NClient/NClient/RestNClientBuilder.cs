@@ -10,7 +10,7 @@ namespace NClient
 {
     public interface IRestNClientBuilder
     {
-        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host, string? clientName = null) 
+        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri baseUri, string? clientName = null) 
             where TClient : class;
     }
     
@@ -30,7 +30,7 @@ namespace NClient
             _serviceProvider = serviceProvider;
         }
 
-        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host, string? clientName = null) 
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri baseUri, string? clientName = null) 
             where TClient : class
         {
             var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitor<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
@@ -40,7 +40,7 @@ namespace NClient
             var loggerFactory = _serviceProvider?.GetService<ILoggerFactory>();
             
             var transportBuilder = new NClientBuilder()
-                .For<TClient>(host)
+                .For<TClient>(baseUri)
                 .UsingRestApi();
             var serializationBuilder = httpClientFactory is null
                 ? transportBuilder.UsingSystemNetHttpTransport()

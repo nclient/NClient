@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +37,7 @@ namespace NClient.Sandbox.ProxyService
             });
 
             services.AddNClientControllers().WithResponseExceptions();
-            services.AddRestNClient<IThirdPartyWeatherForecastClient>(host: "http://localhost:5001");
+            services.AddRestNClient<IThirdPartyWeatherForecastClient>(baseUri: new Uri("http://localhost:5001"));
             
             services.AddLogging();
         }

@@ -171,7 +171,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .GetResult();
             
             var interceptor = _clientInterceptorFactory.Create(
-                _context.Host,
+                _context.BaseUri,
                 _context.SerializerProvider,
                 _context.RequestBuilderProvider,
                 _context.TransportProvider,
