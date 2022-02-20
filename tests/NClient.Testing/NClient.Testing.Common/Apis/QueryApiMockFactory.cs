@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Encodings.Web;
-using System.Web;
 using NClient.Testing.Common.Entities;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
