@@ -21,10 +21,10 @@ namespace NClient
             _builderContext = builderContext;
         }
         
-        public TClient Create<TClient>(Uri baseUri) where TClient : class
+        public TClient Create<TClient>(Uri host) where TClient : class
         {
-            Ensure.IsNotNull(baseUri, nameof(baseUri));
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithBaseUri(baseUri)).Build();
+            Ensure.IsNotNull(host, nameof(host));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithHost(host)).Build();
         }
     }
 }

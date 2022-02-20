@@ -18,7 +18,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri());
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
@@ -29,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUriProvider: serviceProvider => 
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(hostProvider: serviceProvider => 
                 serviceProvider.GetRequiredService<Uri>());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
@@ -41,7 +41,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri());
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();
@@ -52,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .ConfigureNClient(builder => builder
                     .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)));
 
@@ -65,7 +65,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .ConfigureNClient(builder => builder
                     .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 

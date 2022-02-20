@@ -63,7 +63,7 @@ namespace NClient.Sandbox.Client
 
             _weatherForecastClient = NClientGallery.Clients
                 .GetRest()
-                .For<IWeatherForecastClient>(baseUri: new Uri("http://localhost:5000"))
+                .For<IWeatherForecastClient>(host: new Uri("http://localhost:5000"))
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
@@ -73,7 +73,7 @@ namespace NClient.Sandbox.Client
 
             _fileClient = NClientGallery.Clients
                 .GetRest()
-                .For<IFileClient>(baseUri: new Uri("http://localhost:5002"))
+                .For<IFileClient>(host: new Uri("http://localhost:5002"))
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))

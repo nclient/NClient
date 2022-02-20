@@ -16,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri(), clientName: "testClient")
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri(), clientName: "testClient")
                 .AsHttpClientBuilder()
                 .ConfigureHttpClient(x => x.DefaultRequestHeaders.Add(name: "Name", value: "Value"));
             

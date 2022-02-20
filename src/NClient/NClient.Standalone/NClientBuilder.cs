@@ -10,10 +10,10 @@ namespace NClient
     /// </summary>
     public class NClientBuilder : INClientBuilder
     {
-        public INClientApiBuilder<TClient> For<TClient>(Uri baseUri) where TClient : class
+        public INClientApiBuilder<TClient> For<TClient>(Uri host) where TClient : class
         {
-            Ensure.IsNotNull(baseUri, nameof(baseUri));
-            return new NClientApiBuilder<TClient>(baseUri);
+            Ensure.IsNotNull(host, nameof(host));
+            return new NClientApiBuilder<TClient>(host);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddCustomNClient(builder => builder
-                .For<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+                .For<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -37,7 +37,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
             serviceCollection.AddCustomNClient((serviceProvider, builder) => builder
-                .For<ITestClientWithMetadata>(baseUri: serviceProvider.GetRequiredService<Uri>())
+                .For<ITestClientWithMetadata>(host: serviceProvider.GetRequiredService<Uri>())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -53,7 +53,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddCustomNClient(builder => builder
-                .For<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+                .For<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -69,7 +69,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddLogging();
 
             serviceCollection.AddCustomNClient(builder => builder
-                .For<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+                .For<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()
@@ -87,7 +87,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             serviceCollection.AddHttpClient("TestClient");
 
             serviceCollection.AddCustomNClient((serviceProvider, builder) => builder
-                .For<ITestClientWithMetadata>(baseUri: "http://localhost:5000".ToUri())
+                .For<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(
                     httpClientFactory: serviceProvider.GetRequiredService<IHttpClientFactory>(),

@@ -37,7 +37,7 @@ namespace NClient.Sandbox.ProxyService
             });
 
             services.AddNClientControllers().WithResponseExceptions();
-            services.AddRestNClient<IThirdPartyWeatherForecastClient>(baseUri: new Uri("http://localhost:5001"));
+            services.AddRestNClient<IThirdPartyWeatherForecastClient>(host: new Uri("http://localhost:5001"));
             
             services.AddLogging();
         }

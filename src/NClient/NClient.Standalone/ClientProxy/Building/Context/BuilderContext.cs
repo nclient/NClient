@@ -19,7 +19,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
-        public Uri BaseUri { get; private set; } = null!;
+        public Uri Host { get; private set; } = null!;
 
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
@@ -59,7 +59,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         {
             _clientBuildExceptionFactory = builderContext._clientBuildExceptionFactory;
             
-            BaseUri = builderContext.BaseUri;
+            Host = builderContext.Host;
 
             TransportProvider = builderContext.TransportProvider;
             TransportRequestBuilderProvider = builderContext.TransportRequestBuilderProvider;
@@ -85,11 +85,11 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             LoggerFactory = builderContext.LoggerFactory;
         }
 
-        public BuilderContext<TRequest, TResponse> WithBaseUri(Uri baseUri)
+        public BuilderContext<TRequest, TResponse> WithHost(Uri host)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                BaseUri = baseUri
+                Host = host
             };
         }
 
@@ -251,7 +251,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public void EnsureComplete()
         {
-            if (BaseUri is null) 
+            if (Host is null) 
                 throw _clientBuildExceptionFactory.HostIsNotSet();
             if (RequestBuilderProvider is null)
                 throw _clientBuildExceptionFactory.ApiIsNotSet();

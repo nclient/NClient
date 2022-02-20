@@ -20,7 +20,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public void Build_HostAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(baseUri: "http://localhost:5000".ToUri(), BuildMethod<IHostAndStaticRoute>());
+            var httpRequest = BuildRequest(host: "http://localhost:5000".ToUri(), BuildMethod<IHostAndStaticRoute>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api"),
@@ -32,7 +32,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public void Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(baseUri: "http://localhost:5000/api".ToUri(), BuildMethod<IHostPathAndStaticRoute>());
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api".ToUri(), BuildMethod<IHostPathAndStaticRoute>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/controller"),
@@ -44,7 +44,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public void Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(baseUri: "http://localhost:5000/api/".ToUri(), BuildMethod<IHostPathWithSlashAndStaticRoute>());
+            var httpRequest = BuildRequest(host: "http://localhost:5000/api/".ToUri(), BuildMethod<IHostPathWithSlashAndStaticRoute>());
 
             AssertHttpRequest(httpRequest,
                 new Uri("http://localhost:5000/api/controller"),

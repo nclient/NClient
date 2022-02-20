@@ -21,7 +21,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
-        private readonly Uri _baseUri;
+        private readonly Uri _host;
         private readonly ITimeoutSelector _timeoutSelector;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
@@ -35,7 +35,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IToolset _toolset;
 
         public ClientInterceptor(
-            Uri baseUri,
+            Uri host,
             ITimeoutSelector timeoutSelector,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
@@ -48,7 +48,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             TimeSpan? timeout,
             IToolset toolset)
         {
-            _baseUri = baseUri;
+            _host = host;
             _timeoutSelector = timeoutSelector;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
@@ -107,7 +107,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 combinedCancellationToken.ThrowIfCancellationRequested();
                     
                 httpRequest = await _requestBuilder
-                    .BuildAsync(requestId, _baseUri, methodInvocation, combinedCancellationToken)
+                    .BuildAsync(requestId, _host, methodInvocation, combinedCancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
