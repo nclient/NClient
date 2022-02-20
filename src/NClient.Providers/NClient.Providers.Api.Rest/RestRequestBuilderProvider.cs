@@ -6,6 +6,7 @@ using NClient.Providers.Api.Rest.Providers;
 
 namespace NClient.Providers.Api.Rest
 {
+    /// <summary>The provider that turns a method call into a REST request.</summary>
     public class RestRequestBuilderProvider : IRequestBuilderProvider
     {
         private readonly IObjectMemberManager _objectMemberManager;

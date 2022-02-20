@@ -11,6 +11,7 @@ using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NUnit.Framework;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace NClient.Core.Tests
 {
     [Parallelizable]

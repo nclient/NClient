@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using NClient.Providers.Api.Rest.Extensions;
 
 namespace NClient
 {

@@ -2,12 +2,12 @@
 
 namespace NClient.Providers.Api.Rest.Exceptions.Factories
 {
-    public interface IClientArgumentExceptionFactory
+    internal interface IClientArgumentExceptionFactory
     {
         ClientArgumentException ParameterInRouteTemplateIsNull(string parameterName);
     }
 
-    public class ClientArgumentExceptionFactory : IClientArgumentExceptionFactory
+    internal class ClientArgumentExceptionFactory : IClientArgumentExceptionFactory
     {
         public ClientArgumentException ParameterInRouteTemplateIsNull(string parameterName) =>
             new($"The parameter '{parameterName}' used in the path cannot be null.");
