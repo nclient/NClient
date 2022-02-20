@@ -5,8 +5,6 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 
-#pragma warning disable 8618
-
 namespace NClient.Providers.Transport.SystemNetHttp.AspNetCore
 {
     public static class QueryHelpers
@@ -130,7 +128,9 @@ namespace NClient.Providers.Transport.SystemNetHttp.AspNetCore
 
             if (string.IsNullOrEmpty(queryString) || queryString == "?")
             {
+                #pragma warning disable CS8603 // Possible null reference return.
                 return null;
+                #pragma warning restore CS8603 // Possible null reference return.
             }
 
             int scanIndex = 0;
@@ -181,7 +181,9 @@ namespace NClient.Providers.Transport.SystemNetHttp.AspNetCore
 
             if (!accumulator.HasValues)
             {
+                #pragma warning disable CS8603 // Possible null reference return.
                 return null;
+                #pragma warning restore CS8603 // Possible null reference return.
             }
 
             return accumulator.GetResults();
