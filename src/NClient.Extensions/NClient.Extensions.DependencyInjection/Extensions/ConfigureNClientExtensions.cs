@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Extensions.DependencyInjection
@@ -12,6 +13,9 @@ namespace NClient.Extensions.DependencyInjection
             Func<INClientOptionalBuilder<TClient, TRequest, TResult>, INClientOptionalBuilder<TClient, TRequest, TResult>> configure)
             where TClient : class
         {
+            Ensure.IsNotNull(builder, nameof(builder));
+            Ensure.IsNotNull(configure, nameof(configure));
+            
             builder.Services.Configure<NClientBuilderOptions<TClient, TRequest, TResult>>(
                 builder.Name,
                 configureOptions: options => options.BuilderActions.Add(configure));
@@ -23,6 +27,9 @@ namespace NClient.Extensions.DependencyInjection
             Func<IServiceProvider, INClientOptionalBuilder<TClient, TRequest, TResult>, INClientOptionalBuilder<TClient, TRequest, TResult>> configure)
             where TClient : class
         {
+            Ensure.IsNotNull(builder, nameof(builder));
+            Ensure.IsNotNull(configure, nameof(configure));
+            
             builder.Services.AddTransient<IConfigureOptions<NClientBuilderOptions<TClient, TRequest, TResult>>>(services =>
             {
                 return new ConfigureNamedOptions<NClientBuilderOptions<TClient, TRequest, TResult>>(builder.Name, (options) =>

@@ -29,8 +29,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(hostFactory: serviceProvider => 
-                serviceProvider.GetRequiredService<Uri>());
+            serviceCollection.AddRestNClient(implementationFactory: (serviceProvider, builder) => builder
+                .For<ITestClientWithMetadata>(host: serviceProvider.GetRequiredService<Uri>())
+                .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
             client.Should().NotBeNull();

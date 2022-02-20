@@ -9,19 +9,34 @@ namespace NClient.Extensions.DependencyInjection
 {
     public static class AddRestNClientFactoryExtensions
     {
-        private static readonly IGuidProvider GuidProvider = new GuidProvider();
+        internal static IGuidProvider GuidProvider { get; set; } = new GuidProvider();
+        
+        /// <summary>
+        /// Adds a NClient factory to the DI container.
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        public static IDiNClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage> AddRestNClientFactory(
+            this IServiceCollection serviceCollection)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+
+            return AddRestNClientFactory(
+                serviceCollection,
+                factoryName: GuidProvider.Create().ToString());
+        }
         
         /// <summary>
         /// Adds a NClient factory to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
         /// <param name="factoryName">The name of the factory.</param>
-        public static IDiNClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage> AddRestNClientFactory(this IServiceCollection serviceCollection,
-            string? factoryName = null)
+        public static IDiNClientFactoryBuilder<HttpRequestMessage, HttpResponseMessage> AddRestNClientFactory(
+            this IServiceCollection serviceCollection,
+            string factoryName)
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-
-            factoryName ??= GuidProvider.Create().ToString();
+            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
+            
             var httpClientBuilder = serviceCollection.AddHttpClient(factoryName).ConfigureHttpClient(ConfigureDefaultHttpClient);
             serviceCollection.AddSingleton(serviceProvider =>
             {
