@@ -30,7 +30,7 @@ namespace NClient.CodeGeneration.Facades.NSwag
             var notAvailableOperations = allOperations.Where(o => o.Consumes.Contains("multipart"));
             foreach (var notAvailableOperation in notAvailableOperations)
             {
-                _logger?.LogWarning($"Multipart content currently not supported. Operation {notAvailableOperation.Summary ?? notAvailableOperation.ActualOperationName} was skipped!");
+                _logger?.LogWarning("Multipart content currently not supported. Operation {OperationName} was skipped!", notAvailableOperation.Summary ?? notAvailableOperation.ActualOperationName);
             }
             var model = new CSharpFacadeTemplateModel(facadeDefinitionName, availableOperations, _document, (CSharpFacadeGeneratorSettings) Settings);
             var template = Settings.CodeGeneratorSettings.TemplateFactory.CreateTemplate("CSharp", "Facade", model);

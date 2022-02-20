@@ -5,7 +5,7 @@
 {%     if GenerateFacades -%}
 public partial interface I{{ FacadeName }}Client : I{{ FacadeName }}Facade
 {%     else %}
-[{{ NClientAnnotationsHttpNamespace }}.Facade]
+[{{ NClientAnnotationsNamespace }}.Facade]
 {%         if HasBasePath -%}
 [{{ NClientAnnotationsNamespace }}.Path("{{ BasePath }}")]
 {%         endif -%}
