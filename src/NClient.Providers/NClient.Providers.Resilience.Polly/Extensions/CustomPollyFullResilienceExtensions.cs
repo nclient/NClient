@@ -6,11 +6,9 @@ using Polly;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class PollyFullResilienceExtensions
+    public static class CustomPollyFullResilienceExtensions
     {
-        /// <summary>
-        /// Sets resilience policy provider for all HTTP methods.
-        /// </summary>
+        /// <summary>Sets a custom Polly resilience policy for all types of methods.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyFullResilience<TClient, TRequest, TResponse>(
@@ -23,12 +21,10 @@ namespace NClient
             
             return optionalBuilder.WithResilience(x => x
                 .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
+                .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
 
-        /// <summary>
-        /// Sets resilience policy provider for all HTTP methods.
-        /// </summary>
+        /// <summary>Sets a custom Polly resilience policy for all types of methods.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollyFullResilience<TRequest, TResponse>(
@@ -40,7 +36,7 @@ namespace NClient
             
             return optionalBuilder.WithResilience(x => x
                 .ForAllMethods()
-                .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
+                .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(asyncPolicy)));
         }
     }
 }

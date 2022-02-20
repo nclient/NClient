@@ -11,7 +11,7 @@ namespace NClient
     {
         // TODO: doc
         /// <summary>
-        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
+        /// Sets a resilience policy provider for idempotent HTTP methods (all except POST).
         /// </summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
@@ -27,7 +27,7 @@ namespace NClient
         }
 
         /// <summary>
-        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
+        /// Sets a resilience policy provider for idempotent HTTP methods (all except POST).
         /// </summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>

@@ -7,8 +7,12 @@ using Polly;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    public static class PollySafeResilienceExtensions
+    public static class CustomPollySafeResilienceExtensions
     {
+        /// <summary>Sets a custom Polly resilience policy for safe methods (Info/Options, Check/Head, Read/Get).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="safeMethodPolicy">The asynchronous policy defining all executions available for safe methods (Info/Options, Check/Head, Read/Get).</param>
+        /// <param name="otherMethodPolicy">The asynchronous policy defining all executions available for unsafe methods (all except Info/Options, Check/Head, Read/Get).</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollySafeResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
@@ -21,11 +25,15 @@ namespace NClient
             return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
+                    .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
         
+        /// <summary>Sets a custom Polly resilience policy for safe methods (Info/Options, Check/Head, Read/Get).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="safeMethodPolicy">The asynchronous policy defining all executions available for safe methods (Info/Options, Check/Head, Read/Get).</param>
+        /// <param name="otherMethodPolicy">The asynchronous policy defining all executions available for unsafe methods (all except Info/Options, Check/Head, Read/Get).</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollySafeResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             IAsyncPolicy<IResponseContext<TRequest, TResponse>> safeMethodPolicy, IAsyncPolicy<IResponseContext<TRequest, TResponse>> otherMethodPolicy)
@@ -37,9 +45,9 @@ namespace NClient
             return optionalBuilder
                 .WithResilience(x => x
                     .ForAllMethods()
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
+                    .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(otherMethodPolicy))
                     .ForMethodsThat((_, request) => request.Type.IsSafe())
-                    .Use(new PollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
+                    .Use(new CustomPollyResiliencePolicyProvider<TRequest, TResponse>(safeMethodPolicy)));
         }
     }
 }

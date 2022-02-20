@@ -10,7 +10,7 @@ namespace NClient
     public static class SafeResilienceExtensions
     {
         /// <summary>
-        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// Sets a resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
@@ -26,7 +26,7 @@ namespace NClient
         }
 
         /// <summary>
-        /// Sets resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
+        /// Sets a resilience policy provider for safe HTTP methods (GET, HEAD, OPTIONS).
         /// </summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="settings">The settings for default resilience policy provider.</param>
