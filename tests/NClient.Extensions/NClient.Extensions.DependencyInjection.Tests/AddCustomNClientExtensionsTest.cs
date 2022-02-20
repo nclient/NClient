@@ -37,7 +37,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
             serviceCollection.AddCustomNClient((serviceProvider, builder) => builder
-                .For<ITestClientWithMetadata>(serviceProvider.GetRequiredService<Uri>())
+                .For<ITestClientWithMetadata>(baseUri: serviceProvider.GetRequiredService<Uri>())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingNewtonsoftJsonSerialization()

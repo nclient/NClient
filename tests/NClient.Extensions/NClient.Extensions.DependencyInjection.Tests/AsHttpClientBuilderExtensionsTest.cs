@@ -25,7 +25,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             client.Should().NotBeNull();
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             httpClientFactory.Should().NotBeNull();
-            var httpClient = httpClientFactory!.CreateClient("testClient");
+            var httpClient = httpClientFactory!.CreateClient(name: "testClient");
             httpClient.DefaultRequestHeaders.Should().ContainSingle(x => x.Key == "Name" && x.Value.Single() == "Value");
         }
     }

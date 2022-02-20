@@ -29,7 +29,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(serviceProvider => 
+            serviceCollection.AddRestNClient<ITestClientWithMetadata>(baseUriProvider: serviceProvider => 
                 serviceProvider.GetRequiredService<Uri>());
 
             var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
