@@ -34,23 +34,23 @@ namespace NClient.Extensions.DependencyInjection
         /// Adds a NClient client to the DI container.
         /// </summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="hostProvider">The provider returning base address of URI used when sending requests.</param>
+        /// <param name="hostFactory">The provider returning base address of URI used when sending requests.</param>
         /// <param name="clientName">The client name.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IDiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage> AddRestNClient<TClient>(
             this IServiceCollection serviceCollection,
-            Func<IServiceProvider, Uri> hostProvider, string? clientName = null)
+            Func<IServiceProvider, Uri> hostFactory, string? clientName = null)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(hostProvider, nameof(hostProvider));
+            Ensure.IsNotNull(hostFactory, nameof(hostFactory));
 
             clientName ??= GuidProvider.Create().ToString();
             var httpClientBuilder = serviceCollection.AddHttpClient(clientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
             serviceCollection.AddSingleton(serviceProvider =>
             {
                 return new RestNClientBuilder(serviceProvider)
-                    .For<TClient>(hostProvider.Invoke(serviceProvider), clientName)
+                    .For<TClient>(hostFactory.Invoke(serviceProvider), clientName)
                     .Build();
             });
             return new DiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage>(httpClientBuilder);
