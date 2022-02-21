@@ -9,7 +9,7 @@ namespace NClient.Annotations.Http
     public class HeaderAttribute : MetadataAttribute, IHeaderAttribute
     {
         /// <summary>
-        /// Creates a new <see cref="HeaderAttribute"/> with the given header.
+        /// Initializes a new <see cref="HeaderAttribute"/> with the given header.
         /// </summary>
         /// <param name="name">The header name.</param>
         /// <param name="value">The header value.</param>

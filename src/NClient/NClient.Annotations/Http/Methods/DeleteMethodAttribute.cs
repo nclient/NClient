@@ -10,7 +10,7 @@ namespace NClient.Annotations.Http
         public int Order { get; set; }
         
         /// <summary>
-        /// Creates a new <see cref="DeleteMethodAttribute" /> with the given path template.
+        /// Initializes a new <see cref="DeleteMethodAttribute" /> with the given path template.
         /// </summary>
         /// <param name="path">The path template.</param>
         public DeleteMethodAttribute(string? path = null) : base(path)

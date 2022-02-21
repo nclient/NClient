@@ -9,7 +9,7 @@ namespace NClient.Providers.Resilience.Polly
     {
         private readonly IResiliencePolicySettings<TRequest, TResponse> _settings;
         
-        /// <summary>Creates the default Polly based resilience policy.</summary>
+        /// <summary>Initializes the default Polly based resilience policy.</summary>
         /// <param name="settings">The settings for resilience policy provider.</param>
         public DefaultPollyResiliencePolicyProvider(IResiliencePolicySettings<TRequest, TResponse> settings)
         {

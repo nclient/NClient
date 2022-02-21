@@ -1,5 +1,4 @@
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.ProtobufNet;
 
 // ReSharper disable once CheckNamespace
@@ -7,7 +6,7 @@ namespace NClient
 {
     public static class UsingProtobufNetSerializationExtensions
     {
-        /// <summary>Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the ProtobufNet serializer for the client.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
@@ -17,9 +16,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new ProtobufNetSerializerProvider());
         }
 
-        /// <summary>Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the ProtobufNet serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="protobufNetSerializerSettings">The settings to be used with <see cref="ProtobufNetSerializer"/>.</param>
+        /// <param name="protobufNetSerializerSettings">The settings to be used with the ProtobufNet serializer.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingProtobufNetSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             ProtobufNetSerializerSettings protobufNetSerializerSettings)
@@ -32,7 +31,7 @@ namespace NClient
                 .UsingCustomSerializer(new ProtobufNetSerializerProvider(protobufNetSerializerSettings));
         }
 
-        /// <summary>Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the ProtobufNet serializer for the client.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingProtobufNetSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
@@ -41,9 +40,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new ProtobufNetSerializerProvider());
         }
 
-        /// <summary>Sets ProtobufNet based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the ProtobufNet serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="protobufNetSerializerSettings">The settings to be used with <see cref="ProtobufNetSerializer"/>.</param>
+        /// <param name="protobufNetSerializerSettings">The settings to be used with the ProtobufNet serializer.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingProtobufNetSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             ProtobufNetSerializerSettings protobufNetSerializerSettings)

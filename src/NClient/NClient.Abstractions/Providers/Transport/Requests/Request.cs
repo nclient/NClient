@@ -42,7 +42,7 @@ namespace NClient.Providers.Transport
         public TimeSpan? Timeout { get; set; }
 
         /// <summary>
-        /// Creates container for request data.
+        /// Initializes container for request data.
         /// </summary>
         /// <param name="id">The request id.</param>
         /// <param name="endpoint">The request URI (without parameters).</param>

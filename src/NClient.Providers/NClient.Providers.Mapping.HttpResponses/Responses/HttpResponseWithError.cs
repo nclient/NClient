@@ -22,7 +22,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</summary>
         public TError? Error { get; }
 
-        /// <summary>Creates the container for HTTP response data.</summary>
+        /// <summary>Initializes the container for HTTP response data.</summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
@@ -80,7 +80,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</summary>
         public TError? Error { get; }
 
-        /// <summary>Creates the container for HTTP response data.</summary>
+        /// <summary>Initializes the container for HTTP response data.</summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
         public HttpResponseWithError(HttpResponse httpResponse, TError? error)

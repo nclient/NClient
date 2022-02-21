@@ -15,7 +15,7 @@ namespace NClient.Providers.Transport
         public TData? Data { get; }
 
         /// <summary>
-        /// Creates the container for response data.
+        /// Initializes the container for response data.
         /// </summary>
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
@@ -90,7 +90,7 @@ namespace NClient.Providers.Transport
         public bool IsSuccessful { get; set; }
 
         /// <summary>
-        /// Creates the container for response data.
+        /// Initializes the container for response data.
         /// </summary>
         /// <param name="transportRequest">The request that the response belongs to.</param>
         public Response(IRequest transportRequest)

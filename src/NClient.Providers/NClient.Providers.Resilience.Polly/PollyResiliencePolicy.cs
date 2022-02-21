@@ -12,7 +12,7 @@ namespace NClient.Providers.Resilience.Polly
     {
         private readonly IAsyncPolicy<IResponseContext<TRequest, TResponse>> _asyncPolicy;
 
-        /// <summary>Creates the Polly based resilience policy.</summary>
+        /// <summary>Initializes the Polly based resilience policy.</summary>
         /// <param name="asyncPolicy">The asynchronous policy defining all executions available.</param>
         public PollyResiliencePolicy(IAsyncPolicy<IResponseContext<TRequest, TResponse>> asyncPolicy)
         {

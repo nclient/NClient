@@ -1,5 +1,4 @@
 ﻿using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.NewtonsoftJson;
 using Newtonsoft.Json;
 
@@ -8,7 +7,7 @@ namespace NClient
 {
     public static class UsingNewtonsoftJsonSerializationExtensions
     {
-        /// <summary>Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the Newtonsoft.Json serializer for the client.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
@@ -18,9 +17,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new NewtonsoftJsonSerializerProvider());
         }
 
-        /// <summary>Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the Newtonsoft.Json serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
+        /// <param name="jsonSerializerSettings">The settings to be used with the Newtonsoft.Json serializer.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             JsonSerializerSettings jsonSerializerSettings)
@@ -33,7 +32,7 @@ namespace NClient
                 .UsingCustomSerializer(new NewtonsoftJsonSerializerProvider(jsonSerializerSettings));
         }
 
-        /// <summary>Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the Newtonsoft.Json serializer for the client.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
@@ -42,9 +41,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new NewtonsoftJsonSerializerProvider());
         }
 
-        /// <summary>Sets Newtonsoft.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the Newtonsoft.Json serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="jsonSerializerSettings">The settings to be used with <see cref="JsonSerializer"/>.</param>
+        /// <param name="jsonSerializerSettings">The settings to be used with the Newtonsoft.Json serializer.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingNewtonsoftJsonSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             JsonSerializerSettings jsonSerializerSettings)

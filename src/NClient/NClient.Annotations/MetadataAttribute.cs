@@ -20,7 +20,7 @@ namespace NClient.Annotations
         public string Value { get; }
 
         /// <summary>
-        /// Creates a new <see cref="MetadataAttribute"/> with the given metadata.
+        /// Initializes a new <see cref="MetadataAttribute"/> with the given metadata.
         /// </summary>
         /// <param name="name">The metadata name.</param>
         /// <param name="value">The metadata value.</param>

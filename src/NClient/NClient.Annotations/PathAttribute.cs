@@ -29,7 +29,7 @@ namespace NClient.Annotations
         public string Template { get; }
 
         /// <summary>
-        /// Creates a new <see cref="PathAttribute"/> with the given route template.
+        /// Initializes a new <see cref="PathAttribute"/> with the given route template.
         /// </summary>
         /// <param name="template">The route template. May not be null.</param>
         public PathAttribute(string template)

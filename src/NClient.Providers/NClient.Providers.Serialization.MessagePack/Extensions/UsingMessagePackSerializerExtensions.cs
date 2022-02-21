@@ -1,5 +1,4 @@
 using NClient.Common.Helpers;
-using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.MessagePack;
 
 // ReSharper disable once CheckNamespace
@@ -7,7 +6,7 @@ namespace NClient
 {
     public static class UsingMessagePackSerializerExtensions
     {
-        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the MessagePack serializer for the client.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
@@ -17,9 +16,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new MessagePackSerializerProvider());
         }
 
-        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the MessagePack serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
+        /// <param name="messagePackSerializerSettings">The settings to be used with the MessagePack serializer.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)
@@ -32,7 +31,7 @@ namespace NClient
                 .UsingCustomSerializer(new MessagePackSerializerProvider(messagePackSerializerSettings));
         }
 
-        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the MessagePack serializer for the client.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingMessagePackSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
@@ -41,9 +40,9 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new MessagePackSerializerProvider());
         }
 
-        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
+        /// <summary>Sets the MessagePack serializer for the client.</summary>
         /// <param name="serializationBuilder"></param>
-        /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
+        /// <param name="messagePackSerializerSettings">The settings to be used with the MessagePack serializer.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingMessagePackSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)

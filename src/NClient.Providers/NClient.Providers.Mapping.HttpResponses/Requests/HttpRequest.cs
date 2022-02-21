@@ -51,7 +51,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Gets a set of properties for the HTTP request.</summary>
         public IDictionary<string, object> Properties => _httpRequestMessage.Properties;
         
-        /// <summary>Creates the container for data used to make HTTP requests.</summary>
+        /// <summary>Initializes the container for data used to make HTTP requests.</summary>
         /// <param name="httpRequestMessage">The System.Net.Http container that represents a HTTP request message.</param>
         public HttpRequest(HttpRequestMessage httpRequestMessage)
         {

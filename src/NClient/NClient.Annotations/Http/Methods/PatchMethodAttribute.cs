@@ -12,7 +12,7 @@ namespace NClient.Annotations.Http
         public int Order { get; set; }
         
         /// <summary>
-        /// Creates a new <see cref="PatchMethodAttribute"/> with the given path template.
+        /// Initializes a new <see cref="PatchMethodAttribute"/> with the given path template.
         /// </summary>
         /// <param name="path">The path template.</param>
         public PatchMethodAttribute(string? path = null) : base(path)

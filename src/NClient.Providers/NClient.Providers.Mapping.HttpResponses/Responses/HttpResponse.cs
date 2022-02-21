@@ -26,7 +26,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Gets the object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</summary>
         public TData? Data { get; }
 
-        /// <summary>Creates the container for HTTP response with deserialized body.</summary>
+        /// <summary>Initializes the container for HTTP response with deserialized body.</summary>
         /// <param name="httpResponse">The response containing an HTTP context.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         public HttpResponse(HttpResponse httpResponse, TData? data)
@@ -130,7 +130,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Gets information about the success of the request.</summary>
         public bool IsSuccessful => (int) StatusCode >= 200 && (int) StatusCode <= 299;
 
-        /// <summary>Creates the response containing an HTTP context.</summary>
+        /// <summary>Initializes the response containing an HTTP context.</summary>
         /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="httpResponseMessage">The System.Net.Http HTTP response message that the response belongs to.</param>
         public HttpResponse(

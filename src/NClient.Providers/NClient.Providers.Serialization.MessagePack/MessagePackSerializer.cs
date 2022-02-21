@@ -10,7 +10,7 @@ namespace NClient.Providers.Serialization.MessagePack
 
         // INFO: https://github.com/msgpack/msgpack/issues/194
         public string ContentType { get; }
-
+        
         public MessagePackSerializer(MessagePackSerializerSettings messagePackSerializerSettings)
         {
             Ensure.IsNotNull(messagePackSerializerSettings, nameof(messagePackSerializerSettings));
@@ -20,7 +20,7 @@ namespace NClient.Providers.Serialization.MessagePack
             ContentType = messagePackSerializerSettings.ContentTypeHeader;
         }
 
-        //SUGGESTION: Use byte array instead of string 
+        // SUGGESTION: Use byte array instead of string 
         public object? Deserialize(string source, Type returnType)
         {
             Ensure.IsNotNull(source, nameof(source));

@@ -10,7 +10,7 @@ namespace NClient.Providers.Transport.RestSharp
     {
         private readonly IAuthenticator? _authenticator;
 
-        /// <summary>Creates the RestSharp based HTTP client provider.</summary>
+        /// <summary>Initializes the RestSharp based HTTP client provider.</summary>
         /// <param name="authenticator">The RestSharp authenticator.</param>
         public RestSharpTransportProvider(IAuthenticator? authenticator = null)
         {

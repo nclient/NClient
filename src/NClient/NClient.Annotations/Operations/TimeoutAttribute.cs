@@ -12,7 +12,7 @@ namespace NClient.Annotations
         public double Milliseconds { get; }
         
         /// <summary>
-        /// Creates a new <see cref="TimeoutAttribute"/> with the given milliseconds value.
+        /// Initializes a new <see cref="TimeoutAttribute"/> with the given milliseconds value.
         /// </summary>
         /// <param name="milliseconds">The timeout value</param>
         public TimeoutAttribute(double milliseconds)
