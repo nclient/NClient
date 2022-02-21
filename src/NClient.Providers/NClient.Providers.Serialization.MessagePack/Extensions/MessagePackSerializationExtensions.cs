@@ -5,17 +5,9 @@ using NClient.Providers.Serialization.MessagePack;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // ReSharper disable once UnusedType.Global
     public static class MessagePackSerializationExtensions
     {
-        /// <summary>
-        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="optionalBuilder"></param>
-        /// <typeparam name="TClient"></typeparam>
-        /// <typeparam name="TRequest"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <returns></returns>
+        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
@@ -25,15 +17,9 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new MessagePackSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
-        /// <typeparam name="TClient"></typeparam>
-        /// <typeparam name="TRequest"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <returns></returns>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithMessagePackSerialization<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)
@@ -45,13 +31,7 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new MessagePackSerializerProvider(messagePackSerializerSettings));
         }
 
-        /// <summary>
-        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="optionalBuilder"></param>
-        /// <typeparam name="TRequest"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <returns></returns>
+        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithMessagePackSerialization<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
@@ -60,14 +40,9 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new MessagePackSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets MessagePack based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
-        /// <typeparam name="TRequest"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <returns></returns>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithMessagePackSerialization<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             MessagePackSerializerSettings messagePackSerializerSettings)

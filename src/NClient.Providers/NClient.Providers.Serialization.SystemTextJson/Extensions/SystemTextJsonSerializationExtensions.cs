@@ -6,13 +6,9 @@ using NClient.Providers.Serialization.SystemTextJson;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: check doc
     public static class SystemTextJsonSerializationExtensions
     {
-        /// <summary>
-        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="optionalBuilder"></param>
+        /// <summary>Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithSystemTextJsonSerialization<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder)
             where TClient : class
@@ -22,9 +18,7 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new SystemTextJsonSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithSystemTextJsonSerialization<TClient, TRequest, TResponse>(
@@ -38,10 +32,7 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new SystemTextJsonSerializerProvider(jsonSerializerOptions));
         }
 
-        /// <summary>
-        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="optionalBuilder"></param>
+        /// <summary>Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSystemTextJsonSerialization<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {
@@ -50,9 +41,7 @@ namespace NClient
             return optionalBuilder.WithCustomSerialization(new SystemTextJsonSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets System.Text.Json based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="optionalBuilder"></param>
         /// <param name="jsonSerializerOptions">The options to be used with <see cref="JsonSerializer"/>.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithSystemTextJsonSerialization<TRequest, TResponse>(

@@ -13,7 +13,7 @@ namespace NClient.Providers.Serialization.MessagePack
         /// </summary>
         public MessagePackSerializerProvider()
         {
-            _messagePackSerializerSettings = new MessagePackSerializerSettings(MIMEType.ProperType, MessagePackSerializerOptions.Standard);
+            _messagePackSerializerSettings = new MessagePackSerializerSettings(MimeType.ProperType, MessagePackSerializerOptions.Standard);
         }
 
         /// <summary>

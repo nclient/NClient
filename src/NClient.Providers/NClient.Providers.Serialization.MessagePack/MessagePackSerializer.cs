@@ -8,7 +8,7 @@ namespace NClient.Providers.Serialization.MessagePack
     {
         private readonly MessagePackSerializerSettings _messagePackSerializerSettings;
 
-        //INFO: https://github.com/msgpack/msgpack/issues/194
+        // INFO: https://github.com/msgpack/msgpack/issues/194
         public string ContentType { get; }
 
         public MessagePackSerializer(MessagePackSerializerSettings messagePackSerializerSettings)

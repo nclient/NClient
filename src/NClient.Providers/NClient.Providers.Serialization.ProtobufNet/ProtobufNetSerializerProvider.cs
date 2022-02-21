@@ -7,17 +7,13 @@ namespace NClient.Providers.Serialization.ProtobufNet
     {
         private readonly ProtobufNetSerializerSettings _protobufNetSerializerSettings;
 
-        /// <summary>
-        /// Creates the Protobuf serializer provider.
-        /// </summary>
+        /// <summary>Creates the Protobuf serializer provider.</summary>
         public ProtobufNetSerializerProvider()
         {
             _protobufNetSerializerSettings = new ProtobufNetSerializerSettings("application/proto");
         }
 
-        /// <summary>
-        /// Creates the Newtonsoft.Json based serializer provider.
-        /// </summary>
+        /// <summary>Creates the Newtonsoft.Json based serializer provider.</summary>
         /// <param name="protobufNetSerializerSettings">The settings to be used with <see cref="ProtobufNetSerializer"/>.</param>
         public ProtobufNetSerializerProvider(ProtobufNetSerializerSettings protobufNetSerializerSettings)
         {

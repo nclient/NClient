@@ -8,7 +8,7 @@ namespace NClient.Providers.Serialization.MessagePack
         public string ContentTypeHeader { get; } = string.Empty;
         public MessagePackSerializerOptions Options { get; }
 
-        public MessagePackSerializerSettings(MIMEType contentTypeHeader, MessagePackSerializerOptions? options = null)
+        public MessagePackSerializerSettings(MimeType contentTypeHeader, MessagePackSerializerOptions? options = null)
         {
             Ensure.IsNotNull(contentTypeHeader, nameof(contentTypeHeader));
 

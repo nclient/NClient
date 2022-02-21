@@ -1,8 +1,9 @@
 using System.ComponentModel;
 
+// ReSharper disable once CheckNamespace
 namespace NClient.Providers.Serialization.MessagePack
 {
-    public enum MIMEType   
+    public enum MimeType   
     {
         [Description("application/msgpack")]
         ProperType = 0,

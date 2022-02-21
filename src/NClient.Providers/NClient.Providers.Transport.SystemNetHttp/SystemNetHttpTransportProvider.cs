@@ -5,17 +5,13 @@ using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 namespace NClient.Providers.Transport.SystemNetHttp
 {
-    /// <summary>
-    /// The System.Net.Http based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
-    /// </summary>
+    /// <summary>The System.Net.Http based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.</summary>
     public class SystemNetHttpTransportProvider : ITransportProvider<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string? _httpClientName;
 
-        /// <summary>
-        /// Creates the System.Net.Http based HTTP client provider.
-        /// </summary>
+        /// <summary>Creates the System.Net.Http based HTTP client provider.</summary>
         public SystemNetHttpTransportProvider()
         {
             _httpClientFactory = new SystemNetHttpClientFactory(new HttpClient
@@ -24,9 +20,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             });
         }
 
-        /// <summary>
-        /// Creates the System.Net.Http based HTTP client provider.
-        /// </summary>
+        /// <summary>Creates the System.Net.Http based HTTP client provider.</summary>
         /// <param name="httpClient">The system <see cref="HttpClient"/>.</param>
         public SystemNetHttpTransportProvider(HttpClient httpClient)
         {
@@ -35,9 +29,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             _httpClientFactory = new SystemNetHttpClientFactory(httpClient);
         }
 
-        /// <summary>
-        /// Creates the System.Net.Http based HTTP client provider.
-        /// </summary>
+        /// <summary>Creates the System.Net.Http based HTTP client provider.</summary>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
         public SystemNetHttpTransportProvider(IHttpClientFactory httpClientFactory, string? httpClientName = null)

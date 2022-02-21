@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: doc
     public static class NewtonsoftJsonSerializationExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithNewtonsoftJsonSerialization<TClient, TRequest, TResponse>(

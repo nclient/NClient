@@ -8,10 +8,7 @@ namespace NClient
 {
     public static class UsingSystemXmlSerializationExtensions
     {
-        /// <summary>
-        /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="serializationBuilder"></param>
+        /// <summary>Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> UsingSystemXmlSerialization<TClient, TRequest, TResponse>(
             this INClientSerializationBuilder<TClient, TRequest, TResponse> serializationBuilder)
             where TClient : class
@@ -21,9 +18,7 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="xmlReaderSettings">The settings to be used with <see cref="XmlReader"/>.</param>
         /// <param name="xmlWriterSettings">The settings to be used with <see cref="XmlWriter"/>.</param>
@@ -39,10 +34,7 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider(xmlReaderSettings, xmlWriterSettings));
         }
 
-        /// <summary>
-        /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
-        /// <param name="serializationBuilder"></param>
+        /// <summary>Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> UsingSystemXmlSerialization<TRequest, TResponse>(
             this INClientFactorySerializationBuilder<TRequest, TResponse> serializationBuilder)
         {
@@ -51,9 +43,7 @@ namespace NClient
             return serializationBuilder.UsingCustomSerializer(new SystemXmlSerializerProvider());
         }
 
-        /// <summary>
-        /// Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets System.Xml.XmlSerializer based <see cref="ISerializerProvider"/> used to create instance of <see cref="ISerializer"/>.</summary>
         /// <param name="serializationBuilder"></param>
         /// <param name="xmlReaderSettings">The settings to be used with <see cref="XmlReader"/>.</param>
         /// <param name="xmlWriterSettings">The settings to be used with <see cref="XmlWriter"/>.</param>
