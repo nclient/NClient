@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using NClient.Providers.Transport;
-using NClient.Providers.Validation;
 
-namespace NClient.Standalone.Client.Validation
+// ReSharper disable once CheckNamespace
+namespace NClient.Providers.Validation
 {
-    internal class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
+    public class ResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
         private readonly IResponseValidatorSettings<TRequest, TResponse> _responseValidatorSettings;
         

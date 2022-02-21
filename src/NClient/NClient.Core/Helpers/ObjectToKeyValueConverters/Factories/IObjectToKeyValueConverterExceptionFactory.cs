@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Helpers.ObjectToKeyValueConverters.Factories
 {
-    public interface IObjectToKeyValueConverterExceptionFactory
+    internal interface IObjectToKeyValueConverterExceptionFactory
     {
         ClientValidationException DictionaryWithComplexTypeOfKeyNotSupported();
         ClientValidationException DictionaryWithComplexTypeOfValueNotSupported();

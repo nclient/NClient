@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Extensions
 {
-    public static class RequestTypeExtensions
+    internal static class RequestTypeExtensions
     {
         public static bool IsIdempotent(this RequestType requestType)
         {

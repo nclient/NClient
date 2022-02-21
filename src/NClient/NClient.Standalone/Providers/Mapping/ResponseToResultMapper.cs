@@ -7,7 +7,7 @@ using NClient.Providers.Transport;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Mapping.Results
 {
-    public class ResponseToResultMapper : IResponseMapper<IRequest, IResponse>
+    internal class ResponseToResultMapper : IResponseMapper<IRequest, IResponse>
     {
         public bool CanMap(Type resultType, IResponseContext<IRequest, IResponse> responseContext)
         {

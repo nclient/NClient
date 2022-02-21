@@ -6,7 +6,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Api
 {
-    public class StubRequestBuilder : IRequestBuilder
+    internal class StubRequestBuilder : IRequestBuilder
     {
         public Task<IRequest> BuildAsync(Guid requestId, string resource, IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {

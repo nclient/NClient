@@ -1,7 +1,6 @@
-﻿using NClient.Providers;
-using NClient.Providers.Validation;
+﻿// ReSharper disable once CheckNamespace
 
-namespace NClient.Standalone.Client.Validation
+namespace NClient.Providers.Validation
 {
     public class ResponseValidatorProvider<TRequest, TResponse> : IResponseValidatorProvider<TRequest, TResponse>
     {

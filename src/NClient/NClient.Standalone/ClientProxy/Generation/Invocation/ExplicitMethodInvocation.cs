@@ -7,7 +7,7 @@ using NClient.Providers.Resilience;
 
 namespace NClient.Standalone.ClientProxy.Generation.Invocation
 {
-    public class ExplicitMethodInvocation<TRequest, TResponse>
+    internal class ExplicitMethodInvocation<TRequest, TResponse>
     {
         public object[] Arguments { get; }
         public Type[] GenericArguments { get; }

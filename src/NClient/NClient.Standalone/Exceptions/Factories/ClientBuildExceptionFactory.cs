@@ -2,7 +2,7 @@
 
 namespace NClient.Standalone.Exceptions.Factories
 {
-    public interface IClientBuildExceptionFactory
+    internal interface IClientBuildExceptionFactory
     {
         ClientBuildException HostIsNotSet();
         ClientBuildException ApiIsNotSet();
@@ -10,7 +10,7 @@ namespace NClient.Standalone.Exceptions.Factories
         ClientBuildException SerializerIsNotSet();
     }
     
-    public class ClientBuildExceptionFactory : IClientBuildExceptionFactory
+    internal class ClientBuildExceptionFactory : IClientBuildExceptionFactory
     {
         public ClientBuildException HostIsNotSet() =>
             new("The client cannot be created: the host is not set.");
