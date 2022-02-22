@@ -1,6 +1,5 @@
 ﻿using System;
 
-// ReSharper disable once CheckNamespace
 namespace NClient.Annotations
 {
     /// <summary>Identifies an action that restrict by timeout.</summary>

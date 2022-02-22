@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace NClient.Providers.Transport
 {
-    // TODO: doc
     // ReSharper disable once UnusedTypeParameter
     public interface ITransportRequestBuilder<TRequest, TResponse>
     {

@@ -14,9 +14,7 @@ namespace NClient
     {
         #region Serializer
         
-        /// <summary>
-        /// Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.
-        /// </summary>
+        /// <summary>Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.</summary>
         /// <param name="provider">The provider that can create instances of <see cref="ISerializer"/>.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider);
 
@@ -38,14 +36,12 @@ namespace NClient
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedHandling(Action<INClientHandlingSelector<TRequest, TResponse>> configure);
 
-        // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutHandling();
         
         #endregion
 
         #region Results
         
-        // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseMapping(IEnumerable<IResponseMapper<TRequest, TResponse>> mappers);
 
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseMapping(Action<INClientResponseMappingSelector<TRequest, TResponse>> configure);
@@ -56,10 +52,8 @@ namespace NClient
         
         #region Resilience
         
-        // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure);
         
-        // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResilience();
         
         #endregion
@@ -72,22 +66,17 @@ namespace NClient
         
         #region Logging
         
-        /// <summary>
-        /// Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.
-        /// </summary>
+        /// <summary>Sets custom <see cref="ILoggerFactory"/> used to create instances of <see cref="ILogger"/>.</summary>
         /// <param name="loggerFactory">The factory that can create instances of <see cref="ILogger"/>.</param>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILoggerFactory loggerFactory);
         
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers);
         
-        // TODO: doc
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();
         
         #endregion
 
-        /// <summary>
-        /// Creates <see cref="TClient"/>.
-        /// </summary>
+        /// <summary>Creates <see cref="TClient"/>.</summary>
         TClient Build();
     }
 }

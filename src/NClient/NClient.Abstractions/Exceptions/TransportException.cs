@@ -3,9 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Exceptions
 {
-    /// <summary>
-    /// Represents exceptions thrown by NClient client during the processing of the transport request.
-    /// </summary>
+    /// <summary>Represents exceptions thrown by NClient client during the processing of the transport request.</summary>
     public class TransportException : NClientException
     {
         public TransportException(string message) : base(message)
@@ -16,19 +14,13 @@ namespace NClient.Exceptions
         }
     }
     
-    /// <summary>
-    /// Represents exceptions thrown by NClient client during the processing of the transport request.
-    /// </summary>
+    /// <summary>Represents exceptions thrown by NClient client during the processing of the transport request.</summary>
     public class TransportException<TRequest, TResponse> : TransportException
     {
-        /// <summary>
-        /// The transport request that the response belongs to.
-        /// </summary>
+        /// <summary>The transport request that the response belongs to.</summary>
         public TRequest Request { get; }
 
-        /// <summary>
-        /// The transport response.
-        /// </summary>
+        /// <summary>The transport response.</summary>
         public TResponse Response { get; }
 
         public TransportException(TRequest request, TResponse response, string errorMessage) : base(errorMessage)

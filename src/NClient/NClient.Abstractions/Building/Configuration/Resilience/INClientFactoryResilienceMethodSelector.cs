@@ -6,7 +6,6 @@ using NClient.Providers.Transport;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: doc
     public interface INClientFactoryResilienceMethodSelector<TRequest, TResponse>
     {
         INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethods();

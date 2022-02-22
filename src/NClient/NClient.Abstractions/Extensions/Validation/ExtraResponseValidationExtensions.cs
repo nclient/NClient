@@ -4,7 +4,6 @@ using NClient.Providers.Validation;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: doc
     public static class ExtraResponseValidationExtensions
     {
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation<TClient, TRequest, TResponse>(

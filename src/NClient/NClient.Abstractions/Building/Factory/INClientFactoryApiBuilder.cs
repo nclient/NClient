@@ -5,7 +5,6 @@ namespace NClient
 {
     public interface INClientFactoryApiBuilder
     {
-        // TODO: doc
         INClientFactoryTransportBuilder UsingCustomApi(IRequestBuilderProvider requestBuilderProvider);
     }
 }

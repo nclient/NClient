@@ -8,16 +8,12 @@ namespace NClient.Invocation
     {
         public string Name { get; }
         
-        /// <summary>
-        /// Gets information about the client method. 
-        /// </summary>
+        /// <summary>Gets information about the client method.</summary>
         public MethodInfo Info { get; }
         
         public string ClientName { get; }
         
-        /// <summary>
-        /// Gets type of client interface.
-        /// </summary>
+        /// <summary>Gets type of client interface.</summary>
         public Type ClientType { get; }
 
         public IOperationAttribute Operation { get; }
@@ -32,9 +28,7 @@ namespace NClient.Invocation
         
         public IMethodParam[] Params { get; }
         
-        /// <summary>
-        /// Gets type returned by the client method.
-        /// </summary>
+        /// <summary>Gets type returned by the client method.</summary>
         public Type ResultType { get; }
 
         public Method(string name, MethodInfo info, string clientName, Type clientType,

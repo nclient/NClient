@@ -3,7 +3,6 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    // TODO: doc
     public interface INClientResilienceSetter<TClient, TRequest, TResponse>
     {
         INClientResilienceMethodSelector<TClient, TRequest, TResponse> Use(IResiliencePolicy<TRequest, TResponse> policy);

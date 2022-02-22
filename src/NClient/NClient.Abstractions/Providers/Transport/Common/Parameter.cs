@@ -3,9 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    /// <summary>
-    /// The container for header data.
-    /// </summary>
+    /// <summary>The container for header data.</summary>
     public class Parameter : IParameter
     {
         public string Name { get; }
