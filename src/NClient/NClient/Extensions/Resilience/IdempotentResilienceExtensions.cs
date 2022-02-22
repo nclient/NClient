@@ -9,12 +9,11 @@ namespace NClient
 {
     public static class IdempotentResilienceExtensions
     {
-        // TODO: doc
-        /// <summary>
-        /// Sets a resilience policy provider for idempotent HTTP methods (all except POST).
-        /// </summary>
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Post).</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
+        /// <param name="maxRetries">The max number of retries.</param>
+        /// <param name="getDelay">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="shouldRetry">The predicate to filter the results this policy will handle.</param>
         public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithIdempotentResilience<TClient>(
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> optionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)
@@ -25,12 +24,12 @@ namespace NClient
             return optionalBuilder.WithPollyIdempotentResilience(
                 new DefaultSystemNetHttpResiliencePolicySettings(maxRetries, getDelay, shouldRetry));
         }
-
-        /// <summary>
-        /// Sets a resilience policy provider for idempotent HTTP methods (all except POST).
-        /// </summary>
+        
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Post).</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
+        /// <param name="maxRetries">The max number of retries.</param>
+        /// <param name="getDelay">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="shouldRetry">The predicate to filter the results this policy will handle.</param>
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithIdempotentResilience(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> optionalBuilder,
             int? maxRetries = null, Func<int, TimeSpan>? getDelay = null, Func<IResponseContext<HttpRequestMessage, HttpResponseMessage>, bool>? shouldRetry = null)

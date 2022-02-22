@@ -4,9 +4,7 @@ namespace NClient.Annotations
 {
     public interface IPathProviderAttribute
     {
-        /// <summary>
-        /// The route template. May be null.
-        /// </summary>
+        /// <summary>Gets or sets a route template.</summary>
         string? Path { get; }
     }
 }
