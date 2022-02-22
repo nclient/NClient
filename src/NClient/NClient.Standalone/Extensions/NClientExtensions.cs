@@ -6,24 +6,26 @@ namespace NClient
 {
     public static class NClientExtensions
     {
-        public static IResilienceNClient<T> AsResilient<T>(this T client) where T : class, INClient
+        /// <summary>Casts the custom client into a IResilienceNClient client that allows executing requests with resilience policy.</summary>
+        public static IResilienceNClient<TClient> AsResilient<TClient>(this TClient client) where TClient : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));
-            Ensure.IsCompatibleWith<IResilienceNClient<T>>(client, nameof(client));
+            Ensure.IsCompatibleWith<IResilienceNClient<TClient>>(client, nameof(client));
 
             // ReSharper disable once SuspiciousTypeConversion.Global
-            return client as IResilienceNClient<T>
-                ?? throw new NClientException($"The client '{client.GetType().Name}' does not implement the interface '{typeof(IResilienceNClient<T>)}'.");
+            return client as IResilienceNClient<TClient>
+                ?? throw new NClientException($"The client '{client.GetType().Name}' does not implement the interface '{typeof(IResilienceNClient<TClient>)}'.");
         }
 
-        public static ITransportNClient<T> AsTransport<T>(this T client) where T : class, INClient
+        /// <summary>Casts the custom client into a ITransportNClient client that allows returning NClient response with the DTO.</summary>
+        public static ITransportNClient<TClient> AsTransport<TClient>(this TClient client) where TClient : class, INClient
         {
             Ensure.IsNotNull(client, nameof(client));
-            Ensure.IsCompatibleWith<ITransportNClient<T>>(client, nameof(client));
+            Ensure.IsCompatibleWith<ITransportNClient<TClient>>(client, nameof(client));
 
             // ReSharper disable once SuspiciousTypeConversion.Global
-            return client as ITransportNClient<T>
-                ?? throw new NClientException($"The client '{client.GetType().Name}' does not implement the interface '{typeof(ITransportNClient<T>)}'.");
+            return client as ITransportNClient<TClient>
+                ?? throw new NClientException($"The client '{client.GetType().Name}' does not implement the interface '{typeof(ITransportNClient<TClient>)}'.");
         }
     }
 }

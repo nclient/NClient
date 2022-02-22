@@ -6,6 +6,9 @@ namespace NClient
 {
     public static class FullResilienceExtensions
     {
+        /// <summary>Sets a custom resilience policy provider for all types of methods.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="provider">The custom resilience policy provider.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithFullResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider) 
@@ -20,6 +23,9 @@ namespace NClient
                     .Use(provider));
         }
 
+        /// <summary>Sets a custom resilience policy provider for all types of methods.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="provider">The custom resilience policy provider.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithFullResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder, 
             IResiliencePolicyProvider<TRequest, TResponse> provider)

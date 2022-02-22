@@ -3,9 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Exceptions
 {
-    /// <summary>
-    /// Represents exceptions thrown by the NClient library classes.
-    /// </summary>
+    /// <summary>Represents exceptions thrown by the NClient library classes.</summary>
     public class NClientException : Exception
     {
         public NClientException()

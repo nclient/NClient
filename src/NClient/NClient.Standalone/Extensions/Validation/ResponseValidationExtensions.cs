@@ -7,6 +7,10 @@ namespace NClient
 {
     public static class ResponseValidationExtensions
     {
+        /// <summary>Sets validation the contents of the response received from transport.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="isSuccess">The predicate for determining the success of the response.</param>
+        /// <param name="onFailure">The action that will be invoked if the response is unsuccessful.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseValidation<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             Predicate<IResponseContext<TRequest, TResponse>> isSuccess,
@@ -18,6 +22,10 @@ namespace NClient
                     isSuccess, onFailure)));
         }
 
+        /// <summary>Sets validation the contents of the response received from transport.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="isSuccess">The predicate for determining the success of the response.</param>
+        /// <param name="onFailure">The action that will be invoked if the response is unsuccessful.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseValidation<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             Predicate<IResponseContext<TRequest, TResponse>> isSuccess,
