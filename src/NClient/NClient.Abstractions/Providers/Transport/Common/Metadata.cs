@@ -3,10 +3,13 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    /// <summary>The metadata of the request or response.</summary>
+    /// <summary>Represents additional information of a request or response.</summary>
     public record Metadata : IMetadata
     {
+        /// <summary>Gets metadata name.</summary>
         public string Name { get; }
+        
+        /// <summary>Gets metadata value.</summary>
         public string Value { get; }
 
         public Metadata(string name, string value)

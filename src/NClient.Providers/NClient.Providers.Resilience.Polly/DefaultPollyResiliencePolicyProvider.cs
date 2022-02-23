@@ -4,12 +4,12 @@ using Polly;
 
 namespace NClient.Providers.Resilience.Polly
 {
-    /// <summary>The default Polly based resilience policy.</summary>
+    /// <summary>The provider that can create default Polly based resilience policy for transient exception handling.</summary>
     public class DefaultPollyResiliencePolicyProvider<TRequest, TResponse> : IResiliencePolicyProvider<TRequest, TResponse>
     {
         private readonly IResiliencePolicySettings<TRequest, TResponse> _settings;
         
-        /// <summary>Initializes the default Polly based resilience policy.</summary>
+        /// <summary>Initializes the provider that can create default Polly based resilience policy for transient exception handling.</summary>
         /// <param name="settings">The settings for resilience policy provider.</param>
         public DefaultPollyResiliencePolicyProvider(IResiliencePolicySettings<TRequest, TResponse> settings)
         {

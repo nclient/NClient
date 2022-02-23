@@ -5,6 +5,8 @@ using NClient.Providers.Resilience;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
+    /// <summary>An abstraction that allows the client to set specific resilience policy provider for a method.</summary>
+    /// <typeparam name="TClient">The client type.</typeparam>
     public interface IResilienceNClient<TClient>
     {
         /// <summary>Makes a client method call with a specific resilience policy provider.</summary>

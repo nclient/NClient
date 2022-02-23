@@ -3,14 +3,19 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
+    /// <summary>The container for response data with deserialized body.</summary>
     public interface IResponse<TValue> : IResponse
     {
         /// <summary>The object obtained as a result of deserialization of the body.</summary>
         TValue? Data { get; }
         
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
         void Deconstruct(out TValue? data, out IResponse response);
     }
     
+    /// <summary>The container for response data.</summary>
     public interface IResponse
     {
         /// <summary>The request that the response belongs to.</summary>

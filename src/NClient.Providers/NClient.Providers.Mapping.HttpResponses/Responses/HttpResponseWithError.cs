@@ -70,7 +70,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Deconstructs response.</summary>
         /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
         /// <param name="httpResponse">The response containing an HTTP context.</param>
-        void Deconstruct(out TError? error, out IHttpResponse? httpResponse);
+        void Deconstruct(out TError? error, out IHttpResponse httpResponse);
     }
 
     /// <summary>The response containing an HTTP context with a deserialized response body in case of an error.</summary>
@@ -101,7 +101,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Deconstructs response.</summary>
         /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
         /// <param name="httpResponse">The response containing an HTTP context.</param>
-        public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        public void Deconstruct(out TError? error, out IHttpResponse httpResponse)
         {
             error = Error;
             httpResponse = this;

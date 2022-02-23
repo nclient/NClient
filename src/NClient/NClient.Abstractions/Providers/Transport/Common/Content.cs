@@ -16,7 +16,7 @@ namespace NClient.Providers.Transport
         
         /// <summary>Gets metadata returned by server with the response content.</summary>
         public IMetadataContainer Metadatas { get; }
-
+        
         [SuppressMessage("ReSharper", "UnusedVariable")]
         public Content(byte[]? bytes = null, string? encoding = null, IMetadataContainer? headerContainer = null)
         {

@@ -2,6 +2,7 @@
 
 namespace NClient.Annotations
 {
+    /// <summary>Specifies that the class or method that this attribute is applied to requires the specified authorization.</summary>
     public interface IAuthorizedAttribute
     {
         /// <summary>Gets the policy name that determines access to the resource.</summary>

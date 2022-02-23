@@ -7,7 +7,6 @@ using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
-// ReSharper disable UnusedTypeParameter
 namespace NClient
 {
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class

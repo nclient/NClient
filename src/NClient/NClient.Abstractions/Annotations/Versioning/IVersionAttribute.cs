@@ -2,6 +2,7 @@
 
 namespace NClient.Annotations
 {
+    /// <summary>Represents the metadata that describes the API version associated with a service.</summary>
     public interface IVersionAttribute
     {
         /// <summary>Gets the API version defined by the attribute.</summary>

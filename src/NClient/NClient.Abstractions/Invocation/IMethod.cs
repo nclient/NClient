@@ -4,6 +4,7 @@ using NClient.Annotations;
 
 namespace NClient.Invocation
 {
+    /// <summary>Information about the client's executable method.</summary>
     public interface IMethod
     {
         /// <summary>Get method name.</summary>

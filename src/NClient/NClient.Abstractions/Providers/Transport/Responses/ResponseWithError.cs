@@ -26,10 +26,24 @@ namespace NClient.Providers.Transport
             return this;
         }
 
-        public void Deconstruct(out TData? data, out TError? error)
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
+        public void Deconstruct(out TData? data, out TError? error, out IResponse response)
         {
             data = Data;
             error = Error;
+            response = this;
+        }
+        
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
+        void IResponseWithError<TError>.Deconstruct(out TError? error, out IResponse response)
+        {
+            error = Error;
+            response = this;
         }
     }
 
@@ -55,11 +69,14 @@ namespace NClient.Providers.Transport
             base.EnsureSuccess();
             return this;
         }
-
-        public void Deconstruct(out IContent? content, out TError? error)
+        
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
+        public void Deconstruct(out TError? error, out IResponse response)
         {
-            content = Content;
             error = Error;
+            response = this;
         }
     }
 }

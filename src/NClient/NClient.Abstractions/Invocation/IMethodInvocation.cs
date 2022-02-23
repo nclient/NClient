@@ -3,6 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
+    /// <summary>Information about the invocation of the client's method.</summary>
     public interface IMethodInvocation
     {
         /// <summary>Gets method information.</summary>

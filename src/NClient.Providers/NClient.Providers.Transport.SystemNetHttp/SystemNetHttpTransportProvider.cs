@@ -5,7 +5,7 @@ using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 namespace NClient.Providers.Transport.SystemNetHttp
 {
-    /// <summary>The System.Net.Http based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.</summary>
+    /// <summary>The provider that can create System.Net.Http based transport.</summary>
     public class SystemNetHttpTransportProvider : ITransportProvider<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IHttpClientFactory _httpClientFactory;

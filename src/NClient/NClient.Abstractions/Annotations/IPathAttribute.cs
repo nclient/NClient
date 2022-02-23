@@ -1,5 +1,6 @@
 ﻿namespace NClient.Annotations
 {
+    /// <summary>An attribute that specifies route on a controller.</summary>
     public interface IPathAttribute
     {
         /// <summary>Gets the route name. The route name can be used to generate a link using a specific route, instead

@@ -7,6 +7,8 @@ using NClient.Providers.Transport;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
+    /// <summary>An abstraction that allows the client to get transport response.</summary>
+    /// <typeparam name="TClient">The client type.</typeparam>
     public interface ITransportNClient<TClient>
     {
         /// <summary>Returns transport response of the server. </summary>

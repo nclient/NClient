@@ -27,6 +27,9 @@ namespace NClient.Providers.Transport
             return this;
         }
 
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
         public void Deconstruct(out TData? data, out IResponse response)
         {
             data = Data;

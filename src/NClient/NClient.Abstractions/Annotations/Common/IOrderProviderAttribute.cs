@@ -2,6 +2,7 @@
 
 namespace NClient.Annotations
 {
+    /// <summary>Interface for attributes which can supply an order for attribute.</summary>
     public interface IOrderProviderAttribute
     {
         /// <summary>Gets the route order. The order determines the order of route execution. Routes with a lower

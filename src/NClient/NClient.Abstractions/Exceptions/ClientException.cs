@@ -7,10 +7,10 @@ namespace NClient.Exceptions
     /// <summary>Represents exceptions to return information about an client-side errors.</summary>
     public abstract class ClientException : NClientException
     {
-        /// <summary>The type of client interface.</summary>
+        /// <summary>Gets or sets the type of client interface.</summary>
         public Type InterfaceType { get; set; } = null!;
 
-        /// <summary>The method of client.</summary>
+        /// <summary>Gets or sets the method of client.</summary>
         public MethodInfo MethodInfo { get; set; } = null!;
 
         protected ClientException(string message)

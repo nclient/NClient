@@ -3,6 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
+    /// <summary>Response content.</summary>
     public interface IContent
     {
         /// <summary>Gets byte representation of response content.</summary>

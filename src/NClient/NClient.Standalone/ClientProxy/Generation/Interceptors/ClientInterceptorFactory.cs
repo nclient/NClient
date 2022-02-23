@@ -103,12 +103,12 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
                     resultBuilderProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
                     typedResultBuilderProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
                     toolset),
