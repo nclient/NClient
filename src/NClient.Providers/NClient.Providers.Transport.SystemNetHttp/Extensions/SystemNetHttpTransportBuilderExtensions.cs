@@ -8,7 +8,7 @@ namespace NClient
 {
     public static class SystemNetHttpTransportBuilderExtensions
     {
-        /// <summary>Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.</summary>
+        /// <summary>Sets System.Net.Http based transport.</summary>
         public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport<TClient>(
             this INClientTransportBuilder<TClient> transportBuilder)
             where TClient : class
@@ -22,7 +22,7 @@ namespace NClient
                     new SystemNetHttpResponseBuilderProvider());
         }
 
-        /// <summary>Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.</summary>
+        /// <summary>Sets System.Net.Http based transport.</summary>
         /// <param name="transportBuilder"></param>
         /// <param name="httpClient">The custom HTTP client.</param>
         public static INClientSerializationBuilder<TClient, HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport<TClient>(
@@ -39,7 +39,7 @@ namespace NClient
                     new SystemNetHttpResponseBuilderProvider());
         }
 
-        /// <summary>Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.</summary>
+        /// <summary>Sets System.Net.Http based transport.</summary>
         /// <param name="transportBuilder"></param>
         /// <param name="httpClientFactory">The factory abstraction used to create instance of <see cref="HttpClient"/> instances.</param>
         /// <param name="httpClientName">The logical name of <see cref="HttpClient"/> to create.</param>
@@ -57,7 +57,7 @@ namespace NClient
                 new SystemNetHttpResponseBuilderProvider());
         }
 
-        /// <summary>Sets System.Net.Http based <see cref="ITransportProvider{TRequest,TResponse}"/> used to create instance of <see cref="ITransport{TRequest,TResponse}"/>.</summary>
+        /// <summary>Sets System.Net.Http based transport.</summary>
         public static INClientFactorySerializationBuilder<HttpRequestMessage, HttpResponseMessage> UsingSystemNetHttpTransport(
             this INClientFactoryTransportBuilder transportBuilder)
         {

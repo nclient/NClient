@@ -17,6 +17,8 @@ namespace NClient.Providers.Transport.RestSharp
             _authenticator = authenticator;
         }
 
+        /// <summary>Creates RestSharp based transport.</summary>
+        /// <param name="toolset">Tools that help implement providers.</param>
         public ITransport<IRestRequest, IRestResponse> Create(IToolset toolset)
         {
             Ensure.IsNotNull(toolset, nameof(toolset));

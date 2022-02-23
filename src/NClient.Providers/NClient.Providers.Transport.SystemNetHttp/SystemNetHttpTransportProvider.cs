@@ -40,6 +40,8 @@ namespace NClient.Providers.Transport.SystemNetHttp
             _httpClientName = httpClientName;
         }
 
+        /// <summary>Creates System.Net.Http based transport.</summary>
+        /// <param name="toolset">Tools that help implement providers.</param>
         public ITransport<HttpRequestMessage, HttpResponseMessage> Create(IToolset toolset)
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
