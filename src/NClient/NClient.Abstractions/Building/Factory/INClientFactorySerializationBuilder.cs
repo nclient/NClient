@@ -3,6 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
+    /// <summary>Setter a custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>..</summary>
     public interface INClientFactorySerializationBuilder<TRequest, TResponse>
     {
         /// <summary>Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.</summary>

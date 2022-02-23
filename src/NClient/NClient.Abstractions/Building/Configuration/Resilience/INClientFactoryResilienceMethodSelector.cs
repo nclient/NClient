@@ -15,11 +15,11 @@ namespace NClient
         INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethods();
 
         /// <summary>Selects all methods of specific client.</summary>
-        /// <typeparam name="TClient">The type of client.</typeparam>
+        /// <typeparam name="TClient">The type of client interface.</typeparam>
         INClientFactoryResilienceSetter<TRequest, TResponse> ForAllMethodsOf<TClient>();
         
         /// <summary>Selects specific method of a client.</summary>
-        /// <typeparam name="TClient">The type of client.</typeparam>
+        /// <typeparam name="TClient">The type of client interface.</typeparam>
         INClientFactoryResilienceSetter<TRequest, TResponse> ForMethodOf<TClient>(Expression<Func<TClient, Delegate>> selector);
         
         /// <summary>Selects methods by condition.</summary>

@@ -8,7 +8,7 @@ using NClient.Providers.Transport;
 namespace NClient
 {
     /// <summary>An abstraction that allows the client to get transport response.</summary>
-    /// <typeparam name="TClient">The client type.</typeparam>
+    /// <typeparam name="TClient">The client interface type.</typeparam>
     public interface ITransportNClient<TClient>
     {
         /// <summary>Returns transport response of the server. </summary>

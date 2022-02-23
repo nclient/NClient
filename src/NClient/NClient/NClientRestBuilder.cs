@@ -7,7 +7,7 @@ namespace NClient
     {
         /// <summary>Sets client interface type and web service host.</summary>
         /// <param name="host">The address of the web service host.</param>
-        /// <typeparam name="TClient">The client interface type.</typeparam>
+        /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
         INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class;
     }
@@ -17,7 +17,7 @@ namespace NClient
     {
         /// <summary>Sets client interface type and web service host.</summary>
         /// <param name="host">The address of the web service host.</param>
-        /// <typeparam name="TClient">The client interface type.</typeparam>
+        /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
         public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(string host) 
             where TClient : class
         {

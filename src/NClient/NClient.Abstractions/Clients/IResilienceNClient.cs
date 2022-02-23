@@ -6,7 +6,7 @@ using NClient.Providers.Resilience;
 namespace NClient
 {
     /// <summary>An abstraction that allows the client to set specific resilience policy provider for a method.</summary>
-    /// <typeparam name="TClient">The client type.</typeparam>
+    /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
     public interface IResilienceNClient<TClient>
     {
         /// <summary>Makes a client method call with a specific resilience policy provider.</summary>
