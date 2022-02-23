@@ -5,26 +5,18 @@ using System.Text;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    /// <summary>
-    /// Response content.
-    /// </summary>
+    /// <summary>Response content.</summary>
     public class Content : IContent
     {
-        /// <summary>
-        /// Gets byte representation of response content.
-        /// </summary>
+        /// <summary>Gets byte representation of response content.</summary>
         public byte[] Bytes { get; }
         
-        /// <summary>
-        /// Gets response content encoding.
-        /// </summary>
+        /// <summary>Gets response content encoding.</summary>
         public Encoding? Encoding { get; }
         
-        /// <summary>
-        /// Gets metadata returned by server with the response content.
-        /// </summary>
+        /// <summary>Gets metadata returned by server with the response content.</summary>
         public IMetadataContainer Metadatas { get; }
-
+        
         [SuppressMessage("ReSharper", "UnusedVariable")]
         public Content(byte[]? bytes = null, string? encoding = null, IMetadataContainer? headerContainer = null)
         {
@@ -33,9 +25,7 @@ namespace NClient.Providers.Transport
             Metadatas = headerContainer ?? new MetadataContainer(Array.Empty<IMetadata>());
         }
 
-        /// <summary>
-        /// Gets string representation of response content.
-        /// </summary>
+        /// <summary>Gets string representation of response content.</summary>
         public override string ToString()
         {
             try

@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Proxy
 {
-    public interface IProxyGeneratorProvider
+    internal interface IProxyGeneratorProvider
     {
         IProxyGenerator Value { get; }
     }

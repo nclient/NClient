@@ -82,7 +82,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, host, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

@@ -13,8 +13,8 @@ namespace NClient.Standalone.Client.Handling
         public ClientHandlerDecorator(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers)
         {
             _clientHandlers = clientHandlers
-                .OrderByDescending(x => x is IOrderedClientHandler)
-                .ThenBy(x => (x as IOrderedClientHandler)?.Order)
+                .OrderByDescending(x => x is IOrderedClientHandler<TRequest, TResponse>)
+                .ThenBy(x => (x as IOrderedClientHandler<TRequest, TResponse>)?.Order)
                 .ToArray();
         }
 

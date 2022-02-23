@@ -6,6 +6,7 @@ using NClient.Providers.Api.Rest.Providers;
 
 namespace NClient.Providers.Api.Rest
 {
+    /// <summary>The provider of the request builder that turns a method call into a REST request.</summary>
     public class RestRequestBuilderProvider : IRequestBuilderProvider
     {
         private readonly IObjectMemberManager _objectMemberManager;
@@ -21,6 +22,8 @@ namespace NClient.Providers.Api.Rest
             _objectToKeyValueConverterExceptionFactory = new ObjectToKeyValueConverterExceptionFactory();
         }
         
+        /// <summary>Creates the request builder that turns a method call into a REST request.</summary>
+        /// <param name="toolset">Tools that help implement providers.</param>
         public IRequestBuilder Create(IToolset toolset)
         {
             return new RestRequestBuilder(

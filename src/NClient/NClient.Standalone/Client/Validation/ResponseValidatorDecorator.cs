@@ -13,8 +13,8 @@ namespace NClient.Standalone.Client.Validation
         public ResponseValidatorDecorator(IEnumerable<IResponseValidator<TRequest, TResponse>> responseValidators)
         {
             _responseValidators = responseValidators
-                .OrderByDescending(x => x is IOrderedResponseValidationSettings)
-                .ThenBy(x => (x as IOrderedResponseValidationSettings)?.Order)
+                .OrderByDescending(x => x is IOrderedResponseValidation<TRequest, TResponse>)
+                .ThenBy(x => (x as IOrderedResponseValidation<TRequest, TResponse>)?.Order)
                 .ToArray();
         }
 

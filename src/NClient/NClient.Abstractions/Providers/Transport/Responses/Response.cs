@@ -4,19 +4,13 @@ using NClient.Common.Helpers;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
-    /// <summary>
-    /// The container for response data with deserialized body.
-    /// </summary>
+    /// <summary>The container for response data with deserialized body.</summary>
     public class Response<TData> : Response, IResponse<TData>
     {
-        /// <summary>
-        /// The object obtained as a result of deserialization of the body.
-        /// </summary>
+        /// <summary>The object obtained as a result of deserialization of the body.</summary>
         public TData? Data { get; }
 
-        /// <summary>
-        /// Creates the container for response data.
-        /// </summary>
+        /// <summary>Initializes the container for response data.</summary>
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
@@ -26,15 +20,16 @@ namespace NClient.Providers.Transport
             Data = data;
         }
 
-        /// <summary>
-        /// Throws an exception if the IsSuccessful property for the response is false.
-        /// </summary>
+        /// <summary>Throws an exception if the IsSuccessful property for the response is false.</summary>
         public new Response<TData> EnsureSuccess()
         {
             base.EnsureSuccess();
             return this;
         }
 
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="response">The response containing a response context.</param>
         public void Deconstruct(out TData? data, out IResponse response)
         {
             data = Data;
@@ -42,56 +37,40 @@ namespace NClient.Providers.Transport
         }
     }
 
-    /// <summary>
-    /// The container for response data.
-    /// </summary>
+    /// <summary>The container for response data.</summary>
     public class Response : IResponse
     {
-        /// <summary>
-        /// The request that the response belongs to.
-        /// </summary>
+        /// <summary>The request that the response belongs to.</summary>
         public IRequest Request { get; }
-        /// <summary>
-        /// Gets string representation of response content.
-        /// </summary>
+        
+        /// <summary>Gets string representation of response content.</summary>
         public IContent Content { get; set; }
-        /// <summary>
-        /// Gets response status code.
-        /// </summary>
+
+        /// <summary>Gets response status code.</summary>
         public int StatusCode { get; set; }
-        /// <summary>
-        /// Gets description of status returned.
-        /// </summary>
+        
+        /// <summary>Gets description of status returned.</summary>
         public string? StatusDescription { get; set; }
-        /// <summary>
-        /// Gets the endpoint that actually responded to the content (different from request if redirected).
-        /// </summary>
+        
+        /// <summary>Gets the endpoint that actually responded to the content (different from request if redirected).</summary>
         public string? Endpoint { get; set; }
-        /// <summary>
-        /// Gets metadata returned by server with the response.
-        /// </summary>
+        
+        /// <summary>Gets metadata returned by server with the response.</summary>
         public IMetadataContainer Metadatas { get; set; }
-        /// <summary>
-        /// Gets error generated while attempting request.
-        /// </summary>
+        
+        /// <summary>Gets error generated while attempting request.</summary>
         public string? ErrorMessage { get; set; }
-        /// <summary>
-        /// Gets the exception thrown when error is encountered.
-        /// </summary>
+        
+        /// <summary>Gets the exception thrown when error is encountered.</summary>
         public Exception? ErrorException { get; set; }
-        /// <summary>
-        /// Gets the protocol version (1.0, 1.1, etc).
-        /// </summary>
+        
+        /// <summary>Gets the protocol version (1.0, 1.1, etc).</summary>
         public Version? ProtocolVersion { get; set; }
 
-        /// <summary>
-        /// Gets information about the success of the request.
-        /// </summary>
+        /// <summary>Gets information about the success of the request.</summary>
         public bool IsSuccessful { get; set; }
 
-        /// <summary>
-        /// Creates the container for response data.
-        /// </summary>
+        /// <summary>Initializes the container for response data.</summary>
         /// <param name="transportRequest">The request that the response belongs to.</param>
         public Response(IRequest transportRequest)
         {
@@ -117,9 +96,7 @@ namespace NClient.Providers.Transport
             IsSuccessful = response.IsSuccessful;
         }
 
-        /// <summary>
-        /// Throws an exception if the IsSuccessful property for the response is false.
-        /// </summary>
+        /// <summary>Throws an exception if the IsSuccessful property for the response is false.</summary>
         public IResponse EnsureSuccess()
         {
             if (!IsSuccessful)

@@ -5,22 +5,20 @@ using RestSharp.Authenticators;
 
 namespace NClient.Providers.Transport.RestSharp
 {
-    /// <summary>
-    /// The RestSharp based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
-    /// </summary>
+    /// <summary>The RestSharp based provider for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.</summary>
     public class RestSharpTransportProvider : ITransportProvider<IRestRequest, IRestResponse>
     {
         private readonly IAuthenticator? _authenticator;
 
-        /// <summary>
-        /// Creates the RestSharp based HTTP client provider.
-        /// </summary>
+        /// <summary>Initializes the RestSharp based HTTP client provider.</summary>
         /// <param name="authenticator">The RestSharp authenticator.</param>
         public RestSharpTransportProvider(IAuthenticator? authenticator = null)
         {
             _authenticator = authenticator;
         }
 
+        /// <summary>Creates RestSharp based transport.</summary>
+        /// <param name="toolset">Tools that help implement providers.</param>
         public ITransport<IRestRequest, IRestResponse> Create(IToolset toolset)
         {
             Ensure.IsNotNull(toolset, nameof(toolset));
