@@ -53,7 +53,7 @@ namespace NClient.Providers.Results.HttpResults
         /// <summary>Deconstructs response.</summary>
         /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
         /// <param name="httpResponse">The response containing an HTTP context.</param>
-        void IHttpResponseWithError<TError>.Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        void IHttpResponseWithError<TError>.Deconstruct(out TError? error, out IHttpResponse httpResponse)
         {
             error = Error;
             httpResponse = this;
