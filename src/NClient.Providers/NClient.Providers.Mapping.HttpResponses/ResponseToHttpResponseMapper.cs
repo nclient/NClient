@@ -8,7 +8,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping.HttpResponses
 {
-    public class ResponseToHttpResponseMapper : IResponseMapper<HttpRequestMessage, HttpResponseMessage>
+    internal class ResponseToHttpResponseMapper : IResponseMapper<HttpRequestMessage, HttpResponseMessage>
     {
         public bool CanMap(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {

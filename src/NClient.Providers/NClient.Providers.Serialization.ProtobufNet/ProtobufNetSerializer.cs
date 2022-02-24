@@ -5,7 +5,7 @@ using ProtoBuf;
 
 namespace NClient.Providers.Serialization.ProtobufNet
 {
-    public class ProtobufNetSerializer : ISerializer
+    internal class ProtobufNetSerializer : ISerializer
     {
         public string ContentType { get; }
 

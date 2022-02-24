@@ -6,6 +6,7 @@ using System.Linq;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport
 {
+    /// <summary>Represents the collection of additional information of a request or response.</summary>
     public class MetadataContainer : IMetadataContainer
     {
         private readonly Dictionary<string, IEnumerable<IMetadata>> _metadatas;
@@ -23,11 +24,15 @@ namespace NClient.Providers.Transport
                     g => (IEnumerable<IMetadata>) g.Select(x => x).ToList());
         }
 
+        /// <summary>Returns metadata by name.</summary>
+        /// <param name="name">The metadata name.</param>
         public IEnumerable<IMetadata> Get(string name)
         {
             return _metadatas[name];
         }
 
+        /// <summary>Adds metadata to the collection.</summary>
+        /// <param name="metadata">The metadata.</param>
         public void Add(IMetadata metadata)
         {
             _metadatas.TryGetValue(metadata.Name, out var currentMetadata);

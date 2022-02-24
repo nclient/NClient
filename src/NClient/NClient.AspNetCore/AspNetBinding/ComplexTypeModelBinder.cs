@@ -17,7 +17,7 @@ namespace NClient.AspNetCore.AspNetBinding
     /// <summary>
     /// <see cref="IModelBinder"/> implementation for binding complex types.
     /// </summary>
-    public class ComplexTypeModelBinder : IModelBinder
+    internal class ComplexTypeModelBinder : IModelBinder
     {
         // Don't want a new public enum because communication between the private and internal methods of this class
         // should not be exposed. Can't use an internal enum because types of [TheoryData] values must be public.

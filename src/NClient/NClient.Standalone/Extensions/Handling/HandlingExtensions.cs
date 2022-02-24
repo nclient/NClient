@@ -7,6 +7,10 @@ namespace NClient
 {
     public static class HandlingExtensions
     {
+        /// <summary>Sets handling operations that handles the transport messages.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="beforeRequest">These function will be executed before a request.</param>
+        /// <param name="afterRequest">These function will be executed after a request.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithHandling<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             Func<TRequest, TRequest> beforeRequest,
@@ -22,6 +26,10 @@ namespace NClient
                     beforeRequest, afterRequest)));
         }
         
+        /// <summary>Sets handling operations that handles the transport messages.</summary>
+        /// <param name="factoryOptionalBuilder"></param>
+        /// <param name="beforeRequest">These function will be executed before a request.</param>
+        /// <param name="afterRequest">These function will be executed after a request.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithHandling<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> factoryOptionalBuilder,
             Func<TRequest, TRequest> beforeRequest,
