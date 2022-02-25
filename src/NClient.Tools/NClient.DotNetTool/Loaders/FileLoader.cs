@@ -11,7 +11,7 @@ namespace NClient.DotNetTool.Loaders
             _path = path;
         }
         
-        public Task<string> Load()
+        public Task<string> LoadAsync()
         {
             #if NETFRAMEWORK
             return Task.FromResult(File.ReadAllText(_path));

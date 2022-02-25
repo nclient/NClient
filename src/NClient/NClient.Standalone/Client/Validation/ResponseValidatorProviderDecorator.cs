@@ -5,7 +5,7 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {
-    public class ResponseValidatorProviderDecorator<TRequest, TResponse> : IResponseValidatorProvider<TRequest, TResponse>
+    internal class ResponseValidatorProviderDecorator<TRequest, TResponse> : IResponseValidatorProvider<TRequest, TResponse>
     {
         private readonly IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> _responseValidatorProviders;
         

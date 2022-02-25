@@ -8,7 +8,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping.LanguageExt
 {
-    public class ResponseToEitherBuilder : IResponseMapper<IRequest, IResponse>
+    internal class ResponseToEitherBuilder : IResponseMapper<IRequest, IResponse>
     {
         private readonly IToolset _toolset;
         

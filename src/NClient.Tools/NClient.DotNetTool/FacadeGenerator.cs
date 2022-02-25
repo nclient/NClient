@@ -30,8 +30,10 @@ namespace NClient.DotNetTool
                 ?? (generationOptions as GenerationOptions.FacadeOptions)?.FacadeName
                 ?? "{controller}", 
                 generationOptions.Namespace,
-                generateClients: (generationOptions as GenerationOptions.FacadeOptions)?.GenerateClients ?? false,
-                generateFacades: (generationOptions as GenerationOptions.ClientOptions)?.GenerateFacades ?? false,
+                generateClients: generationOptions is GenerationOptions.ClientOptions 
+                || ((generationOptions as GenerationOptions.FacadeOptions)?.GenerateClients ?? false),
+                generateFacades: generationOptions is GenerationOptions.FacadeOptions 
+                || ((generationOptions as GenerationOptions.ClientOptions)?.GenerateFacades ?? false),
                 generationOptions.UseModelValidationAttributes,
                 generationOptions.UseNullableReferenceTypes,
                 generationOptions.UseCancellationToken,

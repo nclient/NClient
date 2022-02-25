@@ -7,7 +7,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping.HttpResponses
 {
-    public class ResponseToHttpResponseMapper : IResponseMapper<HttpRequestMessage, HttpResponseMessage>
+    internal class ResponseToHttpResponseMapper : IResponseMapper<HttpRequestMessage, HttpResponseMessage>
     {
         private readonly IToolset _toolset;
         

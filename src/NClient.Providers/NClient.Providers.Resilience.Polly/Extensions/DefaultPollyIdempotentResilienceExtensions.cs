@@ -10,11 +10,9 @@ namespace NClient
 {
     public static class DefaultPollyIdempotentResilienceExtensions
     {
-        /// <summary>
-        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
-        /// </summary>
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Create/Post).</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
+        /// <param name="settings">The settings for resilience policy provider.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyIdempotentResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IResiliencePolicySettings<TRequest, TResponse> settings)
@@ -34,6 +32,11 @@ namespace NClient
                     .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
 
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Create/Post).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="maxRetries">The max number of retries.</param>
+        /// <param name="getDelay">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="shouldRetry">The predicate to filter the results this policy will handle.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithPollyIdempotentResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)
@@ -47,11 +50,9 @@ namespace NClient
                 new ResiliencePolicySettings<TRequest, TResponse>(maxRetries, getDelay, shouldRetry));
         }
 
-        /// <summary>
-        /// Sets resilience policy provider for idempotent HTTP methods (all except POST).
-        /// </summary>
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Create/Post).</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="settings">The settings for default resilience policy provider.</param>
+        /// <param name="settings">The settings for resilience policy provider.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollyIdempotentResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             IResiliencePolicySettings<TRequest, TResponse> settings)
@@ -70,6 +71,11 @@ namespace NClient
                     .Use(new DefaultPollyResiliencePolicyProvider<TRequest, TResponse>(settings)));
         }
 
+        /// <summary>Sets a resilience policy provider for idempotent methods (all except Create/Post).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="maxRetries">The max number of retries.</param>
+        /// <param name="getDelay">The function that provides the duration to wait for for a particular retry attempt.</param>
+        /// <param name="shouldRetry">The predicate to filter the results this policy will handle.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithPollyIdempotentResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             int maxRetries, Func<int, TimeSpan> getDelay, Func<IResponseContext<TRequest, TResponse>, bool> shouldRetry)

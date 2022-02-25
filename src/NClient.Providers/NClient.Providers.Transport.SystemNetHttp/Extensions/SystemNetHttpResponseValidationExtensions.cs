@@ -6,6 +6,7 @@ namespace NClient
 {
     public static class SystemNetHttpResponseValidationExtensions
     {
+        /// <summary>Sets default System.Net.Http validation the contents of the response received from transport.</summary>
         public static INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> WithSystemNetHttpResponseValidation<TClient>(
             this INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> optionalBuilder) 
             where TClient : class
@@ -14,6 +15,7 @@ namespace NClient
                 .ForTransport().Use(new DefaultSystemNetHttpResponseValidatorSettings()));
         }
 
+        /// <summary>Sets default System.Net.Http validation the contents of the response received from transport.</summary>
         public static INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> WithSystemNetHttpResponseValidation(
             this INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> optionalBuilder)
         {

@@ -3,7 +3,7 @@ using NClient.Annotations;
 
 namespace NClient.Invocation
 {
-    public class MethodParam : IMethodParam
+    internal class MethodParam : IMethodParam
     {
         public string Name { get; }
         public Type Type { get; }

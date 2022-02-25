@@ -11,7 +11,7 @@ namespace NClient.AspNetCore.AspNetBinding
     /// <summary>
     /// An <see cref="IModelBinderProvider"/> for deserializing the request body using a formatter.
     /// </summary>
-    public class BodyModelBinderProvider : IModelBinderProvider
+    internal class BodyModelBinderProvider : IModelBinderProvider
     {
         private readonly IList<IInputFormatter> _formatters;
         private readonly IHttpRequestStreamReaderFactory _readerFactory;

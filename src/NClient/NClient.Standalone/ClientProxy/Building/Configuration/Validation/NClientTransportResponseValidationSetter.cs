@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NClient.Common.Helpers;
 using NClient.Providers.Validation;
-using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Context;
 
 namespace NClient.Standalone.ClientProxy.Building.Configuration.Validation

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
-using NClient.Providers.Api.Rest.Extensions;
 using NClient.Providers.Transport;
 using NUnit.Framework;
 using Polly;

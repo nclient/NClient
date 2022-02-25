@@ -5,6 +5,7 @@ namespace NClient
 {
     public static class ResultsExtensions
     {
+        /// <summary>Sets the mapper that converts NClient responses into NClient results with deserialized data.</summary>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseToResultMapping<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder) 
             where TClient : class
@@ -13,6 +14,7 @@ namespace NClient
                 .ForClient().Use(new ResponseToResultMapperProvider()));
         }
         
+        /// <summary>Sets the mapper that converts NClient responses into NClient results with deserialized data.</summary>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseToResultMapping<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder)
         {

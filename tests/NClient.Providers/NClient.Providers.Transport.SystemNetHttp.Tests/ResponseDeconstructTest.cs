@@ -24,29 +24,31 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         [Test]
         public void IResponseWithDataOrError_Deconstruct()
         {
-            var resultData = _fixture.Create<int>();
-            var error = _fixture.Create<string>();
-            var response = new ResponseWithError<int, string>(
-                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), 
+            var expectedData = _fixture.Create<int>();
+            var expectedData = _fixture.Create<string>();
+            var actualResponse = new ResponseWithError<int, string>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(expectedData)).Create(), 
                 _fixture.Build<Request>().Create(), 
-                resultData, error);
+                expectedData, expectedData);
 
-            var (data, err) = response;
-            data.Should().Be(resultData);
-            err.Should().Be(error);
+            var (data, error, response) = actualResponse;
+            data.Should().Be(expectedData);
+            error.Should().Be(expectedError);
+            response.Should().Be(actualResponse);
         }
 
         [Test]
         public void IResponseWithData_Deconstruct()
         {
-            var resultData = _fixture.Create<int>();
-            var response = new Response<int>(
-                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(resultData)).Create(), 
+            var expectedData = _fixture.Create<int>();
+            var actualResponse = new Response<int>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(expectedData)).Create(), 
                 _fixture.Build<Request>().Create(), 
-                resultData);
+                expectedData);
 
-            var (responseData, _) = response;
-            responseData.Should().Be(resultData);
+            var (data, response) = actualResponse;
+            data.Should().Be(expectedData);
+            response.Should().Be(actualResponse);
         }
         private static Content CreateFakeContent(int resultData)
         {
