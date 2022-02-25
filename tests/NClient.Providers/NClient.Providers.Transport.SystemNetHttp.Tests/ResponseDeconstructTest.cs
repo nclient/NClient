@@ -25,11 +25,11 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         public void IResponseWithDataOrError_Deconstruct()
         {
             var expectedData = _fixture.Create<int>();
-            var expectedData = _fixture.Create<string>();
+            var expectedError = _fixture.Create<string>();
             var actualResponse = new ResponseWithError<int, string>(
                 _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(expectedData)).Create(), 
                 _fixture.Build<Request>().Create(), 
-                expectedData, expectedData);
+                expectedData, expectedError);
 
             var (data, error, response) = actualResponse;
             data.Should().Be(expectedData);
