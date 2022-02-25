@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Testing.Common.Clients;
@@ -11,6 +12,12 @@ namespace NClient.Standalone.Tests.Clients
     {
         [GetMethod]
         new Task<int> GetAsync(int id);
+        
+        [GetMethod]
+        new Task<IEnumerable<int>> GetAsync([QueryParam] IEnumerable<int> ids);
+        
+        [GetMethod]
+        new Task<IDictionary<string, int>> GetAsync([QueryParam] IDictionary<string, int> keyValues);
 
         [PostMethod]
         new Task PostAsync([QueryParam] BasicEntity entity);

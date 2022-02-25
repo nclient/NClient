@@ -2,6 +2,7 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=92345632_002D556A_002D4D8D_002DBE26_002D1D6102310FCD_002Fd_003AAspNetRouting/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=92345632_002D556A_002D4D8D_002DBE26_002D1D6102310FCD_002Fd_003ACastle/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=93B399D9_002D3842_002D4B85_002DA06B_002D95E2F62B6F13_002Fd_003AAspNetBinding/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=47A43396_002D24E7_002D41E3_002DBA94_002D041EC1F82494_002Fd_003AAspNetCore/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	
 	
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ArgumentsStyleAnonymousFunction/@EntryIndexedValue">DO_NOT_SHOW</s:String>

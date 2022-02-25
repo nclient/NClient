@@ -3,7 +3,7 @@ using NClient.Exceptions;
 
 namespace NClient.AspNetCore.Exceptions.Factories
 {
-    public class ControllerObjectMemberManagerExceptionFactory : IObjectMemberManagerExceptionFactory
+    internal class ControllerObjectMemberManagerExceptionFactory : IObjectMemberManagerExceptionFactory
     {
         public NClientException MemberNameConflict(string memberName, string objectName) =>
             new ControllerValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");

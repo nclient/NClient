@@ -6,9 +6,6 @@ using NClient.Standalone.ClientProxy.Building.Context;
 // ReSharper disable once CheckNamespace
 namespace NClient
 {
-    /// <summary>
-    /// The factory used to create the client with custom providers.
-    /// </summary>
     internal class NClientFactory<TRequest, TResponse> : INClientFactory
     {
         private readonly BuilderContext<TRequest, TResponse> _builderContext;

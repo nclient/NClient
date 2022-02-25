@@ -6,11 +6,16 @@ using NClient.Providers.Validation;
 // ReSharper disable once CheckNamespace
 namespace NClient.Providers.Transport.SystemNetHttp
 {
+    /// <summary>The default response validation settings for System.Net.Http based transport.</summary>
     public class DefaultSystemNetHttpResponseValidatorSettings : IResponseValidatorSettings<HttpRequestMessage, HttpResponseMessage>
     {
+        /// <summary>Gets the predicate for determining the success of the response.</summary>
         public Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> IsSuccess { get; }
+        
+        /// <summary>Gets the action that will be invoked if the response is unsuccessful.</summary>
         public Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> OnFailure { get; }
         
+        /// <summary>Initializes the default response validation settings for System.Net.Http based transport.</summary>
         public DefaultSystemNetHttpResponseValidatorSettings() : this(
             isSuccess: x => x.Response.IsSuccessStatusCode,
             onFailure: x =>
@@ -27,6 +32,9 @@ namespace NClient.Providers.Transport.SystemNetHttp
         {
         }
         
+        /// <summary>Initializes the default response validation settings for System.Net.Http based transport with custom changes.</summary>
+        /// <param name="isSuccess">The predicate for determining the success of the response.</param>
+        /// <param name="onFailure">The action that will be invoked if the response is unsuccessful.</param>
         public DefaultSystemNetHttpResponseValidatorSettings(
             Predicate<IResponseContext<HttpRequestMessage, HttpResponseMessage>> isSuccess, 
             Action<IResponseContext<HttpRequestMessage, HttpResponseMessage>> onFailure)

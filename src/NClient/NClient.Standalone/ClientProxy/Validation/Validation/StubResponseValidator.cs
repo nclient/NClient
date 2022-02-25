@@ -4,7 +4,7 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.ClientProxy.Validation.Validation
 {
-    public class StubResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
+    internal class StubResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
         public bool IsSuccess(IResponseContext<TRequest, TResponse> responseContext)
         {

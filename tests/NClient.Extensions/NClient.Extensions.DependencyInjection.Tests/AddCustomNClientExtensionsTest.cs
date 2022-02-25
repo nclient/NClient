@@ -3,7 +3,6 @@ using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
-using NClient.Providers.Api.Rest.Extensions;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;

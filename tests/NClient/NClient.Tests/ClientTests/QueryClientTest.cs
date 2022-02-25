@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Standalone.Tests.Clients;
@@ -13,7 +14,7 @@ namespace NClient.Tests.ClientTests
     public class QueryClientTest
     {
         [Test]
-        public async Task QueryClient_GetAsync_IntInBody()
+        public async Task GetAsync_IntParam_IntInBody()
         {
             const int id = 1;
             using var api = QueryApiMockFactory.MockGetMethod(id);
@@ -23,9 +24,33 @@ namespace NClient.Tests.ClientTests
 
             result.Should().Be(id);
         }
+        
+        [Test]
+        public async Task GetAsync_EnumerableOfIntValuesParam_EnumerableOfIntValuesInBody()
+        {
+            var ids = new[] { 1, 2, 3 };
+            using var api = QueryApiMockFactory.MockGetMethod(ids);
+
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First().ToUri()).Build()
+                .GetAsync(ids);
+
+            result.Should().BeEquivalentTo(ids);
+        }
+        
+        [Test]
+        public async Task GetAsync_DictionaryOfIntValuesParam_DictionaryOfIntValuesInBody()
+        {
+            var keyValues = new Dictionary<string, int> { ["key1"] = 1, ["key2"] = 2, ["key3"] = 3 };
+            using var api = QueryApiMockFactory.MockGetMethod(nameof(keyValues), keyValues);
+
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First().ToUri()).Build()
+                .GetAsync(keyValues);
+
+            result.Should().BeEquivalentTo(keyValues);
+        }
 
         [Test]
-        public async Task QueryClient_PostAsync_NotThrow()
+        public async Task PostAsync_EntityParam_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = QueryApiMockFactory.MockPostMethod(entity);
@@ -37,7 +62,7 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test]
-        public async Task QueryClient_PutAsync_NotThrow()
+        public async Task PutAsync_EntityParam_NotThrow()
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = QueryApiMockFactory.MockPutMethod(entity);
@@ -49,7 +74,7 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test]
-        public async Task QueryClient_DeleteAsync_NotThrow()
+        public async Task DeleteAsync_IntParam_NotThrow()
         {
             const int id = 1;
             using var api = QueryApiMockFactory.MockDeleteMethod(id);

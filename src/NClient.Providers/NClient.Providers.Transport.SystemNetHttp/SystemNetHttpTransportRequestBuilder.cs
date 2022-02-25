@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
+using NClient.Providers.Transport.SystemNetHttp.AspNetCore;
 using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 // ReSharper disable UnusedVariable
@@ -21,9 +22,10 @@ namespace NClient.Providers.Transport.SystemNetHttp
         public Task<HttpRequestMessage> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             var parameters = request.Parameters
-                .ToDictionary(x => x.Name, x => x.Value!.ToString());
+                .Select(x => new KeyValuePair<string, string>(x.Name, x.Value!.ToString()))
+                .ToArray();
             var uri = new Uri(QueryHelpers.AddQueryString(request.Resource.ToString(), parameters));
 
             var httpRequestMessage = new HttpRequestMessage

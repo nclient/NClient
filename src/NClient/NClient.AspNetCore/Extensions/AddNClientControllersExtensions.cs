@@ -41,9 +41,9 @@ namespace NClient.AspNetCore.Extensions
                 new GuidProvider());
         }
 
-        /// <summary>
-        /// Adds a NClient controllers to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient controllers to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configure">An action to configure the provided MvcOptions.</param>
         public static IMvcCoreBuilder AddNClientControllers(this IServiceCollection serviceCollection,
             Action<MvcOptions>? configure = null)
         {
@@ -116,9 +116,7 @@ namespace NClient.AspNetCore.Extensions
             return builder;
         }
 
-        /// <summary>
-        /// Registers the NClient exception filter to the DI container.
-        /// </summary>
+        /// <summary>Registers the NClient exception filter to the DI container.</summary>
         public static IMvcCoreBuilder WithResponseExceptions(this IMvcCoreBuilder builder)
         {
             Ensure.IsNotNull(builder, nameof(builder));
