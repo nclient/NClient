@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Api.Tests.Stubs;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 

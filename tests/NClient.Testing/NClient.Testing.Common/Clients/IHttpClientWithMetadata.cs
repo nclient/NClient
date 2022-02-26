@@ -3,9 +3,8 @@ using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
-using IHttpClient = NClient.Testing.Common.Clients.IHttpClient;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     [Path("api/http")]
     public interface IHttpClientWithMetadata : IHttpClient

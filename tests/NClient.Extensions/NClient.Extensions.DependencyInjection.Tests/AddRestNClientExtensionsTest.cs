@@ -2,8 +2,8 @@
 using System.Net.Http;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Extensions.DependencyInjection.Tests.Helpers;
 using NClient.Providers.Transport;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using Polly;
@@ -18,9 +18,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri());
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
         }
         
@@ -30,10 +30,10 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
 
             serviceCollection.AddRestNClient(implementationFactory: (serviceProvider, builder) => builder
-                .For<ITestClientWithMetadata>(host: serviceProvider.GetRequiredService<Uri>())
+                .For<IBasicClientWithMetadata>(host: serviceProvider.GetRequiredService<Uri>())
                 .Build());
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -42,9 +42,9 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri());
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -53,11 +53,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .ConfigureNClient(builder => builder
                     .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)));
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
         }
 
@@ -66,11 +66,11 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .ConfigureNClient(builder => builder
                     .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 
-            var client = serviceCollection.BuildServiceProvider().GetService<ITestClientWithMetadata>();
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
         }
     }

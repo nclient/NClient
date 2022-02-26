@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using NClient.Core.Helpers;
-using NClient.Extensions.DependencyInjection.Tests.Helpers;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using NClient.Testing.Common.Clients;
 
 namespace NClient.Extensions.DependencyInjection.Tests
 {
@@ -22,12 +22,12 @@ namespace NClient.Extensions.DependencyInjection.Tests
             guidProvideMock.Setup(x => x.Create()).Returns(Guid.Empty);
             AddRestNClientExtensions.GuidProvider = new Mock<IGuidProvider>().Object;
 
-            serviceCollection.AddRestNClient<ITestClientWithMetadata>(host: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri())
                 .AsHttpClientBuilder()
                 .ConfigureHttpClient(x => x.DefaultRequestHeaders.Add(name: "Name", value: "Value"));
             
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var client = serviceProvider.GetService<ITestClientWithMetadata>();
+            var client = serviceProvider.GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             httpClientFactory.Should().NotBeNull();

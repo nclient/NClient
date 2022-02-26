@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Testing.Common.Clients;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     [Path("api/timeout")]
     public interface ITimeoutClientWithMetadata : ITimeoutClient

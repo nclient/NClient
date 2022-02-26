@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
