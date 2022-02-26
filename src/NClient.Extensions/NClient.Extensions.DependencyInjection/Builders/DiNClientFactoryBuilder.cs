@@ -6,14 +6,19 @@ namespace NClient.Extensions.DependencyInjection
     internal class DiNClientFactoryBuilder<TRequest, TResult> 
         : IHttpClientBuilder, IDiNClientFactoryBuilder<TRequest, TResult>
     {
-        private readonly IHttpClientBuilder _httpClientBuilder;
+        public string Name { get; }
+        public IServiceCollection Services { get; }
 
-        public string Name => _httpClientBuilder.Name;
-        public IServiceCollection Services => _httpClientBuilder.Services;
-
+        public DiNClientFactoryBuilder(string name, IServiceCollection services)
+        {
+            Name = name;
+            Services = services;
+        } 
+        
         public DiNClientFactoryBuilder(IHttpClientBuilder httpClientBuilder)
         {
-            _httpClientBuilder = httpClientBuilder;
+            Name = httpClientBuilder.Name;
+            Services = httpClientBuilder.Services;
         }
     }
 }

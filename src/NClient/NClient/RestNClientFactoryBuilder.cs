@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NClient.Common.Helpers;
 
 namespace NClient
 {
@@ -17,21 +18,25 @@ namespace NClient
     /// </summary>
     public class RestNClientFactoryBuilder : IRestNClientFactoryBuilder
     {
+        private readonly string? _internalFactoryName;
         private readonly IServiceProvider? _serviceProvider;
 
         public RestNClientFactoryBuilder()
         {
         }
         
-        public RestNClientFactoryBuilder(IServiceProvider serviceProvider)
+        internal RestNClientFactoryBuilder(string internalFactoryName, IServiceProvider serviceProvider)
         {
+            _internalFactoryName = internalFactoryName;
             _serviceProvider = serviceProvider;
         }
         
         public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
+            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
+            
             var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitor<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>>();
-            var builderOptions = optionsMonitor?.Get(factoryName);
+            var builderOptions = optionsMonitor?.Get(_internalFactoryName);
             var httpClientFactory = _serviceProvider?.GetService<IHttpClientFactory>();
             var jsonSerializerOptions = _serviceProvider?.GetService<IOptions<JsonSerializerOptions>>()?.Value;
             var loggerFactory = _serviceProvider?.GetService<ILoggerFactory>();
@@ -41,7 +46,7 @@ namespace NClient
                 .UsingRestApi();
             var serializationBuilder = httpClientFactory is null
                 ? transportBuilder.UsingSystemNetHttpTransport()
-                : transportBuilder.UsingSystemNetHttpTransport(httpClientFactory, factoryName);
+                : transportBuilder.UsingSystemNetHttpTransport(httpClientFactory, _internalFactoryName);
             var optionalBuilder = jsonSerializerOptions is null
                 ? serializationBuilder.UsingSystemTextJsonSerialization()
                 : serializationBuilder.UsingSystemTextJsonSerialization(jsonSerializerOptions);

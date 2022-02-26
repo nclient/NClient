@@ -12,9 +12,7 @@ namespace NClient.Extensions.DependencyInjection
     {
         internal static IGuidProvider GuidProvider { get; set; } = new GuidProvider();
 
-        /// <summary>
-        /// Adds a NClient client to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
@@ -26,59 +24,55 @@ namespace NClient.Extensions.DependencyInjection
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             
-            var clientName = GuidProvider.Create().ToString();
-            var httpClientBuilder = serviceCollection.AddHttpClient(clientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            var internalClientName = GuidProvider.Create().ToString();
+            var httpClientBuilder = serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
             serviceCollection.AddSingleton(serviceProvider =>
             {
-                return new RestNClientBuilder(serviceProvider, clientName)
+                return new RestNClientBuilder(internalClientName, serviceProvider)
                     .For<TClient>(host)
                     .Build();
             });
             return new DiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage>(httpClientBuilder);
         }
         
-        /// <summary>
-        /// Adds a NClient client to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IDiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage> AddRestNClient<TClient>(
             this IServiceCollection serviceCollection,
-            Func<RestNClientBuilder, TClient> implementationFactory)
+            Func<IRestNClientBuilder, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            var clientName = GuidProvider.Create().ToString();
-            var httpClientBuilder = serviceCollection.AddHttpClient(clientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            var internalClientName = GuidProvider.Create().ToString();
+            var httpClientBuilder = serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
             serviceCollection.AddSingleton(serviceProvider =>
             {
-                return implementationFactory(new RestNClientBuilder(serviceProvider, clientName));
+                return implementationFactory(new RestNClientBuilder(internalClientName, serviceProvider));
             });
             return new DiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage>(httpClientBuilder);
         }
         
-        /// <summary>
-        /// Adds a NClient client to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IDiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage> AddRestNClient<TClient>(
             this IServiceCollection serviceCollection,
-            Func<IServiceProvider, RestNClientBuilder, TClient> implementationFactory)
+            Func<IServiceProvider, IRestNClientBuilder, TClient> implementationFactory)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
-            var clientName = GuidProvider.Create().ToString();
-            var httpClientBuilder = serviceCollection.AddHttpClient(clientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            var internalClientName = GuidProvider.Create().ToString();
+            var httpClientBuilder = serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
             serviceCollection.AddSingleton(serviceProvider =>
             {
-                return implementationFactory(serviceProvider, new RestNClientBuilder(serviceProvider, clientName));
+                return implementationFactory(serviceProvider, new RestNClientBuilder(internalClientName, serviceProvider));
             });
             return new DiNClientBuilder<TClient, HttpRequestMessage, HttpResponseMessage>(httpClientBuilder);
         }

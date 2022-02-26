@@ -16,7 +16,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClientFactory();
+            serviceCollection.AddRestNClientFactory(factoryName: "factoryName");
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -27,7 +27,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClientFactory();
+            serviceCollection.AddRestNClientFactory(factoryName: "factoryName");
 
             var client = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             client.Should().NotBeNull();
@@ -38,7 +38,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClientFactory()
+            serviceCollection.AddRestNClientFactory(factoryName: "factoryName")
                 .ConfigureNClient(builder => builder
                     .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)));
 
@@ -51,7 +51,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             var serviceCollection = new ServiceCollection().AddLogging();
 
-            serviceCollection.AddRestNClientFactory()
+            serviceCollection.AddRestNClientFactory(factoryName: "factoryName")
                 .ConfigureNClient(builder => builder
                     .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
 

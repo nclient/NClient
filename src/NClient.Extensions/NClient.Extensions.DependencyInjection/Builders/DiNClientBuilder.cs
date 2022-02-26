@@ -7,14 +7,19 @@ namespace NClient.Extensions.DependencyInjection
         : IHttpClientBuilder, IDiNClientBuilder<TClient, TRequest, TResult>
         where TClient : class
     {
-        private readonly IHttpClientBuilder _httpClientBuilder;
+        public string Name { get; }
+        public IServiceCollection Services { get; }
 
-        public string Name => _httpClientBuilder.Name;
-        public IServiceCollection Services => _httpClientBuilder.Services;
-
+        public DiNClientBuilder(string name, IServiceCollection services)
+        {
+            Name = name;
+            Services = services;
+        } 
+        
         public DiNClientBuilder(IHttpClientBuilder httpClientBuilder)
         {
-            _httpClientBuilder = httpClientBuilder;
+            Name = httpClientBuilder.Name;
+            Services = httpClientBuilder.Services;
         }
     }
 }

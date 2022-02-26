@@ -10,11 +10,37 @@ namespace NClient.Extensions.DependencyInjection
     {
         internal static IGuidProvider GuidProvider { get; set; } = new GuidProvider();
         
-        /// <summary>
-        /// Adds a NClient factory to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient factory to the DI container.</summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="implementationFactory">The action to configure NClient factory settings.</param>
+        /// <param name="factoryName">The name of the factory.</param>
+        /// <param name="implementationFactory">The action to create client factory with builder.</param>
+        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
+            string factoryName, Func<INClientFactoryApiBuilder, INClientFactory> implementationFactory)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
+
+            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientFactoryBuilder().For(factoryName)));
+        }
+        
+        /// <summary>Adds a NClient factory to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="factoryName">The name of the factory.</param>
+        /// <param name="implementationFactory">The action to create client factory with builder.</param>
+        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
+            string factoryName, Func<IServiceProvider, INClientFactoryApiBuilder, INClientFactory> implementationFactory)
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
+            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
+
+            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientFactoryBuilder().For(factoryName)));
+        }
+        
+        /// <summary>Adds a NClient factory to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="implementationFactory">The action to create client factory with builder.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
             Func<INClientFactoryApiBuilder, INClientFactory> implementationFactory)
         {
@@ -27,11 +53,9 @@ namespace NClient.Extensions.DependencyInjection
                 implementationFactory);
         }
         
-        /// <summary>
-        /// Adds a NClient factory to the DI container.
-        /// </summary>
+        /// <summary>Adds a NClient factory to the DI container.</summary>
         /// <param name="serviceCollection"></param>
-        /// <param name="implementationFactory">The action to configure NClient factory settings.</param>
+        /// <param name="implementationFactory">The action to create client factory with builder.</param>
         public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
             Func<IServiceProvider, INClientFactoryApiBuilder, INClientFactory> implementationFactory)
         {
@@ -42,38 +66,6 @@ namespace NClient.Extensions.DependencyInjection
                 serviceCollection,
                 factoryName: GuidProvider.Create().ToString(),
                 implementationFactory);
-        }
-
-        /// <summary>
-        /// Adds a NClient factory to the DI container.
-        /// </summary>
-        /// <param name="serviceCollection"></param>
-        /// <param name="factoryName">The name of the factory.</param>
-        /// <param name="implementationFactory">The action to configure NClient factory settings.</param>
-        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            string factoryName, Func<INClientFactoryApiBuilder, INClientFactory> implementationFactory)
-        {
-            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
-            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
-
-            return serviceCollection.AddSingleton(_ => implementationFactory(new NClientFactoryBuilder().For(factoryName)));
-        }
-        
-        /// <summary>
-        /// Adds a NClient factory to the DI container.
-        /// </summary>
-        /// <param name="serviceCollection"></param>
-        /// <param name="factoryName">The name of the factory.</param>
-        /// <param name="implementationFactory">The action to configure NClient factory settings.</param>
-        public static IServiceCollection AddCustomNClientFactory(this IServiceCollection serviceCollection,
-            string factoryName, Func<IServiceProvider, INClientFactoryApiBuilder, INClientFactory> implementationFactory)
-        {
-            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
-            Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
-
-            return serviceCollection.AddSingleton(serviceProvider => implementationFactory(serviceProvider, new NClientFactoryBuilder().For(factoryName)));
         }
     }
 }

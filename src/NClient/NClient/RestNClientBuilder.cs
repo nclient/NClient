@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NClient.Common.Helpers;
 
 namespace NClient
 {
@@ -18,34 +19,36 @@ namespace NClient
     /// </summary>
     public class RestNClientBuilder : IRestNClientBuilder
     {
+        private readonly string? _internalClientName;
         private readonly IServiceProvider? _serviceProvider;
-        private readonly string? _clientName;
 
         public RestNClientBuilder()
         {
         }
         
-        public RestNClientBuilder(IServiceProvider serviceProvider, string clientName)
+        public RestNClientBuilder(string internalClientName, IServiceProvider serviceProvider)
         {
+            _internalClientName = internalClientName;
             _serviceProvider = serviceProvider;
-            _clientName = clientName;
         }
 
         public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri host) 
             where TClient : class
         {
+            Ensure.IsNotNull(host, nameof(host));
+            
             var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitor<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
-            var builderOptions = optionsMonitor?.Get(_clientName);
+            var builderOptions = optionsMonitor?.Get(_internalClientName);
             var httpClientFactory = _serviceProvider?.GetService<IHttpClientFactory>();
             var jsonSerializerOptions = _serviceProvider?.GetService<IOptions<JsonSerializerOptions>>()?.Value;
             var loggerFactory = _serviceProvider?.GetService<ILoggerFactory>();
-            
+
             var transportBuilder = new NClientBuilder()
                 .For<TClient>(host)
                 .UsingRestApi();
             var serializationBuilder = httpClientFactory is null
                 ? transportBuilder.UsingSystemNetHttpTransport()
-                : transportBuilder.UsingSystemNetHttpTransport(httpClientFactory, _clientName);
+                : transportBuilder.UsingSystemNetHttpTransport(httpClientFactory, _internalClientName);
             var optionalBuilder = jsonSerializerOptions is null
                 ? serializationBuilder.UsingSystemTextJsonSerialization()
                 : serializationBuilder.UsingSystemTextJsonSerialization(jsonSerializerOptions);
