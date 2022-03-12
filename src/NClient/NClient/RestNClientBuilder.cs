@@ -36,9 +36,11 @@ namespace NClient
             where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
-            
-            var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitor<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
-            var builderOptions = optionsMonitor?.Get(_internalClientName);
+
+            var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitorCache<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
+            var defaultOptions = _serviceProvider?.GetService<IOptions<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>()?.Value
+                ?? new NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>();
+            var builderOptions = optionsMonitor?.GetOrAdd(_internalClientName, createOptions: () => defaultOptions);
             var httpClientFactory = _serviceProvider?.GetService<IHttpClientFactory>();
             var jsonSerializerOptions = _serviceProvider?.GetService<IOptions<JsonSerializerOptions>>()?.Value;
             var loggerFactory = _serviceProvider?.GetService<ILoggerFactory>();

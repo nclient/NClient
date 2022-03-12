@@ -35,8 +35,10 @@ namespace NClient
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));
             
-            var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitor<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>>();
-            var builderOptions = optionsMonitor?.Get(_internalFactoryName);
+            var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitorCache<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>>();
+            var defaultOptions = _serviceProvider?.GetService<IOptions<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>>()?.Value
+                ?? new NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>();
+            var builderOptions = optionsMonitor?.GetOrAdd(_internalFactoryName, createOptions: () => defaultOptions);
             var httpClientFactory = _serviceProvider?.GetService<IHttpClientFactory>();
             var jsonSerializerOptions = _serviceProvider?.GetService<IOptions<JsonSerializerOptions>>()?.Value;
             var loggerFactory = _serviceProvider?.GetService<ILoggerFactory>();

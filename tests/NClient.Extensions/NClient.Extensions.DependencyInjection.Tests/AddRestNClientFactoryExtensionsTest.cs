@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -126,6 +127,32 @@ namespace NClient.Extensions.DependencyInjection.Tests
                         isSuccess: _ => false,
                         onFailure: _ => throw new InvalidOperationException())
                     .Build());
+
+            var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            clientFactory.Should().NotBeNull();
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            client.Should().NotBeNull();
+            await client.Invoking(x => x!.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<ClientRequestException>()
+                .WithInnerException<ClientRequestException, InvalidOperationException>();
+        }
+        
+        [Test]
+        public async Task AddRestNClientFactory_OptionsWithResponseValidation_UseOptions()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().Configure<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>(x =>
+            {
+                x.BuilderActions.Add(builder => builder
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException()));
+            });
+
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();

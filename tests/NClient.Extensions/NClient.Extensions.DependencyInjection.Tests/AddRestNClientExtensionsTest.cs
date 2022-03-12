@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -119,6 +120,30 @@ namespace NClient.Extensions.DependencyInjection.Tests
                         isSuccess: _ => false,
                         onFailure: _ => throw new InvalidOperationException())
                     .Build());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            await client.Invoking(x => x!.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<ClientRequestException>()
+                .WithInnerException<ClientRequestException, InvalidOperationException>();
+        }
+        
+        [Test]
+        public async Task AddRestNClient_OptionsWithResponseValidation_UseOptions()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().Configure<NClientBuilderOptions<IBasicClientWithMetadata, HttpRequestMessage, HttpResponseMessage>>(x =>
+            {
+                x.BuilderActions.Add(builder => builder
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException()));
+            });
+
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
