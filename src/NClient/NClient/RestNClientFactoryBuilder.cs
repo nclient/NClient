@@ -8,14 +8,15 @@ using NClient.Common.Helpers;
 
 namespace NClient
 {
+    /// <summary>The client builder factory for a REST-like web API with JSON-formatted data.</summary>
     public interface IRestNClientFactoryBuilder
     {
+        /// <summary>Sets factory name. The factory name does not affect the functionality, it may be needed to identify the factory.</summary>
+        /// <param name="factoryName">The factory name.</param>
         INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName);
     }
     
-    /// <summary>
-    /// The builder used to create the client factory.
-    /// </summary>
+    /// <summary>The client builder factory for a REST-like web API with JSON-formatted data.</summary>
     public class RestNClientFactoryBuilder : IRestNClientFactoryBuilder
     {
         private readonly string? _internalFactoryName;
@@ -31,6 +32,8 @@ namespace NClient
             _serviceProvider = serviceProvider;
         }
         
+        /// <summary>Sets factory name. The factory name does not affect the functionality, it may be needed to identify the factory.</summary>
+        /// <param name="factoryName">The factory name.</param>
         public INClientFactoryOptionalBuilder<HttpRequestMessage, HttpResponseMessage> For(string factoryName)
         {
             Ensure.IsNotNullOrEmpty(factoryName, nameof(factoryName));

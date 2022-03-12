@@ -17,6 +17,20 @@ namespace NClient.Extensions.DependencyInjection
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
+            string host)
+            where TClient : class
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(host, nameof(host));
+            
+            return AddRestNClient<TClient>(serviceCollection, new Uri(host));
+        }
+        
+        /// <summary>Adds a NClient client to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
             Uri host)
             where TClient : class
         {

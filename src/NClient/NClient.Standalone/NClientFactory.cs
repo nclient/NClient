@@ -18,6 +18,12 @@ namespace NClient
             _builderContext = builderContext;
         }
         
+        public TClient Create<TClient>(string host) where TClient : class
+        {
+            Ensure.IsNotNull(host, nameof(host));
+            return Create<TClient>(new Uri(host));
+        }
+        
         public TClient Create<TClient>(Uri host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
