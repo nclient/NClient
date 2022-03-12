@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Net.Http;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using NClient.Providers.Transport;
+using Moq;
+using NClient.Exceptions;
+using NClient.Extensions.DependencyInjection.Tests.Helpers;
+using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
-using Polly;
 
 namespace NClient.Extensions.DependencyInjection.Tests
 {
@@ -14,64 +18,160 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class AddRestNClientExtensionsTest
     {
         [Test]
-        public void AddRestNClient_WithoutHttpClientAndLogging_NotBeNull()
+        public async Task AddRestNClient_WithoutHttpClientAndLogging_NotThrow()
         {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri());
+            
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
         }
         
         [Test]
-        public void AddRestNClient_WithHostProvider_NotBeNull()
+        public async Task AddRestNClient_WithHostProvider_UseHostFromServices()
         {
-            var serviceCollection = new ServiceCollection().AddSingleton("http://localhost:5000".ToUri());
-
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().AddSingleton(api.Urls.First().ToUri());
+            
             serviceCollection.AddRestNClient(implementationFactory: (serviceProvider, builder) => builder
                 .For<IBasicClientWithMetadata>(host: serviceProvider.GetRequiredService<Uri>())
                 .Build());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
         }
 
         [Test]
-        public void AddRestNClient_WithLogging_NotBeNull()
+        public async Task AddRestNClient_WithLogging_UseLoggerFromServices()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var loggerMock = LoggerMockFactory.Create<IBasicClientWithMetadata>();
+            var loggerFactoryMock = LoggerFactoryMockFactory.Create(loggerMock);
+            var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object);
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
+            loggerFactoryMock.VerifyCreateLogger<IBasicClientWithMetadata>(Times.Once());
+            loggerMock.VerifyLog(Times.AtLeast(1));
+        }
+        
+        #if !NETFRAMEWORK
+        [Test]
+        public async Task AddRestNClient_WithControllerJsonSerializerOptions_DoNotUseJsonOptions()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var constIntJsonConverter = new ConstIntJsonConverter();
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(constIntJsonConverter);
+            });
+
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
+        }
+        #endif
+        
+        [Test]
+        public async Task AddRestNClient_WithJsonSerializerOptions_UseOptionsFormServices()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var constIntJsonConverter = new ConstIntJsonConverter();
+            var serviceCollection = new ServiceCollection().Configure<JsonSerializerOptions>(x =>
+            {
+                x.Converters.Add(constIntJsonConverter);
+            });
+
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(constIntJsonConverter.Value);
+        }
+        
+        [Test]
+        public async Task AddRestNClient_ImplementationFactory_UseImplementationFactory()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var host = api.Urls.First().ToUri();
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddRestNClient(implementationFactory: builder =>
+                builder.For<IBasicClientWithMetadata>(host)
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException())
+                    .Build());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            await client.Invoking(x => x!.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<ClientRequestException>()
+                .WithInnerException<ClientRequestException, InvalidOperationException>();
         }
 
         [Test]
-        public void AddRestNClient_Builder_NotBeNull()
+        public async Task AddRestNClient_ConfigureNClient_ApplyConfiguration()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri())
                 .ConfigureNClient(builder => builder
-                    .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0)));
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException()));
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
+            await client.Invoking(x => x!.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<ClientRequestException>()
+                .WithInnerException<ClientRequestException, InvalidOperationException>();
         }
-
+        
         [Test]
-        public void AddRestNClient_BuilderWithCustomSettings_NotBeNull()
+        public async Task AddRestNClient_ImplementationFactoryAndConfigureNClient_UseConfiguration()
         {
-            var serviceCollection = new ServiceCollection().AddLogging();
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var host = api.Urls.First().ToUri();
+            var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: "http://localhost:5000".ToUri())
+            serviceCollection.AddRestNClient(implementationFactory: builder =>
+                    builder.For<IBasicClientWithMetadata>(host)
+                        .WithoutResponseValidation()
+                        .WithResponseValidation(
+                            isSuccess: _ => false,
+                            onFailure: _ => throw new InvalidOperationException())
+                        .Build())
                 .ConfigureNClient(builder => builder
-                    .WithPollyFullResilience(Policy.NoOpAsync<IResponseContext<HttpRequestMessage, HttpResponseMessage>>()));
+                    .WithoutResponseValidation()
+                    .WithResponseValidation());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
         }
     }
 }

@@ -63,13 +63,14 @@ namespace NClient
 
             if (builderOptions is null)
                 return optionalBuilder;
-            
+
+            var finalBuilder = optionalBuilder;
             foreach (var builderAction in builderOptions.BuilderActions)
             {
-                builderAction.Invoke(optionalBuilder);
+                finalBuilder = builderAction.Invoke(optionalBuilder);
             }
             
-            return optionalBuilder;
+            return finalBuilder;
         }
     }
 }
