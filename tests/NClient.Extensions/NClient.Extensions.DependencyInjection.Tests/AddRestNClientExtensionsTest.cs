@@ -127,51 +127,5 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 .ThrowExactlyAsync<ClientRequestException>()
                 .WithInnerException<ClientRequestException, InvalidOperationException>();
         }
-
-        [Test]
-        public async Task AddRestNClient_ConfigureNClient_ApplyConfiguration()
-        {
-            const int id = 1;
-            using var api = BasicApiMockFactory.MockGetMethod(id);
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri())
-                .ConfigureNClient(builder => builder
-                    .WithoutResponseValidation()
-                    .WithResponseValidation(
-                        isSuccess: _ => false,
-                        onFailure: _ => throw new InvalidOperationException()));
-
-            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
-            client.Should().NotBeNull();
-            await client.Invoking(x => x!.GetAsync(id))
-                .Should()
-                .ThrowExactlyAsync<ClientRequestException>()
-                .WithInnerException<ClientRequestException, InvalidOperationException>();
-        }
-        
-        [Test]
-        public async Task AddRestNClient_ImplementationFactoryAndConfigureNClient_UseConfiguration()
-        {
-            const int id = 1;
-            using var api = BasicApiMockFactory.MockGetMethod(id);
-            var host = api.Urls.First().ToUri();
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddRestNClient(implementationFactory: builder =>
-                    builder.For<IBasicClientWithMetadata>(host)
-                        .WithoutResponseValidation()
-                        .WithResponseValidation(
-                            isSuccess: _ => false,
-                            onFailure: _ => throw new InvalidOperationException())
-                        .Build())
-                .ConfigureNClient(builder => builder
-                    .WithoutResponseValidation()
-                    .WithResponseValidation());
-
-            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
-            client.Should().NotBeNull();
-            (await client!.GetAsync(id)).Should().Be(id);
-        }
     }
 }

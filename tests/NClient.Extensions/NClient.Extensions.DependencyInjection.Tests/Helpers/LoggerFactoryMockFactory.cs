@@ -14,7 +14,7 @@ namespace NClient.Extensions.DependencyInjection.Tests.Helpers
 
         public static void VerifyCreateLogger<T>(this Mock<ILoggerFactory> mock, Times times)
         {
-            mock.Verify(x => x.CreateLogger(typeof(T).FullName), times);
+            mock.Verify(x => x.CreateLogger(typeof(T).FullName!), times);
         }
     }
 }
