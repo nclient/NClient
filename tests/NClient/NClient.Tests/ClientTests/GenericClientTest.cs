@@ -4,7 +4,6 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -19,7 +18,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Value = 1 };
             using var api = GenericApiMockFactory.MockPostMethod(entity, id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IGenericClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IGenericClientWithMetadata>(host: api.Urls.First()).Build()
                 .PostAsync(entity);
 
             result.Should().Be(id);

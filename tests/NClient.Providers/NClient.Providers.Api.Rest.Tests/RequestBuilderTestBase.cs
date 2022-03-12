@@ -77,13 +77,13 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
-            return BuildRequest(host: "http://localhost:5000".ToUri(), method, arguments);
+            return BuildRequest(host: "http://localhost:5000", method, arguments);
         }
 
-        internal IRequest BuildRequest(Uri host, IMethod method, params object[] arguments)
+        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, host, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, host.ToUri(), new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

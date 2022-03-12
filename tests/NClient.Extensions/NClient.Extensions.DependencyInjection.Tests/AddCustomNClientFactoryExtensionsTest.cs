@@ -11,7 +11,6 @@ using NClient.Exceptions;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Extensions.DependencyInjection.Tests
@@ -36,7 +35,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             client.Should().NotBeNull();
             (await client.GetAsync(id)).Should().Be(id);
         }
@@ -57,7 +56,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             client.Should().NotBeNull();
             (await client.GetAsync(id)).Should().Be(id);
         }
@@ -82,7 +81,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             (await client.GetAsync(id)).Should().Be(id);
             loggerFactoryMock.VerifyCreateLogger<IBasicClientWithMetadata>(Times.Once());
             loggerMock.VerifyLog(Times.AtLeast(1));
@@ -111,7 +110,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             client.Should().NotBeNull();
             (await client.GetAsync(id)).Should().Be(id);
         }
@@ -138,7 +137,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             (await client.GetAsync(id)).Should().Be(constIntJsonConverter.Value);
         }
         
@@ -163,7 +162,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
-            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
             client.Should().NotBeNull();
             await client.Invoking(x => x!.GetAsync(id))
                 .Should()

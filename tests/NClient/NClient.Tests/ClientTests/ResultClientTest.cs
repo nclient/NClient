@@ -5,7 +5,6 @@ using FluentAssertions.Execution;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
@@ -19,7 +18,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResultApiMockFactory.MockGetIntMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -34,7 +33,7 @@ namespace NClient.Tests.ClientTests
             var expectedError = new Error { Message = "Error" };
             using var api = ResultApiMockFactory.MockGetNotFoundIntMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -49,7 +48,7 @@ namespace NClient.Tests.ClientTests
             var expectedEntity = new BasicEntity { Id = id, Value = 2 };
             using var api = ResultApiMockFactory.MockGetEntityMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetIResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -64,7 +63,7 @@ namespace NClient.Tests.ClientTests
             var expectedError = new Error { Message = "Error" };
             using var api = ResultApiMockFactory.MockGetNotFoundEntityMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -78,7 +77,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = ResultApiMockFactory.MockGetIntMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -93,7 +92,7 @@ namespace NClient.Tests.ClientTests
             var expectedError = new Error { Message = "Error" };
             using var api = ResultApiMockFactory.MockGetNotFoundIntMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetIResultWithIntAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -108,7 +107,7 @@ namespace NClient.Tests.ClientTests
             var expectedEntity = new BasicEntity { Id = id, Value = 2 };
             using var api = ResultApiMockFactory.MockGetEntityMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();
@@ -123,7 +122,7 @@ namespace NClient.Tests.ClientTests
             var expectedError = new Error { Message = "Error" };
             using var api = ResultApiMockFactory.MockGetNotFoundEntityMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(api.Urls.First().ToUri()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetResultWithEntityAsync(id);
 
             using var assertionScope = new AssertionScope();

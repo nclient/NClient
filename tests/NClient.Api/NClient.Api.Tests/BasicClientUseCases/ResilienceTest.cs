@@ -6,7 +6,6 @@ using NClient.Providers.Transport;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.BasicClientUseCases
@@ -19,7 +18,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();  
             
@@ -33,7 +32,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
             
@@ -47,7 +46,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .Build();
                         
@@ -61,7 +60,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithSafeResilience(
                     getDelay: _ => TimeSpan.FromSeconds(2),
                     shouldRetry: x => !x.Response.IsSuccessStatusCode)
@@ -77,7 +76,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithResilience(selector => selector
                     .ForAllMethods().DoNotUse()
                     .ForMethod(x => (Func<int, Task<int>>) x.GetAsync).Use(
@@ -96,7 +95,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithIdempotentResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .WithResilience(x => x
                     .ForMethod(client => (Func<BasicEntity, Task>) client.PostAsync).DoNotUse())
@@ -112,7 +111,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithResilience(x => x
                     .ForMethodsThat((_, request) => request.Type == RequestType.Create).DoNotUse())
                 .Build();
@@ -127,7 +126,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First().ToUri())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithResilience(x => x
                     .ForMethodsThat((_, request) => request.Type == RequestType.Create).Use())
                 .Build();

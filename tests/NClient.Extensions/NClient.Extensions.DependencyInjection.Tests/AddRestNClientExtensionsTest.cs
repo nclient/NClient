@@ -25,7 +25,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection();
             
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
@@ -57,7 +57,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var loggerFactoryMock = LoggerFactoryMockFactory.Create(loggerMock);
             var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object);
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
@@ -79,7 +79,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 x.JsonSerializerOptions.Converters.Add(constIntJsonConverter);
             });
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
@@ -98,7 +98,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 x.Converters.Add(constIntJsonConverter);
             });
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();
@@ -110,7 +110,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var host = api.Urls.First().ToUri();
+            var host = api.Urls.First();
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddRestNClient(implementationFactory: builder =>
@@ -143,7 +143,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                         onFailure: _ => throw new InvalidOperationException()));
             });
 
-            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First().ToUri());
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First());
 
             var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
             client.Should().NotBeNull();

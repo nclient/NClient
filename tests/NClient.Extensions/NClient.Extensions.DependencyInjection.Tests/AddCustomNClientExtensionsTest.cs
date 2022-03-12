@@ -27,7 +27,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection();
             
             serviceCollection.AddCustomNClient<IBasicClientWithMetadata>(
-                host: api.Urls.First().ToUri(),
+                host: api.Urls.First(),
                 implementationFactory: builder => builder
                     .UsingRestApi()
                     .UsingHttpTransport()
@@ -68,7 +68,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object);
 
             serviceCollection.AddCustomNClient<IBasicClientWithMetadata>(
-                host: api.Urls.First().ToUri(),
+                host: api.Urls.First(),
                 implementationFactory: (serviceProvider, builder) => builder
                     .UsingRestApi()
                     .UsingHttpTransport()
@@ -97,7 +97,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             });
 
             serviceCollection.AddCustomNClient<IBasicClientWithMetadata>(
-                host: api.Urls.First().ToUri(),
+                host: api.Urls.First(),
                 implementationFactory: builder => builder
                     .UsingRestApi()
                     .UsingHttpTransport()
@@ -122,7 +122,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             });
 
             serviceCollection.AddCustomNClient<IBasicClientWithMetadata>(
-                host: api.Urls.First().ToUri(),
+                host: api.Urls.First(),
                 implementationFactory: (serviceProvider, builder) => builder
                     .UsingRestApi()
                     .UsingHttpTransport()
@@ -139,7 +139,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var host = api.Urls.First().ToUri();
+            var host = api.Urls.First();
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddCustomNClient(implementationFactory: builder =>
