@@ -10,24 +10,14 @@ using NClient.Providers.Resilience.Polly;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ResilienceNClientTest
+    public class ResilienceNClientTest : ClientTestBase<IReturnClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void ResilienceNClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public void AsResilientInvoke_InternalServerError_ThrowClientRequestException()
         {

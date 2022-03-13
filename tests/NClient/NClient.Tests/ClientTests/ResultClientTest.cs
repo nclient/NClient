@@ -5,24 +5,14 @@ using FluentAssertions.Execution;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ResultClientTest
+    public class ResultClientTest : ClientTestBase<IResultClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void ResultClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IResultClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public async Task BasicClient_GetIResultWithIntAsync_IResultWithInt()
         {

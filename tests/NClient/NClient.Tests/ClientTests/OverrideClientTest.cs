@@ -5,24 +5,14 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class OverrideClientTest
+    public class OverrideClientTest : ClientTestBase<IOverriddenClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void OverrideClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public async Task OverriddenClient_GetAsync_SendsGetRequestAndReceivesHttpResponseWithIntContent()
         {

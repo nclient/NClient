@@ -5,24 +5,14 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class CancellationClientTest
+    public class CancellationClientTest : ClientTestBase<ICancellationClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void CancellationClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public void CancellationClient_GetWithoutCancellation_IntInBody()
         {

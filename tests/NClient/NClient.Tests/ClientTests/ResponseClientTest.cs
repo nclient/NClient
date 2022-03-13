@@ -8,27 +8,17 @@ using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ResponseClientTest
+    public class ResponseClientTest : ClientTestBase<IResponseClientWithMetadata>
     {
         private static readonly HttpError BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
         private static readonly HttpError InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };
 
-        [Test, Order(0)]
-        public void ResponseClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IResponseClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public async Task GetAsync_ServiceReturnsInt_IntInBody()
         {

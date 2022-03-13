@@ -3,24 +3,14 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class SyncClientTest
+    public class SyncClientTest : ClientTestBase<ISyncClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void SyncClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<ISyncClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public void SyncClient_Get_IntInBody()
         {

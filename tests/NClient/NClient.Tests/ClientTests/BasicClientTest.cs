@@ -4,24 +4,14 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class BasicClientTest
+    public class BasicClientTest : ClientTestBase<IBasicClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void BasicClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public async Task BasicClient_GetAsync_IntInBody()
         {

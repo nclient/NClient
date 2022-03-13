@@ -6,24 +6,14 @@ using FluentAssertions.Extensions;
 using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class TimeoutStaticClientTest
+    public class TimeoutStaticClientTest : ClientTestBase<ITimeoutStaticClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void TimeoutStaticClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<ITimeoutStaticClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()
         {

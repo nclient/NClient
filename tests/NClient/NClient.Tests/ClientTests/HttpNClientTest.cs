@@ -11,27 +11,17 @@ using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NClient.Testing.Common.Helpers;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class HttpNClientTest
+    public class HttpNClientTest : ClientTestBase<IReturnClientWithMetadata>
     {
         private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
-        [Test, Order(0)]
-        public void HttpNClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test]
         public async Task GetAsync_ServiceReturnsEntity_HttpResponseWithValue()
         {

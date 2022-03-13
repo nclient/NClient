@@ -8,24 +8,14 @@ using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Helpers;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class TimeoutClientTest
+    public class TimeoutClientTest : ClientTestBase<ITimeoutClientWithMetadata>
     {
-        [Test, Order(0)]
-        public void TimeoutClient_Build_NotThrow()
-        {
-            const string anyHost = "http://localhost:5000";
-            
-            NClientGallery.Clients.GetRest().For<ITimeoutClientWithMetadata>(anyHost)
-                .Invoking(builder => builder.Build())
-                .Should()
-                .NotThrow();
-        }
-        
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()
         {
