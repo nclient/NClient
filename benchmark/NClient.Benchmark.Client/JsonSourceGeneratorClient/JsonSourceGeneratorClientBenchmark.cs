@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using BenchmarkDotNet.Attributes;
@@ -10,45 +9,59 @@ using Flurl.Http;
 using NClient.Benchmark.Client.Dtos;
 using NClient.Benchmark.Client.Helpers;
 using NClient.Benchmark.Client.JsonClient;
+using Refit;
 using RestSharp;
+using RestSharp.Serializers.Json;
 using WireMock.Server;
 
 // ReSharper disable RedundantNameQualifier
-namespace NClient.Benchmark.Client.JsonHttpResponseClient
+namespace NClient.Benchmark.Client.JsonSourceGeneratorClient
 {
     [SimpleJob(invocationCount: 2000, targetCount: 10)]
-    public class JsonHttpResponseClientBenchmark
+    public class JsonSourceGeneratorClientBenchmark
     {
         private IWireMockServer _api = null!;
+        private JsonSerializerOptions _jsonSerializerOptions = null!;
         
         private HttpClient _httpClient = null!;
         private RestSharp.RestClient _restSharpClient = null!;
         private FlurlClient _flurlClient = null!;
-        private INClientJsonHttpResponseClient _nclient = null!;
-        private IRefitJsonHttpResponseClient _refitClient = null!;
-        private IRestEaseJsonHttpResponseClient _restEaseClient = null!;
+        private IJsonClient _nclient = null!;
+        private IJsonClient _refitClient = null!;
+        private IJsonClient _restEaseClient = null!;
 
         [GlobalSetup]
         public void Setup()
         {
             _api = JsonApiMock.MockMethod();
-            
+
+            _jsonSerializerOptions = new JsonSerializerOptions();
+            _jsonSerializerOptions.AddContext<DtoJsonContext>();
+
             _httpClient = new HttpClient();
             HttpClient_Send();
             
             _restSharpClient = new RestSharp.RestClient(_api.Urls.First());
+            _restSharpClient.UseJson().UseSystemTextJson(_jsonSerializerOptions);
             RestSharp_Send();
-            
+
+            // TODO: Use JsonSerializerOptions
             _flurlClient = new FlurlClient(_api.Urls.First());
             Flurl_Send();
             
-            _nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(new Uri(_api.Urls.First())).Build();
+            _nclient = NClientGallery.Clients.GetRest().For<IJsonClient>(new Uri(_api.Urls.First()))
+                .WithSystemTextJsonSerialization(_jsonSerializerOptions)
+                .Build();
             NClient_Send();
             
-            _refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
+            _refitClient = Refit.RestService.For<IJsonClient>(_api.Urls.First(), new RefitSettings 
+            {
+                ContentSerializer = new SystemTextJsonContentSerializer(_jsonSerializerOptions)
+            });
             Refit_Send();
             
-            _restEaseClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
+            // TODO: Use JsonSerializerOptions
+            _restEaseClient = RestEase.RestClient.For<IJsonClient>(_api.Urls.First());
             RestEase_Send();
         }
         
@@ -56,14 +69,14 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         public void HttpClient_CreateAndSend()
         {
             var httpClient = new HttpClient();
-            var json = JsonSerializer.Serialize(DtoProvider.Get());
+            var json = JsonSerializer.Serialize(DtoProvider.Get(), _jsonSerializerOptions);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = httpClient
                 .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
-            result.Content.ReadFromJsonAsync(typeof(Dto)).GetAwaiter().GetResult();
+            JsonSerializer.Deserialize<Dto>(result.Content.ReadAsStream(), _jsonSerializerOptions);
         }
         
         [Benchmark]
@@ -72,10 +85,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
             var restSharpClient = new RestSharp.RestClient(_api.Urls.First());
             var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath);
             request.AddJsonBody(DtoProvider.Get());
-            var response = restSharpClient.ExecutePostAsync<Dto>(request).GetAwaiter().GetResult();
-            if (!response.IsSuccessful)
-                throw response.ErrorException!;
-            var _ = response.Data;
+            restSharpClient.PostAsync<Dto>(request).GetAwaiter().GetResult();
         }
         
         [Benchmark]
@@ -89,42 +99,35 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<INClientJsonHttpResponseClient>(new Uri(_api.Urls.First())).Build();
-            var response = nclient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            response.EnsureSuccess();
-            var _ = response.Data;
+            var nclient = NClientGallery.Clients.GetRest().For<IJsonClient>(_api.Urls.First()).Build();
+            nclient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void Refit_CreateAndSend()
         {
-            var refitClient = Refit.RestService.For<IRefitJsonHttpResponseClient>(_api.Urls.First());
-            var response = refitClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            if (!response.IsSuccessStatusCode)
-                throw response.Error!;
-            var _ = response.Content;
+            var refitClient = Refit.RestService.For<IJsonClient>(_api.Urls.First());
+            refitClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_CreateAndSend()
         {
-            var restEasyClient = RestEase.RestClient.For<IRestEaseJsonHttpResponseClient>(_api.Urls.First());
-            var response = restEasyClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            response.ResponseMessage.EnsureSuccessStatusCode();
-            var _ = response.GetContent();
+            var restEasyClient = RestEase.RestClient.For<IJsonClient>(_api.Urls.First());
+            restEasyClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
 
         [Benchmark]
         public void HttpClient_Send()
         {
-            var json = JsonSerializer.Serialize(DtoProvider.Get());
+            var json = JsonSerializer.Serialize(DtoProvider.Get(), _jsonSerializerOptions);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var result = _httpClient
                 .PostAsync(Path.Combine(_api.Urls.First(), JsonApiMock.EndpointPath), httpContent)
                 .GetAwaiter()
                 .GetResult();
             result.EnsureSuccessStatusCode();
-            result.Content.ReadFromJsonAsync(typeof(Dto)).GetAwaiter().GetResult();
+            JsonSerializer.DeserializeAsync<Dto>(result.Content.ReadAsStream(), _jsonSerializerOptions);
         }
         
         [Benchmark]
@@ -132,10 +135,7 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         {
             var request = new RestSharp.RestRequest(JsonApiMock.EndpointPath);
             request.AddJsonBody(DtoProvider.Get());
-            var response = _restSharpClient.ExecutePostAsync<Dto>(request).GetAwaiter().GetResult();
-            if (!response.IsSuccessful)
-                throw response.ErrorException!;
-            var _ = response.Data;
+            _restSharpClient.PostAsync<Dto>(request).GetAwaiter().GetResult();
         }
         
         [Benchmark]
@@ -148,26 +148,19 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
         [Benchmark]
         public void NClient_Send()
         {
-            var response = _nclient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            response.EnsureSuccess();
-            var _ = response.Data;
+            _nclient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void Refit_Send()
         {
-            var response = _refitClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            if (!response.IsSuccessStatusCode)
-                throw response.Error!;
-            var _ = response.Content;
+            _refitClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
         
         [Benchmark]
         public void RestEase_Send()
         {
-            var response = _restEaseClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
-            response.ResponseMessage.EnsureSuccessStatusCode();
-            var _ = response.GetContent();
+            _restEaseClient.SendAsync(DtoProvider.Get()).GetAwaiter().GetResult();
         }
     }
 }

@@ -1,3 +1,4 @@
+using NClient.Benchmark.Client.Helpers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -17,7 +18,7 @@ namespace NClient.Benchmark.Client.JsonClient
                 .RespondWith(Response.Create()
                     .WithHeader("Content-Type", "application/json")
                     .WithStatusCode(200)
-                    .WithBodyAsJson(new[] { "id-1", "id-2", "id-3", "id-4" }));
+                    .WithBodyAsJson(DtoProvider.Get()));
 
             return api;
         }

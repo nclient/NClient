@@ -7,6 +7,7 @@ using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using NClient.Benchmark.Client.JsonClient;
 using NClient.Benchmark.Client.JsonHttpResponseClient;
+using NClient.Benchmark.Client.JsonSourceGeneratorClient;
 using NClient.Benchmark.Client.PrimitiveClient;
 using NClient.Benchmark.Client.PrimitiveHttpResponseClient;
 
@@ -21,6 +22,7 @@ namespace NClient.Benchmark.Client
                 new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveHttpResponseClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<JsonClientBenchmark>()),
+                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonSourceGeneratorClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<JsonHttpResponseClientBenchmark>())
             };
             

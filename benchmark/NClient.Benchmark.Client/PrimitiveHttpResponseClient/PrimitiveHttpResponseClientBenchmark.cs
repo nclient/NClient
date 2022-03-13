@@ -65,7 +65,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         public void RestSharp_CreateAndSend()
         {
             var restSharpClient = new RestSharp.RestClient(_api.Urls.First());
-            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath, DataFormat.Json);
+            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath);
             request.AddQueryParameter(PrimitiveApiMock.ParamName, IdProvider.Get().ToString());
             var response = restSharpClient.ExecuteGetAsync<int>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)
@@ -123,7 +123,7 @@ namespace NClient.Benchmark.Client.PrimitiveHttpResponseClient
         [Benchmark]
         public void RestSharp_Send()
         {
-            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath, DataFormat.Json);
+            var request = new RestSharp.RestRequest(PrimitiveApiMock.EndpointPath);
             request.AddQueryParameter(PrimitiveApiMock.ParamName, IdProvider.Get().ToString());
             var response = _restSharpClient.ExecuteGetAsync<int>(request).GetAwaiter().GetResult();
             if (!response.IsSuccessful)

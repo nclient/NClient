@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using NClient.Annotations.Http;
+using NClient.Benchmark.Client.Dtos;
 using NClient.Providers.Results.HttpResults;
 
 namespace NClient.Benchmark.Client.JsonHttpResponseClient
@@ -8,18 +8,18 @@ namespace NClient.Benchmark.Client.JsonHttpResponseClient
     public interface INClientJsonHttpResponseClient
     {
         [PostMethod("/api")]
-        Task<IHttpResponse<List<string>>> SendAsync([BodyParam] string[] ids);
+        Task<IHttpResponse<Dto>> SendAsync([BodyParam] Dto dto);
     }
     
     public interface IRefitJsonHttpResponseClient
     {
         [Refit.Post("/api")]
-        Task<Refit.IApiResponse<List<string>>> SendAsync([Refit.Body] string[] ids);
+        Task<Refit.IApiResponse<Dto>> SendAsync([Refit.Body] Dto dto);
     }
     
     public interface IRestEaseJsonHttpResponseClient
     {
         [RestEase.Post("/api")]
-        Task<RestEase.Response<List<string>>> SendAsync([RestEase.Body] string[] ids);
+        Task<RestEase.Response<Dto>> SendAsync([RestEase.Body] Dto dto);
     }
 }
