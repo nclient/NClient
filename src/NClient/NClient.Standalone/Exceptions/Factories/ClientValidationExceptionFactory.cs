@@ -6,6 +6,7 @@ namespace NClient.Standalone.Exceptions.Factories
 {
     internal interface IClientValidationExceptionFactory
     {
+        ClientValidationException ClientTypeIsNotInterface(Type clientType);
         ClientValidationException TransportTimeoutShouldBeInfinite(TimeSpan transportTimeout);
         ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException MultipleAttributeForClientNotSupported(string attributeName);
@@ -17,6 +18,9 @@ namespace NClient.Standalone.Exceptions.Factories
 
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
     {
+        public ClientValidationException ClientTypeIsNotInterface(Type clientType) =>
+            new($"The specified client type is not an interface (client type '{clientType.FullName}').");
+        
         public ClientValidationException TransportTimeoutShouldBeInfinite(TimeSpan transportTimeout) =>
             new($"The transport timeout should be infinite, but it is equal to {transportTimeout.Milliseconds} ms. Use {nameof(Timeout.InfiniteTimeSpan)}.");
         

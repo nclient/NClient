@@ -19,6 +19,7 @@ using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
+using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Building
 {
@@ -35,7 +36,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _context = context;
             _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
-            _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value);
+            _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
