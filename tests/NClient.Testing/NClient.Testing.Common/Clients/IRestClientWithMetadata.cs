@@ -1,16 +1,18 @@
 ﻿using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
-    [Path("api/basic")]
-    public interface IBasicClientWithMetadata : IBasicClient
+    [Path("api/rest")]
+    public interface IRestClientWithMetadata : IRestClient
     {
-        [GetMethod]
+        [GetMethod("{id}")]
         new Task<int> GetAsync(int id);
+
+        [GetMethod("{id}")]
+        new Task<string> GetAsync(string id);
 
         [PostMethod]
         new Task PostAsync(BasicEntity entity);
@@ -18,7 +20,7 @@ namespace NClient.Standalone.Tests.Clients
         [PutMethod]
         new Task PutAsync(BasicEntity entity);
 
-        [DeleteMethod]
+        [DeleteMethod("{id}")]
         new Task DeleteAsync(int id);
     }
 }

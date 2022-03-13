@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Exceptions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NUnit.Framework;
 
 namespace NClient.Standalone.Tests
@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockIntGetMethod(id);
 
             var result = await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -36,7 +36,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockStringGetMethod(id);
 
             var result = await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -54,7 +54,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockIntGetMethod(id);
 
             var result = await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -73,7 +73,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockStringGetMethod(id);
 
             var result = await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -92,7 +92,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
             await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -109,7 +109,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
             await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -126,7 +126,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockNotFoundIntGetMethod(id);
 
             await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()
@@ -145,7 +145,7 @@ namespace NClient.Standalone.Tests
             using var api = RestApiMockFactory.MockNotFoundStringGetMethod(id);
 
             await new NClientBuilder()
-                .For<IRestClientWithMetadata>(api.Urls.First())
+                .For<IRestClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport()
                 .UsingSystemTextJsonSerialization()

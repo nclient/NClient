@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using NClient.Exceptions;
 using NClient.Extensions.DependencyInjection.Tests.Helpers;
@@ -16,22 +15,16 @@ using NUnit.Framework;
 namespace NClient.Extensions.DependencyInjection.Tests
 {
     [Parallelizable]
-    public class AddCustomNClientFactoryExtensionsTest
+    public class AddRestNClientFactoryExtensionsTest
     {
         [Test]
-        public async Task AddCustomNClientFactory_WithoutHttpClientAndLogging_NotThrow()
+        public async Task AddRestNClientFactory_WithoutHttpClientAndLogging_NotThrow()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection();
             
-            serviceCollection.AddCustomNClientFactory(
-                factoryName: nameof(IBasicClientWithMetadata),
-                implementationFactory: builder => builder
-                    .UsingRestApi()
-                    .UsingHttpTransport()
-                    .UsingJsonSerializer()
-                    .Build());
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
@@ -41,17 +34,14 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
         
         [Test]
-        public async Task AddCustomNClientFactory_WithHostProvider_UseHostFromServices()
+        public async Task AddRestNClientFactory_WithHostProvider_UseHostFromServices()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection().AddSingleton(nameof(IBasicClientWithMetadata));
             
-            serviceCollection.AddCustomNClientFactory(implementationFactory: (serviceProvider, builder) => builder
+            serviceCollection.AddRestNClientFactory(implementationFactory: (serviceProvider, builder) => builder
                 .For(factoryName: serviceProvider.GetRequiredService<string>())
-                .UsingRestApi()
-                .UsingHttpTransport()
-                .UsingJsonSerializer()
                 .Build());
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
@@ -62,7 +52,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
 
         [Test]
-        public async Task AddCustomNClientFactory_WithLogging_UseLoggerFromServices()
+        public async Task AddRestNClientFactory_WithLogging_UseLoggerFromServices()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
@@ -70,14 +60,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
             var loggerFactoryMock = LoggerFactoryMockFactory.Create(loggerMock);
             var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object);
 
-            serviceCollection.AddCustomNClientFactory(
-                factoryName: nameof(IBasicClientWithMetadata),
-                implementationFactory: (serviceProvider, builder) => builder
-                    .UsingRestApi()
-                    .UsingHttpTransport()
-                    .UsingJsonSerializer()
-                    .WithLogging(serviceProvider.GetRequiredService<ILoggerFactory>())
-                    .Build());
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
@@ -89,7 +72,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         
         #if !NETFRAMEWORK
         [Test]
-        public async Task AddCustomNClientFactory_WithControllerJsonSerializerOptions_DoNotUseJsonOptions()
+        public async Task AddRestNClientFactory_WithControllerJsonSerializerOptions_DoNotUseJsonOptions()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
@@ -100,13 +83,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 x.JsonSerializerOptions.Converters.Add(constIntJsonConverter);
             });
 
-            serviceCollection.AddCustomNClientFactory(
-                factoryName: nameof(IBasicClientWithMetadata),
-                implementationFactory: builder => builder
-                    .UsingRestApi()
-                    .UsingHttpTransport()
-                    .UsingJsonSerializer()
-                    .Build());
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
@@ -117,7 +94,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
         #endif
         
         [Test]
-        public async Task AddCustomNClientFactory_WithJsonSerializerOptions_UseOptionsFormServices()
+        public async Task AddRestNClientFactory_WithJsonSerializerOptions_UseOptionsFormServices()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
@@ -127,13 +104,7 @@ namespace NClient.Extensions.DependencyInjection.Tests
                 x.Converters.Add(constIntJsonConverter);
             });
 
-            serviceCollection.AddCustomNClientFactory(
-                factoryName: nameof(IBasicClientWithMetadata),
-                implementationFactory: (serviceProvider, builder) => builder
-                    .UsingRestApi()
-                    .UsingHttpTransport()
-                    .UsingSystemTextJsonSerialization(serviceProvider.GetRequiredService<IOptions<JsonSerializerOptions>>().Value)
-                    .Build());
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();
@@ -142,23 +113,45 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
         
         [Test]
-        public async Task AddCustomNClientFactory_ImplementationFactory_UseImplementationFactory()
+        public async Task AddRestNClientFactory_ImplementationFactory_UseImplementationFactory()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddCustomNClientFactory(
-                implementationFactory: builder =>
-                    builder.For(factoryName: nameof(IBasicClientWithMetadata))
-                        .UsingRestApi()
-                        .UsingHttpTransport()
-                        .UsingJsonSerializer()
-                        .WithoutResponseValidation()
-                        .WithResponseValidation(
-                            isSuccess: _ => false,
-                            onFailure: _ => throw new InvalidOperationException())
-                        .Build());
+            serviceCollection.AddRestNClientFactory(implementationFactory: builder =>
+                builder.For(factoryName: nameof(IBasicClientWithMetadata))
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException())
+                    .Build());
+
+            var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            clientFactory.Should().NotBeNull();
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
+            client.Should().NotBeNull();
+            await client.Invoking(x => x!.GetAsync(id))
+                .Should()
+                .ThrowExactlyAsync<ClientRequestException>()
+                .WithInnerException<ClientRequestException, InvalidOperationException>();
+        }
+        
+        [Test]
+        public async Task AddRestNClientFactory_OptionsWithResponseValidation_UseOptions()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().Configure<NClientFactoryBuilderOptions<HttpRequestMessage, HttpResponseMessage>>(x =>
+            {
+                x.BuilderActions.Add(builder => builder
+                    .WithoutResponseValidation()
+                    .WithResponseValidation(
+                        isSuccess: _ => false,
+                        onFailure: _ => throw new InvalidOperationException()));
+            });
+
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();

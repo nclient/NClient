@@ -11,7 +11,7 @@ namespace NClient.Providers.Transport
         Guid Id { get; }
         
         /// <summary>Gets the resource used for the request. Should not include query.</summary>
-        string Endpoint { get; }
+        Uri Resource { get; }
         
         /// <summary>Gets request type.</summary>
         RequestType Type { get; }

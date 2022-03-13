@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -37,7 +38,7 @@ namespace NClient.Benchmark.Client.PrimitiveClient
             _flurlClient = new FlurlClient(_api.Urls.First());
             Flurl_Send();
             
-            _nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(_api.Urls.First()).Build();
+            _nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(new Uri(_api.Urls.First())).Build();
             NClient_Send();
             
             _refitClient = Refit.RestService.For<IPrimitiveClient>(_api.Urls.First());
@@ -79,7 +80,7 @@ namespace NClient.Benchmark.Client.PrimitiveClient
         [Benchmark]
         public void NClient_CreateAndSend()
         {
-            var nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(_api.Urls.First()).Build();
+            var nclient = NClientGallery.Clients.GetRest().For<IPrimitiveClient>(new Uri(_api.Urls.First())).Build();
             nclient.SendAsync(IdProvider.Get()).GetAwaiter().GetResult();
         }
 

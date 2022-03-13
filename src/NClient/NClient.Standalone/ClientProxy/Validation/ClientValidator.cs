@@ -39,7 +39,7 @@ namespace NClient.Standalone.ClientProxy.Validation
         {
             var interceptor = clientInterceptorFactory
                 .Create<TClient, IRequest, IResponse>(
-                    FakeHost.ToString(),
+                    FakeHost,
                     new StubSerializerProvider(),
                     new StubRequestBuilderProvider(),
                     new StubTransportProvider(),

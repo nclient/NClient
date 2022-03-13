@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -18,7 +18,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = QueryApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetAsync(id);
 
             result.Should().Be(id);
@@ -30,7 +30,7 @@ namespace NClient.Tests.ClientTests
             var ids = new[] { 1, 2, 3 };
             using var api = QueryApiMockFactory.MockGetMethod(ids);
 
-            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetAsync(ids);
 
             result.Should().BeEquivalentTo(ids);
@@ -42,7 +42,7 @@ namespace NClient.Tests.ClientTests
             var keyValues = new Dictionary<string, int> { ["key1"] = 1, ["key2"] = 2, ["key3"] = 3 };
             using var api = QueryApiMockFactory.MockGetMethod(nameof(keyValues), keyValues);
 
-            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetAsync(keyValues);
 
             result.Should().BeEquivalentTo(keyValues);
@@ -54,7 +54,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = QueryApiMockFactory.MockPostMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .Invoking(async x => await x.PostAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -66,7 +66,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = QueryApiMockFactory.MockPutMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .Invoking(async x => await x.PutAsync(entity))
                 .Should()
                 .NotThrowAsync();
@@ -78,7 +78,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = QueryApiMockFactory.MockDeleteMethod(id);
 
-            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(host: api.Urls.First()).Build()
                 .Invoking(async x => await x.DeleteAsync(id))
                 .Should()
                 .NotThrowAsync();

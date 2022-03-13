@@ -1,9 +1,8 @@
 ﻿using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     [Path("api/sync")]
     public interface ISyncClientWithMetadata : ISyncClient

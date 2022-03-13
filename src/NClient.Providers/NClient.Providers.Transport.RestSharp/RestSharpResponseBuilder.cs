@@ -31,7 +31,7 @@ namespace NClient.Providers.Transport.RestSharp
             {
                 Content = new Content(responseContext.Response.RawBytes, responseContext.Response.ContentEncoding, new MetadataContainer(contentHeaders)),
                 StatusCode = (int) responseContext.Response.StatusCode,
-                Endpoint = responseContext.Response.ResponseUri.ToString(),
+                Resource = responseContext.Response.ResponseUri,
                 Metadatas = new MetadataContainer(responseHeaders),
                 ErrorMessage = responseContext.Response.ErrorMessage,
                 ErrorException = responseContext.Response.ErrorException,

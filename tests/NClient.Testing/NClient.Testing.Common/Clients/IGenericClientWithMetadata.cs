@@ -3,7 +3,7 @@ using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     public interface IGenericClientWithMetadata : IGenericClientWithMetadataBase<BasicEntity, int>
     {

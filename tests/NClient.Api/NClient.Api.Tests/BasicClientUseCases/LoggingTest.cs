@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NClient.Api.Tests.Stubs;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NUnit.Framework;
@@ -23,7 +22,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ILogger<IBasicClient>>();
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithLogging(logger)
                 .Build();
             
@@ -41,7 +40,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
                 .AddLogging()
                 .BuildServiceProvider()
                 .GetRequiredService<ILoggerFactory>();
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithLogging(loggerFactory)
                 .Build();
             
@@ -56,7 +55,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var customLogger = new CustomLogger();
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithLogging(customLogger)
                 .Build();
             
@@ -71,7 +70,7 @@ namespace NClient.Api.Tests.BasicClientUseCases
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var customLogger = new CustomLogger();
-            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .WithLogging(customLogger)
                 .WithLogging(customLogger)
                 .Build();

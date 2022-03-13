@@ -213,7 +213,7 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Endpoint, request.Id);
+            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Resource, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;

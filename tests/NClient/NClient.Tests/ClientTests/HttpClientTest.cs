@@ -3,8 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
 
@@ -19,7 +19,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = HttpApiMockFactory.MockGetMethod(id);
 
-            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetAsync(id);
 
             result.Should().NotBeNull();
@@ -34,7 +34,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = HttpApiMockFactory.MockPostMethod(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(host: api.Urls.First()).Build()
                 .PostAsync(entity);
 
             result.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = HttpApiMockFactory.MockPutMethod(entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(host: api.Urls.First()).Build()
                 .PutAsync(entity);
 
             result.Should().NotBeNull();
@@ -62,7 +62,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = HttpApiMockFactory.MockDeleteMethod(id);
 
-            var result = NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(host: api.Urls.First()).Build()
                 .Delete(id);
 
             result.Should().NotBeNull();

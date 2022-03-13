@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using NClient.Annotations;
 using NClient.Annotations.Http;
-using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     [Path("api/query")]
     public interface IQueryClientWithMetadata : IQueryClient

@@ -32,7 +32,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 Content = content,
                 StatusCode = (int) responseContext.Response.StatusCode,
                 StatusDescription = responseContext.Response.StatusCode.ToString(),
-                Endpoint = responseContext.Response.RequestMessage.RequestUri.ToString(),
+                Resource = responseContext.Response.RequestMessage.RequestUri,
                 ProtocolVersion = responseContext.Response.Version,
                 IsSuccessful = responseContext.Response.IsSuccessStatusCode
             };

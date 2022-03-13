@@ -34,6 +34,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\NClient\NClient.Annotations\NClient.Annotations.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient.Core\NClient.Core.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient\NClient.Standalone\NClient.Standalone.csproj" />
     </ItemGroup>
 
     <ItemGroup>

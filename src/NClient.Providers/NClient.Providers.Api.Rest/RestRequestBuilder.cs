@@ -45,8 +45,8 @@ namespace NClient.Providers.Api.Rest
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
             _toolset = toolset;
         }
-
-        public Task<IRequest> BuildAsync(Guid requestId, string host, 
+        
+        public Task<IRequest> BuildAsync(Guid requestId, Uri host,
             IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -66,9 +66,9 @@ namespace NClient.Providers.Api.Rest
                 .ToArray();
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
-
-            var endpoint = PathHelper.Combine(host, route);
-            var request = new Request(requestId, endpoint, requestType);
+            
+            var resource = new Uri(PathHelper.Combine(host.ToString(), route));
+            var request = new Request(requestId, resource, requestType);
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)

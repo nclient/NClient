@@ -25,7 +25,7 @@ namespace NClient.Providers.Transport.RestSharp
             cancellationToken.ThrowIfCancellationRequested();
             
             var method = _restSharpMethodMapper.Map(request.Type);
-            var restRequest = new RestRequest(request.Endpoint, method, DataFormat.Json);
+            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
 
             foreach (var param in request.Parameters)
             {

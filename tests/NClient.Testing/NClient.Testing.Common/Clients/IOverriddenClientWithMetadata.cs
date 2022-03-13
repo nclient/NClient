@@ -4,7 +4,7 @@ using NClient.Annotations.Http;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 
-namespace NClient.Standalone.Tests.Clients
+namespace NClient.Testing.Common.Clients
 {
     public interface IOverriddenClientWithMetadata : IOverriddenClientWithMetadataBase
     {

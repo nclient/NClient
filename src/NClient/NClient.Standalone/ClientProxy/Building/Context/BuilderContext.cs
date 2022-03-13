@@ -19,7 +19,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
-        public string Host { get; private set; } = null!;
+        public Uri Host { get; private set; } = null!;
 
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
@@ -85,7 +85,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             LoggerFactory = builderContext.LoggerFactory;
         }
 
-        public BuilderContext<TRequest, TResponse> WithHost(string host)
+        public BuilderContext<TRequest, TResponse> WithHost(Uri host)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
