@@ -13,6 +13,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class TimeoutStaticClientTest
     {
+        [Test, Order(0)]
+        public void TimeoutStaticClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<ITimeoutStaticClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()
         {

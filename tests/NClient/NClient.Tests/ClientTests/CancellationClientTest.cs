@@ -12,6 +12,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class CancellationClientTest
     {
+        [Test, Order(0)]
+        public void CancellationClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<ICancellationClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public void CancellationClient_GetWithoutCancellation_IntInBody()
         {

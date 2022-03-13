@@ -13,6 +13,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class HttpClientTest
     {
+        [Test, Order(0)]
+        public void HttpClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IHttpClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task HttpClient_GetAsync_IntInBody()
         {

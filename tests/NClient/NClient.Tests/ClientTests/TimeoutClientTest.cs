@@ -15,6 +15,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class TimeoutClientTest
     {
+        [Test, Order(0)]
+        public void TimeoutClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<ITimeoutClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()
         {

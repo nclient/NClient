@@ -11,6 +11,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class OptionalParamClientTest
     {
+        [Test, Order(0)]
+        public void OptionalParamClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IOptionalParamWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task OptionalParamClient_GetAsync_IntInBody()
         {

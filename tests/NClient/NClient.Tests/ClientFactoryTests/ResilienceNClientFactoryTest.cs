@@ -15,6 +15,15 @@ namespace NClient.Tests.ClientFactoryTests
     [Parallelizable]
     public class ResilienceNClientFactoryTest
     {
+        [Test, Order(0)]
+        public void ResilienceNClientFactory_Build_NotThrow()
+        {
+            NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public void WithoutResilience_FlakyInternalServerError_ThrowClientRequestException()
         {

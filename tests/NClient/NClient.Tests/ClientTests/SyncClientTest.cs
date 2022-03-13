@@ -10,6 +10,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class SyncClientTest
     {
+        [Test, Order(0)]
+        public void SyncClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<ISyncClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public void SyncClient_Get_IntInBody()
         {

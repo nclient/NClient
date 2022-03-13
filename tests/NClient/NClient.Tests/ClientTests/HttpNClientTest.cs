@@ -21,6 +21,17 @@ namespace NClient.Tests.ClientTests
         private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
+        [Test, Order(0)]
+        public void HttpNClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task GetAsync_ServiceReturnsEntity_HttpResponseWithValue()
         {

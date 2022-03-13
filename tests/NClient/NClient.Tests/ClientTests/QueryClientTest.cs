@@ -12,6 +12,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class QueryClientTest
     {
+        [Test, Order(0)]
+        public void QueryClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IQueryClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task GetAsync_IntParam_IntInBody()
         {

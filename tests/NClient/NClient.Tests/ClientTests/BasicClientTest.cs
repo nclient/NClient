@@ -11,6 +11,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class BasicClientTest
     {
+        [Test, Order(0)]
+        public void BasicClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IBasicClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task BasicClient_GetAsync_IntInBody()
         {

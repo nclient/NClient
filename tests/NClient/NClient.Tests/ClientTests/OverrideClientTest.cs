@@ -12,6 +12,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class OverrideClientTest
     {
+        [Test, Order(0)]
+        public void OverrideClient_Build_NotThrow()
+        {
+            const string anyHost = "http://localhost:5000";
+            
+            NClientGallery.Clients.GetRest().For<IOverriddenClientWithMetadata>(anyHost)
+                .Invoking(builder => builder.Build())
+                .Should()
+                .NotThrow();
+        }
+        
         [Test]
         public async Task OverriddenClient_GetAsync_SendsGetRequestAndReceivesHttpResponseWithIntContent()
         {
