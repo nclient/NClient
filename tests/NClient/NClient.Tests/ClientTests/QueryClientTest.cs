@@ -5,12 +5,13 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class QueryClientTest
+    public class QueryClientTest : ClientTestBase<IQueryClientWithMetadata>
     {
         [Test]
         public async Task GetAsync_IntParam_IntInBody()

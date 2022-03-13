@@ -5,12 +5,13 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class CancellationClientTest
+    public class CancellationClientTest : ClientTestBase<ICancellationClientWithMetadata>
     {
         [Test]
         public void CancellationClient_GetWithoutCancellation_IntInBody()

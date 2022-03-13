@@ -3,12 +3,13 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class SyncClientTest
+    public class SyncClientTest : ClientTestBase<ISyncClientWithMetadata>
     {
         [Test]
         public void SyncClient_Get_IntInBody()

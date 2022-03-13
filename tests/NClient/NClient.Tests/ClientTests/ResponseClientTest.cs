@@ -8,12 +8,13 @@ using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ResponseClientTest
+    public class ResponseClientTest : ClientTestBase<IResponseClientWithMetadata>
     {
         private static readonly HttpError BadRequestError = new() { Code = HttpStatusCode.BadRequest, Message = "Error" };
         private static readonly HttpError InternalServerError = new() { Code = HttpStatusCode.InternalServerError, Message = "Error" };

@@ -5,12 +5,13 @@ using FluentAssertions.Execution;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ResultClientTest
+    public class ResultClientTest : ClientTestBase<IResultClientWithMetadata>
     {
         [Test]
         public async Task BasicClient_GetIResultWithIntAsync_IResultWithInt()

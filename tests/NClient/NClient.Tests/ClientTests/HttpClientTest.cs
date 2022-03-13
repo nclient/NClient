@@ -6,12 +6,13 @@ using FluentAssertions.Execution;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class HttpClientTest
+    public class HttpClientTest : ClientTestBase<IHttpClientWithMetadata>
     {
         [Test]
         public async Task HttpClient_GetAsync_IntInBody()

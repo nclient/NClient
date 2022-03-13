@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Extensions;
@@ -7,20 +8,21 @@ using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientFactoryTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientFactoryTests
 {
     // TODO: remove duplication in ResilienceNClientFactoryTest and ResilienceNClientTest
     [Parallelizable]
-    public class ResilienceNClientFactoryTest
+    public class ResilienceNClientFactoryTest : ClientFactoryTestBase
     {
         [Test]
         public void WithoutResilience_FlakyInternalServerError_ThrowClientRequestException()
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithoutResilience()
                 .Build();
 
@@ -35,7 +37,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => TimeSpan.FromSeconds(0))
                 .WithoutResilience()
                 .Build();
@@ -51,7 +53,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -67,7 +69,7 @@ namespace NClient.Tests.ClientFactoryTests
             var entity = new BasicEntity { Id = 1 };
             using var api = ReturnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -82,7 +84,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockInternalServerError();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -97,7 +99,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockInternalServerError();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -113,7 +115,7 @@ namespace NClient.Tests.ClientFactoryTests
             var entity = new BasicEntity { Id = 1 };
             using var api = ReturnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithFullResilience(getDelay: _ => 0.Seconds())
                 .WithResilience(x => x
                     .ForMethodOf<IReturnClientWithMetadata>(client => (Action<BasicEntity>) client.Post)
@@ -132,7 +134,7 @@ namespace NClient.Tests.ClientFactoryTests
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -148,7 +150,7 @@ namespace NClient.Tests.ClientFactoryTests
             var entity = new BasicEntity { Id = 1 };
             using var api = ReturnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithSafeResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -164,7 +166,7 @@ namespace NClient.Tests.ClientFactoryTests
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity { Id = id });
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -180,7 +182,7 @@ namespace NClient.Tests.ClientFactoryTests
             var entity = new BasicEntity { Id = 1 };
             using var api = ReturnApiMockFactory.MockFlakyPostMethod(entity);
             api.AllowPartialMapping();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithIdempotentResilience(getDelay: _ => 0.Seconds())
                 .Build();
 
@@ -194,7 +196,7 @@ namespace NClient.Tests.ClientFactoryTests
         public void WithCustomResilience_GetRequestToInternalServerError_ThrowClientRequestException()
         {
             using var api = ReturnApiMockFactory.MockInternalServerError();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
@@ -211,7 +213,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds()))
@@ -226,7 +228,7 @@ namespace NClient.Tests.ClientFactoryTests
         [Test]
         public void WithCustomResilience_GetAndPostRequestToInternalServerError_ThrowClientRequestException()
         {
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds())
@@ -256,7 +258,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             var entity = new BasicEntity();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForMethodOf<IReturnClientWithMetadata>(x => (Func<int, BasicEntity>) x.Get)
                     .Use(getDelay: _ => 0.Seconds())
@@ -286,7 +288,7 @@ namespace NClient.Tests.ClientFactoryTests
         {
             const int id = 1;
             using var api = ReturnApiMockFactory.MockFlakyGetMethod(id, new BasicEntity());
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds()))
@@ -302,7 +304,7 @@ namespace NClient.Tests.ClientFactoryTests
         public void WithCustomResilience_ForAllMethodsExceptGetRequestToInternalServerError_ThrowClientRequestException()
         {
             using var api = ReturnApiMockFactory.MockInternalServerError();
-            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(factoryName: "TestFactory")
+            var returnClientFactory = NClientGallery.ClientFactories.GetRest().For(Fixture.Create<string>())
                 .WithResilience(selector => selector
                     .ForAllMethods()
                     .Use(getDelay: _ => 0.Seconds())

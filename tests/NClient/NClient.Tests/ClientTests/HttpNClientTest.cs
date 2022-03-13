@@ -11,12 +11,13 @@ using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NClient.Testing.Common.Helpers;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class HttpNClientTest
+    public class HttpNClientTest : ClientTestBase<IReturnClientWithMetadata>
     {
         private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);

@@ -6,12 +6,13 @@ using FluentAssertions.Extensions;
 using NClient.Exceptions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class TimeoutStaticClientTest
+    public class TimeoutStaticClientTest : ClientTestBase<ITimeoutStaticClientWithMetadata>
     {
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()

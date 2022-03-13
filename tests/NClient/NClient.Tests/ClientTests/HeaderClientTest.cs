@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class HeaderClientTest
+    public class HeaderClientTest : ClientTestBase<IHeaderClientWithMetadata>
     {
         [Test]
         public async Task HeaderClient_GetAsync_IntInBody()

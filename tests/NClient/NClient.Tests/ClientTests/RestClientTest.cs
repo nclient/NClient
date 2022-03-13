@@ -4,12 +4,13 @@ using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class RestClientTest
+    public class RestClientTest : ClientTestBase<IRestClientWithMetadata>
     {
         [Test]
         public async Task RestClient_GetAsync_IntInBody()
