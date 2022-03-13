@@ -15,7 +15,7 @@ namespace NClient.Tests.ClientFactoryTests.Helpers
         }).Value;
         
         [Test, Order(-1)]
-        public void Build_CustomFactory_Validate()
+        public virtual void Build_CustomFactory_Validate()
         {
             var factoryName = Fixture.Create<string>();
             
