@@ -12,11 +12,8 @@ namespace NClient.Providers.Mapping.HttpResponses
     {
         public bool CanMap(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {
-            if (!resultType.IsGenericType)
-                return false;
-
-            return resultType.GetGenericTypeDefinition() == typeof(HttpResponse)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse)
+            return resultType == typeof(HttpResponse)
+                || resultType == typeof(IHttpResponse)
                 || resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>)
                 || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>)
                 || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<>)
