@@ -37,8 +37,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
-        private readonly IEnumerable<IResponseMapper<TRequest, TResponse>> _typedResultBuilders;
-        private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _resultBuilders;
+        private readonly IReadOnlyCollection<IResponseMapper<TRequest, TResponse>> _transportResponseMappers;
+        private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _responseMappers;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -51,8 +51,8 @@ namespace NClient.Standalone.Client
             IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
-            IEnumerable<IResponseMapper<IRequest, IResponse>> resultBuilders,
-            IEnumerable<IResponseMapper<TRequest, TResponse>> typedResultBuilders,
+            IEnumerable<IResponseMapper<IRequest, IResponse>> responseMappers,
+            IEnumerable<IResponseMapper<TRequest, TResponse>> transportResponseMappers,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -62,8 +62,8 @@ namespace NClient.Standalone.Client
             _responseBuilder = responseBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
-            _typedResultBuilders = typedResultBuilders;
-            _resultBuilders = resultBuilders.ToArray();
+            _transportResponseMappers = transportResponseMappers.ToArray();
+            _responseMappers = responseMappers.ToArray();
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -136,8 +136,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
                 .ConfigureAwait(false);
 
-            if (_typedResultBuilders.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } typedResultBuilder)
-                return await typedResultBuilder
+            if (_transportResponseMappers.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } transportResponseMapper)
+                return await transportResponseMapper
                     .MapAsync(dataType, transportResponseContext, _serializer, cancellationToken)
                     .ConfigureAwait(false);
             
@@ -146,8 +146,8 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
-            if (_resultBuilders.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } resultBuilder)
-                return await resultBuilder
+            if (_responseMappers.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } responseMapper)
+                return await responseMapper
                     .MapAsync(dataType, responseContext, _serializer, cancellationToken)
                     .ConfigureAwait(false);
             

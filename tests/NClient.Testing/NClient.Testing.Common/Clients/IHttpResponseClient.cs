@@ -4,7 +4,7 @@ using NClient.Testing.Common.Entities;
 
 namespace NClient.Testing.Common.Clients
 {
-    public interface IHttpClient
+    public interface IHttpResponseClient
     {
         /// <summary>
         /// Url: api/basic?id={id}

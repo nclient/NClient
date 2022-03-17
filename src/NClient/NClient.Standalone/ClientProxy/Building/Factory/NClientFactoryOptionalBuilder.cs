@@ -94,7 +94,7 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutResponseMapping()
         {
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
-                .WithoutResultBuilders());
+                .WithoutAllResponseMapperProviders());
         }
         
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithResilience(Action<INClientFactoryResilienceMethodSelector<TRequest, TResponse>> configure)

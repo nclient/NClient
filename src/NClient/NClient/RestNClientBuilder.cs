@@ -79,8 +79,8 @@ namespace NClient
             optionalBuilder = loggerFactory is null
                 ? optionalBuilder.WithoutLogging()
                 : optionalBuilder.WithLogging(loggerFactory);
-            
-            optionalBuilder = optionalBuilder    
+
+            optionalBuilder = optionalBuilder
                 .WithResponseValidation()
                 .WithResponseToHttpResponseMapping()
                 .WithResponseToResultMapping();

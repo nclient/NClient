@@ -6,7 +6,7 @@ using WireMock.Server;
 
 namespace NClient.Testing.Common.Apis
 {
-    public class HttpApiMockFactory
+    public class HttpResponseApiMockFactory
     {
         public static IWireMockServer MockGetMethod(int id)
         {
