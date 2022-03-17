@@ -107,7 +107,7 @@ namespace NClient.Standalone.ClientProxy.Building
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutResponseMapping()
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithoutResultBuilders());
+                .WithoutAllResponseMapperProviders());
         }
         
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResilience(Action<INClientResilienceMethodSelector<TClient, TRequest, TResponse>> configure)
@@ -182,8 +182,8 @@ namespace NClient.Standalone.ClientProxy.Building
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 
                     _context.MethodsWithResiliencePolicy.Reverse()),
-                _context.ResultBuilderProviders,
-                _context.TypedResultBuilderProviders,
+                _context.ResponseMapperProviders,
+                _context.TransportResponseMapperProviders,
                 _context.ResponseValidatorProviders,
                 _context.Timeout,
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null

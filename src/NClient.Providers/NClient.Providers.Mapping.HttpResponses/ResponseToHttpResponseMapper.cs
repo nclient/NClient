@@ -12,17 +12,16 @@ namespace NClient.Providers.Mapping.HttpResponses
     {
         public bool CanMap(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
         {
-            if (!resultType.IsGenericType)
-                return false;
-
-            return resultType.GetGenericTypeDefinition() == typeof(HttpResponse)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<>)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<,>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
+            if (resultType.IsGenericType)
+                return resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<,>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
+            
+            return resultType == typeof(HttpResponse) 
+                || resultType == typeof(IHttpResponse);
         }
         
         public async Task<object?> MapAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, 

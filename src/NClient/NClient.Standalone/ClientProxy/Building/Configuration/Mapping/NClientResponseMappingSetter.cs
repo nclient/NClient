@@ -45,7 +45,7 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Mapping
             
             Ensure.AreNotNullItems(providerCollection, nameof(providers));
             
-            _builderContextModifier.Add(x => x.WithResultBuilders(providerCollection));
+            _builderContextModifier.Add(x => x.WithResponseMapperProviders(providerCollection));
             return new NClientResponseMappingSelector<TRequest, TResponse>(_builderContextModifier);
         }
     }
