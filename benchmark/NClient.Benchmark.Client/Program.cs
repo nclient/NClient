@@ -21,8 +21,8 @@ namespace NClient.Benchmark.Client
             {
                 new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<PrimitiveHttpResponseClientBenchmark>()),
-                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<JsonSourceGeneratorClientBenchmark>()),
+                new Lazy<Summary>(() => BenchmarkRunner.Run<JsonClientBenchmark>()),
                 new Lazy<Summary>(() => BenchmarkRunner.Run<JsonHttpResponseClientBenchmark>())
             };
             
