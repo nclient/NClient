@@ -6,13 +6,15 @@ using NClient.Benchmark.Client.Clients.NClient;
 using NClient.Benchmark.Client.Clients.Refit;
 using NClient.Benchmark.Client.Clients.RestEase;
 using NClient.Benchmark.Client.Clients.RestSharp;
+using NClient.Benchmark.Client.Dtos;
 using NClient.Benchmark.Client.Helpers;
+using NClient.Benchmark.Client.JsonClient;
 
 // ReSharper disable RedundantNameQualifier
-namespace NClient.Benchmark.Client.JsonClient
+namespace NClient.Benchmark.Client.JsonSourceGeneratorClient
 {
     [SimpleJob(invocationCount: 3000, targetCount: 10)]
-    public class JsonClientBenchmark
+    public class JsonSourceGeneratorClientBenchmark
     {
         private TestHttpClient _httpClient = null!;
         private TestRestSharpClient _restSharpSharpClient = null!;
@@ -25,7 +27,8 @@ namespace NClient.Benchmark.Client.JsonClient
         public void Setup()
         {
             var jsonSerializerOptions = new JsonSerializerOptions();
-            
+            jsonSerializerOptions.AddContext<DtoJsonContext>();
+
             _httpClient = new TestHttpClient(jsonSerializerOptions);
             HttpClient_Send();
             
