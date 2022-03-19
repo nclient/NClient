@@ -15,7 +15,6 @@ namespace NClient.Benchmark.Client.Dtos
         public Uri? Uri { get; set; }
         public Guid Guid { get; set; }
         public Dto? InnerDto { get; set; }
-        public object? Object { get; set; }
         public List<Dto>? List { get; set; }
         public Dictionary<string, Dto>? Dictionary { get; set; }
     }

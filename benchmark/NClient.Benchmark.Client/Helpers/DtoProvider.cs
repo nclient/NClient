@@ -29,7 +29,6 @@ namespace NClient.Benchmark.Client.Helpers
                 Uri = new Uri("http://localhost:5000"),
                 Guid = Guid.Empty,
                 InnerDto = innerDto,
-                Object = innerDto,
                 List = innerDto is null ? null : new List<Dto> { innerDto },
                 Dictionary = innerDto is null ? null : new Dictionary<string, Dto> { ["key1"] = innerDto }
             };
