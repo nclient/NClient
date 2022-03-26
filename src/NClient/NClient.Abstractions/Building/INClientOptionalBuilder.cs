@@ -102,8 +102,8 @@ namespace NClient
         #region Caching
         
         /// <summary>Sets cache workers that caching NClient responses into custom storage.</summary>
-        /// <param name="cacheWorker">The collection of cache workers that caching NClient responses into custom storage.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheWorker<TRequest, TResponse> cacheWorker);
+        /// <param name="cacheProvider">The collection of cache workers that caching NClient responses into custom storage.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheProvider<TRequest, TResponse> cacheProvider);
 
         /// <summary>Sets advanced cache workers that caching NClient responses into custom storage.</summary>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseCaching(Action<INClientResponseCachingSelector<TRequest, TResponse>> configure);
