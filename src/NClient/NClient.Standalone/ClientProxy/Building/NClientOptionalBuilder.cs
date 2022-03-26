@@ -4,12 +4,14 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client.Logging;
 using NClient.Standalone.Client.Resilience;
+using NClient.Standalone.ClientProxy.Building.Configuration.Caching;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -162,6 +164,21 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutLogging());
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheWorker<TRequest, TResponse> cacheWorker)
+        {
+            return WithAdvancedResponseCaching(x => x
+                .ForTransport().Use(cacheWorker));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseCaching(Action<INClientResponseCachingSelector<TRequest, TResponse>> configure)
+        {
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientResponseCachingSelector<TRequest, TResponse>(builderContextModifier));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
+        }
 
         public TClient Build()
         {
@@ -185,6 +202,8 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.ResponseMapperProviders,
                 _context.TransportResponseMapperProviders,
                 _context.ResponseValidatorProviders,
+                _context.CacheProvider,
+                _context.TransportCacheProvider,
                 _context.Timeout,
                 new LoggerDecorator<TClient>(_context.LoggerFactory is not null
                     ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })

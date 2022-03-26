@@ -10,6 +10,7 @@ using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
+using NClient.Standalone.ClientProxy.Validation.Caching;
 using NClient.Standalone.ClientProxy.Validation.Handling;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
@@ -52,7 +53,10 @@ namespace NClient.Standalone.ClientProxy.Validation
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),
                     Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
                     Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
-                    new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
+                    new[] { new StubResponseValidatorProvider<IRequest, IResponse>() },
+                    new StubResponseCacheProvider(),
+                    new StubResponseCacheProvider());
+            
             var client = _clientProxyGenerator.CreateClient<TClient>(interceptor);
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

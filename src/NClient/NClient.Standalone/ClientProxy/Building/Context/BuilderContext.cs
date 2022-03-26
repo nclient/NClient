@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Invocation;
 using NClient.Providers.Api;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -38,6 +39,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResponseMapperProviders { get; private set; }
         public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TransportResponseMapperProviders { get; private set; }
+        public IResponseCacheProvider<IRequest, IResponse>? CacheProvider { get; private set; }
+        public IResponseCacheProvider<TRequest, TResponse>? TransportCacheProvider { get; private set; }
 
         public TimeSpan? Timeout { get; private set; }
         
@@ -78,6 +81,9 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             ResponseMapperProviders = builderContext.ResponseMapperProviders.ToArray();
             TransportResponseMapperProviders = builderContext.TransportResponseMapperProviders.ToArray();
+            
+            CacheProvider = builderContext.CacheProvider;
+            TransportCacheProvider = builderContext.TransportCacheProvider;
 
             Timeout = builderContext.Timeout;
             
@@ -246,6 +252,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             {
                 Loggers = Array.Empty<ILogger>(),
                 LoggerFactory = null
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithResponseCachingProvider(IResponseCacheProvider<IRequest, IResponse> responseCacheProvider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                CacheProvider = responseCacheProvider
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithTransportCachingProvider(IResponseCacheProvider<TRequest, TResponse> transportResponseCacheProvider)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                TransportCacheProvider = transportResponseCacheProvider
             };
         }
 

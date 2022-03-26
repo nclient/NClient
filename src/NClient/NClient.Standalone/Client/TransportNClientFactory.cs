@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NClient.Providers;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -24,6 +25,8 @@ namespace NClient.Standalone.Client
         private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _responseMapperProviders;
         private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _transportResponseMapperProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
+        private readonly IResponseCacheProvider<IRequest, IResponse>? _responseCacheProvider;
+        private readonly IResponseCacheProvider<TRequest, TResponse>? _transportResponseCacheProvider;
         private readonly IToolset _toolset;
 
         public TransportNClientFactory(
@@ -35,6 +38,8 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
+            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
+            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
             IToolset toolset)
         {
             _transportProvider = transportProvider;
@@ -45,6 +50,8 @@ namespace NClient.Standalone.Client
             _responseMapperProviders = responseMapperProviders;
             _transportResponseMapperProviders = transportResponseMapperProviders;
             _responseValidatorProvider = responseValidatorProvider;
+            _responseCacheProvider = responseCacheProvider;
+            _transportResponseCacheProvider = transportResponseCacheProvider;
             _toolset = toolset;
         }
 
@@ -60,6 +67,8 @@ namespace NClient.Standalone.Client
                 _responseMapperProviders.Select(x => x.Create(_toolset)),
                 _transportResponseMapperProviders.Select(x => x.Create(_toolset)),
                 _responseValidatorProvider.Create(_toolset),
+                _responseCacheProvider?.Create(_toolset),
+                _transportResponseCacheProvider?.Create(_toolset),
                 _toolset.Logger);
         }
     }

@@ -7,6 +7,7 @@ using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers;
 using NClient.Providers.Api;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -39,6 +40,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
+            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
+            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
             TimeSpan? timeout = null,
             ILogger<TClient>? logger = null);
     }
@@ -74,6 +77,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
+            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
+            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
             TimeSpan? timeout,
             ILogger<TClient>? logger = null)
         {
@@ -111,6 +116,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                         .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
+                    responseCacheProvider,
+                    transportResponseCacheProvider,
                     toolset),
                 methodResiliencePolicyProvider,
                 _clientRequestExceptionFactory,
