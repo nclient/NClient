@@ -24,7 +24,7 @@ namespace NClient.Providers.Caching.Redis
         /// <param name="toolset">Tools that help implement providers.</param>
         public IResponseCacheWorker Create(IToolset toolset)
         {
-            return new RedisCacheWorker(_redisDb);
+            return new RedisCacheWorker(_redisDb, toolset);
         }
     }
 }

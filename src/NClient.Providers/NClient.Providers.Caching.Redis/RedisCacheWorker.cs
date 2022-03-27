@@ -11,11 +11,13 @@ namespace NClient.Providers.Caching.Redis
     internal class RedisCacheWorker : IResponseCacheWorker
     {
         private readonly IDatabaseAsync _redisDb;
-        public RedisCacheWorker(IDatabaseAsync redisDb)
+        private readonly IToolset _toolset;
+        public RedisCacheWorker(IDatabaseAsync redisDb, IToolset toolset)
         {
             Ensure.IsNotNull(redisDb, nameof(redisDb));
 
             _redisDb = redisDb;
+            _toolset = toolset;
         }
         public async Task<TResponse?> FindAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         {
@@ -35,15 +37,10 @@ namespace NClient.Providers.Caching.Redis
         {
             Ensure.IsNotNull(request, nameof(request));
             Ensure.IsNotNull(response, nameof(response));
-            byte[] bytes;
 
-            using (var stream = new MemoryStream())
-            {
-                new BinaryFormatter().Serialize(stream, response!);
-                bytes = stream.ToArray();
-            }
+            var serializedResponse = _toolset.Serializer.Serialize(response);
 
-            if (!await _redisDb.StringSetAsync(GenerateKey(request), bytes, lifeTime))
+            if (!await _redisDb.StringSetAsync(GenerateKey(request), serializedResponse, lifeTime))
                 throw new InvalidOperationException("Couldn't save data to Redis");
         }
 

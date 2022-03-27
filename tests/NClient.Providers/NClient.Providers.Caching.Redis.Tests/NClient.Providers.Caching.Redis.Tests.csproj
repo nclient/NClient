@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.NewtonsoftJson\NClient.Providers.Serialization.NewtonsoftJson.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient\NClient.csproj" />
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>

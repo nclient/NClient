@@ -25,7 +25,6 @@ namespace NClient.Standalone.Client
         private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _responseMapperProviders;
         private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _transportResponseMapperProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
-        private readonly IResponseCacheProvider? _responseCacheProvider;
         private readonly IResponseCacheProvider? _transportResponseCacheProvider;
         private readonly IToolset _toolset;
 
@@ -38,7 +37,6 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            IResponseCacheProvider? responseCacheProvider,
             IResponseCacheProvider? transportResponseCacheProvider,
             IToolset toolset)
         {
@@ -50,7 +48,6 @@ namespace NClient.Standalone.Client
             _responseMapperProviders = responseMapperProviders;
             _transportResponseMapperProviders = transportResponseMapperProviders;
             _responseValidatorProvider = responseValidatorProvider;
-            _responseCacheProvider = responseCacheProvider;
             _transportResponseCacheProvider = transportResponseCacheProvider;
             _toolset = toolset;
         }
@@ -67,7 +64,6 @@ namespace NClient.Standalone.Client
                 _responseMapperProviders.Select(x => x.Create(_toolset)),
                 _transportResponseMapperProviders.Select(x => x.Create(_toolset)),
                 _responseValidatorProvider.Create(_toolset),
-                _responseCacheProvider?.Create(_toolset),
                 _transportResponseCacheProvider?.Create(_toolset),
                 _toolset.Logger);
         }

@@ -15,7 +15,10 @@ namespace NClient
         {
             Ensure.IsNotNull(optionalBuilder, nameof(optionalBuilder));
 
-            return optionalBuilder.WithResponseCaching(new RedisCacheWorkerProvider(dataBase));
+            return optionalBuilder.WithAdvancedResponseCaching(selector =>
+            {
+                selector.ForClient().Use(new RedisCacheWorkerProvider(dataBase));
+            });
         }
     }
 }

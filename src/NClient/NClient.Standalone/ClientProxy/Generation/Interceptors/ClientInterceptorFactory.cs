@@ -116,11 +116,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                         .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
-                    responseCacheProvider,
                     transportResponseCacheProvider,
                     toolset),
                 methodResiliencePolicyProvider,
                 _clientRequestExceptionFactory,
+                responseCacheProvider?.Create(toolset),
                 timeout,
                 toolset);
         }
