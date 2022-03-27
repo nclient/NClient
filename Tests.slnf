@@ -8,6 +8,7 @@
       "tests\\NClient.Providers\\NClient.Providers.Api.Rest.Tests\\NClient.Providers.Api.Rest.Tests.csproj",
       "tests\\NClient.Providers\\NClient.Providers.Mapping.HttpResponses.Tests\\NClient.Providers.Mapping.HttpResponses.Tests.csproj",
       "tests\\NClient.Providers\\NClient.Providers.Mapping.LanguageExt.Tests\\NClient.Providers.Mapping.LanguageExt.Tests.csproj",
+      "tests\\NClient.Providers\\NClient.Providers.Caching.Redis.Tests\\NClient.Providers.Caching.Redis.Tests.csproj",
       "tests\\NClient.Providers\\NClient.Providers.Transport.SystemNetHttp.Tests\\NClient.Providers.Transport.SystemNetHttp.Tests.csproj",
       "tests\\NClient.Providers\\NClient.Providers.Serialization.SystemTextJson.Tests\\NClient.Providers.Serialization.SystemTextJson.Tests.csproj",
       "tests\\NClient.Providers\\NClient.Providers.Serialization.SystemXml.Tests\\NClient.Providers.Serialization.SystemXml.Tests.csproj",
