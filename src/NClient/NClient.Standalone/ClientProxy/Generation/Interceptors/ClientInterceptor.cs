@@ -155,7 +155,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         
         private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, ICachingAttribute? cachingAttribute = default, CancellationToken cancellationToken = default)
         {
-            if (await TryGetFromCache(request, cancellationToken) is { } cachedResult)
+            if (await _responseCacheWorker.TryGet(request, cancellationToken) is { } cachedResult)
             {
                 _toolset.Logger?.LogDebug("Response received from cache. Request id: '{requestId}'.", request.Id);
                 return cachedResult;
@@ -171,7 +171,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var result = await transportNClient
                     .GetHttpResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
+                
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
                 return result;
             }
 
@@ -181,7 +182,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
                 return result;
             }
 
@@ -191,7 +192,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
                 return result;
             }
 
@@ -201,7 +202,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseWithDataAndErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
                 return result;
             }
 
@@ -215,13 +216,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 .ConfigureAwait(false);
             
             return null;
-        }
-        
-        private async Task<IResponse?> TryGetFromCache(IRequest request, CancellationToken cancellationToken = default)
-        {
-            if (_responseCacheWorker is null)
-                return null;
-            return await _responseCacheWorker.FindAsync(request, cancellationToken);
         }
     }
 }
