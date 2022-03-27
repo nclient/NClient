@@ -220,7 +220,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         {
             if (_responseCacheWorker is null)
                 return null;
-            return await _responseCacheWorker.FindAsync<IRequest, IResponse>(request, cancellationToken);
+            return await _responseCacheWorker.FindAsync(request, cancellationToken);
         }
     }
 }

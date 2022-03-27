@@ -1,9 +1,9 @@
 using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NClient.Common.Helpers;
+using NClient.Providers.Transport;
 using StackExchange.Redis;
 
 namespace NClient.Providers.Caching.Redis
@@ -12,6 +12,7 @@ namespace NClient.Providers.Caching.Redis
     {
         private readonly IDatabaseAsync _redisDb;
         private readonly IToolset _toolset;
+        
         public RedisCacheWorker(IDatabaseAsync redisDb, IToolset toolset)
         {
             Ensure.IsNotNull(redisDb, nameof(redisDb));
@@ -19,21 +20,18 @@ namespace NClient.Providers.Caching.Redis
             _redisDb = redisDb;
             _toolset = toolset;
         }
-        public async Task<TResponse?> FindAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
+        public async Task<IResponse?> FindAsync(IRequest request, CancellationToken cancellationToken = default)
         {
             Ensure.IsNotNull(request, nameof(request));
-            var result = default(TResponse);
-            var bytes = (byte[]) await _redisDb.StringGetAsync(GenerateKey(request));
-
-            if (bytes == null)
-                return result;
             
-            using var stream = new MemoryStream(bytes);
-            result = (TResponse) new BinaryFormatter().Deserialize(stream);
+            var serializedResponse = (await _redisDb.StringGetAsync(GenerateKey(request))).ToString();
 
-            return result;
+            if (string.IsNullOrEmpty(serializedResponse))
+                return default;
+
+            return (IResponse) _toolset.Serializer.Deserialize(serializedResponse, typeof(IResponse))!;
         }
-        public async Task PutAsync<TRequest, TResponse>(TRequest request, TResponse response, TimeSpan? lifeTime = null, CancellationToken cancellationToken = default)
+        public async Task PutAsync(IRequest request, IResponse response, TimeSpan? lifeTime = null, CancellationToken cancellationToken = default)
         {
             Ensure.IsNotNull(request, nameof(request));
             Ensure.IsNotNull(response, nameof(response));
@@ -44,11 +42,10 @@ namespace NClient.Providers.Caching.Redis
                 throw new InvalidOperationException("Couldn't save data to Redis");
         }
 
-        private string GenerateKey<TRequest>(TRequest request)
+        private string GenerateKey(IRequest request)
         {
             Ensure.IsNotNull(request, nameof(request));
-            return request!.ToString();
-            /*
+            
             var key = new StringBuilder(request.Type.ToString());
             key.Append(request.Resource.Scheme);
             key.Append(request.Resource.Host);
@@ -63,7 +60,7 @@ namespace NClient.Providers.Caching.Redis
                 }
             }
             var plainTextBytes = Encoding.UTF8.GetBytes(key.ToString());
-            return Convert.ToBase64String(plainTextBytes);*/
+            return Convert.ToBase64String(plainTextBytes);
         }
     }
 }
