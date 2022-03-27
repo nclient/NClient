@@ -41,8 +41,8 @@ namespace NClient.Standalone.Client
         private readonly IReadOnlyCollection<IResponseMapper<TRequest, TResponse>> _transportResponseMappers;
         private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _responseMappers;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
-        private readonly IResponseCacheWorker<IRequest, IResponse>? _responseCacheWorker;
-        private readonly IResponseCacheWorker<TRequest, TResponse>? _transportResponseCacheWorker;
+        private readonly IResponseCacheWorker? _responseCacheWorker;
+        private readonly IResponseCacheWorker? _transportResponseCacheWorker;
         private readonly ILogger? _logger;
 
         public TimeSpan Timeout => _transport.Timeout;
@@ -57,8 +57,8 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapper<IRequest, IResponse>> responseMappers,
             IEnumerable<IResponseMapper<TRequest, TResponse>> transportResponseMappers,
             IResponseValidator<TRequest, TResponse> responseValidator,
-            IResponseCacheWorker<IRequest, IResponse>? responseCacheWorker,
-            IResponseCacheWorker<TRequest, TResponse>? transportResponseCacheWorker,
+            IResponseCacheWorker? responseCacheWorker,
+            IResponseCacheWorker? transportResponseCacheWorker,
             ILogger? logger)
         {
             _serializer = serializer;
@@ -231,12 +231,6 @@ namespace NClient.Standalone.Client
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
 
-                if (await TryGetFromCache(transportRequest, cancellationToken) is { } result)
-                {
-                    _logger?.LogDebug("Response received. Request id: '{requestId}'.", request.Id);
-                    return result;
-                }
-
                 await _clientHandler
                     .HandleRequestAsync(transportRequest, cancellationToken)
                     .ConfigureAwait(false);
@@ -261,14 +255,6 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 
-        private async Task<ResponseContext<TRequest, TResponse>?> TryGetFromCache(TRequest transportRequest, CancellationToken cancellationToken = default)
-        {
-            if (_transportResponseCacheWorker is null)
-                return null;
-            var cachedResponse = await _transportResponseCacheWorker.FindAsync(transportRequest, cancellationToken);
-            return cachedResponse is not null ? new ResponseContext<TRequest, TResponse>(transportRequest, cachedResponse) : null;
-        }
-        
         private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return _responseValidator.IsSuccess(transportResponseContext)

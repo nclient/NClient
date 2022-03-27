@@ -10,10 +10,10 @@ namespace NClient
     {
         /// <summary>Sets a custom mappers that can convert NClient responses into custom ones.</summary>
         /// <param name="cacheWorker">The mapper that convert transport responses into custom results.</param>
-        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker<TRequest, TResponse> cacheWorker);
+        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker cacheWorker);
         
         /// <summary>Sets a providers creating custom mappers that can convert NClient responses into custom ones.</summary>
         /// <param name="cacheProvider">The provider of a mappers that convert transport responses into custom results.</param>
-        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider<TRequest, TResponse> cacheProvider);
+        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider cacheProvider);
     }
 }

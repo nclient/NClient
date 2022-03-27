@@ -165,7 +165,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithoutLogging());
         }
         
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheProvider<TRequest, TResponse> cacheProvider)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheProvider cacheProvider)
         {
             return WithAdvancedResponseCaching(x => x
                 .ForTransport().Use(cacheProvider));

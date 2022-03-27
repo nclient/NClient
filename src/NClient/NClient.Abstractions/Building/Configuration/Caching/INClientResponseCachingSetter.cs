@@ -1,5 +1,4 @@
 using NClient.Providers.Caching;
-using NClient.Providers.Transport;
 
 // ReSharper disable once CheckNamespace
 namespace NClient
@@ -11,10 +10,10 @@ namespace NClient
     {
         /// <summary>Sets a custom mappers that can convert NClient responses into custom ones.</summary>
         /// <param name="cacheWorkers">The mappers that convert transport responses into custom results.</param>
-        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker<IRequest, IResponse> cacheWorkers);
+        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker cacheWorkers);
 
         /// <summary>Sets a providers creating custom mappers that can convert NClient responses into custom ones.</summary>
         /// <param name="cacheProvider">The providers of a mappers that convert transport responses into custom results.</param>
-        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider<IRequest, IResponse> cacheProvider);
+        INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider cacheProvider);
     }
 }

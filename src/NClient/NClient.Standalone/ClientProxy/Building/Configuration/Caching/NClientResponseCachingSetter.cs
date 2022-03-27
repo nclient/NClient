@@ -1,6 +1,5 @@
 using NClient.Common.Helpers;
 using NClient.Providers.Caching;
-using NClient.Providers.Transport;
 using NClient.Standalone.Client.Caching;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -15,14 +14,14 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Caching
             _builderContextModifier = builderContextModifier;
         }
 
-        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker<IRequest, IResponse> cacheWorker)
+        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker cacheWorker)
         {
             Ensure.IsNotNull(cacheWorker, nameof(cacheWorker));
             
-            return Use(new ResponseCacheProvider<IRequest, IResponse>(cacheWorker));
+            return Use(new ResponseCacheProvider(cacheWorker));
         }
         
-        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider<IRequest, IResponse> cacheProvider)
+        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider cacheProvider)
         {
             Ensure.IsNotNull(cacheProvider, nameof(cacheProvider));
             

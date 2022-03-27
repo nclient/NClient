@@ -150,6 +150,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         
         private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken)
         {
+            if (await TryGetFromCache(request, cancellationToken) is { } result)
+            {
+                _toolset.Logger?.LogDebug("Response received from cache. Request id: '{requestId}'.", request.Id);
+                return result;
+            }
             if (resultType == typeof(TResponse))
                 return await transportNClient
                     .GetOriginalResponseAsync(request, resiliencePolicy, cancellationToken)
@@ -184,6 +189,14 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 .GetResultAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             return null;
+        }
+        
+        private async Task<IResponse>? TryGetFromCache(IRequest request, CancellationToken cancellationToken = default)
+        {
+            if (_responseCacheWorker is null)
+                return null;
+            var cachedResponse = await _responseCacheWorker.FindAsync<IRequest, IResponse>(request, cancellationToken);
+            return cachedResponse is not null ? new ResponseContext<IRequest, IResponse>(request, cachedResponse) : null;
         }
     }
 }

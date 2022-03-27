@@ -1,6 +1,5 @@
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
-using NClient.Providers.Transport;
 using StackExchange.Redis;
 
 namespace NClient.Providers.Caching.Redis
@@ -8,7 +7,7 @@ namespace NClient.Providers.Caching.Redis
     /// <summary>
     /// The provider of the cache worker that store HTTP response data to Redis.
     /// </summary>
-    public class RedisCacheWorkerProvider : IResponseCacheProvider<IRequest, IResponse>
+    public class RedisCacheWorkerProvider : IResponseCacheProvider
     {
         private readonly IDatabaseAsync _redisDb;
 
@@ -23,7 +22,7 @@ namespace NClient.Providers.Caching.Redis
         
         /// <summary>Creates System.Text.Json <see cref="ISerializer"/> instance.</summary>
         /// <param name="toolset">Tools that help implement providers.</param>
-        public IResponseCacheWorker<IRequest, IResponse> Create(IToolset toolset)
+        public IResponseCacheWorker Create(IToolset toolset)
         {
             return new RedisCacheWorker(_redisDb);
         }

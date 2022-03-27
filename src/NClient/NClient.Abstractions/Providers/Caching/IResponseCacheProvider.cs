@@ -1,12 +1,12 @@
 namespace NClient.Providers.Caching
 {
     /// <summary>
-    /// A provider abstraction for a component that can create <see cref="IResponseCacheWorker{TRequest,TResponse}"/> instances.
+    /// A provider abstraction for a component that can create <see cref="IResponseCacheWorker"/> instances.
     /// </summary>
-    public interface IResponseCacheProvider<TRequest, TResponse>
+    public interface IResponseCacheProvider
     {
-        /// <summary>Creates and configures an instance of <see cref="IResponseCacheWorker{TRequest,TResponse}"/> instance.</summary>
+        /// <summary>Creates and configures an instance of <see cref="IResponseCacheWorker"/> instance.</summary>
         /// <param name="toolset">Tools that help implement providers.</param>
-        IResponseCacheWorker<TRequest, TResponse> Create(IToolset toolset);
+        IResponseCacheWorker Create(IToolset toolset);
     }
 }

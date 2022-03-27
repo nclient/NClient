@@ -40,8 +40,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
-            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
-            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
+            IResponseCacheProvider? responseCacheProvider,
+            IResponseCacheProvider? transportResponseCacheProvider,
             TimeSpan? timeout = null,
             ILogger<TClient>? logger = null);
     }
@@ -77,8 +77,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
-            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
-            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
+            IResponseCacheProvider? responseCacheProvider,
+            IResponseCacheProvider? transportResponseCacheProvider,
             TimeSpan? timeout,
             ILogger<TClient>? logger = null)
         {

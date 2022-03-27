@@ -25,8 +25,8 @@ namespace NClient.Standalone.Client
         private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _responseMapperProviders;
         private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _transportResponseMapperProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
-        private readonly IResponseCacheProvider<IRequest, IResponse>? _responseCacheProvider;
-        private readonly IResponseCacheProvider<TRequest, TResponse>? _transportResponseCacheProvider;
+        private readonly IResponseCacheProvider? _responseCacheProvider;
+        private readonly IResponseCacheProvider? _transportResponseCacheProvider;
         private readonly IToolset _toolset;
 
         public TransportNClientFactory(
@@ -38,8 +38,8 @@ namespace NClient.Standalone.Client
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
             IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            IResponseCacheProvider<IRequest, IResponse>? responseCacheProvider,
-            IResponseCacheProvider<TRequest, TResponse>? transportResponseCacheProvider,
+            IResponseCacheProvider? responseCacheProvider,
+            IResponseCacheProvider? transportResponseCacheProvider,
             IToolset toolset)
         {
             _transportProvider = transportProvider;

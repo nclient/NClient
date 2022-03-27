@@ -1,12 +1,11 @@
 using NClient.Providers;
 using NClient.Providers.Caching;
-using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Caching
 {
-    internal class StubResponseCacheProvider : IResponseCacheProvider<IRequest, IResponse>
+    internal class StubResponseCacheProvider : IResponseCacheProvider
     {
-        public IResponseCacheWorker<IRequest, IResponse> Create(IToolset toolset)
+        public IResponseCacheWorker Create(IToolset toolset)
         {
             return new StubResponseCacheWorker();
         }

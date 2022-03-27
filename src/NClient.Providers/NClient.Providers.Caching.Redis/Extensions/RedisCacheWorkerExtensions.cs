@@ -1,6 +1,5 @@
 using NClient.Common.Helpers;
 using NClient.Providers.Caching.Redis;
-using NClient.Providers.Transport;
 using StackExchange.Redis;
 
 // ReSharper disable once CheckNamespace
@@ -9,8 +8,8 @@ namespace NClient
     public static class RedisCacheWorkerExtensions
     {
         /// <summary>Sets the Redis cache for the client.</summary>
-        public static INClientOptionalBuilder<TClient, IRequest, IResponse> WithRedisCaching<TClient>(
-            this INClientOptionalBuilder<TClient, IRequest, IResponse> optionalBuilder,
+        public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithRedisCaching<TClient, TRequest, TResponse>(
+            this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IDatabaseAsync dataBase)
             where TClient : class
         {

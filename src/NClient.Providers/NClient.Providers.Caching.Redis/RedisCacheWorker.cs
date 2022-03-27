@@ -1,16 +1,14 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NClient.Common.Helpers;
-using NClient.Providers.Transport;
 using StackExchange.Redis;
 
 namespace NClient.Providers.Caching.Redis
 {
-    internal class RedisCacheWorker : IResponseCacheWorker<IRequest, IResponse>
+    internal class RedisCacheWorker : IResponseCacheWorker
     {
         private readonly IDatabaseAsync _redisDb;
         public RedisCacheWorker(IDatabaseAsync redisDb)
@@ -19,21 +17,21 @@ namespace NClient.Providers.Caching.Redis
 
             _redisDb = redisDb;
         }
-        public async Task<IResponse?> FindAsync(IRequest request, CancellationToken cancellationToken = default)
+        public async Task<TResponse?> FindAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
         {
             Ensure.IsNotNull(request, nameof(request));
-            IResponse? result = null;
+            var result = default(TResponse);
             var bytes = (byte[]) await _redisDb.StringGetAsync(GenerateKey(request));
 
             if (bytes == null)
                 return result;
             
             using var stream = new MemoryStream(bytes);
-            result = (IResponse) new BinaryFormatter().Deserialize(stream);
+            result = (TResponse) new BinaryFormatter().Deserialize(stream);
 
             return result;
         }
-        public async Task PutAsync(IRequest request, IResponse response, TimeSpan? lifeTime = null, CancellationToken cancellationToken = default)
+        public async Task PutAsync<TRequest, TResponse>(TRequest request, TResponse response, TimeSpan? lifeTime = null, CancellationToken cancellationToken = default)
         {
             Ensure.IsNotNull(request, nameof(request));
             Ensure.IsNotNull(response, nameof(response));
@@ -41,7 +39,7 @@ namespace NClient.Providers.Caching.Redis
 
             using (var stream = new MemoryStream())
             {
-                new BinaryFormatter().Serialize(stream, response);
+                new BinaryFormatter().Serialize(stream, response!);
                 bytes = stream.ToArray();
             }
 
@@ -49,8 +47,11 @@ namespace NClient.Providers.Caching.Redis
                 throw new InvalidOperationException("Couldn't save data to Redis");
         }
 
-        private string GenerateKey(IRequest request)
+        private string GenerateKey<TRequest>(TRequest request)
         {
+            Ensure.IsNotNull(request, nameof(request));
+            return request!.ToString();
+            /*
             var key = new StringBuilder(request.Type.ToString());
             key.Append(request.Resource.Scheme);
             key.Append(request.Resource.Host);
@@ -65,7 +66,7 @@ namespace NClient.Providers.Caching.Redis
                 }
             }
             var plainTextBytes = Encoding.UTF8.GetBytes(key.ToString());
-            return Convert.ToBase64String(plainTextBytes);
+            return Convert.ToBase64String(plainTextBytes);*/
         }
     }
 }

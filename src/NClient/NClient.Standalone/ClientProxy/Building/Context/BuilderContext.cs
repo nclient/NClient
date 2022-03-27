@@ -39,8 +39,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResponseMapperProviders { get; private set; }
         public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TransportResponseMapperProviders { get; private set; }
-        public IResponseCacheProvider<IRequest, IResponse>? CacheProvider { get; private set; }
-        public IResponseCacheProvider<TRequest, TResponse>? TransportCacheProvider { get; private set; }
+        public IResponseCacheProvider? CacheProvider { get; private set; }
+        public IResponseCacheProvider? TransportCacheProvider { get; private set; }
 
         public TimeSpan? Timeout { get; private set; }
         
@@ -255,7 +255,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResponseCachingProvider(IResponseCacheProvider<IRequest, IResponse> responseCacheProvider)
+        public BuilderContext<TRequest, TResponse> WithResponseCachingProvider(IResponseCacheProvider responseCacheProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -263,7 +263,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithTransportCachingProvider(IResponseCacheProvider<TRequest, TResponse> transportResponseCacheProvider)
+        public BuilderContext<TRequest, TResponse> WithTransportCachingProvider(IResponseCacheProvider transportResponseCacheProvider)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {

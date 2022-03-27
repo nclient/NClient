@@ -14,14 +14,14 @@ namespace NClient.Standalone.ClientProxy.Building.Configuration.Caching
             _builderContextModifier = builderContextModifier;
         }
         
-        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker<TRequest, TResponse> cacheWorker)
+        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheWorker cacheWorker)
         {
             Ensure.IsNotNull(cacheWorker, nameof(cacheWorker));
 
-            return Use(new ResponseCacheProvider<TRequest, TResponse>(cacheWorker));
+            return Use(new ResponseCacheProvider(cacheWorker));
         }
         
-        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider<TRequest, TResponse> cacheProvider)
+        public INClientResponseCachingSelector<TRequest, TResponse> Use(IResponseCacheProvider cacheProvider)
         {
             Ensure.IsNotNull(cacheProvider, nameof(cacheProvider));
             
