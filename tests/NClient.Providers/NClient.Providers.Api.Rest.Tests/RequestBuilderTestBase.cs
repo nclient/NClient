@@ -62,6 +62,7 @@ namespace NClient.Providers.Api.Rest.Tests
                 new PathAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MetadataAttributeProvider(ClientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
+                new CachingAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
         }
 

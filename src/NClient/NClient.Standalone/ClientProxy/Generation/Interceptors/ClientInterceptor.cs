@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
 using NClient.Providers;
@@ -117,7 +118,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
 
-                var result = await ExecuteHttpResponseAsync(transportNClient, httpRequest, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
+                var result = await ExecuteHttpResponseAsync(transportNClient, httpRequest, resultType, resiliencePolicy, method.CachingAttribute, combinedCancellationToken).ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return result;
             }
@@ -152,7 +153,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
         }
         
-        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken)
+        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, ICachingAttribute? cachingAttribute = default, CancellationToken cancellationToken = default)
         {
             if (await TryGetFromCache(request, cancellationToken) is { } cachedResult)
             {
@@ -170,7 +171,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var result = await transportNClient
                     .GetHttpResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.MaxValue, cancellationToken)!;
+                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
                 return result;
             }
 
@@ -180,7 +181,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.MaxValue, cancellationToken)!;
+                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
                 return result;
             }
 
@@ -190,7 +191,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.MaxValue, cancellationToken)!;
+                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
                 return result;
             }
 
@@ -200,7 +201,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     .GetHttpResponseWithDataAndErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
                 
-                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.MaxValue, cancellationToken)!;
+                await _responseCacheWorker?.PutAsync(request, result, TimeSpan.FromMilliseconds(cachingAttribute?.Milliseconds ?? 0), cancellationToken);
                 return result;
             }
 

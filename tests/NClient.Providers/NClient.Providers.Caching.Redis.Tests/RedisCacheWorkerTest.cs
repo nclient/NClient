@@ -28,19 +28,19 @@ namespace NClient.Providers.Caching.Redis.Tests
             dbMock.Setup(x => x.StringGetAsync(It.IsAny<RedisKey>(), CommandFlags.None)).ReturnsAsync(It.IsAny<RedisValue>());
             dbMock.Setup(x => x.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan>(), When.Always, CommandFlags.None)).ReturnsAsync(true);
             
-            using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
+            using var api = CachingApiMockFactory.MockGetAsyncMethod(id, entity);
             
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First())
+            var result = NClientGallery.Clients.GetRest().For<ICachingStaticClientWithMetadata>(host: api.Urls.First())
                 .WithNewtonsoftJsonSerialization()
                 .WithRedisCaching(dbMock.Object)
                 .Build()
-                .GetIHttpResponse(id);
+                .GetIResponse(id);
             
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(entity);
             result.Content.Bytes.Should().NotBeEquivalentTo(camelCaseContentBytes);
 
-            dbMock.Verify(mock => mock.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan>(), When.Always, CommandFlags.None), Times.Once());
+            dbMock.Verify(mock => mock.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan?>(), When.Always, CommandFlags.None), Times.Once());
         }
     }
 }

@@ -15,6 +15,7 @@ namespace NClient.Invocation
         public IUseVersionAttribute? UseVersionAttribute { get; set; }
         public IMetadataAttribute[] MetadataAttributes { get; set; }
         public ITimeoutAttribute? TimeoutAttribute { get; set; }
+        public ICachingAttribute? CachingAttribute { get; set; }
         public IMethodParam[] Params { get; }
         public Type ResultType { get; }
 

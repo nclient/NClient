@@ -25,6 +25,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
         private readonly IPathAttributeProvider _pathAttributeProvider;
         private readonly IHeaderAttributeProvider _headerAttributeProvider;
         private readonly ITimeoutAttributeProvider _timeoutAttributeProvider;
+        private readonly ICachingAttributeProvider _cachingAttributeProvider;
         private readonly IMethodParamBuilder _methodParamBuilder;
 
         public MethodBuilder(
@@ -33,6 +34,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             IPathAttributeProvider pathAttributeProvider,
             IHeaderAttributeProvider headerAttributeProvider,
             ITimeoutAttributeProvider timeoutAttributeProvider,
+            ICachingAttributeProvider cachingAttributeProvider,
             IMethodParamBuilder methodParamBuilder)
         {
             _cache = new ConcurrentDictionary<MethodInfo, Method>();
@@ -41,6 +43,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             _pathAttributeProvider = pathAttributeProvider;
             _headerAttributeProvider = headerAttributeProvider;
             _timeoutAttributeProvider = timeoutAttributeProvider;
+            _cachingAttributeProvider = cachingAttributeProvider;
             _methodParamBuilder = methodParamBuilder;
         }
 
@@ -76,7 +79,8 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
                 MetadataAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams),
-                TimeoutAttribute = _timeoutAttributeProvider.Find(clientType, methodInfo, overridingMethods)
+                TimeoutAttribute = _timeoutAttributeProvider.Find(clientType, methodInfo, overridingMethods),
+                CachingAttribute = _cachingAttributeProvider.Find(clientType, methodInfo, overridingMethods)
             };
 
             _cache.TryAdd(methodInfo, method);

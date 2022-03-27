@@ -35,6 +35,9 @@ namespace NClient.Providers.Caching.Redis
         {
             Ensure.IsNotNull(request, nameof(request));
             Ensure.IsNotNull(response, nameof(response));
+            
+            if (lifeTime?.TotalMilliseconds <= 0)
+                return;
 
             var serializedResponse = _toolset.Serializer.Serialize(response);
 

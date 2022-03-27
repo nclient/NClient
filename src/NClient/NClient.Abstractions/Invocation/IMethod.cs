@@ -31,6 +31,9 @@ namespace NClient.Invocation
         /// <summary>Get <see cref="ITimeoutAttribute"/> represents time limit for method execution.</summary>
         ITimeoutAttribute? TimeoutAttribute { get; }
         
+        /// <summary>Get <see cref="ICachingAttribute"/> represents time limit for cahing.</summary>
+        ICachingAttribute? CachingAttribute { get; }
+        
         /// <summary>Get array of <see cref="IMetadataAttribute"/> represents additional method info (like headers for HTTP).</summary>
         IMetadataAttribute[] MetadataAttributes { get; }
         
