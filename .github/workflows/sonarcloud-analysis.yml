@@ -58,7 +58,7 @@ jobs:
             /d:sonar.cs.nunit.reportsPaths="**/TestResults/TestResult-*.xml" `
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.*.opencover.xml" `
             /d:sonar.coverage.exclusions=benchmark/**,sandbox/**,tests/**,**/AspNetRouting/**,**/Castle/**,**/AspNetBinding/**,**/AspNetCore/** `
-            /d:sonar.cpd.exclusions=**/AspNetRouting/**,**/Castle/**,**/AspNetBinding/**,**/AspNetCore/**
+            /d:sonar.cpd.exclusions=benchmark/**,**/AspNetRouting/**,**/Castle/**,**/AspNetBinding/**,**/AspNetCore/**
       - name: Build solution
         shell: powershell
         run: dotnet build ${{ env.solution }} --configuration Release

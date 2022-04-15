@@ -27,9 +27,8 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 
         public PathAttribute? Find(Type clientType)
         {
-            var pathAttributes = (clientType.IsInterface
-                    ? clientType.GetInterfaceCustomAttributes(inherit: true)
-                    : clientType.GetCustomAttributes(inherit: true).Cast<Attribute>())
+            var pathAttributes = clientType
+                .GetInterfaceCustomAttributes(inherit: true)
                 .Select(x => _attributeMapper.TryMap(x))
                 .Where(x => x is PathAttribute)
                 .Cast<PathAttribute>()

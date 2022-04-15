@@ -67,11 +67,11 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
                     .ToArray());
             }
 
-            var methodAttribute = _operationAttributeProvider.Get(methodInfo, overridingMethods);
+            var operationAttribute = _operationAttributeProvider.Get(methodInfo, overridingMethods);
             var methodParams = _methodParamBuilder.Build(methodInfo, overridingMethods);
 
             var method = new Method(methodInfo.Name, methodInfo, clientType.Name, clientType, 
-                methodAttribute, methodParams, returnType)
+                operationAttribute, methodParams, returnType)
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),

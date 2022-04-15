@@ -28,7 +28,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
     internal interface IClientInterceptorFactory
     {
         IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resource,
+            Uri host,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -36,8 +36,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             TimeSpan? timeout = null,
             ILogger<TClient>? logger = null);
@@ -63,7 +63,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resource,
+            Uri host,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -71,8 +71,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             TimeSpan? timeout,
             ILogger<TClient>? logger = null)
@@ -89,7 +89,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             var toolset = new Toolset(serializer, logger);
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                resource,
+                host,
                 _timeoutSelector,
                 _guidProvider,
                 methodBuilder,
@@ -102,11 +102,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     responseBuilderProvider,
                     new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
-                    resultBuilderProviders
+                    responseMapperProviders
                         .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
                         .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
-                    typedResultBuilderProviders
+                    transportResponseMapperProviders
                         .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
                         .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),

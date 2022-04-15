@@ -123,6 +123,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 tools", "03 tools", "{7B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.DotNetTool.Tests", "tests\NClient.Tools\NClient.DotNetTool.Tests\NClient.DotNetTool.Tests.csproj", "{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NClient.Providers.Serialization.SystemTextJson.Tests", "tests\NClient.Providers\NClient.Providers.Serialization.SystemTextJson.Tests\NClient.Providers.Serialization.SystemTextJson.Tests.csproj", "{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -361,6 +363,11 @@ Global
 		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9}.TestRelease|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -412,6 +419,7 @@ Global
 		{97E9E39C-F507-4387-8420-A31E7204D9DE} = {FD8C88D4-E6FF-4A83-8898-62E390AEF8F5}
 		{7BA62D11-E7B6-4879-903E-AC718C79DA96} = {F3AF19D7-1D80-4449-98CC-96BC13FF8103}
 		{4EA0CDB4-8C81-4F10-BDC9-4DF8AE638D25} = {7BA62D11-E7B6-4879-903E-AC718C79DA96}
+		{FEFE8BA5-1FFF-43F2-A09F-C0F3194413E9} = {B1BCB5AE-6A5E-49F7-A00A-6B2931DF628C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {244A4C58-8FA7-496C-ABCF-72F333149A20}

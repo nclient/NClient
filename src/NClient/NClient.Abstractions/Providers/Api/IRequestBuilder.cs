@@ -13,6 +13,6 @@ namespace NClient.Providers.Api
         /// <param name="host">The address of the requested resource.</param>
         /// <param name="methodInvocation">The information about the invocation of the client's method.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        Task<IRequest> BuildAsync(Guid requestId, string host, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
+        Task<IRequest> BuildAsync(Guid requestId, Uri host, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
     }
 }

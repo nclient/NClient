@@ -1,15 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class ReturnClientTest
+    public class ReturnClientTest : ClientTestBase<IReturnClientWithMetadata>
     {
         [Test]
         public void ResultClient_Get_BasicEntity()
@@ -18,7 +19,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .Get(id);
 
             result.Should().BeEquivalentTo(entity);
@@ -31,7 +32,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetAsync(id);
 
             result.Should().BeEquivalentTo(entity);
@@ -44,7 +45,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .GetIHttpResponse(id);
 
             result.IsSuccessful.Should().BeTrue();
@@ -57,7 +58,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .Post(entity);
         }
 
@@ -67,7 +68,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostAsyncMethod(entity);
 
-            await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .PostAsync(entity);
         }
 
@@ -77,7 +78,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .PostHttpResponse(entity);
 
             result.IsSuccessful.Should().BeTrue();

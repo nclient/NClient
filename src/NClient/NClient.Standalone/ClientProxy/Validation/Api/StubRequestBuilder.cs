@@ -8,7 +8,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Api
 {
     internal class StubRequestBuilder : IRequestBuilder
     {
-        public Task<IRequest> BuildAsync(Guid requestId, string host, IMethodInvocation methodInvocation, CancellationToken cancellationToken)
+        public Task<IRequest> BuildAsync(Guid requestId, Uri host, IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             return Task.FromResult<IRequest>(new Request(requestId, host, RequestType.Custom));
         }

@@ -9,6 +9,7 @@ using Moq;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Providers.Mapping.LanguageExt.Tests
@@ -25,8 +26,8 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedValue);
             var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
-            var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);
-            var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
+            var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);
+            var response = new Response(new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read))
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 IsSuccessful = true
@@ -48,8 +49,8 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedError);
             var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
-            var request = new Request(Guid.Empty, endpoint: "", RequestType.Custom);   
-            var response = new Response(new Request(Guid.Empty, "http://localhost", RequestType.Read))
+            var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);   
+            var response = new Response(new Request(Guid.Empty, resource: "http://localhost".ToUri(), RequestType.Read))
             {
                 StatusCode = (int) HttpStatusCode.NotFound,
                 IsSuccessful = false
