@@ -62,6 +62,7 @@ namespace NClient
             optionalBuilder = optionalBuilder    
                 .WithResponseValidation()
                 .WithResponseToHttpResponseMapping()
+                .WithResponseToStreamMapping()
                 .WithResponseToResultMapping();
 
             if (builderOptions is null)

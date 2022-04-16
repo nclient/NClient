@@ -132,6 +132,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
+        // TODO: Shouldn't an exception be thrown in this case?
         public async Task GetStreamAsync_ResponseWithFailureCode_TransportStream()
         {
             const HttpStatusCode errorCode = HttpStatusCode.NotFound;

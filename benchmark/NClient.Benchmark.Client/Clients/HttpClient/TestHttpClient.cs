@@ -10,7 +10,7 @@ namespace NClient.Benchmark.Client.Clients.HttpClient
 {
     public class TestHttpClient
     {
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private readonly JsonSerializerOptions? _jsonSerializerOptions;
         private readonly System.Net.Http.HttpClient _httpClient;
         
         public TestHttpClient(JsonSerializerOptions jsonSerializerOptions)
