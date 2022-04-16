@@ -22,7 +22,7 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         }
 
         [Test]
-        public void IHttpResponseWithDataAndError_Deconstruct()
+        public void IHttpResponseWithDataOrError_Deconstruct()
         {
             var resultData = _fixture.Create<Int32>();
             var error = _fixture.Create<string>();

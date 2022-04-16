@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -107,7 +108,7 @@ namespace NClient.Providers.Api.Rest
             {
                 var bodyJson = _toolset.Serializer.Serialize(bodyParams.SingleOrDefault()?.Value);
                 var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
-                request.Content = new Content(bodyBytes, Encoding.UTF8.WebName, new MetadataContainer
+                request.Content = new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, new MetadataContainer
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
                     new Metadata("Content-Type", _toolset.Serializer.ContentType),

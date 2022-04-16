@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -36,7 +37,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -64,7 +65,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -92,7 +93,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -120,7 +121,7 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -147,9 +148,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -173,9 +173,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -199,9 +198,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -225,9 +223,8 @@ namespace NClient.Tests.ClientTests
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -260,6 +257,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Resource);
         }
 
@@ -269,6 +268,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Resource);
         }
 
@@ -278,6 +279,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Resource);
         }
 
@@ -287,6 +290,8 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
                 .Excluding(x => x.Resource);
         }
     }

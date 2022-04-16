@@ -21,11 +21,11 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
         public async Task Build_SuccessHttpResponse_EitherWithRight()
         {
             var expectedValue = new BasicEntity { Id = 1, Value = 2 };
-            var eitherBuilder = new ResponseToEitherBuilder();
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedValue);
+            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
             var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);
             var response = new Response(new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read))
             {
@@ -35,7 +35,7 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
             var actualResult = await eitherBuilder.MapAsync(
-                typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object, CancellationToken.None);
+                typeof(Either<string, BasicEntity>), responseContext, CancellationToken.None);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Right<string, BasicEntity>(expectedValue) }));
         }
@@ -44,11 +44,11 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
         public async Task Build_FailureHttpResponse_EitherWithLeft()
         {
             const string expectedError = "Error message.";
-            var eitherBuilder = new ResponseToEitherBuilder();
             var serializerMock = new Mock<ISerializer>();
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedError);
+            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
             var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);   
             var response = new Response(new Request(Guid.Empty, resource: "http://localhost".ToUri(), RequestType.Read))
             {
@@ -58,7 +58,7 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
 
             var actualResult = await eitherBuilder.MapAsync(
-                typeof(Either<string, BasicEntity>), responseContext, serializerMock.Object, CancellationToken.None);
+                typeof(Either<string, BasicEntity>), responseContext, CancellationToken.None);
             
             actualResult.Should().BeEquivalentTo(new Either<string, BasicEntity>(new[] { EitherData.Left<string, BasicEntity>(expectedError) }));
         }

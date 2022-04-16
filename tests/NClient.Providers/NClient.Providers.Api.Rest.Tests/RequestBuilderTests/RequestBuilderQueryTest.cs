@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Annotations.Http;
 using NClient.Exceptions;
@@ -17,11 +18,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IPrimitiveParameter { [GetMethod] int Get([QueryParam] int id); }
 
         [Test]
-        public void Build_PrimitiveParameter_PrimitiveParameterInQuery()
+        public async Task Build_PrimitiveParameter_PrimitiveParameterInQuery()
         {
             var httpRequest = BuildRequest(BuildMethod<IPrimitiveParameter>(), 1);
-
-            AssertHttpRequest(httpRequest,
+            
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("id", 1) });
@@ -30,11 +31,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IMultiplyPrimitiveParameters { [GetMethod] int Get([QueryParam] int id, [QueryParam] string value); }
 
         [Test]
-        public void Build_MultiplyPrimitiveParameters_PrimitiveParametersInQuery()
+        public async Task Build_MultiplyPrimitiveParameters_PrimitiveParametersInQuery()
         {
             var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveParameters>(), 1, "val");
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("id", 1), new Parameter("value", "val") });
@@ -43,11 +44,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IPrimitiveParameterWithoutAttribute { [GetMethod] int Get(int id); }
 
         [Test]
-        public void Build_PrimitiveParameterWithoutAttribute_PrimitiveParameterInQuery()
+        public async Task Build_PrimitiveParameterWithoutAttribute_PrimitiveParameterInQuery()
         {
             var httpRequest = BuildRequest(BuildMethod<IPrimitiveParameterWithoutAttribute>(), 1);
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("id", 1) });
@@ -56,11 +57,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IMultiplyPrimitiveParametersWithoutAttribute { [GetMethod] int Get(int id, string value); }
 
         [Test]
-        public void Build_MultiplyPrimitiveParametersWithoutAttribute_PrimitiveParametersInQuery()
+        public async Task Build_MultiplyPrimitiveParametersWithoutAttribute_PrimitiveParametersInQuery()
         {
             var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveParametersWithoutAttribute>(), 1, "val");
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("id", 1), new Parameter("value", "val") });
@@ -69,11 +70,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface ICustomTypeParameter { [GetMethod] int Get([QueryParam] BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeParameter_PropertiesInQuery()
+        public async Task Build_CustomTypeParameter_PropertiesInQuery()
         {
             var httpRequest = BuildRequest(BuildMethod<ICustomTypeParameter>(), new BasicEntity { Id = 1, Value = 2 });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("entity.Id", 1), new Parameter("entity.Value", 2) });
@@ -82,12 +83,12 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IMultiplyCustomTypeParameters { [GetMethod] int Get([QueryParam] BasicEntity entity1, [QueryParam] BasicEntity entity2); }
 
         [Test]
-        public void Build_MultiplyCustomTypeParameters_PropertiesInQuery()
+        public async Task Build_MultiplyCustomTypeParameters_PropertiesInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<IMultiplyCustomTypeParameters>(), new BasicEntity { Id = 1, Value = 2 }, new BasicEntity { Id = 2, Value = 3 });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[]
@@ -102,13 +103,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IArrayOfPrimitivesParameter { [GetMethod] int Get([QueryParam] int[] ids); }
 
         [Test]
-        public void Build_ArrayOfPrimitivesParameter_ParameterWithSameNameInQuery()
+        public async Task Build_ArrayOfPrimitivesParameter_ParameterWithSameNameInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<IArrayOfPrimitivesParameter>(),
                 arguments: new object[] { new[] { 1, 2 } });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("ids", 1), new Parameter("ids", 2) });
@@ -133,13 +134,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IDictionaryOfPrimitivesParameter { [GetMethod] int Get([QueryParam] Dictionary<int, string> dict); }
 
         [Test]
-        public void Build_DictionaryOfPrimitivesParameter_KeyValueParametersInQuery()
+        public async Task Build_DictionaryOfPrimitivesParameter_KeyValueParametersInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<IDictionaryOfPrimitivesParameter>(),
                 arguments: new object[] { new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[] { new Parameter("dict[1]", "val1"), new Parameter("dict[2]", "val2") });
@@ -164,13 +165,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface INestedCustomTypesParameter { [GetMethod] int Get([QueryParam] NestedEntity entity); }
 
         [Test]
-        public void Build_NestedCustomTypesParameter_PropertiesInQuery()
+        public async Task Build_NestedCustomTypesParameter_PropertiesInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<INestedCustomTypesParameter>(),
                 new NestedEntity { Id = 1, Value = "val", InnerEntity = new BasicEntity { Id = 2, Value = 3 } });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[]
@@ -185,13 +186,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface ICustomTypeWithArrayParameter { [GetMethod] int Get([QueryParam] EntityWithArray entity); }
 
         [Test]
-        public void Build_CustomTypeWithArrayParameter_PropertiesInQuery()
+        public async Task Build_CustomTypeWithArrayParameter_PropertiesInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<ICustomTypeWithArrayParameter>(),
                 new EntityWithArray { Id = 1, Value = "val", Array = new[] { 1, 2 } });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[]
@@ -222,13 +223,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface ICustomTypeWithDictionaryParameter { [GetMethod] int Get([QueryParam] EntityWithDict entity); }
 
         [Test]
-        public void Build_CustomTypeWithDictionaryParameter_PropertiesInQuery()
+        public async Task Build_CustomTypeWithDictionaryParameter_PropertiesInQuery()
         {
             var httpRequest = BuildRequest(
                 BuildMethod<ICustomTypeWithDictionaryParameter>(),
                 new EntityWithDict { Id = 1, Value = "val", Dict = new Dictionary<int, string> { [1] = "val1", [2] = "val2" } });
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 parameters: new[]

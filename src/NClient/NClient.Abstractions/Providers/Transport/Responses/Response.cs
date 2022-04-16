@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -14,7 +15,7 @@ namespace NClient.Providers.Transport
         /// <param name="response">The response used as base response.</param>
         /// <param name="request">The request that the response belongs to.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
-        public Response(IResponse response, IRequest request, TData? data)
+        public Response(IResponse response, IRequest request, TData? data) 
             : base(response, request)
         {
             Data = data;
@@ -40,6 +41,9 @@ namespace NClient.Providers.Transport
     /// <summary>The container for response data.</summary>
     public class Response : IResponse
     {
+        private readonly IEnumerable<IDisposable> _disposeWith;
+        private bool _disposed;
+        
         /// <summary>The request that the response belongs to.</summary>
         public IRequest Request { get; }
         
@@ -71,17 +75,21 @@ namespace NClient.Providers.Transport
         public bool IsSuccessful { get; set; }
 
         /// <summary>Initializes the container for response data.</summary>
-        /// <param name="transportRequest">The request that the response belongs to.</param>
-        public Response(IRequest transportRequest)
+        /// <param name="request">The request that the response belongs to.</param>
+        /// <param name="disposeWith">Objects to be disposed along with the response.</param>
+        public Response(IRequest request, IEnumerable<IDisposable>? disposeWith = null)
         {
-            Ensure.IsNotNull(transportRequest, nameof(transportRequest));
-
-            Request = transportRequest;
+            Ensure.IsNotNull(request, nameof(request));
+            
+            Request = request;
             Content = new Content();
             Metadatas = new MetadataContainer(Array.Empty<IMetadata>());
+            
+            _disposeWith = disposeWith ?? Array.Empty<IDisposable>();
         }
 
-        internal Response(IResponse response, IRequest request) : this(request)
+        internal Response(IResponse response, IRequest request) 
+            : this(request)
         {
             Ensure.IsNotNull(response, nameof(response));
             
@@ -102,6 +110,26 @@ namespace NClient.Providers.Transport
             if (!IsSuccessful)
                 throw ErrorException!;
             return this;
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Content.Stream.Dispose();
+                Request.Dispose();
+                foreach (var disposable in _disposeWith)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
     }
 }

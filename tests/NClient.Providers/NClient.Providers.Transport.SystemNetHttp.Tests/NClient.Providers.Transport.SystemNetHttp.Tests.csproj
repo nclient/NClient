@@ -26,5 +26,11 @@
     <ItemGroup>
         <ProjectReference Include="..\..\NClient.Testing\NClient.Testing.Common\NClient.Testing.Common.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Compile Include="..\..\..\src\NClient\NClient.Common\Helpers\StreamExtenstions.cs">
+        <Link>Common\StreamExtenstions.cs</Link>
+      </Compile>
+    </ItemGroup>
 
 </Project>

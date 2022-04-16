@@ -13,7 +13,7 @@ using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NUnit.Framework;
 using TimeoutAttribute = NClient.Annotations.TimeoutAttribute;
 
-namespace NClient.Providers.Api.Rest.Tests.MethodBuilders
+namespace NClient.Standalone.Tests.MethodBuilders
 {
     [Parallelizable]
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]

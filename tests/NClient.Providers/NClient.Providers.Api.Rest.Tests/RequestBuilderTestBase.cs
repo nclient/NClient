@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
@@ -88,7 +90,7 @@ namespace NClient.Providers.Api.Rest.Tests
                 .GetResult();
         }
 
-        protected void AssertHttpRequest(
+        protected async Task AssertHttpRequestAsync(
             IRequest actualRequest,
             Uri uri,
             RequestType requestType,
@@ -96,7 +98,7 @@ namespace NClient.Providers.Api.Rest.Tests
             IEnumerable<IMetadata>? metadatas = null,
             object? body = null)
         {
-            var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
+            var stringContent = Serializer.Serialize(body);
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
             actualRequest.Resource.Should().Be(uri.ToString());
@@ -117,13 +119,14 @@ namespace NClient.Providers.Api.Rest.Tests
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                actualRequest.Content!.Bytes.Should().BeEquivalentTo(contentBytes);
+                (await actualRequest.Content!.Stream.ReadToEndAsync(actualRequest.Content.Encoding)).Should().BeEquivalentTo(stringContent);
+                
                 actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
                 actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
                     new Metadata("Content-Type", Serializer.ContentType),
-                    new Metadata("Content-Length", contentBytes.Length.ToString())
+                    new Metadata("Content-Length", stringContent.Length.ToString())
                 }, x => x.WithStrictOrdering());
             }
         }

@@ -22,7 +22,7 @@ namespace NClient.Standalone.Tests
         }
 
         [Test]
-        public void IResponseWithDataAndError_Deconstruct()
+        public void IResponseWithDataOrError_Deconstruct()
         {
             var resultData = _fixture.Create<Int32>();
             var error = _fixture.Create<string>();

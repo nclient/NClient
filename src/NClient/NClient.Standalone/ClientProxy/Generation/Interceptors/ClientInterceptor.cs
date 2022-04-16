@@ -157,22 +157,22 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
             if (resultType == typeof(IResponse))
                 return await transportNClient
-                    .GetHttpResponseAsync(request, resiliencePolicy, cancellationToken)
+                    .GetResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponse<>).GetGenericTypeDefinition())
                 return await transportNClient
-                    .GetHttpResponseAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
+                    .GetResponseWithDataAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<>).GetGenericTypeDefinition())
                 return await transportNClient
-                    .GetHttpResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
+                    .GetResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
 
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<,>).GetGenericTypeDefinition())
                 return await transportNClient
-                    .GetHttpResponseWithDataAndErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
+                    .GetResponseWithDataOrErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
 
             if (resultType != typeof(void))

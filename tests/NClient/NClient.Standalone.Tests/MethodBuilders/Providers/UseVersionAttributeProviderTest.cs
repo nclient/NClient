@@ -12,7 +12,7 @@ using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
 
-namespace NClient.Providers.Api.Rest.Tests.MethodBuilders.Providers
+namespace NClient.Standalone.Tests.MethodBuilders.Providers
 {
     [Parallelizable]
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]

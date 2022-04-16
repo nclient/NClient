@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NClient.Common.Helpers;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -16,17 +17,13 @@ namespace NClient.Standalone.Client
     internal interface ITransportNClient<TRequest, TResponse>
     {
         TimeSpan Timeout { get; }
-        Task<TResult> GetResultAsync<TResult>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<TResponse> GetOriginalResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponse> GetHttpResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task GetResultAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<object?> GetResultAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
-        Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
+        Task<IResponse> GetResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default); 
+        Task<IResponse> GetResponseWithDataAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
+        Task<IResponse> GetResponseWithErrorAsync(IRequest request, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
+        Task<IResponse> GetResponseWithDataOrErrorAsync(IRequest request, Type dataType, Type errorType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
     }
 
     internal class TransportNClient<TRequest, TResponse> : ITransportNClient<TRequest, TResponse>
@@ -68,54 +65,10 @@ namespace NClient.Standalone.Client
             _logger = logger;
         }
 
-        public async Task<TResult> GetResultAsync<TResult>(IRequest request, 
-            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
-        {
-            #pragma warning disable 8600, 8603
-            return (TResult) await GetResultAsync(request, typeof(TResult), resiliencePolicy, cancellationToken).ConfigureAwait(false);
-            #pragma warning restore 8600, 8603
-        }
-
         public async Task<TResponse> GetOriginalResponseAsync(IRequest request, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
             return (await ExecuteAsync(request, resiliencePolicy, cancellationToken).ConfigureAwait(false)).Response;
-        }
-        
-        public async Task<IResponse> GetHttpResponseAsync(IRequest request, 
-            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
-        {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
-                .ConfigureAwait(false);
-            
-            return await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        public async Task<IResponse<TData>> GetHttpResponseAsync<TData>(IRequest request, 
-            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
-        {
-            return (IResponse<TData>) await GetHttpResponseAsync(
-                    request, dataType: typeof(TData), resiliencePolicy, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        public async Task<IResponseWithError<TError>> GetHttpResponseWithErrorAsync<TError>(IRequest request, 
-            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
-        {
-            return (IResponseWithError<TError>) await GetHttpResponseWithErrorAsync(
-                    request, errorType: typeof(TError), resiliencePolicy, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        public async Task<IResponseWithError<TData, TError>> GetHttpResponseWithDataAndErrorAsync<TData, TError>(IRequest request, 
-            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
-        {
-            return (IResponseWithError<TData, TError>) await GetHttpResponseWithDataAndErrorAsync(
-                    request, dataType: typeof(TData), errorType: typeof(TData), resiliencePolicy, cancellationToken)
-                .ConfigureAwait(false);
         }
         
         public async Task GetResultAsync(IRequest request, 
@@ -135,29 +88,45 @@ namespace NClient.Standalone.Client
             var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
                 .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
                 .ConfigureAwait(false);
-
+            
             if (_transportResponseMappers.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } transportResponseMapper)
                 return await transportResponseMapper
-                    .MapAsync(dataType, transportResponseContext, _serializer, cancellationToken)
+                    .MapAsync(dataType, transportResponseContext, cancellationToken)
                     .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
-
+            
             if (_responseMappers.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } responseMapper)
                 return await responseMapper
-                    .MapAsync(dataType, responseContext, _serializer, cancellationToken)
+                    .MapAsync(dataType, responseContext, cancellationToken)
                     .ConfigureAwait(false);
             
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            return _serializer.Deserialize(response.Content.ToString(), dataType);
+            var stringContent = await responseContext.Response.Content.Stream
+                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
+            
+            return _serializer.Deserialize(stringContent, dataType);
         }
         
-        public async Task<IResponse> GetHttpResponseAsync(IRequest request, Type dataType, 
+        public async Task<IResponse> GetResponseAsync(IRequest request, 
+            IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
+        {
+            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
+                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+                .ConfigureAwait(false);
+            
+            return await _responseBuilder
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: false, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<IResponse> GetResponseWithDataAsync(IRequest request, Type dataType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
             var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
@@ -165,14 +134,18 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
-            
-            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
+
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
+
+            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
             return BuildResponseWithData(dataObject, dataType, response);
         }
         
-        public async Task<IResponse> GetHttpResponseWithErrorAsync(IRequest request, Type errorType, 
+        public async Task<IResponse> GetResponseWithErrorAsync(IRequest request, Type errorType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
             var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
@@ -180,14 +153,18 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
+                .ConfigureAwait(false);
+
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
                 .ConfigureAwait(false);
             
-            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
             return BuildResponseWithError(errorObject, errorType, response);
         }
         
-        public async Task<IResponse> GetHttpResponseWithDataAndErrorAsync(IRequest request, Type dataType, Type errorType, 
+        public async Task<IResponse> GetResponseWithDataOrErrorAsync(IRequest request, Type dataType, Type errorType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
             var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
@@ -195,12 +172,16 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
-                .BuildAsync(request, transportResponseContext, cancellationToken)
+                .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
+                .ConfigureAwait(false);
+
+            var stringContent = await response.Content.Stream
+                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
                 .ConfigureAwait(false);
             
-            var dataObject = TryGetDataObject(dataType, response.Content.ToString(), transportResponseContext);
-            var errorObject = TryGetErrorObject(errorType, response.Content.ToString(), transportResponseContext);
-            return BuildResponseWithDataAndError(dataObject, dataType, errorObject, errorType, response);
+            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
+            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
+            return BuildResponseWithDataOrError(dataObject, dataType, errorObject, errorType, response);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, 
@@ -213,13 +194,13 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger?.LogDebug("Start sending '{requestMethod}' request to '{requestUri}'. Request id: '{requestId}'.", request.Type, request.Resource, request.Id);
+            _logger?.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
-                _logger?.LogDebug("Start sending request attempt. Request id: '{requestId}'.", request.Id);
+                _logger?.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
                 transportRequest = await _transportRequestBuilder
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
@@ -234,18 +215,18 @@ namespace NClient.Standalone.Client
                     .HandleResponseAsync(transportResponse, cancellationToken)
                     .ConfigureAwait(false);
                 
-                _logger?.LogDebug("Request attempt finished. Request id: '{requestId}'.", request.Id);
+                _logger?.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception. Request id: '{requestId}'.", request.Id);
+                _logger?.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
                 throw;
             }
             
-            _logger?.LogDebug("Response received. Request id: '{requestId}'.", request.Id);
+            _logger?.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
-        
+
         private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
         {
             return _responseValidator.IsSuccess(transportResponseContext)
@@ -272,7 +253,7 @@ namespace NClient.Standalone.Client
             return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, error);
         }
         
-        private static IResponse BuildResponseWithDataAndError(object? data, Type dataType, object? error, Type errorType, IResponse response)
+        private static IResponse BuildResponseWithDataOrError(object? data, Type dataType, object? error, Type errorType, IResponse response)
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
             return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error);

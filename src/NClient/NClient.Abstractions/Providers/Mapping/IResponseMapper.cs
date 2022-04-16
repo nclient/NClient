@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping
@@ -19,9 +18,7 @@ namespace NClient.Providers.Mapping
         /// <summary>Converts transport response into custom result.</summary>
         /// <param name="resultType">The type of result required.</param>
         /// <param name="responseContext">The context containing transport request and response.</param>
-        /// <param name="serializer">The serializer.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        Task<object?> MapAsync(Type resultType, IResponseContext<TRequest, TResponse> responseContext, 
-            ISerializer serializer, CancellationToken cancellationToken);
+        Task<object?> MapAsync(Type resultType, IResponseContext<TRequest, TResponse> responseContext, CancellationToken cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <PackageId>$(AssemblyName)</PackageId>
@@ -38,6 +38,12 @@
     <ItemGroup>
         <None Include="..\..\..\logo.png" Pack="true" PackagePath="" />
         <None Include="..\..\..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\..\NClient\NClient.Common\Helpers\StreamExtenstions.cs">
+            <Link>Common\StreamExtenstions.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>
