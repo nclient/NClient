@@ -10,6 +10,7 @@ using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
+using NClient.Standalone.ClientProxy.Validation.Authorization;
 using NClient.Standalone.ClientProxy.Validation.Handling;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
@@ -47,6 +48,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubTransportProvider(),
                     new StubTransportRequestBuilderProvider(),
                     new StubResponseBuilderProvider(),
+                    new[] { new StubAuthorizationProvider() },
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),

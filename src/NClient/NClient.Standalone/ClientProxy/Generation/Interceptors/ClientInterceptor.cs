@@ -8,6 +8,7 @@ using NClient.Core.Helpers;
 using NClient.Exceptions;
 using NClient.Providers;
 using NClient.Providers.Api;
+using NClient.Providers.Authorization;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client;
@@ -27,7 +28,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IMethodBuilder _methodBuilder;
         private readonly IExplicitMethodInvocationProvider<TRequest, TResponse> _explicitMethodInvocationProvider;
         private readonly IClientMethodInvocationProvider<TRequest, TResponse> _clientMethodInvocationProvider;
-        private readonly IRequestBuilder _requestBuilder;
+        private readonly IAuthorizationProvider _authorizationProvider;
+        private readonly IRequestBuilderProvider _requestBuilderProvider;
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
@@ -41,7 +43,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IMethodBuilder methodBuilder,
             IExplicitMethodInvocationProvider<TRequest, TResponse> explicitMethodInvocationProvider,
             IClientMethodInvocationProvider<TRequest, TResponse> clientMethodInvocationProvider,
-            IRequestBuilder requestBuilder,
+            IAuthorizationProvider authorizationProvider,
+            IRequestBuilderProvider requestBuilderProvider,
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
@@ -54,7 +57,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _methodBuilder = methodBuilder;
             _explicitMethodInvocationProvider = explicitMethodInvocationProvider;
             _clientMethodInvocationProvider = clientMethodInvocationProvider;
-            _requestBuilder = requestBuilder;
+            _authorizationProvider = authorizationProvider;
+            _requestBuilderProvider = requestBuilderProvider;
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
@@ -97,7 +101,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                         ? TimeSpan.FromMilliseconds(milliseconds.Value)
                         : null;
                 }
-                
+
+                var authorization = _authorizationProvider.Create(_toolset);
                 var timeout = _timeoutSelector.Get(transportNClient.Timeout, _timeout, TryGetFromMilliseconds(method.TimeoutAttribute?.Milliseconds));
                 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
@@ -106,8 +111,9 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var combinedCancellationToken = combinedCancellationTokenSource.Token;
                 combinedCancellationToken.ThrowIfCancellationRequested();
                 
-                request = await _requestBuilder
-                    .BuildAsync(requestId, _host, methodInvocation, combinedCancellationToken)
+                request = await _requestBuilderProvider
+                    .Create(_toolset)
+                    .BuildAsync(requestId, _host, authorization, methodInvocation, combinedCancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)

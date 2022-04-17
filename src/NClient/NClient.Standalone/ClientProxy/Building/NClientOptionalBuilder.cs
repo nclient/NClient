@@ -4,10 +4,12 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
+using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.Client.Logging;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
@@ -37,6 +39,21 @@ namespace NClient.Standalone.ClientProxy.Building
             _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(ITokens tokens)
+        {
+            Ensure.IsNotNull(tokens, nameof(tokens));
+            
+            var authorizationProvider = new AuthorizationProvider(tokens);
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithAuthorization(new[] { authorizationProvider }));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutAuthorization()
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutAuthorization());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
@@ -178,6 +195,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 _context.TransportProvider,
                 _context.TransportRequestBuilderProvider,
                 _context.ResponseBuilderProvider,
+                _context.AuthorizationProviders,
                 _context.ClientHandlerProviders,
                 new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                     new StubResiliencePolicyProvider<TRequest, TResponse>(), 
