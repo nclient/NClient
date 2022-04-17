@@ -80,9 +80,9 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         {
             var requestId = _guidProvider.Create();
             using var loggingScope = _toolset.Logger?.BeginScope("Processing request {requestId}.", requestId);
-
+            
             ClientMethodInvocation<TRequest, TResponse>? methodInvocation = null;
-            IRequest? httpRequest = null;
+            IRequest? request = null;
             try
             {
                 var transportNClient = _transportNClientFactory.Create();
@@ -90,14 +90,14 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 var explicitInvocation = _explicitMethodInvocationProvider.Get(typeof(TClient), invocation, resultType);
                 var method = _methodBuilder.Build(typeof(TClient), explicitInvocation.Method, explicitInvocation.ReturnType);
                 methodInvocation = _clientMethodInvocationProvider.Get(method, explicitInvocation);
-
+                
                 TimeSpan? TryGetFromMilliseconds(double? milliseconds)
                 {
                     return milliseconds.HasValue
                         ? TimeSpan.FromMilliseconds(milliseconds.Value)
                         : null;
                 }
-
+                
                 var timeout = _timeoutSelector.Get(transportNClient.Timeout, _timeout, TryGetFromMilliseconds(method.TimeoutAttribute?.Milliseconds));
                 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
@@ -105,15 +105,15 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 using var combinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
                 var combinedCancellationToken = combinedCancellationTokenSource.Token;
                 combinedCancellationToken.ThrowIfCancellationRequested();
-                    
-                httpRequest = await _requestBuilder
+                
+                request = await _requestBuilder
                     .BuildAsync(requestId, _host, methodInvocation, combinedCancellationToken)
                     .ConfigureAwait(false);
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
-                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, httpRequest, _toolset);
-
-                var result = await ExecuteHttpResponseAsync(transportNClient, httpRequest, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
+                    ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, request, _toolset);
+                
+                var result = await ExecuteHttpResponseAsync(transportNClient, request, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
                 return result;
             }
@@ -133,7 +133,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
             catch (TransportException<TRequest, TResponse> e)
             {
-                _toolset.Logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", httpRequest!.Id);
+                _toolset.Logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", request!.Id);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), methodInvocation!.Method.Info, e);
             }
             catch (Exception e) when (e is TaskCanceledException or OperationCanceledException)
@@ -148,33 +148,33 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
         }
         
-        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken)
+        private static async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken)
         {
             if (resultType == typeof(TResponse))
                 return await transportNClient
                     .GetOriginalResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-
+            
             if (resultType == typeof(IResponse))
                 return await transportNClient
                     .GetResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-
+            
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponse<>).GetGenericTypeDefinition())
                 return await transportNClient
                     .GetResponseWithDataAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-
+            
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<>).GetGenericTypeDefinition())
                 return await transportNClient
                     .GetResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-
+            
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<,>).GetGenericTypeDefinition())
                 return await transportNClient
                     .GetResponseWithDataOrErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-
+            
             if (resultType != typeof(void))
                 return await transportNClient
                     .GetResultAsync(request, resultType, resiliencePolicy, cancellationToken)
