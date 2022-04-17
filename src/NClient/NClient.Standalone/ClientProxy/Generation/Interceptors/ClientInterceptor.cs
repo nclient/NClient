@@ -33,7 +33,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly TimeSpan? _timeout;
         private readonly IToolset _toolset;
-
+        
         public ClientInterceptor(
             Uri host,
             ITimeoutSelector timeoutSelector,
@@ -61,13 +61,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _timeout = timeout;
             _toolset = toolset;
         }
-
+        
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
             await ProcessInvocationAsync(invocation, typeof(void)).ConfigureAwait(false);
         }
-
+        
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
@@ -75,11 +75,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             return (TResult) await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
             #pragma warning restore 8600, 8603
         }
-
+        
         private async Task<object?> ProcessInvocationAsync(IInvocation invocation, Type resultType)
         {
             var requestId = _guidProvider.Create();
-            using var loggingScope = _toolset.Logger?.BeginScope("Processing request {requestId}.", requestId);
+            using var loggingScope = _toolset.Logger?.BeginScope("Processing request {RequestId}", requestId);
             
             ClientMethodInvocation<TRequest, TResponse>? methodInvocation = null;
             IRequest? request = null;
@@ -114,36 +114,36 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, request, _toolset);
                 
                 var result = await ExecuteHttpResponseAsync(transportNClient, request, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
-                _toolset.Logger?.LogDebug("Processing request finished. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogDebug("Processing request finished. Request id: '{RequestId}'", requestId);
                 return result;
             }
             catch (ClientValidationException e)
             {
-                _toolset.Logger?.LogError(e, "Client validation error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Client validation error. Request id: '{RequestId}'", requestId);
                 e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (ClientArgumentException e)
             {
-                _toolset.Logger?.LogError(e, "Method call error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Method call error. Request id: '{RequestId}'", requestId);
                 e.InterfaceType = typeof(TClient);
                 e.MethodInfo = invocation.Method;
                 throw;
             }
             catch (TransportException<TRequest, TResponse> e)
             {
-                _toolset.Logger?.LogError(e, "Processing request error. Request id: '{requestId}'.", request!.Id);
+                _toolset.Logger?.LogError(e, "Processing request error. Request id: '{RequestId}'", request!.Id);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), methodInvocation!.Method.Info, e);
             }
             catch (Exception e) when (e is TaskCanceledException or OperationCanceledException)
             {
-                _toolset.Logger?.LogWarning(e, "The request was canceled. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogWarning(e, "The request was canceled. Request id: '{RequestId}'", requestId);
                 throw;
             }
             catch (Exception e)
             {
-                _toolset.Logger?.LogError(e, "Unexpected processing request error. Request id: '{requestId}'.", requestId);
+                _toolset.Logger?.LogError(e, "Unexpected processing request error. Request id: '{RequestId}'", requestId);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), invocation.Method, e);
             }
         }
