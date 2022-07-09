@@ -71,8 +71,8 @@ namespace NClient.Providers.Api.Rest.Tests
 
             var authorizationMock = new Mock<IAuthorization>();
             authorizationMock
-                .Setup(x => x.TryGetTokensAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<ITokens?>(null));
+                .Setup(x => x.TryGetAccessTokensAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<IAccessTokens?>(null));
             Authorization = authorizationMock.Object;
         }
 

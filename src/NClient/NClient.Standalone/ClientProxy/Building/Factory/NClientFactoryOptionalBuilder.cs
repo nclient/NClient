@@ -28,11 +28,11 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _context = context;
         }
 
-        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithTokenAuthorization(ITokens tokens)
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
         {
-            Ensure.IsNotNull(tokens, nameof(tokens));
+            Ensure.IsNotNull(accessTokens, nameof(accessTokens));
             
-            var authorizationProvider = new AuthorizationProvider(tokens);
+            var authorizationProvider = new AuthorizationProvider(accessTokens);
             return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
                 .WithAuthorization(new[] { authorizationProvider }));
         }

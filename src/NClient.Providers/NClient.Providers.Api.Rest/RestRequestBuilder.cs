@@ -73,8 +73,8 @@ namespace NClient.Providers.Api.Rest
             var resource = new Uri(PathHelper.Combine(host.ToString(), route));
             var request = new Request(requestId, resource, requestType);
 
-            var authorizationTokens = await authorization.TryGetTokensAsync(cancellationToken).ConfigureAwait(false);
-            var authorizationToken = authorizationTokens?.TryGetToken(host);
+            var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
+            var authorizationToken = authorizationTokens?.TryGet(host);
             if (authorizationToken is not null)
                 request.AddMetadata(
                     name: HttpRequestHeader.Authorization.ToString(), 

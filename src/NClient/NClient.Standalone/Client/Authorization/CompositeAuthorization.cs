@@ -14,11 +14,11 @@ namespace NClient.Standalone.Client.Authorization
             _authorizations = authorizations;
         }
         
-        public async Task<ITokens?> TryGetTokensAsync(CancellationToken cancellationToken)
+        public async Task<IAccessTokens?> TryGetAccessTokensAsync(CancellationToken cancellationToken)
         {
             foreach (var authorization in _authorizations)
             {
-                var tokens = await authorization.TryGetTokensAsync(cancellationToken).ConfigureAwait(false);
+                var tokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
                 if (tokens is not null)
                     return tokens;
             }

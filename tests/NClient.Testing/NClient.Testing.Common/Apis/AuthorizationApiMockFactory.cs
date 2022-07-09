@@ -7,13 +7,13 @@ namespace NClient.Testing.Common.Apis
 {
     public class AuthorizationApiMockFactory
     {
-        public static IWireMockServer MockGetMethodWithAuth(int id, Token token)
+        public static IWireMockServer MockGetMethodWithAuth(int id, AccessToken accessToken)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
                     .WithPath("/api/authorization")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader("Authorization", $"{token.Scheme} {token.Value}")
+                    .WithHeader("Authorization", $"{accessToken.Scheme} {accessToken.Value}")
                     .WithParam("id", id.ToString())
                     .UsingGet())
                 .RespondWith(Response.Create()

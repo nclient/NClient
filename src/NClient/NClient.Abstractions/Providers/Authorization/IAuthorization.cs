@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace NClient.Providers.Authorization
 {
-    /// <summary>Provides the authentication interface for retrieving tokens for client authentication.</summary>
+    /// <summary>Provides the authentication interface for retrieving access tokens for client authentication.</summary>
     public interface IAuthorization
     {
-        /// <summary>Returns a tokens for client authentication.</summary>
-        Task<ITokens?> TryGetTokensAsync(CancellationToken cancellationToken);
+        /// <summary>Returns an access tokens for client authentication.</summary>
+        Task<IAccessTokens?> TryGetAccessTokensAsync(CancellationToken cancellationToken);
     }
 }

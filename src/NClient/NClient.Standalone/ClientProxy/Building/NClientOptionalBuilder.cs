@@ -41,11 +41,11 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(ITokens tokens)
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
         {
-            Ensure.IsNotNull(tokens, nameof(tokens));
+            Ensure.IsNotNull(accessTokens, nameof(accessTokens));
             
-            var authorizationProvider = new AuthorizationProvider(tokens);
+            var authorizationProvider = new AuthorizationProvider(accessTokens);
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithAuthorization(new[] { authorizationProvider }));
         }

@@ -6,9 +6,9 @@ namespace NClient.Standalone.ClientProxy.Validation.Authorization
 {
     internal class StubAuthorization : IAuthorization
     {
-        public Task<ITokens?> TryGetTokensAsync(CancellationToken cancellationToken)
+        public Task<IAccessTokens?> TryGetAccessTokensAsync(CancellationToken cancellationToken)
         {
-            return Task.FromResult<ITokens?>(null);
+            return Task.FromResult<IAccessTokens?>(null);
         }
     }
 }

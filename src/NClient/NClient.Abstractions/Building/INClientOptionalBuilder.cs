@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Authorization;
@@ -18,9 +18,9 @@ namespace NClient
     {
         #region Authorization
 
-        /// <summary>Sets tokens for authorization.</summary>
-        /// <param name="tokens">The tokens for client authorization.</param>
-        INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(ITokens tokens);
+        /// <summary>Sets access tokens for authorization.</summary>
+        /// <param name="accessTokens">The access tokens for client authorization.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens);
 
         /// <summary>Removes authorization tokens.</summary>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutAuthorization();

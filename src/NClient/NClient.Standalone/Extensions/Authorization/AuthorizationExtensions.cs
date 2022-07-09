@@ -18,7 +18,7 @@ namespace NClient
             Ensure.IsNotNull(scheme, nameof(scheme));
             Ensure.IsNotNull(token, nameof(token));
 
-            return WithTokenAuthorization(optionalBuilder, new Token(scheme, token));
+            return WithTokenAuthorization(optionalBuilder, new AccessToken(scheme, token));
         }
 
         /// <summary>Sets token for client authorization.</summary>
@@ -32,32 +32,32 @@ namespace NClient
             Ensure.IsNotNull(scheme, nameof(scheme));
             Ensure.IsNotNullOrEmpty(token, nameof(token));
 
-            return WithTokenAuthorization(optionalBuilder, new Token(scheme, token));
+            return WithTokenAuthorization(optionalBuilder, new AccessToken(scheme, token));
         }
         
         /// <summary>Sets token for client authorization.</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="token">The access token to use for authorization.</param>
+        /// <param name="accessToken">The access token to use for authorization.</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
-            IToken token) 
+            IAccessToken accessToken) 
             where TClient : class
         {
-            Ensure.IsNotNull(token, nameof(token));
+            Ensure.IsNotNull(accessToken, nameof(accessToken));
 
-            return optionalBuilder.WithTokenAuthorization(new SingleToken(token));
+            return optionalBuilder.WithTokenAuthorization(new SingleAccessToken(accessToken));
         }
 
         /// <summary>Sets token for client authorization.</summary>
         /// <param name="optionalBuilder"></param>
-        /// <param name="token">The access token to use for authorization.</param>
+        /// <param name="accessToken">The access token to use for authorization.</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithTokenAuthorization<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
-            IToken token)
+            IAccessToken accessToken)
         {
-            Ensure.IsNotNull(token, nameof(token));
+            Ensure.IsNotNull(accessToken, nameof(accessToken));
 
-            return optionalBuilder.WithTokenAuthorization(new SingleToken(token));
+            return optionalBuilder.WithTokenAuthorization(new SingleAccessToken(accessToken));
         }
     }
 }

@@ -6,20 +6,20 @@ namespace NClient.Standalone.Client.Authorization
 {
     internal class Authorization : IAuthorization
     {
-        private readonly ITokens? _tokens;
+        private readonly IAccessTokens? _accessTokens;
 
         public Authorization()
         {
         }
 
-        public Authorization(ITokens tokens)
+        public Authorization(IAccessTokens accessTokens)
         {
-            _tokens = tokens;
+            _accessTokens = accessTokens;
         }
 
-        public Task<ITokens?> TryGetTokensAsync(CancellationToken cancellationToken)
+        public Task<IAccessTokens?> TryGetAccessTokensAsync(CancellationToken cancellationToken)
         {
-            return Task.FromResult(_tokens);
+            return Task.FromResult(_accessTokens);
         }
     }
 }

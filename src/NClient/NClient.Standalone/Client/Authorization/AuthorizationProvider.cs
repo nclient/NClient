@@ -5,9 +5,9 @@ namespace NClient.Standalone.Client.Authorization
 {
     internal class AuthorizationProvider : IAuthorizationProvider
     {
-        private readonly ITokens? _tokens;
+        private readonly IAccessTokens? _tokens;
 
-        public AuthorizationProvider(ITokens? tokens)
+        public AuthorizationProvider(IAccessTokens? tokens)
         {
             _tokens = tokens;
         }

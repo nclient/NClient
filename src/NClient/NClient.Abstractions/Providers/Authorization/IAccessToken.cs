@@ -1,7 +1,7 @@
 namespace NClient.Providers.Authorization
 {
     /// <summary>The access token for client authorization.</summary>
-    public interface IToken
+    public interface IAccessToken
     {
         /// <summary>The scheme to use for authorization.</summary>
         string Scheme { get; }

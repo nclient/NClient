@@ -15,17 +15,17 @@ namespace NClient.Tests.ClientTests
     [Parallelizable]
     public class AuthorizationClientTest : ClientTestBase<IAuthorizationClientWithMetadata>
     {
-        private static readonly Token Token = new(scheme: "Bearer", value: "AbCdEf123456");
+        private static readonly AccessToken AccessToken = new(scheme: "Bearer", value: "AbCdEf123456");
         
         [Test]
         public async Task BearerToken_WithSchemeAndTokenValue_NotThrow()
         {
             const int id = 1;
-            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, Token);
+            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, AccessToken);
 
             var result = await NClientGallery.Clients.GetRest()
                 .For<IAuthorizationClientWithMetadata>(host: api.Urls.First())
-                .WithTokenAuthorization(Token.Scheme, Token.Value)
+                .WithTokenAuthorization(AccessToken.Scheme, AccessToken.Value)
                 .Build()
                 .GetAsync(id);
 
@@ -36,11 +36,11 @@ namespace NClient.Tests.ClientTests
         public async Task BearerToken_WithToken_NotThrow()
         {
             const int id = 1;
-            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, Token);
+            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, AccessToken);
 
             var result = await NClientGallery.Clients.GetRest()
                 .For<IAuthorizationClientWithMetadata>(host: api.Urls.First())
-                .WithTokenAuthorization(Token)
+                .WithTokenAuthorization(AccessToken)
                 .Build()
                 .GetAsync(id);
 
@@ -51,12 +51,12 @@ namespace NClient.Tests.ClientTests
         public async Task BearerToken_WithTokenForUri_NotThrow()
         {
             const int id = 1;
-            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, Token);
+            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, AccessToken);
             var host = api.Urls.First();
-            var tokensMock = new Mock<ITokens>();
+            var tokensMock = new Mock<IAccessTokens>();
             tokensMock
-                .Setup(x => x.TryGetToken(It.IsAny<Uri>()))
-                .Returns<Uri>(x => x == new Uri(host) ? Token : null);
+                .Setup(x => x.TryGet(It.IsAny<Uri>()))
+                .Returns<Uri>(x => x == new Uri(host) ? AccessToken : null);
             
             var result = await NClientGallery.Clients.GetRest()
                 .For<IAuthorizationClientWithMetadata>(host)
@@ -71,10 +71,10 @@ namespace NClient.Tests.ClientTests
         public async Task BearerToken_WithTokenForUnknownUri_ThrowClientRequestException()
         {
             const int id = 1;
-            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, Token);
-            var tokensMock = new Mock<ITokens>();
+            using var api = AuthorizationApiMockFactory.MockGetMethodWithAuth(id, AccessToken);
+            var tokensMock = new Mock<IAccessTokens>();
             tokensMock
-                .Setup(x => x.TryGetToken(It.IsAny<Uri>()))
+                .Setup(x => x.TryGet(It.IsAny<Uri>()))
                 .Returns<Uri>(null);
             
             var client = NClientGallery.Clients.GetRest()
