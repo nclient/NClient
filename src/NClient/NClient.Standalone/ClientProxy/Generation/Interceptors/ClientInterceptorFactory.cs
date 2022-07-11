@@ -7,6 +7,7 @@ using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers;
 using NClient.Providers.Api;
+using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -14,6 +15,7 @@ using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Generation.Helpers;
@@ -28,16 +30,17 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
     internal interface IClientInterceptorFactory
     {
         IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resource,
+            Uri host,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
+            IReadOnlyCollection<IAuthorizationProvider> authorizationProviders,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             TimeSpan? timeout = null,
             ILogger<TClient>? logger = null);
@@ -63,16 +66,17 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            string resource,
+            Uri host,
             ISerializerProvider serializerProvider,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
+            IReadOnlyCollection<IAuthorizationProvider> authorizationProviders,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
             TimeSpan? timeout,
             ILogger<TClient>? logger = null)
@@ -85,30 +89,32 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new TimeoutAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(_attributeMapper, _clientValidationExceptionFactory)));
             
+            // TODO: Should be initialized in every request.
             var serializer = serializerProvider.Create(logger);
             var toolset = new Toolset(serializer, logger);
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                resource,
+                host,
                 _timeoutSelector,
                 _guidProvider,
                 methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
-                requestBuilderProvider.Create(toolset),
+                new CompositeAuthorizationProvider(authorizationProviders),
+                requestBuilderProvider,
                 new TransportNClientFactory<TRequest, TResponse>(
                     transportProvider,
                     transportRequestBuilderProvider,
                     responseBuilderProvider,
                     new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
                     new StubResiliencePolicyProvider<TRequest, TResponse>(),
-                    resultBuilderProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                    responseMapperProviders
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
-                    typedResultBuilderProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider)?.Order)
+                    transportResponseMapperProviders
+                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
+                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
                         .ToArray(),
                     new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
                     toolset),

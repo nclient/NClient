@@ -9,7 +9,7 @@ namespace NClient.AspNetCore.AspNetBinding
     /// <summary>
     /// An <see cref="IModelBinderProvider"/> for complex types.
     /// </summary>
-    public class ComplexTypeModelBinderProvider : IModelBinderProvider
+    internal class ComplexTypeModelBinderProvider : IModelBinderProvider
     {
         /// <inheritdoc />
         public IModelBinder? GetBinder(ModelBinderProviderContext context)

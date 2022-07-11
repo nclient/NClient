@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <PackageId>$(AssemblyName)</PackageId>
@@ -50,6 +50,9 @@
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>NClient.Standalone.Tests</_Parameter1>
+        </AssemblyAttribute> 
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>NClient.Tests</_Parameter1>
         </AssemblyAttribute>        
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>NClient.Api.Tests</_Parameter1>
@@ -60,6 +63,12 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Compile Include="..\NClient.Common\Helpers\StreamExtenstions.cs">
+            <Link>Common\StreamExtenstions.cs</Link>
+        </Compile>
     </ItemGroup>
 
 </Project>

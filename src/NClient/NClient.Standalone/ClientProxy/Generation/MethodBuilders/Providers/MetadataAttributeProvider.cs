@@ -10,12 +10,12 @@ using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers
 {
-    internal interface IHeaderAttributeProvider
+    internal interface IMetadataAttributeProvider
     {
         IMetadataAttribute[] Find(Type clientType, MethodInfo methodInfo, IEnumerable<MethodInfo> overridingMethods, ICollection<IMethodParam> methodParams);
     }
 
-    internal class MetadataAttributeProvider : IHeaderAttributeProvider
+    internal class MetadataAttributeProvider : IMetadataAttributeProvider
     {
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
 

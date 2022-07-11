@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using NClient.Annotations.Http;
+using NClient.Benchmark.Client.Dtos;
 
 namespace NClient.Benchmark.Client.JsonClient
 {
@@ -9,6 +9,6 @@ namespace NClient.Benchmark.Client.JsonClient
         [PostMethod("/api")]
         [Refit.Post("/api")]
         [RestEase.Post("/api")]
-        Task<List<string>> SendAsync([BodyParam, Refit.Body, RestEase.Body] string[] ids);
+        Task<Dto> SendAsync([BodyParam, Refit.Body, RestEase.Body] Dto dto);
     }
 }

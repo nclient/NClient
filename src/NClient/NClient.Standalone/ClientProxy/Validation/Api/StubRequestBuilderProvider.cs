@@ -3,7 +3,7 @@ using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Validation.Api
 {
-    public class StubRequestBuilderProvider : IRequestBuilderProvider
+    internal class StubRequestBuilderProvider : IRequestBuilderProvider
     {
         public IRequestBuilder Create(IToolset toolset)
         {

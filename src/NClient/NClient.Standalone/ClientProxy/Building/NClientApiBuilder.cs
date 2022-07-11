@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Providers.Api;
 
 namespace NClient.Standalone.ClientProxy.Building
@@ -6,9 +7,9 @@ namespace NClient.Standalone.ClientProxy.Building
     internal class NClientApiBuilder<TClient> : INClientApiBuilder<TClient>
         where TClient : class
     {
-        private readonly string _host;
+        private readonly Uri _host;
         
-        public NClientApiBuilder(string host)
+        public NClientApiBuilder(Uri host)
         {
             _host = host;
         }

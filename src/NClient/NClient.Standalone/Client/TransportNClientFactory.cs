@@ -21,8 +21,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilderProvider<TRequest, TResponse> _responseBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
-        private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _resultBuilderProviders;
-        private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _typedResultBuilderProviders;
+        private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _responseMapperProviders;
+        private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _transportResponseMapperProviders;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly IToolset _toolset;
 
@@ -32,8 +32,8 @@ namespace NClient.Standalone.Client
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> typedResultBuilderProviders,
+            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
+            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
             IToolset toolset)
         {
@@ -42,8 +42,8 @@ namespace NClient.Standalone.Client
             _responseBuilderProvider = responseBuilderProvider;
             _clientHandlerProvider = clientHandlerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
-            _resultBuilderProviders = resultBuilderProviders;
-            _typedResultBuilderProviders = typedResultBuilderProviders;
+            _responseMapperProviders = responseMapperProviders;
+            _transportResponseMapperProviders = transportResponseMapperProviders;
             _responseValidatorProvider = responseValidatorProvider;
             _toolset = toolset;
         }
@@ -57,8 +57,8 @@ namespace NClient.Standalone.Client
                 _responseBuilderProvider.Create(_toolset),
                 _clientHandlerProvider.Create(_toolset),
                 _resiliencePolicyProvider.Create(_toolset),
-                _resultBuilderProviders.Select(x => x.Create(_toolset)),
-                _typedResultBuilderProviders.Select(x => x.Create(_toolset)),
+                _responseMapperProviders.Select(x => x.Create(_toolset)),
+                _transportResponseMapperProviders.Select(x => x.Create(_toolset)),
                 _responseValidatorProvider.Create(_toolset),
                 _toolset.Logger);
         }

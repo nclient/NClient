@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using NClient.Exceptions;
-using NClient.Providers.Api.Rest.Extensions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Helpers;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class TimeoutClientTest
+    public class TimeoutClientTest : ClientTestBase<ITimeoutClientWithMetadata>
     {
         [Test, Retry(3)]
         public void Get_CustomTransportTimeout_ThrowClientValidationException()
@@ -23,7 +23,7 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var httpClient = new HttpClient { Timeout = 100.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
@@ -41,7 +41,7 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var httpClient = new HttpClient { Timeout = 100.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
@@ -58,7 +58,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .WithTimeout(100.Milliseconds())
                 .Build();
             
@@ -73,7 +73,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .WithHandling(new DelayClientHandler(200.Milliseconds()))
                 .WithTimeout(100.Milliseconds())
                 .Build();
@@ -89,7 +89,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .WithTimeout(100.Milliseconds())
                 .Build();
 
@@ -104,7 +104,7 @@ namespace NClient.Tests.ClientTests
             const int id = 1;
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 1.Seconds());
             var nclient = NClientGallery.Clients.GetRest()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .WithHandling(new DelayClientHandler(200.Milliseconds()))
                 .WithTimeout(100.Milliseconds())
                 .Build();
@@ -121,7 +121,7 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 100.Milliseconds());
             var httpClient = new HttpClient { Timeout = 200.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()
@@ -140,7 +140,7 @@ namespace NClient.Tests.ClientTests
             using var api = TimeoutApiMockFactory.MockGetMethod(id, delay: 100.Milliseconds());
             var httpClient = new HttpClient { Timeout = 200.Milliseconds() };
             var nclient = NClientGallery.Clients.GetCustom()
-                .For<ITimeoutClientWithMetadata>(api.Urls.First())
+                .For<ITimeoutClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingSystemNetHttpTransport(httpClient)
                 .UsingJsonSerializer()

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace NClient.Providers.Transport.SystemNetHttp.AspNetCore
 {
-    public static class QueryHelpers
+    internal static class QueryHelpers
     {
         /// <summary>
         /// Append the given query key and value to the URI.

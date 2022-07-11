@@ -2,7 +2,7 @@
 
 namespace NClient.Core.Proxy
 {
-    public class SingletonProxyGeneratorProvider : IProxyGeneratorProvider
+    internal class SingletonProxyGeneratorProvider : IProxyGeneratorProvider
     {
         private static readonly IProxyGenerator ProxyGenerator = new ProxyGenerator();
 

@@ -1,14 +1,12 @@
 ﻿namespace NClient.Providers.Transport
 {
-    /// <summary>
-    /// A provider abstraction for a component that can create <see cref="ITransport{TRequest,TResponse}"/> instances.
-    /// </summary>
+    /// <summary>The provider for a component that can create transport.</summary>
+    /// <typeparam name="TRequest">The type of request that is used in the transport implementation.</typeparam>
+    /// <typeparam name="TResponse">The type of response that is used in the transport implementation.</typeparam>
     public interface ITransportProvider<TRequest, TResponse>
     {
-        /// <summary>
-        /// Creates and configures an instance of <see cref="ITransport{TRequest,TResponse}"/> instance.
-        /// </summary>
-        /// <param name="serializer">The serializer for serializing a request body.</param>
+        /// <summary>Creates transport.</summary>
+        /// <param name="toolset">Tools that help implement providers.</param>
         ITransport<TRequest, TResponse> Create(IToolset toolset);
     }
 }

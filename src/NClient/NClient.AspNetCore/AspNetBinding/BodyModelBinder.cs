@@ -19,7 +19,7 @@ namespace NClient.AspNetCore.AspNetBinding
     /// An <see cref="IModelBinder"/> which binds models from the request body using an <see cref="IInputFormatter"/>
     /// when a model has the binding source <see cref="BindingSource.Body"/>.
     /// </summary>
-    public class BodyModelBinder : IModelBinder
+    internal class BodyModelBinder : IModelBinder
     {
         private readonly IList<IInputFormatter> _formatters;
         private readonly Func<Stream, Encoding, TextReader> _readerFactory;

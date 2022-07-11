@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Providers.Transport.SystemNetHttp.Helpers;
 
 // ReSharper disable UnusedVariable
 namespace NClient.Providers.Transport.SystemNetHttp
@@ -10,21 +13,20 @@ namespace NClient.Providers.Transport.SystemNetHttp
     internal class SystemNetHttpResponseBuilder : IResponseBuilder<HttpRequestMessage, HttpResponseMessage>
     {
         public async Task<IResponse> BuildAsync(IRequest request, 
-            IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, CancellationToken cancellationToken)
+            IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, bool allocateMemoryForContent,
+            CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            LoadLazyHeaders(responseContext.Response.Content?.Headers);
-            
             var content = responseContext.Response.Content is null 
                 ? new Content() 
                 : new Content(
-                    await responseContext.Response.Content.ReadAsByteArrayAsync().ConfigureAwait(false),
-                    responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
-                    new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
+                    streamContent: await GetStreamContentAsync(responseContext.Response, allocateMemoryForContent).ConfigureAwait(false),
+                    encoding: responseContext.Response.Content.Headers.ContentEncoding.FirstOrDefault(),
+                    headerContainer: new MetadataContainer(responseContext.Response.Content.Headers.SelectMany(header => header.Value
                         .Select(value => new Metadata(header.Key, value)))));
 
-            var httpResponse = new Response(request)
+            var response = new Response(request, disposeWith: new IDisposable[] { responseContext.Request, responseContext.Response })
             {
                 Metadatas = new MetadataContainer(responseContext.Response.Headers
                     .SelectMany(header => header.Value
@@ -32,23 +34,37 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 Content = content,
                 StatusCode = (int) responseContext.Response.StatusCode,
                 StatusDescription = responseContext.Response.StatusCode.ToString(),
-                Endpoint = responseContext.Response.RequestMessage.RequestUri.ToString(),
+                Resource = responseContext.Response.RequestMessage.RequestUri,
                 ProtocolVersion = responseContext.Response.Version,
                 IsSuccessful = responseContext.Response.IsSuccessStatusCode
             };
             
-            var exception = TryGetException(responseContext.Response);
-            httpResponse.ErrorMessage = exception?.Message;
-            httpResponse.ErrorException = exception;
+            var exception = responseContext.Response.TryGetException();
+            response.ErrorMessage = exception?.Message;
+            response.ErrorException = exception;
             
-            return httpResponse;
+            return response;
         }
 
-        private static void LoadLazyHeaders(HttpContentHeaders? httpContentHeaders = null)
+        private static async Task<Stream> GetStreamContentAsync(HttpResponseMessage httpResponseMessage, bool allocateMemoryForContent)
         {
-            if (httpContentHeaders is null)
-                return;
-            
+            Stream stream;
+            if (allocateMemoryForContent)
+            {
+                var bytes = await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                stream = new MemoryStream(bytes);
+            }
+            else
+            {
+                stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            }
+
+            LoadLazyHeaders(httpResponseMessage.Content.Headers);
+            return stream;
+        }
+        
+        private static void LoadLazyHeaders(HttpContentHeaders httpContentHeaders)
+        {
             // NOTE: HttpResponseContent supports lazy initialization of headers, but the content has already been received here, which means that lazy initialization is not needed.
             // When calling the ContentLength property, lazy initialization is triggered, but this is not documented. Perhaps this also works for other headers, so all properties are called.
             var unusedAllow = httpContentHeaders.Allow;
@@ -62,19 +78,6 @@ namespace NClient.Providers.Transport.SystemNetHttp
             var unusedLastModified = httpContentHeaders.LastModified;
             var unusedContentMd5 = httpContentHeaders.ContentMD5;
             var unusedExpires = httpContentHeaders.Expires;
-        }
-
-        private static HttpRequestException? TryGetException(HttpResponseMessage httpResponseMessage)
-        {
-            try
-            {
-                httpResponseMessage.EnsureSuccessStatusCode();
-                return null;
-            }
-            catch (HttpRequestException e)
-            {
-                return e;
-            }
         }
     }
 }

@@ -2,30 +2,27 @@
 
 namespace NClient.Providers.Results.HttpResults
 {
-    public interface IHttpResponseWithError<TValue, TError> : IHttpResponseWithError<TError>, IHttpResponse<TValue>
+    /// <summary>The response containing an HTTP context with a deserialized response body including error.</summary>
+    /// <typeparam name="TData">The type of the HTTP response body.</typeparam>
+    /// <typeparam name="TError">The type of the HTTP response body in case of an error.</typeparam>
+    public interface IHttpResponseWithError<TData, TError> : IHttpResponseWithError<TError>, IHttpResponse<TData>
     {
-        /// <summary>
-        /// Deconstruction
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="error"></param>
-        /// <param name="httpResponse"></param>
-        void Deconstruct(out TValue? value, out TError? error, out IHttpResponse? httpResponse);
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="httpResponse">The response containing an HTTP context.</param>
+        void Deconstruct(out TData? data, out TError? error, out IHttpResponse? httpResponse);
     }
     
-    /// <summary>
-    /// The container for HTTP response data with deserialized body including error.
-    /// </summary>
+    /// <summary>The response containing an HTTP context with a deserialized response body including error.</summary>
+    /// <typeparam name="TData">The type of the HTTP response body.</typeparam>
+    /// <typeparam name="TError">The type of the HTTP response body in case of an error.</typeparam>
     public class HttpResponseWithError<TData, TError> : HttpResponse<TData>, IHttpResponseWithError<TData, TError>
     {
-        /// <summary>
-        /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.
-        /// </summary>
+        /// <summary>The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</summary>
         public TError? Error { get; }
 
-        /// <summary>
-        /// Creates the container for HTTP response data.
-        /// </summary>
+        /// <summary>Initializes the container for HTTP response data.</summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
         /// <param name="data">The object obtained as a result of deserialization of the body.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
@@ -35,70 +32,56 @@ namespace NClient.Providers.Results.HttpResults
             Error = error;
         }
 
-        /// <summary>
-        /// Throws an exception if the IsSuccessful property for the HTTP response is false.
-        /// </summary>
+        /// <summary>Throws an exception if the IsSuccessful property for the HTTP response is false.</summary>
         public new HttpResponseWithError<TData, TError> EnsureSuccess()
         {
             base.EnsureSuccess();
             return this;
         }
 
-        /// <summary>
-        /// Deconstruct object
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="error"></param>
-        /// <param name="httpResponse"></param>
-        public void Deconstruct(out TData? value, out TError? error, out IHttpResponse? httpResponse)
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="data">The object obtained as a result of deserialization of the body. If the request was unsuccessful, the value will be null.</param>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="httpResponse">The response containing an HTTP context.</param>
+        public void Deconstruct(out TData? data, out TError? error, out IHttpResponse? httpResponse)
         {
-            value = Data;
+            data = Data;
             error = Error;
             httpResponse = this;
         }
         
-        /// <summary>
-        /// Deconstruction
-        /// </summary>
-        /// <param name="error"></param>
-        /// <param name="httpResponse"></param>
-        public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="httpResponse">The response containing an HTTP context.</param>
+        void IHttpResponseWithError<TError>.Deconstruct(out TError? error, out IHttpResponse httpResponse)
         {
             error = Error;
             httpResponse = this;
         }
     }
     
+    /// <summary>The response containing an HTTP context with a deserialized response body in case of an error.</summary>
+    /// <typeparam name="TError">The type of the HTTP response body in case of an error.</typeparam>
     public interface IHttpResponseWithError<TError> : IHttpResponse
     {
-        /// <summary>
-        /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.
-        /// </summary>
+        /// <summary>The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</summary>
         TError? Error { get; }
 
-        /// <summary>
-        /// Deconstruction
-        /// </summary>
-        /// <param name="error"></param>
-        /// <param name="httpResponse"></param>
-        void Deconstruct(out TError? error, out IHttpResponse? httpResponse);
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="httpResponse">The response containing an HTTP context.</param>
+        void Deconstruct(out TError? error, out IHttpResponse httpResponse);
     }
 
-    /// <summary>
-    /// The container for HTTP response data with deserialized body error.
-    /// </summary>
+    /// <summary>The response containing an HTTP context with a deserialized response body in case of an error.</summary>
+    /// <typeparam name="TError">The type of the HTTP response body in case of an error.</typeparam>
     public class HttpResponseWithError<TError> : HttpResponse, IHttpResponseWithError<TError>
     {
-        /// <summary>
-        /// The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.
-        /// </summary>
+        /// <summary>The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</summary>
         public TError? Error { get; }
 
-        /// <summary>
-        /// Creates the container for HTTP response data.
-        /// </summary>
+        /// <summary>Initializes the container for HTTP response data.</summary>
         /// <param name="httpResponse">The HTTP response used as base HTTP response.</param>
-        /// <param name="httpRequest">The HTTP request that the response belongs to.</param>
         /// <param name="error">The object obtained as a result of deserialization of the body if the IsSuccessful property for the HTTP response is false.</param>
         public HttpResponseWithError(HttpResponse httpResponse, TError? error)
             : base(httpResponse)
@@ -115,12 +98,10 @@ namespace NClient.Providers.Results.HttpResults
             return this;
         }
 
-        /// <summary>
-        /// Deconstruct object
-        /// </summary>
-        /// <param name="error"></param>
-        /// <param name="httpResponse"></param>
-        public void Deconstruct(out TError? error, out IHttpResponse? httpResponse)
+        /// <summary>Deconstructs response.</summary>
+        /// <param name="error">The object obtained as a result of deserialization of the body in case of an error. If the request was successful, the value will be null.</param>
+        /// <param name="httpResponse">The response containing an HTTP context.</param>
+        public void Deconstruct(out TError? error, out IHttpResponse httpResponse)
         {
             error = Error;
             httpResponse = this;

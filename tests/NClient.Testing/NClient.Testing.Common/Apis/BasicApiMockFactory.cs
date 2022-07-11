@@ -23,6 +23,21 @@ namespace NClient.Testing.Common.Apis
 
             return api;
         }
+        
+        public static IWireMockServer MockPostMethod(string json)
+        {
+            var api = WireMockServer.Start();
+            api.Given(Request.Create()
+                    .WithPath("/api/basic")
+                    .WithHeader("Accept", "application/json")
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(json)
+                    .UsingPost())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200));
+
+            return api;
+        }
 
         public static IWireMockServer MockPostMethod(BasicEntity entity)
         {

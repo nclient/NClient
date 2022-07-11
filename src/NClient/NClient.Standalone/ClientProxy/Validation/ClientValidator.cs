@@ -7,13 +7,16 @@ using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client.Resilience;
+using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
+using NClient.Standalone.ClientProxy.Validation.Authorization;
 using NClient.Standalone.ClientProxy.Validation.Handling;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
 using NClient.Standalone.ClientProxy.Validation.Transport;
 using NClient.Standalone.ClientProxy.Validation.Validation;
+using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Validation
 {
@@ -27,11 +30,11 @@ namespace NClient.Standalone.ClientProxy.Validation
     {
         private static readonly Uri FakeHost = new("http://localhost:5000");
 
-        private readonly IProxyGenerator _proxyGenerator;
+        private readonly IClientProxyGenerator _clientProxyGenerator;
 
         public ClientValidator(IProxyGenerator proxyGenerator)
         {
-            _proxyGenerator = proxyGenerator;
+            _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
         }
 
         public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
@@ -39,19 +42,20 @@ namespace NClient.Standalone.ClientProxy.Validation
         {
             var interceptor = clientInterceptorFactory
                 .Create<TClient, IRequest, IResponse>(
-                    FakeHost.ToString(),
+                    FakeHost,
                     new StubSerializerProvider(),
                     new StubRequestBuilderProvider(),
                     new StubTransportProvider(),
                     new StubTransportRequestBuilderProvider(),
                     new StubResponseBuilderProvider(),
+                    new[] { new StubAuthorizationProvider() },
                     new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
                     new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
                         new StubResiliencePolicyProvider<IRequest, IResponse>()),
                     Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
                     Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
                     new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
-            var client = _proxyGenerator.CreateInterfaceProxyWithoutTarget<TClient>(interceptor.ToInterceptor());
+            var client = _clientProxyGenerator.CreateClient<TClient>(interceptor);
 
             await EnsureValidityAsync(client).ConfigureAwait(false);
         }

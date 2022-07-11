@@ -1,4 +1,5 @@
-using System;
+using System.IO;
+using System.Text;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using FluentAssertions;
@@ -21,25 +22,37 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         }
 
         [Test]
-        public void IResponseWithDataAndError_Deconstruct()
+        public void IResponseWithDataOrError_Deconstruct()
         {
-            var resultData = _fixture.Create<Int32>();
-            var error = _fixture.Create<string>();
-            var response = new ResponseWithError<Int32, string>(_fixture.Build<Response>().Create(), _fixture.Build<Request>().Create(), resultData, error);
+            var expectedData = _fixture.Create<int>();
+            var expectedError = _fixture.Create<string>();
+            var actualResponse = new ResponseWithError<int, string>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(expectedData)).Create(), 
+                _fixture.Build<Request>().Create(), 
+                expectedData, expectedError);
 
-            var (data, err) = response;
-            data.Should().Be(resultData);
-            err.Should().Be(error);
+            var (data, error, response) = actualResponse;
+            data.Should().Be(expectedData);
+            error.Should().Be(expectedError);
+            response.Should().Be(actualResponse);
         }
 
         [Test]
         public void IResponseWithData_Deconstruct()
         {
-            var resultData = _fixture.Create<Int32>();
-            var response = new Response<Int32>(_fixture.Build<Response>().Create(), _fixture.Build<Request>().Create(), resultData);
+            var expectedData = _fixture.Create<int>();
+            var actualResponse = new Response<int>(
+                _fixture.Build<Response>().With(x => x.Content, CreateFakeContent(expectedData)).Create(), 
+                _fixture.Build<Request>().Create(), 
+                expectedData);
 
-            var (responseData, _) = response;
-            responseData.Should().Be(resultData);
+            var (data, response) = actualResponse;
+            data.Should().Be(expectedData);
+            response.Should().Be(actualResponse);
+        }
+        private static Content CreateFakeContent(int resultData)
+        {
+            return new Content(new MemoryStream(Encoding.UTF8.GetBytes(resultData.ToString())), Encoding.UTF8.WebName);
         }
     }
 }

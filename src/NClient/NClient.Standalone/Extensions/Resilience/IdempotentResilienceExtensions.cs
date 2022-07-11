@@ -7,6 +7,10 @@ namespace NClient
 {
     public static class IdempotentResilienceExtensions
     {
+        /// <summary>Sets a custom resilience policy provider for idempotent methods (all except Create/Post).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="idempotentMethodProvider">The custom resilience policy provider for idempotent methods (all except Create/Post).</param>
+        /// <param name="otherMethodProvider">The custom resilience policy provider for non-idempotent methods (Create/Post).</param>
         public static INClientOptionalBuilder<TClient, TRequest, TResponse> WithIdempotentResilience<TClient, TRequest, TResponse>(
             this INClientOptionalBuilder<TClient, TRequest, TResponse> optionalBuilder,
             IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)
@@ -24,6 +28,10 @@ namespace NClient
                     .Use(idempotentMethodProvider));
         }
 
+        /// <summary>Sets a custom resilience policy provider for idempotent methods (all except Create/Post).</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="idempotentMethodProvider">The custom resilience policy provider for idempotent methods (all except Create/Post).</param>
+        /// <param name="otherMethodProvider">The custom resilience policy provider for non-idempotent methods (Create/Post).</param>
         public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithIdempotentResilience<TRequest, TResponse>(
             this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
             IResiliencePolicyProvider<TRequest, TResponse> idempotentMethodProvider, IResiliencePolicyProvider<TRequest, TResponse> otherMethodProvider)

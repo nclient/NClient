@@ -4,7 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
+using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
@@ -12,11 +15,13 @@ using NClient.Core.Mappers;
 using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
+using NClient.Providers.Authorization;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
+using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -34,6 +39,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IClientValidationExceptionFactory RestClientValidationExceptionFactory = null!;
         internal IStandaloneClientValidationExceptionFactory ClientValidationExceptionFactory = null!;
         internal IObjectToKeyValueConverterExceptionFactory ObjectToKeyValueConverterExceptionFactory = null!;
+        internal IAuthorization Authorization = null!;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -62,6 +68,12 @@ namespace NClient.Providers.Api.Rest.Tests
                 new MetadataAttributeProvider(ClientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
+
+            var authorizationMock = new Mock<IAuthorization>();
+            authorizationMock
+                .Setup(x => x.TryGetAccessTokensAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<IAccessTokens?>(null));
+            Authorization = authorizationMock.Object;
         }
 
         protected static MethodInfo GetMethodInfo<T>()
@@ -82,12 +94,12 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, resource: host, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, host.ToUri(), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }
 
-        protected void AssertHttpRequest(
+        protected async Task AssertHttpRequestAsync(
             IRequest actualRequest,
             Uri uri,
             RequestType requestType,
@@ -95,10 +107,10 @@ namespace NClient.Providers.Api.Rest.Tests
             IEnumerable<IMetadata>? metadatas = null,
             object? body = null)
         {
-            var contentBytes = Encoding.UTF8.GetBytes(Serializer.Serialize(body));
+            var stringContent = Serializer.Serialize(body);
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
-            actualRequest.Endpoint.Should().Be(uri.ToString());
+            actualRequest.Resource.Should().Be(uri.ToString());
             actualRequest.Type.Should().Be(requestType);
             actualRequest.Parameters.Should().BeEquivalentTo(parameters ?? Array.Empty<IParameter>(), config => config.WithoutStrictOrdering());
             actualRequest.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(metadatas?.Concat(new[]
@@ -116,13 +128,14 @@ namespace NClient.Providers.Api.Rest.Tests
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                actualRequest.Content!.Bytes.Should().BeEquivalentTo(contentBytes);
+                (await actualRequest.Content!.Stream.ReadToEndAsync(actualRequest.Content.Encoding)).Should().BeEquivalentTo(stringContent);
+                
                 actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
                 actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
                     new Metadata("Content-Type", Serializer.ContentType),
-                    new Metadata("Content-Length", contentBytes.Length.ToString())
+                    new Metadata("Content-Length", stringContent.Length.ToString())
                 }, x => x.WithStrictOrdering());
             }
         }

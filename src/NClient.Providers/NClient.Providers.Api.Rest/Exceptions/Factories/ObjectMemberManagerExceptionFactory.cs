@@ -3,7 +3,7 @@ using NClient.Exceptions;
 
 namespace NClient.Providers.Api.Rest.Exceptions.Factories
 {
-    public class ObjectMemberManagerExceptionFactory : IObjectMemberManagerExceptionFactory
+    internal class ObjectMemberManagerExceptionFactory : IObjectMemberManagerExceptionFactory
     {
         public NClientException MemberNameConflict(string memberName, string objectName) =>
             new ClientValidationException($"Multiple '{memberName}' members were found in the '{objectName}' object type.");

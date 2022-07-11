@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Common.Helpers;
 using NClient.Providers.Transport.RestSharp.Helpers;
 using RestSharp;
 
@@ -20,12 +21,12 @@ namespace NClient.Providers.Transport.RestSharp
             _toolset = toolset;
         }
 
-        public Task<IRestRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
+        public async Task<IRestRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
             var method = _restSharpMethodMapper.Map(request.Type);
-            var restRequest = new RestRequest(request.Endpoint, method, DataFormat.Json);
+            var restRequest = new RestRequest(request.Resource, method, DataFormat.Json);
 
             foreach (var param in request.Parameters)
             {
@@ -41,7 +42,11 @@ namespace NClient.Providers.Transport.RestSharp
 
             if (request.Content is not null)
             {
-                restRequest.AddParameter(_toolset.Serializer.ContentType, request.Content.Bytes, ParameterType.RequestBody);
+                var stringContent = await request.Content.Stream
+                    .ReadToEndAsync(request.Content.Encoding, cancellationToken)
+                    .ConfigureAwait(false);
+                
+                restRequest.AddParameter(_toolset.Serializer.ContentType, stringContent, ParameterType.RequestBody);
 
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {
@@ -49,7 +54,7 @@ namespace NClient.Providers.Transport.RestSharp
                 }
             }
 
-            return Task.FromResult((IRestRequest) restRequest);
+            return restRequest;
         }
     }
 }

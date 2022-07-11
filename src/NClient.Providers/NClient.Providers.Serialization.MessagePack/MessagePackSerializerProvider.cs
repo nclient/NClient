@@ -4,21 +4,18 @@ using Microsoft.Extensions.Logging;
 
 namespace NClient.Providers.Serialization.MessagePack
 {
+    /// <summary>The MessagePack based provider for a component that can create <see cref="ISerializer"/> instances.</summary>
     public class MessagePackSerializerProvider : ISerializerProvider
     {
         private readonly MessagePackSerializerSettings _messagePackSerializerSettings;
 
-        /// <summary>
-        /// Creates the MessagePack based serializer provider.
-        /// </summary>
+        /// <summary>Initializes the MessagePack based serializer provider.</summary>
         public MessagePackSerializerProvider()
         {
-            _messagePackSerializerSettings = new MessagePackSerializerSettings(MIMEType.ProperType, MessagePackSerializerOptions.Standard);
+            _messagePackSerializerSettings = new MessagePackSerializerSettings(MimeType.ProperType, MessagePackSerializerOptions.Standard);
         }
 
-        /// <summary>
-        /// Creates the MessagePack based serializer provider.
-        /// </summary>
+        /// <summary>Initializes the MessagePack based serializer provider.</summary>
         /// <param name="messagePackSerializerSettings">The settings to be used with <see cref="MessagePackSerializer"/>.</param>
         public MessagePackSerializerProvider(MessagePackSerializerSettings messagePackSerializerSettings)
         {
@@ -27,6 +24,8 @@ namespace NClient.Providers.Serialization.MessagePack
             _messagePackSerializerSettings = messagePackSerializerSettings;
         }
 
+        /// <summary>Creates MessagePack <see cref="ISerializer"/> instance.</summary>
+        /// <param name="logger">Optional logger. If it is not passed, then logs will not be written.</param>
         public ISerializer Create(ILogger? logger)
         {
             return new MessagePackSerializer(_messagePackSerializerSettings);

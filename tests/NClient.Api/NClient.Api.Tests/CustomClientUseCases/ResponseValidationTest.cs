@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NClient.Providers.Api.Rest.Extensions;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NUnit.Framework;
 
 namespace NClient.Api.Tests.CustomClientUseCases
@@ -16,7 +15,7 @@ namespace NClient.Api.Tests.CustomClientUseCases
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
-            var client = NClientGallery.Clients.GetCustom().For<IBasicClientWithMetadata>(api.Urls.First())
+            var client = NClientGallery.Clients.GetCustom().For<IBasicClientWithMetadata>(host: api.Urls.First())
                 .UsingRestApi()
                 .UsingRestSharpTransport()
                 .UsingJsonSerializer()

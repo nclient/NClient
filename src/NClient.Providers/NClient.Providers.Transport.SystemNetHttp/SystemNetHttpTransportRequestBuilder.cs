@@ -26,7 +26,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             var parameters = request.Parameters
                 .Select(x => new KeyValuePair<string, string>(x.Name, x.Value!.ToString()))
                 .ToArray();
-            var uri = new Uri(QueryHelpers.AddQueryString(request.Endpoint, parameters));
+            var uri = new Uri(QueryHelpers.AddQueryString(request.Resource.ToString(), parameters));
 
             var httpRequestMessage = new HttpRequestMessage
             {
@@ -41,8 +41,13 @@ namespace NClient.Providers.Transport.SystemNetHttp
 
             if (request.Content is not null)
             {
-                httpRequestMessage.Content = new ByteArrayContent(request.Content.Bytes);
-                
+                request.Content.Stream.Position = 0;
+
+                #if NETSTANDARD2_0 || NETFRAMEWORK
+                httpRequestMessage.Content = new LeavingOpenStreamContent(request.Content.Stream);
+                #else
+                httpRequestMessage.Content = new StreamContent(request.Content.Stream);
+                #endif
                 foreach (var metadata in request.Content.Metadatas.SelectMany(x => x.Value))
                 {
                     httpRequestMessage.Content.Headers.Add(metadata.Name, metadata.Value);
