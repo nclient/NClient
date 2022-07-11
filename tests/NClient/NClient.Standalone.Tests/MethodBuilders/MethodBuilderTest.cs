@@ -45,7 +45,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var timeoutAttributeProviderMock = new Mock<ITimeoutAttributeProvider>();
             timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(timeoutAttribute);
-            var headerAttributeProviderMock = new Mock<IHeaderAttributeProvider>();
+            var headerAttributeProviderMock = new Mock<IMetadataAttributeProvider>();
             headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))
                 .Returns(headerAttributes);
             var methodParamBuilderMock = new Mock<IMethodParamBuilder>();

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
@@ -14,6 +15,7 @@ using NClient.Core.Mappers;
 using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Providers;
+using NClient.Providers.Authorization;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
@@ -37,6 +39,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IClientValidationExceptionFactory RestClientValidationExceptionFactory = null!;
         internal IStandaloneClientValidationExceptionFactory ClientValidationExceptionFactory = null!;
         internal IObjectToKeyValueConverterExceptionFactory ObjectToKeyValueConverterExceptionFactory = null!;
+        internal IAuthorization Authorization = null!;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -65,6 +68,12 @@ namespace NClient.Providers.Api.Rest.Tests
                 new MetadataAttributeProvider(ClientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, ClientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, ClientValidationExceptionFactory)));
+
+            var authorizationMock = new Mock<IAuthorization>();
+            authorizationMock
+                .Setup(x => x.TryGetAccessTokensAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<IAccessTokens?>(null));
+            Authorization = authorizationMock.Object;
         }
 
         protected static MethodInfo GetMethodInfo<T>()
@@ -85,7 +94,7 @@ namespace NClient.Providers.Api.Rest.Tests
         internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, host.ToUri(), new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, host.ToUri(), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

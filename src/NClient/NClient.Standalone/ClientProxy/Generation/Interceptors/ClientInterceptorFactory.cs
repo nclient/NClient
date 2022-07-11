@@ -7,6 +7,7 @@ using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers;
 using NClient.Providers.Api;
+using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -14,6 +15,7 @@ using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Generation.Helpers;
@@ -34,6 +36,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
+            IReadOnlyCollection<IAuthorizationProvider> authorizationProviders,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
@@ -69,6 +72,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ITransportProvider<TRequest, TResponse> transportProvider,
             ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
+            IReadOnlyCollection<IAuthorizationProvider> authorizationProviders,
             IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
@@ -85,6 +89,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new TimeoutAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(_attributeMapper, _clientValidationExceptionFactory)));
             
+            // TODO: Should be initialized in every request.
             var serializer = serializerProvider.Create(logger);
             var toolset = new Toolset(serializer, logger);
             
@@ -95,7 +100,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
-                requestBuilderProvider.Create(toolset),
+                new CompositeAuthorizationProvider(authorizationProviders),
+                requestBuilderProvider,
                 new TransportNClientFactory<TRequest, TResponse>(
                     transportProvider,
                     transportRequestBuilderProvider,
