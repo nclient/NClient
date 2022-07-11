@@ -142,7 +142,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 _toolset.Logger?.LogError(e, "Processing request error. Request id: '{RequestId}'", request!.Id);
                 throw _clientRequestExceptionFactory.WrapException(interfaceType: typeof(TClient), methodInvocation!.Method.Info, e);
             }
-            catch (Exception e) when (e is TaskCanceledException or OperationCanceledException)
+            catch (OperationCanceledException e)
             {
                 _toolset.Logger?.LogWarning(e, "The request was canceled. Request id: '{RequestId}'", requestId);
                 throw;
