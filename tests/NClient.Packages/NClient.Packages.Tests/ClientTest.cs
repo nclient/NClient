@@ -32,7 +32,7 @@ namespace NClient.Packages.Tests
             const int id = 1;
             const string host = "http://localhost:5000";
             var serviceCollection = new ServiceCollection().AddLogging();
-            serviceCollection.AddNClient<ITest>(host, builder => builder
+            serviceCollection.AddRestNClient<ITest>(host, builder => builder
                 .WithSafeResilience(getDelay: _ => TimeSpan.FromSeconds(0)).Build());
             var client = serviceCollection
                 .BuildServiceProvider()
