@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace NClient.Standalone.Client.Logging
 {
-    internal class DisposableDecorator : IDisposable
+    internal class CompositeDisposable : IDisposable
     {
         private readonly IEnumerable<IDisposable> _disposables;
         
-        public DisposableDecorator(IEnumerable<IDisposable> disposables)
+        public CompositeDisposable(IEnumerable<IDisposable> disposables)
         {
             _disposables = disposables;
         }

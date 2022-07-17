@@ -62,7 +62,7 @@ namespace NClient
         
         #endregion
 
-        #region Results
+        #region Mapping
         
         /// <summary>Sets mapping that convert NClient responses into custom results.</summary>
         /// <param name="mappers">The collection of mappers that converts transport responses into custom results.</param>

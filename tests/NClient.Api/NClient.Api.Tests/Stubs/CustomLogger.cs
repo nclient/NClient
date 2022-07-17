@@ -18,7 +18,7 @@ namespace NClient.Api.Tests.Stubs
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            return new DisposableDecorator(Array.Empty<IDisposable>());
+            return new CompositeDisposable(Array.Empty<IDisposable>());
         }
     }
 }

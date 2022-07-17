@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -34,10 +32,10 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
-        private readonly IReadOnlyCollection<IResponseMapper<TRequest, TResponse>> _transportResponseMappers;
-        private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _responseMappers;
+        private readonly IResponseMapper<TRequest, TResponse> _transportResponseMapper;
+        private readonly IResponseMapper<IRequest, IResponse> _responseMapper;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
 
         public TimeSpan Timeout => _transport.Timeout;
 
@@ -48,10 +46,10 @@ namespace NClient.Standalone.Client
             IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
-            IEnumerable<IResponseMapper<IRequest, IResponse>> responseMappers,
-            IEnumerable<IResponseMapper<TRequest, TResponse>> transportResponseMappers,
+            IResponseMapper<IRequest, IResponse> responseMapper,
+            IResponseMapper<TRequest, TResponse> transportResponseMapper,
             IResponseValidator<TRequest, TResponse> responseValidator,
-            ILogger? logger)
+            ILogger logger)
         {
             _serializer = serializer;
             _transport = transport;
@@ -59,8 +57,8 @@ namespace NClient.Standalone.Client
             _responseBuilder = responseBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
-            _transportResponseMappers = transportResponseMappers.ToArray();
-            _responseMappers = responseMappers.ToArray();
+            _responseMapper = responseMapper;
+            _transportResponseMapper = transportResponseMapper;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -89,8 +87,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
                 .ConfigureAwait(false);
             
-            if (_transportResponseMappers.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } transportResponseMapper)
-                return await transportResponseMapper
+            if (_transportResponseMapper.CanMap(dataType, transportResponseContext))
+                return await _transportResponseMapper
                     .MapAsync(dataType, transportResponseContext, cancellationToken)
                     .ConfigureAwait(false);
             
@@ -99,8 +97,8 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
             
-            if (_responseMappers.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } responseMapper)
-                return await responseMapper
+            if (_responseMapper.CanMap(dataType, responseContext))
+                return await _responseMapper
                     .MapAsync(dataType, responseContext, cancellationToken)
                     .ConfigureAwait(false);
             
@@ -194,13 +192,13 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger?.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
+            _logger.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
-                _logger?.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
                 transportRequest = await _transportRequestBuilder
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
@@ -215,15 +213,15 @@ namespace NClient.Standalone.Client
                     .HandleResponseAsync(transportResponse, cancellationToken)
                     .ConfigureAwait(false);
                 
-                _logger?.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
+                _logger.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
                 throw;
             }
             
-            _logger?.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
+            _logger.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 

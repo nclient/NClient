@@ -8,9 +8,9 @@ namespace NClient.Providers
     {
         public ISerializer Serializer { get; }
         
-        public ILogger? Logger { get; }
+        public ILogger Logger { get; }
 
-        public Toolset(ISerializer serializer, ILogger? logger)
+        public Toolset(ISerializer serializer, ILogger logger)
         {
             Serializer = serializer;
             Logger = logger;
