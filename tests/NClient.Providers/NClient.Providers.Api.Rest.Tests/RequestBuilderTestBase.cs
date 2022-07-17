@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NClient.Common.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers;
@@ -46,8 +47,9 @@ namespace NClient.Providers.Api.Rest.Tests
         {
             var objectMemberManager = new ObjectMemberManager(new ObjectMemberManagerExceptionFactory());
 
-            Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
-            var toolset = new Toolset(Serializer, logger: null);
+            var loggerMock = new Mock<ILogger>();
+            Serializer = new SystemTextJsonSerializerProvider().Create(loggerMock.Object);
+            var toolset = new Toolset(Serializer, loggerMock.Object);
             ClientArgumentExceptionFactory = new ClientArgumentExceptionFactory();
             RestClientValidationExceptionFactory = new ClientValidationExceptionFactory();
             ClientValidationExceptionFactory = new StandaloneClientValidationExceptionFactory();

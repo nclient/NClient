@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using FluentAssertions;
 using MessagePack;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization.MessagePack.Tests.Models;
 using NUnit.Framework;
@@ -11,6 +13,8 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
     [Parallelizable]
     public class MessagePackSerializerTest
     {
+        private static readonly Mock<ILogger> LoggerMock = new();
+        
         public static readonly IEnumerable SerializationValidTestCases = new[]
         {
             new TestCaseData(new Point(1, 2), new Point(1, -1), typeof(Point)),
@@ -33,7 +37,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         [TestCaseSource(nameof(SerializationValidTestCases))]
         public void Serialize_ValidValues_NotThrow(object obj, object expectedResult, Type type)
         {
-            var serializer = new MessagePackSerializerProvider().Create(logger: null);
+            var serializer = new MessagePackSerializerProvider().Create(LoggerMock.Object);
             
             var serializerString = serializer.Serialize(obj);
             
@@ -45,7 +49,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         [TestCaseSource(nameof(NotValidTestCases))]
         public void Serialize_NotValidValues_Throw(object obj, object expectedResult, Type type)
         {
-            var serializer = new MessagePackSerializerProvider().Create(logger: null);
+            var serializer = new MessagePackSerializerProvider().Create(LoggerMock.Object);
             serializer
                 .Invoking(x => x.Serialize(obj))
                 .Should()
@@ -55,7 +59,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         [Test]
         public void Serialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new MessagePackSerializerProvider().Create(logger: null);
+            var serializer = new MessagePackSerializerProvider().Create(LoggerMock.Object);
 
             serializer
                 .Invoking(x => x.Serialize((int?) null))
@@ -66,7 +70,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         [TestCaseSource(nameof(DeserializationValidTestCases))]
         public void Deserialize_ValidValues_NotThrow(object sourceObject, object expectedResult, Type type)
         {
-            var serializer = new MessagePackSerializerProvider().Create(logger: null);
+            var serializer = new MessagePackSerializerProvider().Create(LoggerMock.Object);
 
             var serializedBytes = MessagePackSerializer.Serialize(sourceObject, MessagePackSerializerOptions.Standard);
             
@@ -80,7 +84,7 @@ namespace NClient.Providers.Serialization.MessagePack.Tests
         [Test]
         public void Deserialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new MessagePackSerializerProvider().Create(logger: null);
+            var serializer = new MessagePackSerializerProvider().Create(LoggerMock.Object);
 
             serializer
                 .Invoking(x => x.Deserialize(null!, typeof(string)))
