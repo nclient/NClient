@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -34,8 +32,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilder<TRequest, TResponse> _responseBuilder;
         private readonly IClientHandler<TRequest, TResponse> _clientHandler;
         private readonly IResiliencePolicy<TRequest, TResponse> _resiliencePolicy;
-        private readonly IReadOnlyCollection<IResponseMapper<TRequest, TResponse>> _transportResponseMappers;
-        private readonly IReadOnlyCollection<IResponseMapper<IRequest, IResponse>> _responseMappers;
+        private readonly IResponseMapper<TRequest, TResponse> _transportResponseMapper;
+        private readonly IResponseMapper<IRequest, IResponse> _responseMapper;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
         private readonly ILogger? _logger;
 
@@ -48,8 +46,8 @@ namespace NClient.Standalone.Client
             IResponseBuilder<TRequest, TResponse> responseBuilder,
             IClientHandler<TRequest, TResponse> clientHandler,
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
-            IEnumerable<IResponseMapper<IRequest, IResponse>> responseMappers,
-            IEnumerable<IResponseMapper<TRequest, TResponse>> transportResponseMappers,
+            IResponseMapper<IRequest, IResponse> responseMapper,
+            IResponseMapper<TRequest, TResponse> transportResponseMapper,
             IResponseValidator<TRequest, TResponse> responseValidator,
             ILogger? logger)
         {
@@ -59,8 +57,8 @@ namespace NClient.Standalone.Client
             _responseBuilder = responseBuilder;
             _clientHandler = clientHandler;
             _resiliencePolicy = resiliencePolicy;
-            _transportResponseMappers = transportResponseMappers.ToArray();
-            _responseMappers = responseMappers.ToArray();
+            _responseMapper = responseMapper;
+            _transportResponseMapper = transportResponseMapper;
             _responseValidator = responseValidator;
             _logger = logger;
         }
@@ -89,8 +87,8 @@ namespace NClient.Standalone.Client
                 .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
                 .ConfigureAwait(false);
             
-            if (_transportResponseMappers.FirstOrDefault(x => x.CanMap(dataType, transportResponseContext)) is { } transportResponseMapper)
-                return await transportResponseMapper
+            if (_transportResponseMapper.CanMap(dataType, transportResponseContext))
+                return await _transportResponseMapper
                     .MapAsync(dataType, transportResponseContext, cancellationToken)
                     .ConfigureAwait(false);
             
@@ -99,8 +97,8 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
             
-            if (_responseMappers.FirstOrDefault(x => x.CanMap(dataType, responseContext)) is { } responseMapper)
-                return await responseMapper
+            if (_responseMapper.CanMap(dataType, responseContext))
+                return await _responseMapper
                     .MapAsync(dataType, responseContext, cancellationToken)
                     .ConfigureAwait(false);
             

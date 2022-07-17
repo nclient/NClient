@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers;
-using NClient.Providers.Mapping;
+using NClient.Providers.Transport;
 using NClient.Standalone.Client;
 using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.Client.Handling;
 using NClient.Standalone.Client.Logging;
+using NClient.Standalone.Client.Mapping;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Validation;
 using NClient.Standalone.ClientProxy.Building.Context;
@@ -66,14 +67,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             var resiliencePolicyProvider = new StubResiliencePolicyProvider<TRequest, TResponse>();
             var authorizationProvider = new CompositeAuthorizationProvider(builderContext.AuthorizationProviders);
             var clientHandlerProvider = new CompositeClientHandlerProvider<TRequest, TResponse>(builderContext.ClientHandlerProviders);
-            var responseMapperProviders = builderContext.ResponseMapperProviders
-                .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
-                .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
-                .ToArray();
-            var transportResponseMapperProviders = builderContext.TransportResponseMapperProviders
-                .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
-                .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
-                .ToArray();
+            var responseMapperProvider = new CompositeResponseMapperProvider<IRequest, IResponse>(builderContext.ResponseMapperProviders);
+            var transportResponseMapperProvider = new CompositeResponseMapperProvider<TRequest, TResponse>(builderContext.TransportResponseMapperProviders);
             var compositeResponseValidatorProvider = new CompositeResponseValidatorProvider<TRequest, TResponse>(builderContext.ResponseValidatorProviders);
             var methodResiliencePolicyProviderAdapter = new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                 new StubResiliencePolicyProvider<TRequest, TResponse>(),
@@ -94,8 +89,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     builderContext.ResponseBuilderProvider,
                     clientHandlerProvider,
                     resiliencePolicyProvider,
-                    responseMapperProviders,
-                    transportResponseMapperProviders,
+                    responseMapperProvider,
+                    transportResponseMapperProvider,
                     compositeResponseValidatorProvider,
                     toolset),
                 methodResiliencePolicyProviderAdapter,
