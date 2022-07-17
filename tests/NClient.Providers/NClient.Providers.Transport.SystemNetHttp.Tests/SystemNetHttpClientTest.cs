@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
@@ -26,7 +28,8 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
-        private static readonly ISerializer Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
+        private static readonly Mock<ILogger> LoggerMock = new();
+        private static readonly ISerializer Serializer = new SystemTextJsonSerializerProvider().Create(LoggerMock.Object);
         private static readonly Metadata AcceptHeader = new("Accept", "application/json");
         private static readonly Metadata ServerHeader = new("Server", "Kestrel");
         private static readonly Metadata EmptyContentLengthMetadata = new("Content-Length", "0");
@@ -44,7 +47,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var toolset = new Toolset(Serializer, logger: null);
+            var toolset = new Toolset(Serializer, LoggerMock.Object);
             var transport = new SystemNetHttpTransportProvider().Create(toolset);
             var transportRequestBuilder = new SystemNetHttpTransportRequestBuilderProvider().Create(toolset);
             var responseBuilder = new SystemNetHttpResponseBuilderProvider().Create(toolset);

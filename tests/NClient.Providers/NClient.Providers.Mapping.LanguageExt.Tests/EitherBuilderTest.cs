@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageExt;
 using LanguageExt.DataTypes.Serialisation;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
@@ -17,6 +18,8 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
     [Parallelizable]
     public class EitherBuilderTest
     {
+        private static readonly Mock<ILogger> LoggerMock = new();
+        
         [Test]
         public async Task Build_SuccessHttpResponse_EitherWithRight()
         {
@@ -25,7 +28,7 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedValue);
-            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
+            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, LoggerMock.Object));
             var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);
             var response = new Response(new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read))
             {
@@ -48,7 +51,7 @@ namespace NClient.Providers.Mapping.LanguageExt.Tests
             serializerMock
                 .Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()))
                 .Returns(expectedError);
-            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, logger: null));
+            var eitherBuilder = new ResponseToEitherBuilder(new Toolset(serializerMock.Object, LoggerMock.Object));
             var request = new Request(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Custom);   
             var response = new Response(new Request(Guid.Empty, resource: "http://localhost".ToUri(), RequestType.Read))
             {

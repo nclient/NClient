@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Language.Flow;
 using NClient.Providers.Results.HttpResults;
@@ -25,9 +26,10 @@ namespace NClient.Providers.Mapping.HttpResponses.Tests
         [SetUp]
         public void SetUp()
         {
+            var loggerMock = new Mock<ILogger>();
             _serializerMock = new Mock<ISerializer>();
             _serializerMockSetup = _serializerMock.Setup(x => x.Deserialize(It.IsAny<string>(), It.IsAny<Type>()));
-            _responseToHttpResponseMapper = new ResponseToHttpResponseMapper(new Toolset(_serializerMock.Object, logger: null));
+            _responseToHttpResponseMapper = new ResponseToHttpResponseMapper(new Toolset(_serializerMock.Object, loggerMock.Object));
         }
         
         [Test]

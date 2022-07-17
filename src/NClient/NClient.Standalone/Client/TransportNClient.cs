@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace NClient.Standalone.Client
     internal interface ITransportNClient<TRequest, TResponse>
     {
         TimeSpan Timeout { get; }
-        Task<TResponse> GetOriginalResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
+        Task<TResponse> GetTransportResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task GetResultAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<object?> GetResultAsync(IRequest request, Type dataType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default);
         Task<IResponse> GetResponseAsync(IRequest request, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default); 
@@ -63,19 +64,29 @@ namespace NClient.Standalone.Client
             _logger = logger;
         }
 
-        public async Task<TResponse> GetOriginalResponseAsync(IRequest request, 
+        public async Task<TResponse> GetTransportResponseAsync(IRequest request, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            return (await ExecuteAsync(request, resiliencePolicy, cancellationToken).ConfigureAwait(false)).Response;
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
+                .ConfigureAwait(false);
+            LogTransportResponse(request);
+            
+            return transportResponseContext.Response;
         }
         
         public async Task GetResultAsync(IRequest request, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
-                .ConfigureAwait(false);
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
             
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
+                .ConfigureAwait(false);
+            LogTransportResponse(request);
+
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
         }
@@ -83,8 +94,10 @@ namespace NClient.Standalone.Client
         public async Task<object?> GetResultAsync(IRequest request, Type dataType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             
             if (_transportResponseMapper.CanMap(dataType, transportResponseContext))
@@ -95,6 +108,8 @@ namespace NClient.Standalone.Client
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
+            LogResponse(response);
+            
             var responseContext = new ResponseContext<IRequest, IResponse>(request, response);
             
             if (_responseMapper.CanMap(dataType, responseContext))
@@ -115,25 +130,33 @@ namespace NClient.Standalone.Client
         public async Task<IResponse> GetResponseAsync(IRequest request, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             
-            return await _responseBuilder
+            var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, allocateMemoryForContent: false, cancellationToken)
                 .ConfigureAwait(false);
+            LogResponse(response);
+
+            return response;
         }
 
         public async Task<IResponse> GetResponseWithDataAsync(IRequest request, Type dataType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
+            LogResponse(response);
 
             var stringContent = await response.Content.Stream
                 .ReadToEndAsync(response.Content.Encoding, cancellationToken)
@@ -146,13 +169,16 @@ namespace NClient.Standalone.Client
         public async Task<IResponse> GetResponseWithErrorAsync(IRequest request, Type errorType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
+            LogResponse(response);
 
             var stringContent = await response.Content.Stream
                 .ReadToEndAsync(response.Content.Encoding, cancellationToken)
@@ -165,13 +191,16 @@ namespace NClient.Standalone.Client
         public async Task<IResponse> GetResponseWithDataOrErrorAsync(IRequest request, Type dataType, Type errorType, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy = null, CancellationToken cancellationToken = default)
         {
-            var transportResponseContext = await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
+            using var requestLogScope = BeginLogScope(request);
+            LogRequest(request);
+            
+            var transportResponseContext = await ExecuteAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
             
             var response = await _responseBuilder
                 .BuildAsync(request, transportResponseContext, allocateMemoryForContent: true, cancellationToken)
                 .ConfigureAwait(false);
+            LogResponse(response);
 
             var stringContent = await response.Content.Stream
                 .ReadToEndAsync(response.Content.Encoding, cancellationToken)
@@ -182,27 +211,27 @@ namespace NClient.Standalone.Client
             return BuildResponseWithDataOrError(dataObject, dataType, errorObject, errorType, response);
         }
 
-        private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest transportRequest, 
+        private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest request, 
             IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken = default)
         {
             return await (resiliencePolicy ?? _resiliencePolicy)
-                .ExecuteAsync(token => ExecuteAttemptAsync(transportRequest, token), cancellationToken)
+                .ExecuteAsync(token => ExecuteAttemptAsync(request, token), cancellationToken)
                 .ConfigureAwait(false);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
+            _logger.LogDebug("Start sending transport request");
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
-                _logger.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Start sending transport request attempt");
                 transportRequest = await _transportRequestBuilder
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
-                
+
                 await _clientHandler
                     .HandleRequestAsync(transportRequest, cancellationToken)
                     .ConfigureAwait(false);
@@ -213,15 +242,15 @@ namespace NClient.Standalone.Client
                     .HandleResponseAsync(transportResponse, cancellationToken)
                     .ConfigureAwait(false);
                 
-                _logger.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Transport request attempt finished successfully");
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
+                _logger.LogWarning(e, "Transport request attempt failed with exception");
                 throw;
             }
             
-            _logger.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
+            _logger.LogInformation("Transport response received");
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 
@@ -255,6 +284,30 @@ namespace NClient.Standalone.Client
         {
             var genericResponseType = typeof(ResponseWithError<,>).MakeGenericType(dataType, errorType);
             return (IResponse) Activator.CreateInstance(genericResponseType, response, response.Request, data, error);
+        }
+
+        private IDisposable BeginLogScope(IRequest request)
+        {
+            return _logger.BeginScope(new Dictionary<string, object>
+            {
+                ["RequestType"] = request.Type,
+                ["RequestResource"] = request.Resource
+            });
+        }
+
+        private void LogRequest(IRequest request)
+        {
+            _logger.LogInformation("Start sending {RequestType} request to {RequestResource}", request.Type, request.Resource);
+        }
+        
+        private void LogResponse(IResponse response)
+        {
+            _logger.LogInformation("Response from {ResponseResource} received {ResponseStatusCode}", response.Resource, response.StatusCode);
+        }
+        
+        private void LogTransportResponse(IRequest request)
+        {
+            _logger.LogInformation("Response from {ResponseResource} received", request.Resource);
         }
     }
 }
