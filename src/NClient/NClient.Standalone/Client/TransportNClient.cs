@@ -35,7 +35,7 @@ namespace NClient.Standalone.Client
         private readonly IResponseMapper<TRequest, TResponse> _transportResponseMapper;
         private readonly IResponseMapper<IRequest, IResponse> _responseMapper;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
 
         public TimeSpan Timeout => _transport.Timeout;
 
@@ -49,7 +49,7 @@ namespace NClient.Standalone.Client
             IResponseMapper<IRequest, IResponse> responseMapper,
             IResponseMapper<TRequest, TResponse> transportResponseMapper,
             IResponseValidator<TRequest, TResponse> responseValidator,
-            ILogger? logger)
+            ILogger logger)
         {
             _serializer = serializer;
             _transport = transport;
@@ -192,13 +192,13 @@ namespace NClient.Standalone.Client
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAttemptAsync(IRequest request, CancellationToken cancellationToken = default)
         {
-            _logger?.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
+            _logger.LogDebug("Start sending '{RequestMethod}' request to '{RequestUri}'. Request id: '{RequestId}'", request.Type, request.Resource, request.Id);
 
             TRequest? transportRequest;
             TResponse? transportResponse;
             try
             {
-                _logger?.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Start sending request attempt (request id: '{RequestId}')", request.Id);
                 transportRequest = await _transportRequestBuilder
                     .BuildAsync(request, cancellationToken)
                     .ConfigureAwait(false);
@@ -213,15 +213,15 @@ namespace NClient.Standalone.Client
                     .HandleResponseAsync(transportResponse, cancellationToken)
                     .ConfigureAwait(false);
                 
-                _logger?.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
+                _logger.LogDebug("Request attempt finished (request id: '{RequestId}')", request.Id);
             }
             catch (Exception e)
             {
-                _logger?.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
+                _logger.LogWarning(e, "Request attempt failed with exception (request id: '{RequestId}')", request.Id);
                 throw;
             }
             
-            _logger?.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
+            _logger.LogDebug("Response received (request id: '{RequestId}')    ", request.Id);
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 

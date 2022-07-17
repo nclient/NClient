@@ -26,7 +26,7 @@ namespace NClient.Providers.Serialization.SystemTextJson
         
         /// <summary>Creates System.Text.Json <see cref="ISerializer"/> instance.</summary>
         /// <param name="logger">Optional logger. If it is not passed, then logs will not be written.</param>
-        public ISerializer Create(ILogger? logger)
+        public ISerializer Create(ILogger logger)
         {
             return new SystemTextJsonSerializer(_jsonSerializerOptions);
         }

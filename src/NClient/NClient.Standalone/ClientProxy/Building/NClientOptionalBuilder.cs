@@ -153,15 +153,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithTimeout(timeout));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers)
-        {
-            Ensure.IsNotNull(logger, nameof(logger));
-            Ensure.AreNotNullItems(extraLoggers, nameof(extraLoggers));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithLogging(extraLoggers.Concat(new[] { logger })));
-        }
-        
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers)
         {
             var loggerCollection = loggers as ICollection<ILogger> ?? loggers.ToArray();

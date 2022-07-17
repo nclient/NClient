@@ -11,6 +11,6 @@ namespace NClient.Providers
         ISerializer Serializer { get; }
 
         /// <summary>Gets the logger used to perform logging.</summary>
-        ILogger? Logger { get; }
+        ILogger Logger { get; }
     }
 }
