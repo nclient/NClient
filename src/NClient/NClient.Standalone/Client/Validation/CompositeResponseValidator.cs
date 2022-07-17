@@ -6,11 +6,11 @@ using NClient.Providers.Validation;
 
 namespace NClient.Standalone.Client.Validation
 {
-    internal class ResponseValidatorDecorator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
+    internal class CompositeResponseValidator<TRequest, TResponse> : IResponseValidator<TRequest, TResponse>
     {
         private readonly IReadOnlyCollection<IResponseValidator<TRequest, TResponse>> _responseValidators;
         
-        public ResponseValidatorDecorator(IEnumerable<IResponseValidator<TRequest, TResponse>> responseValidators)
+        public CompositeResponseValidator(IEnumerable<IResponseValidator<TRequest, TResponse>> responseValidators)
         {
             _responseValidators = responseValidators
                 .OrderByDescending(x => x is IOrderedResponseValidation<TRequest, TResponse>)

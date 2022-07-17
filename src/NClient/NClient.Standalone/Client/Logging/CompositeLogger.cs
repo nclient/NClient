@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace NClient.Standalone.Client.Logging
 {
-    internal class LoggerDecorator<T> : ILogger<T>
+    internal class CompositeLogger<T> : ILogger<T>
     {
         private readonly ICollection<ILogger> _loggers;
         
-        public LoggerDecorator(IEnumerable<ILogger> loggers)
+        public CompositeLogger(IEnumerable<ILogger> loggers)
         {
             _loggers = loggers.ToArray();
         }
@@ -33,7 +33,7 @@ namespace NClient.Standalone.Client.Logging
             try
             {
                 disposables.AddRange(_loggers.Select(logger => logger.BeginScope(state)));
-                return new DisposableDecorator(disposables);
+                return new CompositeDisposable(disposables);
             }
             catch
             {

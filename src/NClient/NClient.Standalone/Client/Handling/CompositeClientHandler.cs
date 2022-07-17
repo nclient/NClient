@@ -6,11 +6,11 @@ using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {
-    internal class ClientHandlerDecorator<TRequest, TResponse> : IClientHandler<TRequest, TResponse>
+    internal class CompositeClientHandler<TRequest, TResponse> : IClientHandler<TRequest, TResponse>
     {
         private readonly IReadOnlyCollection<IClientHandler<TRequest, TResponse>> _clientHandlers;
 
-        public ClientHandlerDecorator(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers)
+        public CompositeClientHandler(IReadOnlyCollection<IClientHandler<TRequest, TResponse>> clientHandlers)
         {
             _clientHandlers = clientHandlers
                 .OrderByDescending(x => x is IOrderedClientHandler<TRequest, TResponse>)

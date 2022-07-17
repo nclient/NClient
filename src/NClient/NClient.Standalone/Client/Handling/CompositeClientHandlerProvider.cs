@@ -5,18 +5,18 @@ using NClient.Providers.Handling;
 
 namespace NClient.Standalone.Client.Handling
 {
-    internal class ClientHandlerProviderDecorator<TRequest, TResponse> : IClientHandlerProvider<TRequest, TResponse>
+    internal class CompositeClientHandlerProvider<TRequest, TResponse> : IClientHandlerProvider<TRequest, TResponse>
     {
         private readonly IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> _clientHandlerProviders;
 
-        public ClientHandlerProviderDecorator(IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders)
+        public CompositeClientHandlerProvider(IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders)
         {
             _clientHandlerProviders = clientHandlerProviders;
         }
         
         public IClientHandler<TRequest, TResponse> Create(IToolset toolset)
         {
-            return new ClientHandlerDecorator<TRequest, TResponse>(_clientHandlerProviders
+            return new CompositeClientHandler<TRequest, TResponse>(_clientHandlerProviders
                 .Select(x => x.Create(toolset))
                 .ToArray());
         }
