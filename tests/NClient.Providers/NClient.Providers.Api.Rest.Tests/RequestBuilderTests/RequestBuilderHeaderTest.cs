@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Annotations.Http;
 using NClient.Exceptions;
@@ -16,11 +17,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IPrimitiveHeader { [GetMethod] int Get([HeaderParam] int id); }
 
         [Test]
-        public void Build_PrimitiveHeader_PrimitiveInHeader()
+        public async Task Build_PrimitiveHeader_PrimitiveInHeader()
         {
             var httpRequest = BuildRequest(BuildMethod<IPrimitiveHeader>(), 1);
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("id", "1") });
@@ -29,11 +30,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IStringHeader { [GetMethod] int Get([HeaderParam] string str); }
 
         [Test]
-        public void Build_StringHeader_StringInHeader()
+        public async Task Build_StringHeader_StringInHeader()
         {
             var httpRequest = BuildRequest(BuildMethod<IStringHeader>(), "value");
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("str", "value") });
@@ -42,11 +43,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IMultiplyPrimitiveHeaders { [GetMethod] int Get([HeaderParam] int id, [HeaderParam] string value); }
 
         [Test]
-        public void Build_MultiplyPrimitiveHeaders_MultiplyHeadersWithPrimitives()
+        public async Task Build_MultiplyPrimitiveHeaders_MultiplyHeadersWithPrimitives()
         {
             var httpRequest = BuildRequest(BuildMethod<IMultiplyPrimitiveHeaders>(), 1, "val");
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("id", "1"), new Metadata("value", "val") });
@@ -85,11 +86,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Header("id", "1")] private interface IClientHeader { [GetMethod] int Get(); }
 
         [Test]
-        public void Build_ClientHeader_PrimitiveInHeader()
+        public async Task Build_ClientHeader_PrimitiveInHeader()
         {
             var httpRequest = BuildRequest(BuildMethod<IClientHeader>());
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("id", "1") });
@@ -98,11 +99,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Header("id", "1")] private interface IDuplicateInClientAndMethodHeaders { [GetMethod, Header("id", "2")] int Get(); }
 
         [Test]
-        public void Build_DuplicateInClientAndMethodHeaders_PrimitiveInHeader()
+        public async Task Build_DuplicateInClientAndMethodHeaders_PrimitiveInHeader()
         {
             var httpRequest = BuildRequest(BuildMethod<IDuplicateInClientAndMethodHeaders>());
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("id", "2") });
@@ -111,11 +112,11 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IMethodHeader { [GetMethod, Header("id", "1")] int Get(); }
 
         [Test]
-        public void Build_MethodHeader_PrimitiveInHeader()
+        public async Task Build_MethodHeader_PrimitiveInHeader()
         {
             var httpRequest = BuildRequest(BuildMethod<IMethodHeader>());
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 metadatas: new[] { new Metadata("id", "1") });

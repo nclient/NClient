@@ -22,7 +22,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
             Ensure.IsNotNull(transportRequest, nameof(transportRequest));
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _httpClient.SendAsync(transportRequest, cancellationToken).ConfigureAwait(false);
+            return await _httpClient.SendAsync(transportRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         }
     }
 }

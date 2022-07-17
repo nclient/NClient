@@ -1,4 +1,5 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Standalone.ClientProxy.Building;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -18,6 +19,12 @@ namespace NClient
         }
         
         public TClient Create<TClient>(string host) where TClient : class
+        {
+            Ensure.IsNotNull(host, nameof(host));
+            return Create<TClient>(new Uri(host));
+        }
+        
+        public TClient Create<TClient>(Uri host) where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_builderContext.WithHost(host)).Build();

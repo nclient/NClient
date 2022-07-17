@@ -16,7 +16,7 @@ namespace NClient.Providers.Transport
     }
     
     /// <summary>The container for response data.</summary>
-    public interface IResponse
+    public interface IResponse : IDisposable
     {
         /// <summary>The request that the response belongs to.</summary>
         IRequest Request { get; }
@@ -29,9 +29,9 @@ namespace NClient.Providers.Transport
         
         /// <summary>Gets description of status returned.</summary>
         string? StatusDescription { get; }
-        
+
         /// <summary>Gets the URL that actually responded to the content (different from request if redirected).</summary>
-        string? Endpoint { get; }
+        Uri? Resource { get; }
         
         /// <summary>Gets metadata returned by server with the response.</summary>
         IMetadataContainer Metadatas { get; }

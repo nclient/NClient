@@ -8,13 +8,15 @@ namespace NClient.Providers.Transport
     /// <summary>The container for data used to make requests.</summary>
     public class Request : IRequest
     {
+        private bool _disposed;
+        private readonly IEnumerable<IDisposable> _disposeWith;
         private readonly List<IParameter> _parameters = new();
 
         /// <summary>Gets the request id.</summary>
         public Guid Id { get; }
-        
+
         /// <summary>Gets the endpoint used for the request.</summary>
-        public string Endpoint { get; }
+        public Uri Resource { get; }
         
         /// <summary>Gets request type.</summary>
         public RequestType Type { get; }
@@ -30,17 +32,20 @@ namespace NClient.Providers.Transport
 
         /// <summary>Initializes container for request data.</summary>
         /// <param name="id">The request id.</param>
-        /// <param name="endpoint">The request URI (without parameters).</param>
+        /// <param name="resource">The request URI (without parameters).</param>
         /// <param name="requestType">The request type.</param>
-        public Request(Guid id, string endpoint, RequestType requestType)
+        /// <param name="disposeWith">Objects to be disposed along with the request.</param>
+        public Request(Guid id, Uri resource, RequestType requestType, IEnumerable<IDisposable>? disposeWith = null)
         {
-            Ensure.IsNotNull(endpoint, nameof(endpoint));
+            Ensure.IsNotNull(resource, nameof(resource));
             Ensure.IsNotNull(requestType, nameof(requestType));
 
             Id = id;
-            Endpoint = endpoint;
+            Resource = resource;
             Type = requestType;
             Metadatas = new MetadataContainer();
+            
+            _disposeWith = disposeWith ?? Array.Empty<IDisposable>();
         }
 
         /// <summary>Adds URI parameter.</summary>
@@ -63,6 +68,25 @@ namespace NClient.Providers.Transport
             Ensure.IsNotNull(value, nameof(value));
 
             Metadatas.Add(new Metadata(name, value));
+        }
+        
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Content?.Stream.Dispose();
+                foreach (var disposable in _disposeWith)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
     }
 }

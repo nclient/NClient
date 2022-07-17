@@ -28,7 +28,7 @@ namespace NClient.Providers.Serialization.SystemXml
 
         /// <summary>Creates System.Xml.XmlSerializer <see cref="ISerializer"/> instance.</summary>
         /// <param name="logger">Optional logger. If it is not passed, then logs will not be written.</param>
-        public ISerializer Create(ILogger? logger)
+        public ISerializer Create(ILogger logger)
         {
             return new SystemXmlSerializer(_xmlReaderSettings, _xmlWriterSettings);
         }

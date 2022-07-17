@@ -63,7 +63,7 @@ namespace NClient.Sandbox.Client
 
             _weatherForecastClient = NClientGallery.Clients
                 .GetRest()
-                .For<IWeatherForecastClient>(host: "http://localhost:5000")
+                .For<IWeatherForecastClient>(host: new Uri("http://localhost:5000"))
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
@@ -73,7 +73,7 @@ namespace NClient.Sandbox.Client
 
             _fileClient = NClientGallery.Clients
                 .GetRest()
-                .For<IFileClient>(host: "http://localhost:5002")
+                .For<IFileClient>(host: new Uri("http://localhost:5002"))
                 .WithHandling(new LoggingClientHandler(handlerLogger))
                 .WithResilience(selector => selector
                     .ForAllMethods().UsePolly(fallbackPolicy.WrapAsync(retryPolicy))
@@ -85,21 +85,21 @@ namespace NClient.Sandbox.Client
         private static async Task TestWeatherForecastClientAsync()
         {
             var weatherForecast = await _weatherForecastClient.GetAsync(new WeatherForecastFilter { Id = 1, Date = null });
-            _programLogger.LogInformation($"The forecast summary: {weatherForecast.Summary}.");
+            _programLogger.LogInformation("The forecast summary: {Summary}", weatherForecast.Summary);
 
             await _weatherForecastClient.GetAsync(new WeatherForecastFilter { Id = 0, Date = null });
-            _programLogger.LogInformation("The forecast not found.");
+            _programLogger.LogInformation("The forecast not found");
 
             var newWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -30 };
             await _weatherForecastClient.PostAsync(newWeatherForecast);
-            _programLogger.LogInformation("The forecast is posted.");
+            _programLogger.LogInformation("The forecast is posted");
 
             var updatedWeatherForecast = new WeatherForecastDto { Id = 2, Date = DateTime.Now, Summary = "Cold", TemperatureC = -35 };
             await _weatherForecastClient.PutAsync(updatedWeatherForecast);
-            _programLogger.LogInformation("The forecast is put.");
+            _programLogger.LogInformation("The forecast is put");
 
             await _weatherForecastClient.DeleteAsync(newWeatherForecast.Id);
-            _programLogger.LogInformation("The forecast is deleted.");
+            _programLogger.LogInformation("The forecast is deleted");
         }
 
         private static async Task TestFileClientAsync()
@@ -110,26 +110,36 @@ namespace NClient.Sandbox.Client
             Directory.CreateDirectory(receivedFilesDirPath);
 
             var httpResponseWithText = await _fileClient.GetTextFileAsync(id: 1);
-            _programLogger.LogInformation("The text file was received.");
+            _programLogger.LogInformation("The text file was received");
+
+            await using var textMemoryStream = new MemoryStream();
+            await httpResponseWithText.Content.Stream.CopyToAsync(textMemoryStream);
+            var textBytes = textMemoryStream.ToArray();
+                
             await using (var textFileStream = File.Create(Path.Combine(receivedFilesDirPath, "TextFileFromBytes.txt")))
             {
-                await textFileStream.WriteAsync(httpResponseWithText.Content.Bytes);
-                _programLogger.LogInformation("The text file was saved.");
+                await textFileStream.WriteAsync(textBytes);
+                _programLogger.LogInformation("The text file was saved");
             }
 
-            await _fileClient.PostTextFileAsync(httpResponseWithText.Content.Bytes!);
-            _programLogger.LogInformation("The text file has been sent.");
+            await _fileClient.PostTextFileAsync(textBytes);
+            _programLogger.LogInformation("The text file has been sent");
 
             var httpResponseWithImage = await _fileClient.GetImageAsync(id: 1);
-            _programLogger.LogInformation("The image was received.");
+            
+            await using var imageMemoryStream = new MemoryStream();
+            await httpResponseWithImage.Content.Stream.CopyToAsync(imageMemoryStream);
+            var imageBytes = imageMemoryStream.ToArray();
+            
+            _programLogger.LogInformation("The image was received");
             await using (var imageStream = File.Create(Path.Combine(receivedFilesDirPath, "ImageFromBytes.jpeg")))
             {
-                await imageStream.WriteAsync(httpResponseWithImage.Content.Bytes);
-                _programLogger.LogInformation("The image was saved.");
+                await imageStream.WriteAsync(imageBytes);
+                _programLogger.LogInformation("The image was saved");
             }
 
-            await _fileClient.PostImageFileAsync(httpResponseWithImage.Content.Bytes!);
-            _programLogger.LogInformation("The image has been sent.");
+            await _fileClient.PostImageFileAsync(imageBytes);
+            _programLogger.LogInformation("The image has been sent");
 
             Directory.Delete(Path.GetFullPath(tmpFolderName), recursive: true);
         }

@@ -6,15 +6,15 @@ namespace NClient
     public interface IClientFactoryGallery
     {
         /// <summary>Gets the client builder factory for a REST-like web API with JSON-formatted data.</summary>
-        INClientFactoryRestBuilder GetRest(); 
-        
+        IRestNClientFactoryBuilder GetRest();
+
         /// <summary>Gets the builder used to create the client factory with custom providers.</summary>
         INClientFactoryBuilder GetCustom();
     }
     
     public class ClientFactoryGallery : IClientFactoryGallery
     {
-        public INClientFactoryRestBuilder GetRest() => new NClientFactoryRestBuilder();
+        public IRestNClientFactoryBuilder GetRest() => new RestNClientFactoryBuilder();
         public INClientFactoryBuilder GetCustom() => new NClientFactoryBuilder();
     }
 }

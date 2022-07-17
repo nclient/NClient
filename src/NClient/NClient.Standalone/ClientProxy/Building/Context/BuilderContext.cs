@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Invocation;
 using NClient.Providers.Api;
+using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -19,8 +20,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
-        public string Host { get; private set; } = null!;
-
+        public Uri Host { get; private set; } = null!;
+        
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
         public IResponseBuilderProvider<TRequest, TResponse> ResponseBuilderProvider { get; private set; } = null!;
@@ -29,6 +30,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
+        public IReadOnlyCollection<IAuthorizationProvider> AuthorizationProviders { get; private set; } = null!;
+
         public IReadOnlyCollection<IResponseValidatorProvider<TRequest, TResponse>> ResponseValidatorProviders { get; private set; }
 
         public IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> ClientHandlerProviders { get; private set; }
@@ -36,8 +39,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IMethodResiliencePolicyProvider<TRequest, TResponse>? AllMethodsResiliencePolicyProvider { get; private set; }
         public IReadOnlyCollection<ResiliencePolicyPredicate<TRequest, TResponse>> MethodsWithResiliencePolicy { get; private set; }
         
-        public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResultBuilderProviders { get; private set; }
-        public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TypedResultBuilderProviders { get; private set; }
+        public IReadOnlyCollection<IResponseMapperProvider<IRequest, IResponse>> ResponseMapperProviders { get; private set; }
+        public IReadOnlyCollection<IResponseMapperProvider<TRequest, TResponse>> TransportResponseMapperProviders { get; private set; }
 
         public TimeSpan? Timeout { get; private set; }
         
@@ -46,11 +49,12 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public BuilderContext()
         {
+            AuthorizationProviders = Array.Empty<IAuthorizationProvider>();
             ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
-            ResultBuilderProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>();
-            TypedResultBuilderProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>();
+            ResponseMapperProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>();
+            TransportResponseMapperProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>();
             Loggers = Array.Empty<ILogger>();
             _clientBuildExceptionFactory = new ClientBuildExceptionFactory();
         }
@@ -69,6 +73,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             SerializerProvider = builderContext.SerializerProvider;
 
+            AuthorizationProviders = builderContext.AuthorizationProviders.ToArray();
+            
             ResponseValidatorProviders = builderContext.ResponseValidatorProviders.ToArray();
 
             ClientHandlerProviders = builderContext.ClientHandlerProviders.ToArray();
@@ -76,8 +82,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             AllMethodsResiliencePolicyProvider = builderContext.AllMethodsResiliencePolicyProvider;
             MethodsWithResiliencePolicy = builderContext.MethodsWithResiliencePolicy.ToArray();
 
-            ResultBuilderProviders = builderContext.ResultBuilderProviders.ToArray();
-            TypedResultBuilderProviders = builderContext.TypedResultBuilderProviders.ToArray();
+            ResponseMapperProviders = builderContext.ResponseMapperProviders.ToArray();
+            TransportResponseMapperProviders = builderContext.TransportResponseMapperProviders.ToArray();
 
             Timeout = builderContext.Timeout;
             
@@ -85,7 +91,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             LoggerFactory = builderContext.LoggerFactory;
         }
 
-        public BuilderContext<TRequest, TResponse> WithHost(string host)
+        public BuilderContext<TRequest, TResponse> WithHost(Uri host)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
@@ -119,6 +125,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 SerializerProvider = serializerProvider
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithAuthorization(IEnumerable<IAuthorizationProvider> authorizationProviders)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AuthorizationProviders = AuthorizationProviders.Concat(authorizationProviders).ToArray()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutAuthorization()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AuthorizationProviders = Array.Empty<IAuthorizationProvider>()
             };
         }
 
@@ -191,28 +213,28 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders)
+        public BuilderContext<TRequest, TResponse> WithResponseMapperProviders(IEnumerable<IResponseMapperProvider<IRequest, IResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = ResultBuilderProviders.Concat(resultBuilderProviders).ToArray()
+                ResponseMapperProviders = ResponseMapperProviders.Concat(resultBuilderProviders).ToArray()
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithResultBuilders(IEnumerable<IResponseMapperProvider<TRequest, TResponse>> resultBuilderProviders)
+        public BuilderContext<TRequest, TResponse> WithTransportResponseMapperProviders(IEnumerable<IResponseMapperProvider<TRequest, TResponse>> resultBuilderProviders)
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                TypedResultBuilderProviders = TypedResultBuilderProviders.Concat(resultBuilderProviders).ToArray()
+                TransportResponseMapperProviders = TransportResponseMapperProviders.Concat(resultBuilderProviders).ToArray()
             };
         }
         
-        public BuilderContext<TRequest, TResponse> WithoutResultBuilders()
+        public BuilderContext<TRequest, TResponse> WithoutAllResponseMapperProviders()
         {
             return new BuilderContext<TRequest, TResponse>(this)
             {
-                ResultBuilderProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
-                TypedResultBuilderProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>()
+                ResponseMapperProviders = Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
+                TransportResponseMapperProviders = Array.Empty<IResponseMapperProvider<TRequest, TResponse>>()
             };
         }
         

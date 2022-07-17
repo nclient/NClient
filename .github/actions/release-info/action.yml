@@ -24,7 +24,7 @@ runs:
   steps:
     - id: version-prefix-generator
       env:
-        default-version-prefix: 0.12.2
+        default-version-prefix: 0.13.0
       run: |
         if [[ "${{ inputs.version-prefix || '' }}" != "" ]]; then
           echo "::set-output name=version-prefix::${{ inputs.version-prefix }}"

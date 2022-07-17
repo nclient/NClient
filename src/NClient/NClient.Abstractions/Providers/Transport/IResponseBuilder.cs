@@ -13,6 +13,7 @@ namespace NClient.Providers.Transport
         /// <param name="responseContext">The context containing transport request and response.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         Task<IResponse> BuildAsync(IRequest request, 
-            IResponseContext<TRequest, TResponse> responseContext, CancellationToken cancellationToken);
+            IResponseContext<TRequest, TResponse> responseContext, bool allocateMemoryForContent,
+            CancellationToken cancellationToken);
     }
 }

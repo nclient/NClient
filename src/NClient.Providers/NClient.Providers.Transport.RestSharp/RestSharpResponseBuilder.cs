@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,8 @@ namespace NClient.Providers.Transport.RestSharp
         private static readonly HashSet<string> ContentHeaderNames = new(new HttpContentKnownHeaderNames());
 
         public Task<IResponse> BuildAsync(IRequest request, 
-            IResponseContext<IRestRequest, IRestResponse> responseContext, CancellationToken cancellationToken)
+            IResponseContext<IRestRequest, IRestResponse> responseContext, bool allocateMemoryForContent,
+            CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -29,9 +31,12 @@ namespace NClient.Providers.Transport.RestSharp
             
             var response = new Response(request)
             {
-                Content = new Content(responseContext.Response.RawBytes, responseContext.Response.ContentEncoding, new MetadataContainer(contentHeaders)),
+                Content = new Content(
+                    new MemoryStream(responseContext.Response.RawBytes), 
+                    responseContext.Response.ContentEncoding, 
+                    new MetadataContainer(contentHeaders)),
                 StatusCode = (int) responseContext.Response.StatusCode,
-                Endpoint = responseContext.Response.ResponseUri.ToString(),
+                Resource = responseContext.Response.ResponseUri,
                 Metadatas = new MetadataContainer(responseHeaders),
                 ErrorMessage = responseContext.Response.ErrorMessage,
                 ErrorException = responseContext.Response.ErrorException,

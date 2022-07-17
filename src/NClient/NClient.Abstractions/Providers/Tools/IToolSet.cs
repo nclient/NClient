@@ -8,9 +8,9 @@ namespace NClient.Providers
     public interface IToolset
     {
         /// <summary>Gets the serializer that provides functionality to serialize objects or value types to serialized string and to deserialize serialized string into objects or value types.</summary>
-        ISerializer Serializer { get; } 
-        
-        /// <summary>Gets represents a type used to perform logging.</summary>
-        ILogger? Logger { get; }
+        ISerializer Serializer { get; }
+
+        /// <summary>Gets the logger used to perform logging.</summary>
+        ILogger Logger { get; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -13,6 +15,7 @@ using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
+using NClient.Providers.Authorization;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api.Rest
@@ -45,8 +48,8 @@ namespace NClient.Providers.Api.Rest
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
             _toolset = toolset;
         }
-
-        public Task<IRequest> BuildAsync(Guid requestId, string host, 
+        
+        public async Task<IRequest> BuildAsync(Guid requestId, Uri host, IAuthorization authorization,
             IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -66,9 +69,16 @@ namespace NClient.Providers.Api.Rest
                 .ToArray();
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
+            
+            var resource = new Uri(PathHelper.Combine(host.ToString(), route));
+            var request = new Request(requestId, resource, requestType);
 
-            var endpoint = PathHelper.Combine(host, route);
-            var request = new Request(requestId, endpoint, requestType);
+            var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
+            var authorizationToken = authorizationTokens?.TryGet(host);
+            if (authorizationToken is not null)
+                request.AddMetadata(
+                    name: HttpRequestHeader.Authorization.ToString(), 
+                    value: $"{authorizationToken.Scheme} {authorizationToken.Value}");
 
             var headerAttributes = methodInvocation.Method.MetadataAttributes;
             foreach (var headerAttribute in headerAttributes)
@@ -107,7 +117,7 @@ namespace NClient.Providers.Api.Rest
             {
                 var bodyJson = _toolset.Serializer.Serialize(bodyParams.SingleOrDefault()?.Value);
                 var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
-                request.Content = new Content(bodyBytes, Encoding.UTF8.WebName, new MetadataContainer
+                request.Content = new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, new MetadataContainer
                 {
                     new Metadata("Content-Encoding", Encoding.UTF8.WebName),
                     new Metadata("Content-Type", _toolset.Serializer.ContentType),
@@ -115,7 +125,7 @@ namespace NClient.Providers.Api.Rest
                 });
             }
 
-            return Task.FromResult<IRequest>(request);
+            return request;
         }
     }
 }

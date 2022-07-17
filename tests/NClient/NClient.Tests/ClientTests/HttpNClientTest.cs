@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -7,18 +8,19 @@ using FluentAssertions;
 using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
 using NClient.Providers.Transport;
-using NClient.Standalone.Tests.Clients;
 using NClient.Testing.Common.Apis;
+using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
 using NClient.Testing.Common.Helpers;
+using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
 namespace NClient.Tests.ClientTests
 {
     [Parallelizable]
-    public class HttpNClientTest
+    public class HttpNClientTest : ClientTestBase<IReturnClientWithMetadata>
     {
-        private static readonly Request RequestStub = new(Guid.Empty, endpoint: "http://localhost:5000", RequestType.Read);
+        private static readonly Request RequestStub = new(Guid.Empty, resource: "http://localhost:5000".ToUri(), RequestType.Read);
         private static readonly Response ResponseStub = new(RequestStub);
 
         [Test]
@@ -28,14 +30,14 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.GetAsync(id));
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -56,14 +58,14 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
-            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.GetAsync(id));
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -84,14 +86,14 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.Get(id));
 
             result.Should().BeEquivalentTo(new Response<BasicEntity>(ResponseStub, RequestStub, entity)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -112,14 +114,14 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockGetMethod(id, entity);
 
-            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<BasicEntity, Error>(client => client.Get(id));
 
             result.Should().BeEquivalentTo(new ResponseWithError<BasicEntity, Error>(ResponseStub, RequestStub, entity, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}"),
+                    new MemoryStream(Encoding.UTF8.GetBytes("{\"Id\":1,\"Value\":2}")),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -139,16 +141,15 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostAsyncMethod(entity);
 
-            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.PostAsync(entity));
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -165,16 +166,15 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostAsyncMethod(entity);
 
-            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var httpResponse = await NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<Error>(client => client.PostAsync(entity));
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -191,16 +191,15 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.Post(entity));
 
             httpResponse.Should().BeEquivalentTo(new Response(RequestStub)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -217,16 +216,15 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockPostMethod(entity);
 
-            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse<Error>(client => client.Post(entity));
 
             httpResponse.Should().BeEquivalentTo(new ResponseWithError<Error>(httpResponse, httpResponse.Request, error: null)
             {
                 StatusCode = (int) HttpStatusCode.OK,
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(""),
-                    encoding: null,
-                    new MetadataContainer(new[]
+                    streamContent: new MemoryStream(Encoding.UTF8.GetBytes("")),
+                    headerContainer: new MetadataContainer(new[]
                     {
                         new Metadata(HttpKnownHeaderNames.ContentType, "application/json"),
                         new Metadata(HttpKnownHeaderNames.ContentLength, "0")
@@ -243,7 +241,7 @@ namespace NClient.Tests.ClientTests
             var entity = new BasicEntity { Id = 1, Value = 2 };
             using var api = ReturnApiMockFactory.MockInternalServerError();
 
-            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(api.Urls.First()).Build()
+            var httpResponse = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First()).Build()
                 .AsTransport().GetTransportResponse(client => client.Post(entity));
 
             using var assertionScope = new AssertionScope();
@@ -259,7 +257,9 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Endpoint);
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<ResponseWithError<Error>> ExcludeInessentialFields(
@@ -268,7 +268,9 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Endpoint);
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<Response<BasicEntity>> ExcludeInessentialFields(
@@ -277,7 +279,9 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Endpoint);
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
+                .Excluding(x => x.Resource);
         }
 
         private EquivalencyAssertionOptions<Response> ExcludeInessentialFields(
@@ -286,7 +290,9 @@ namespace NClient.Tests.ClientTests
             return opts
                 .Excluding(x => x.Request)
                 .Excluding(x => x.Metadatas)
-                .Excluding(x => x.Endpoint);
+                .Excluding(x => x.Content.Stream)
+                .Excluding(x => x.Request.Content!.Stream)
+                .Excluding(x => x.Resource);
         }
     }
 }

@@ -5,13 +5,13 @@ using System.Collections.Generic;
 namespace NClient.Providers.Transport
 {
     /// <summary>The container for data used to make requests.</summary>
-    public interface IRequest
+    public interface IRequest : IDisposable
     {
         /// <summary>Gets the request id.</summary>
         Guid Id { get; }
         
         /// <summary>Gets the resource used for the request. Should not include query.</summary>
-        string Endpoint { get; }
+        Uri Resource { get; }
         
         /// <summary>Gets request type.</summary>
         RequestType Type { get; }

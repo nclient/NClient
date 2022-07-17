@@ -3,30 +3,34 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using NClient.Providers.Results.HttpResults;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Mapping.HttpResponses
 {
     internal class ResponseToHttpResponseMapper : IResponseMapper<HttpRequestMessage, HttpResponseMessage>
     {
-        public bool CanMap(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
+        private readonly IToolset _toolset;
+        
+        public ResponseToHttpResponseMapper(IToolset toolset)
         {
-            if (!resultType.IsGenericType)
-                return false;
-
-            return resultType.GetGenericTypeDefinition() == typeof(HttpResponse)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<>)
-                || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<,>)
-                || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
+            _toolset = toolset;
         }
         
-        public async Task<object?> MapAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, 
-            ISerializer serializer, CancellationToken cancellationToken)
+        public bool CanMap(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext)
+        {
+            if (resultType.IsGenericType)
+                return resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<>)
+                    || resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<,>)
+                    || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>);
+            
+            return resultType == typeof(HttpResponse) 
+                || resultType == typeof(IHttpResponse);
+        }
+        
+        public async Task<object?> MapAsync(Type resultType, IResponseContext<HttpRequestMessage, HttpResponseMessage> responseContext, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             
@@ -40,7 +44,7 @@ namespace NClient.Providers.Mapping.HttpResponses
             if (resultType.GetGenericTypeDefinition() == typeof(HttpResponse<>) || resultType.GetGenericTypeDefinition() == typeof(IHttpResponse<>))
             { 
                 var data = httpResponse.IsSuccessful
-                    ? serializer.Deserialize(content, resultType.GetGenericArguments()[0])
+                    ? _toolset.Serializer.Deserialize(content, resultType.GetGenericArguments()[0])
                     : null;
                 var httpResponseType = typeof(HttpResponse<>).MakeGenericType(resultType.GetGenericArguments()[0]);
                 return Activator.CreateInstance(httpResponseType, httpResponse, data);
@@ -50,7 +54,7 @@ namespace NClient.Providers.Mapping.HttpResponses
             {
                 var error = httpResponse.IsSuccessful 
                     ? null
-                    : serializer.Deserialize(content, resultType.GetGenericArguments()[0]);
+                    : _toolset.Serializer.Deserialize(content, resultType.GetGenericArguments()[0]);
                 var httpResponseType = typeof(HttpResponseWithError<>).MakeGenericType(resultType.GetGenericArguments()[0]);
                 return Activator.CreateInstance(httpResponseType, httpResponse, error);
             }
@@ -58,11 +62,11 @@ namespace NClient.Providers.Mapping.HttpResponses
             if (resultType.GetGenericTypeDefinition() == typeof(HttpResponseWithError<,>) || resultType.GetGenericTypeDefinition() == typeof(IHttpResponseWithError<,>))
             {
                 var data = httpResponse.IsSuccessful
-                    ? serializer.Deserialize(content, resultType.GetGenericArguments()[0])
+                    ? _toolset.Serializer.Deserialize(content, resultType.GetGenericArguments()[0])
                     : null;
                 var error = httpResponse.IsSuccessful 
                     ? null
-                    : serializer.Deserialize(content, resultType.GetGenericArguments()[1]);
+                    : _toolset.Serializer.Deserialize(content, resultType.GetGenericArguments()[1]);
                 var httpResponseType = typeof(HttpResponseWithError<,>).MakeGenericType(resultType.GetGenericArguments()[0], resultType.GetGenericArguments()[1]);
                 return Activator.CreateInstance(httpResponseType, httpResponse, data, error);
             }
