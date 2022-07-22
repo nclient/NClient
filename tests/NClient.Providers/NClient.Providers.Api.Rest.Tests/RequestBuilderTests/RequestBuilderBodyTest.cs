@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Annotations;
 using NClient.Annotations.Http;
@@ -17,13 +18,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface ICustomTypeBody { [GetMethod] int Get([BodyParam] BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeBody_JsonObjectInBody()
+        public async Task Build_CustomTypeBody_JsonObjectInBody()
         {
             var basicEntity = new BasicEntity { Id = 1 };
 
             var httpRequest = BuildRequest(BuildMethod<ICustomTypeBody>(), basicEntity);
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 body: basicEntity);
@@ -47,13 +48,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface ICustomTypeBodyWithoutAttribute { [GetMethod] int Get(BasicEntity entity); }
 
         [Test]
-        public void Build_CustomTypeBodyWithoutAttribute_JsonObjectInBody()
+        public async Task Build_CustomTypeBodyWithoutAttribute_JsonObjectInBody()
         {
             var basicEntity = new BasicEntity { Id = 1 };
 
             var httpRequest = BuildRequest(BuildMethod<ICustomTypeBodyWithoutAttribute>(), basicEntity);
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 body: basicEntity);
@@ -77,13 +78,13 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         private interface IPrimitiveBody { [GetMethod] int Get([BodyParam] int id); }
 
         [Test]
-        public void Build_PrimitiveBody_PrimitiveInBody()
+        public async Task Build_PrimitiveBody_PrimitiveInBody()
         {
             const int id = 1;
 
             var httpRequest = BuildRequest(BuildMethod<IPrimitiveBody>(), id);
 
-            AssertHttpRequest(httpRequest,
+            await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
                 body: id);

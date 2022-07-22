@@ -4,13 +4,13 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
+using NClient.Providers.Authorization;
 using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
-using NClient.Standalone.Client.Logging;
-using NClient.Standalone.Client.Resilience;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.ClientProxy.Building.Configuration.Caching;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
@@ -20,7 +20,6 @@ using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation;
-using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Building
@@ -39,6 +38,21 @@ namespace NClient.Standalone.ClientProxy.Building
             _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
+        {
+            Ensure.IsNotNull(accessTokens, nameof(accessTokens));
+            
+            var authorizationProvider = new AuthorizationProvider(accessTokens);
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithAuthorization(new[] { authorizationProvider }));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutAuthorization()
+        {
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
+                .WithoutAuthorization());
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
@@ -141,15 +155,6 @@ namespace NClient.Standalone.ClientProxy.Building
                 .WithTimeout(timeout));
         }
 
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(ILogger logger, params ILogger[] extraLoggers)
-        {
-            Ensure.IsNotNull(logger, nameof(logger));
-            Ensure.AreNotNullItems(extraLoggers, nameof(extraLoggers));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithLogging(extraLoggers.Concat(new[] { logger })));
-        }
-        
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithLogging(IEnumerable<ILogger> loggers)
         {
             var loggerCollection = loggers as ICollection<ILogger> ?? loggers.ToArray();
@@ -188,27 +193,7 @@ namespace NClient.Standalone.ClientProxy.Building
                 .GetAwaiter()
                 .GetResult();
             
-            var interceptor = _clientInterceptorFactory.Create(
-                _context.Host,
-                _context.SerializerProvider,
-                _context.RequestBuilderProvider,
-                _context.TransportProvider,
-                _context.TransportRequestBuilderProvider,
-                _context.ResponseBuilderProvider,
-                _context.ClientHandlerProviders,
-                new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
-                    new StubResiliencePolicyProvider<TRequest, TResponse>(), 
-                    _context.MethodsWithResiliencePolicy.Reverse()),
-                _context.ResponseMapperProviders,
-                _context.TransportResponseMapperProviders,
-                _context.ResponseValidatorProviders,
-                _context.CacheProvider,
-                _context.TransportCacheProvider,
-                _context.Timeout,
-                new LoggerDecorator<TClient>(_context.LoggerFactory is not null
-                    ? _context.Loggers.Concat(new[] { _context.LoggerFactory.CreateLogger<TClient>() })
-                    : _context.Loggers));
-
+            var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);
         }
     }

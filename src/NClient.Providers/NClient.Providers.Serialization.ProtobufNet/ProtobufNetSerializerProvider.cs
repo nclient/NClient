@@ -25,7 +25,7 @@ namespace NClient.Providers.Serialization.ProtobufNet
 
         /// <summary>Creates ProtobufNet <see cref="ISerializer"/> instance.</summary>
         /// <param name="logger">Optional logger. If it is not passed, then logs will not be written.</param>
-        public ISerializer Create(ILogger? logger)
+        public ISerializer Create(ILogger logger)
         {
             return new ProtobufNetSerializer(_protobufNetSerializerSettings);
         }

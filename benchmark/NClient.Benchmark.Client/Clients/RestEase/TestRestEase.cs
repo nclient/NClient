@@ -8,7 +8,7 @@ namespace NClient.Benchmark.Client.Clients.RestEase
 {
     public class TestRestEase<TClient> where TClient : class
     {
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private readonly JsonSerializerOptions? _jsonSerializerOptions;
         private readonly TClient _restEaseClient;
 
         // ReSharper disable once UnusedParameter.Local

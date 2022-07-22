@@ -6,10 +6,13 @@ using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
+using NClient.Standalone.Client.Caching;
 using NClient.Standalone.Client.Resilience;
+using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
+using NClient.Standalone.ClientProxy.Validation.Authorization;
 using NClient.Standalone.ClientProxy.Validation.Caching;
 using NClient.Standalone.ClientProxy.Validation.Handling;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
@@ -31,32 +34,34 @@ namespace NClient.Standalone.ClientProxy.Validation
         private static readonly Uri FakeHost = new("http://localhost:5000");
 
         private readonly IClientProxyGenerator _clientProxyGenerator;
+        private readonly BuilderContext<IRequest, IResponse> _builderContext;
 
         public ClientValidator(IProxyGenerator proxyGenerator)
         {
             _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
+            _builderContext = new BuilderContext<IRequest, IResponse>()
+                .WithHost(FakeHost)
+                .WithSerializer(new StubSerializerProvider())
+                .WithRequestBuilderProvider(new StubRequestBuilderProvider())
+                .WithTransport(
+                    new StubTransportProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider())
+                .WithAuthorization(new[] { new StubAuthorizationProvider() })
+                .WithHandlers(new[] { new StubClientHandlerProvider<IRequest, IResponse>() })
+                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
+                    new StubResiliencePolicyProvider<IRequest, IResponse>()))
+                .WithResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
+                .WithTransportResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
+                .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() })
+                .WithResponseCachingProvider(new StubResponseCacheProvider())
+                .WithTransportCachingProvider(new StubResponseCacheProvider());
         }
 
         public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
             where TClient : class
         {
-            var interceptor = clientInterceptorFactory
-                .Create<TClient, IRequest, IResponse>(
-                    FakeHost,
-                    new StubSerializerProvider(),
-                    new StubRequestBuilderProvider(),
-                    new StubTransportProvider(),
-                    new StubTransportRequestBuilderProvider(),
-                    new StubResponseBuilderProvider(),
-                    new[] { new StubClientHandlerProvider<IRequest, IResponse>() },
-                    new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
-                        new StubResiliencePolicyProvider<IRequest, IResponse>()),
-                    Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
-                    Array.Empty<IResponseMapperProvider<IRequest, IResponse>>(),
-                    new[] { new StubResponseValidatorProvider<IRequest, IResponse>() },
-                    new StubResponseCacheProvider(),
-                    new StubResponseCacheProvider());
-            
+            var interceptor = clientInterceptorFactory.Create<TClient, IRequest, IResponse>(_builderContext);
             var client = _clientProxyGenerator.CreateClient<TClient>(interceptor);
 
             await EnsureValidityAsync(client).ConfigureAwait(false);

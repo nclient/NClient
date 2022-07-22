@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using NClient.Exceptions;
+using NClient.Providers.Transport.SystemNetHttp.Helpers;
 using NClient.Providers.Validation;
 
 // ReSharper disable once CheckNamespace
@@ -20,14 +21,9 @@ namespace NClient.Providers.Transport.SystemNetHttp
             isSuccess: x => x.Response.IsSuccessStatusCode,
             onFailure: x =>
             {
-                try
-                {
-                    x.Response.EnsureSuccessStatusCode();
-                }
-                catch (HttpRequestException e)
-                {
-                    throw new TransportException<HttpRequestMessage, HttpResponseMessage>(x.Request, x.Response, e.Message, e);
-                }
+                var httpRequestException = x.Response.TryGetException();
+                if (httpRequestException is not null)
+                    throw new TransportException<HttpRequestMessage, HttpResponseMessage>(x.Request, x.Response, httpRequestException.Message, httpRequestException);
             })
         {
         }

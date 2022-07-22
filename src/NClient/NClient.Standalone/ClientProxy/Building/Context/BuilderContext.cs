@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Invocation;
 using NClient.Providers.Api;
+using NClient.Providers.Authorization;
 using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
@@ -21,7 +22,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
         public Uri Host { get; private set; } = null!;
-
+        
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
         public IResponseBuilderProvider<TRequest, TResponse> ResponseBuilderProvider { get; private set; } = null!;
@@ -29,6 +30,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public IRequestBuilderProvider RequestBuilderProvider { get; private set; } = null!;
         
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
+
+        public IReadOnlyCollection<IAuthorizationProvider> AuthorizationProviders { get; private set; } = null!;
 
         public IReadOnlyCollection<IResponseValidatorProvider<TRequest, TResponse>> ResponseValidatorProviders { get; private set; }
 
@@ -49,6 +52,7 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public BuilderContext()
         {
+            AuthorizationProviders = Array.Empty<IAuthorizationProvider>();
             ResponseValidatorProviders = Array.Empty<IResponseValidatorProvider<TRequest, TResponse>>();
             ClientHandlerProviders = Array.Empty<IClientHandlerProvider<TRequest, TResponse>>();
             MethodsWithResiliencePolicy = Array.Empty<ResiliencePolicyPredicate<TRequest, TResponse>>();
@@ -72,6 +76,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
             SerializerProvider = builderContext.SerializerProvider;
 
+            AuthorizationProviders = builderContext.AuthorizationProviders.ToArray();
+            
             ResponseValidatorProviders = builderContext.ResponseValidatorProviders.ToArray();
 
             ClientHandlerProviders = builderContext.ClientHandlerProviders.ToArray();
@@ -125,6 +131,22 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             return new BuilderContext<TRequest, TResponse>(this)
             {
                 SerializerProvider = serializerProvider
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithAuthorization(IEnumerable<IAuthorizationProvider> authorizationProviders)
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AuthorizationProviders = AuthorizationProviders.Concat(authorizationProviders).ToArray()
+            };
+        }
+        
+        public BuilderContext<TRequest, TResponse> WithoutAuthorization()
+        {
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                AuthorizationProviders = Array.Empty<IAuthorizationProvider>()
             };
         }
 

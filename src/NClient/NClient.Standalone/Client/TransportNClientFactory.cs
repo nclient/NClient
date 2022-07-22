@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-using System.Linq;
 using NClient.Providers;
 using NClient.Providers.Caching;
 using NClient.Providers.Handling;
@@ -22,8 +20,8 @@ namespace NClient.Standalone.Client
         private readonly IResponseBuilderProvider<TRequest, TResponse> _responseBuilderProvider;
         private readonly IClientHandlerProvider<TRequest, TResponse> _clientHandlerProvider;
         private readonly IResiliencePolicyProvider<TRequest, TResponse> _resiliencePolicyProvider;
-        private readonly IEnumerable<IResponseMapperProvider<IRequest, IResponse>> _responseMapperProviders;
-        private readonly IEnumerable<IResponseMapperProvider<TRequest, TResponse>> _transportResponseMapperProviders;
+        private readonly IResponseMapperProvider<IRequest, IResponse> _responseMapperProvider;
+        private readonly IResponseMapperProvider<TRequest, TResponse> _transportResponseMapperProvider;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly IResponseCacheProvider? _transportResponseCacheProvider;
         private readonly IToolset _toolset;
@@ -34,8 +32,8 @@ namespace NClient.Standalone.Client
             IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
             IClientHandlerProvider<TRequest, TResponse> clientHandlerProvider,
             IResiliencePolicyProvider<TRequest, TResponse> resiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
+            IResponseMapperProvider<IRequest, IResponse> responseMapperProvider,
+            IResponseMapperProvider<TRequest, TResponse> transportResponseMapperProvider,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
             IResponseCacheProvider? transportResponseCacheProvider,
             IToolset toolset)
@@ -45,8 +43,8 @@ namespace NClient.Standalone.Client
             _responseBuilderProvider = responseBuilderProvider;
             _clientHandlerProvider = clientHandlerProvider;
             _resiliencePolicyProvider = resiliencePolicyProvider;
-            _responseMapperProviders = responseMapperProviders;
-            _transportResponseMapperProviders = transportResponseMapperProviders;
+            _responseMapperProvider = responseMapperProvider;
+            _transportResponseMapperProvider = transportResponseMapperProvider;
             _responseValidatorProvider = responseValidatorProvider;
             _transportResponseCacheProvider = transportResponseCacheProvider;
             _toolset = toolset;
@@ -61,8 +59,8 @@ namespace NClient.Standalone.Client
                 _responseBuilderProvider.Create(_toolset),
                 _clientHandlerProvider.Create(_toolset),
                 _resiliencePolicyProvider.Create(_toolset),
-                _responseMapperProviders.Select(x => x.Create(_toolset)),
-                _transportResponseMapperProviders.Select(x => x.Create(_toolset)),
+                _responseMapperProvider.Create(_toolset),
+                _transportResponseMapperProvider.Create(_toolset),
                 _responseValidatorProvider.Create(_toolset),
                 _transportResponseCacheProvider?.Create(_toolset),
                 _toolset.Logger);

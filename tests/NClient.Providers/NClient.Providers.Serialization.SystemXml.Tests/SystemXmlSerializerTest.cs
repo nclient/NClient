@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 
 namespace NClient.Providers.Serialization.SystemXml.Tests
@@ -8,6 +10,8 @@ namespace NClient.Providers.Serialization.SystemXml.Tests
     [Parallelizable]
     public class SystemXmlSerializerTest
     {
+        private static readonly Mock<ILogger> LoggerMock = new();
+        
         public static readonly IEnumerable SerializationValidTestCases = new[]
         {
             new TestCaseData(1, "<?xml version=\"1.0\" encoding=\"utf-8\"?><int>1</int>"),
@@ -23,7 +27,7 @@ namespace NClient.Providers.Serialization.SystemXml.Tests
         [TestCaseSource(nameof(SerializationValidTestCases))]
         public void Serialize_ValidValues_NotThrow(object? obj, string expectedResult)
         {
-            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
+            var serializer = new SystemXmlSerializerProvider().Create(LoggerMock.Object);
 
             var actualResult = serializer.Serialize(obj);
 
@@ -33,7 +37,7 @@ namespace NClient.Providers.Serialization.SystemXml.Tests
         [Test]
         public void Serialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
+            var serializer = new SystemXmlSerializerProvider().Create(LoggerMock.Object);
 
             serializer
                 .Invoking(x => x.Serialize((int?) null))
@@ -44,7 +48,7 @@ namespace NClient.Providers.Serialization.SystemXml.Tests
         [TestCaseSource(nameof(DeserializationValidTestCases))]
         public void Deserialize_ValidValues_NotThrow(string xml, Type type, object? expectedResult)
         {
-            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
+            var serializer = new SystemXmlSerializerProvider().Create(LoggerMock.Object);
 
             var actualResult = serializer.Deserialize(xml, type);
 
@@ -54,7 +58,7 @@ namespace NClient.Providers.Serialization.SystemXml.Tests
         [Test]
         public void Deserialize_Null_ThrowArgumentNullException()
         {
-            var serializer = new SystemXmlSerializerProvider().Create(logger: null);
+            var serializer = new SystemXmlSerializerProvider().Create(LoggerMock.Object);
 
             serializer
                 .Invoking(x => x.Deserialize(null!, typeof(string)))

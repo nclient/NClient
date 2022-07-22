@@ -31,7 +31,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         [ProducesResponseType(typeof(void), 404)]
         public Task<WeatherForecastDto> GetAsync([FromQuery(Name = "filter")] WeatherForecastFilter weatherForecastFilter)
         {
-            _logger.LogInformation($"Forecast with an id '{weatherForecastFilter.Id}' and date '{weatherForecastFilter.Date}' was requested.");
+            _logger.LogInformation("Forecast with an id '{Id}' and date '{Date}' was requested", weatherForecastFilter.Id, weatherForecastFilter.Date);
 
             if (weatherForecastFilter.Id < 0)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -44,14 +44,14 @@ namespace NClient.Sandbox.ProxyService.Controllers
         [HttpPost]
         public Task PostAsync(WeatherForecastDto weatherForecastDto)
         {
-            _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
+            _logger.LogInformation("Weather forecast with id '{Id}' was saved (not really)", weatherForecastDto.Id);
             return Task.CompletedTask;
         }
 
         [HttpPut("{weatherForecastDto.id}")]
         public Task PutAsync(WeatherForecastDto weatherForecastDto)
         {
-            _logger.LogInformation($"Weather forecast with id '{weatherForecastDto.Id}' was saved (not really).");
+            _logger.LogInformation("Weather forecast with id '{Id}' was saved (not really)", weatherForecastDto.Id);
             return Task.CompletedTask;
         }
 
@@ -59,7 +59,7 @@ namespace NClient.Sandbox.ProxyService.Controllers
         [MapToApiVersion("2.0"), MapToApiVersion("3.0")]
         public Task DeleteAsync(int? id = null)
         {
-            _logger.LogInformation($"Weather forecast with id '{id}' was deleted (not really).");
+            _logger.LogInformation("Weather forecast with id '{Id}' was deleted (not really)", id);
             return Task.CompletedTask;
         }
     }

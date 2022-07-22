@@ -18,13 +18,48 @@ namespace NClient.Extensions.DependencyInjection.Tests
     public class AddRestNClientFactoryExtensionsTest
     {
         [Test]
-        public async Task AddRestNClientFactory_WithoutHttpClientAndLogging_NotThrow()
+        public async Task AddRestNClientFactory_WithFactoryName_NotThrow()
         {
             const int id = 1;
             using var api = BasicApiMockFactory.MockGetMethod(id);
             var serviceCollection = new ServiceCollection();
             
             serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata));
+
+            var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            clientFactory.Should().NotBeNull();
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
+            client.Should().NotBeNull();
+            (await client.GetAsync(id)).Should().Be(id);
+        }
+        
+        [Test]
+        public async Task AddRestNClientFactory_WithFactoryNameAndImplementationFactory_NotThrow()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection();
+            
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata),
+                implementationFactory: builder => builder.Build());
+
+            var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
+            clientFactory.Should().NotBeNull();
+            var client = clientFactory!.Create<IBasicClientWithMetadata>(host: api.Urls.First());
+            client.Should().NotBeNull();
+            (await client.GetAsync(id)).Should().Be(id);
+        }
+        
+        [Test]
+        public async Task AddRestNClientFactory_WithFactoryNameAndImplementationFactoryWithServiceProvider_NotThrow()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection();
+            
+            serviceCollection.AddRestNClientFactory(factoryName: nameof(IBasicClientWithMetadata),
+                // ReSharper disable once UnusedParameter.Local
+                implementationFactory: (serviceProvider, builder) => builder.Build());
 
             var clientFactory = serviceCollection.BuildServiceProvider().GetService<INClientFactory>();
             clientFactory.Should().NotBeNull();

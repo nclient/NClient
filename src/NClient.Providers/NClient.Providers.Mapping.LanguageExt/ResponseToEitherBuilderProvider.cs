@@ -9,7 +9,7 @@ namespace NClient.Providers.Mapping.LanguageExt
         /// <param name="toolset">Tools that help implement providers.</param>
         public IResponseMapper<IRequest, IResponse> Create(IToolset toolset)
         {
-            return new ResponseToEitherBuilder();
+            return new ResponseToEitherBuilder(toolset);
         }
     }
 }

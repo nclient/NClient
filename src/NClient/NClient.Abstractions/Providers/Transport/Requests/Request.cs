@@ -8,6 +8,8 @@ namespace NClient.Providers.Transport
     /// <summary>The container for data used to make requests.</summary>
     public class Request : IRequest
     {
+        private bool _disposed;
+        private readonly IEnumerable<IDisposable> _disposeWith;
         private readonly List<IParameter> _parameters = new();
 
         /// <summary>Gets the request id.</summary>
@@ -32,7 +34,8 @@ namespace NClient.Providers.Transport
         /// <param name="id">The request id.</param>
         /// <param name="resource">The request URI (without parameters).</param>
         /// <param name="requestType">The request type.</param>
-        public Request(Guid id, Uri resource, RequestType requestType)
+        /// <param name="disposeWith">Objects to be disposed along with the request.</param>
+        public Request(Guid id, Uri resource, RequestType requestType, IEnumerable<IDisposable>? disposeWith = null)
         {
             Ensure.IsNotNull(resource, nameof(resource));
             Ensure.IsNotNull(requestType, nameof(requestType));
@@ -41,6 +44,8 @@ namespace NClient.Providers.Transport
             Resource = resource;
             Type = requestType;
             Metadatas = new MetadataContainer();
+            
+            _disposeWith = disposeWith ?? Array.Empty<IDisposable>();
         }
 
         /// <summary>Adds URI parameter.</summary>
@@ -63,6 +68,25 @@ namespace NClient.Providers.Transport
             Ensure.IsNotNull(value, nameof(value));
 
             Metadatas.Add(new Metadata(name, value));
+        }
+        
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Content?.Stream.Dispose();
+                foreach (var disposable in _disposeWith)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
     }
 }

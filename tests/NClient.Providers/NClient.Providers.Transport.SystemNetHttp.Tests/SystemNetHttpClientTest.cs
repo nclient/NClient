@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,6 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NClient.Common.Helpers;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Testing.Common.Entities;
@@ -24,7 +28,8 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         private static readonly Uri Resource = new(Host, "api/method");
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
-        private static readonly ISerializer Serializer = new SystemTextJsonSerializerProvider().Create(logger: null);
+        private static readonly Mock<ILogger> LoggerMock = new();
+        private static readonly ISerializer Serializer = new SystemTextJsonSerializerProvider().Create(LoggerMock.Object);
         private static readonly Metadata AcceptHeader = new("Accept", "application/json");
         private static readonly Metadata ServerHeader = new("Server", "Kestrel");
         private static readonly Metadata EmptyContentLengthMetadata = new("Content-Length", "0");
@@ -42,7 +47,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
-            var toolset = new Toolset(Serializer, logger: null);
+            var toolset = new Toolset(Serializer, LoggerMock.Object);
             var transport = new SystemNetHttpTransportProvider().Create(toolset);
             var transportRequestBuilder = new SystemNetHttpTransportRequestBuilderProvider().Create(toolset);
             var responseBuilder = new SystemNetHttpResponseBuilderProvider().Create(toolset);
@@ -50,9 +55,15 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var httpRequestMessage = await transportRequestBuilder.BuildAsync(request, CancellationToken.None);
             var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage, CancellationToken.None);
             var response = await responseBuilder.BuildAsync(request, new ResponseContext<HttpRequestMessage, 
-                HttpResponseMessage>(httpRequestMessage, httpResponseMessage), CancellationToken.None);
+                HttpResponseMessage>(httpRequestMessage, httpResponseMessage), allocateMemoryForContent: true, CancellationToken.None);
             
-            response.Should().BeEquivalentTo(expectedResponse, x => x.Excluding(r => r.Metadatas));
+            response.Should().BeEquivalentTo(expectedResponse, x => x
+                .Excluding(r => r.Metadatas)
+                .Excluding(r => r.Content.Stream)
+                .Excluding(r => r.Request.Content!.Stream));
+            
+            (await response.Content.Stream.ReadToEndAsync(response.Content.Encoding))
+                .Should().BeEquivalentTo(await expectedResponse.Content.Stream.ReadToEndAsync(expectedResponse.Content.Encoding));
             response.Metadatas.Where(x => x.Key != HttpKnownHeaderNames.Date && x.Key != HttpKnownHeaderNames.TransferEncoding)
                 .Should().BeEquivalentTo(expectedResponse.Metadatas, x => x.WithoutStrictOrdering());
         }
@@ -74,14 +85,10 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             
             var response = new Response(finalRequest)
             {
-                #if NETFRAMEWORK
                 Content = new Content(headerContainer: new MetadataContainer(new[]
                 {
                     EmptyContentLengthMetadata
                 })),
-                #else
-                Content = new Content(headerContainer: new MetadataContainer(Array.Empty<IMetadata>())),
-                #endif
                 StatusCode = (int) HttpStatusCode.OK,
                 StatusDescription = "OK",
                 Resource = Resource,
@@ -131,7 +138,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var bytes = Encoding.UTF8.GetBytes(content);
             var response = new Response(finalRequest)
             {
-                Content = new Content(bytes, ContentEncodingHeader.Value, new MetadataContainer(new[]
+                Content = new Content(new MemoryStream(bytes), ContentEncodingHeader.Value, new MetadataContainer(new[]
                 {
                     ContentTypeHeader,
                     ContentEncodingHeader,
@@ -179,7 +186,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var request = new Request(RequestId, Resource, method)
             {
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(content),
+                    new MemoryStream(Encoding.UTF8.GetBytes(content)),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {
@@ -193,7 +200,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
             var finalRequest = new Request(RequestId, Resource, method)
             {
                 Content = new Content(
-                    Encoding.UTF8.GetBytes(content),
+                    new MemoryStream(Encoding.UTF8.GetBytes(content)),
                     Encoding.UTF8.WebName,
                     new MetadataContainer(new[]
                     {

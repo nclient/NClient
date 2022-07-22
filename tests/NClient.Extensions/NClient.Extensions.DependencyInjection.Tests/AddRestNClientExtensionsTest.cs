@@ -33,6 +33,37 @@ namespace NClient.Extensions.DependencyInjection.Tests
         }
         
         [Test]
+        public async Task AddRestNClient_WithHostProviderAndImplementationFactory_NotThrow()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().AddSingleton(api.Urls.First().ToUri());
+            
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First(), 
+                implementationFactory: builder => builder.Build());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
+        }
+        
+        [Test]
+        public async Task AddRestNClient_WithHostProviderAndImplementationFactoryWithServiceProvider_NotThrow()
+        {
+            const int id = 1;
+            using var api = BasicApiMockFactory.MockGetMethod(id);
+            var serviceCollection = new ServiceCollection().AddSingleton(api.Urls.First().ToUri());
+            
+            serviceCollection.AddRestNClient<IBasicClientWithMetadata>(host: api.Urls.First(), 
+                // ReSharper disable once UnusedParameter.Local
+                implementationFactory: (serviceProvider, builder) => builder.Build());
+
+            var client = serviceCollection.BuildServiceProvider().GetService<IBasicClientWithMetadata>();
+            client.Should().NotBeNull();
+            (await client!.GetAsync(id)).Should().Be(id);
+        }
+        
+        [Test]
         public async Task AddRestNClient_WithHostProvider_UseHostFromServices()
         {
             const int id = 1;

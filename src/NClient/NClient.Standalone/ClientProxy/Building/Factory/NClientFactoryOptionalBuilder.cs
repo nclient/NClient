@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
+using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -25,7 +27,22 @@ namespace NClient.Standalone.ClientProxy.Building.Factory
             _factoryName = factoryName;
             _context = context;
         }
-        
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
+        {
+            Ensure.IsNotNull(accessTokens, nameof(accessTokens));
+            
+            var authorizationProvider = new AuthorizationProvider(accessTokens);
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithAuthorization(new[] { authorizationProvider }));
+        }
+
+        public INClientFactoryOptionalBuilder<TRequest, TResponse> WithoutAuthorization()
+        {
+            return new NClientFactoryOptionalBuilder<TRequest, TResponse>(_factoryName, _context
+                .WithoutAuthorization());
+        }
+
         public INClientFactoryOptionalBuilder<TRequest, TResponse> WithCustomSerialization(ISerializerProvider provider)
         {
             Ensure.IsNotNull(provider, nameof(provider));

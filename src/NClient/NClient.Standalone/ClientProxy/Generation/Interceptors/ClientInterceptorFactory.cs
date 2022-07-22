@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
 using NClient.Core.Mappers;
 using NClient.Providers;
-using NClient.Providers.Api;
-using NClient.Providers.Caching;
-using NClient.Providers.Handling;
-using NClient.Providers.Mapping;
-using NClient.Providers.Resilience;
-using NClient.Providers.Serialization;
 using NClient.Providers.Transport;
-using NClient.Providers.Validation;
 using NClient.Standalone.Client;
+using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.Client.Handling;
+using NClient.Standalone.Client.Logging;
+using NClient.Standalone.Client.Mapping;
+using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.Client.Validation;
+using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation.Helpers;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
@@ -28,22 +24,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal interface IClientInterceptorFactory
     {
-        IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            Uri host,
-            ISerializerProvider serializerProvider,
-            IRequestBuilderProvider requestBuilderProvider,
-            ITransportProvider<TRequest, TResponse> transportProvider,
-            ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
-            IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
-            IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
-            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
-            IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
-            IResponseCacheProvider? responseCacheProvider,
-            IResponseCacheProvider? transportResponseCacheProvider,
-            TimeSpan? timeout = null,
-            ILogger<TClient>? logger = null);
+        IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext);
     }
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
@@ -52,77 +33,71 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITimeoutSelector _timeoutSelector;
         private readonly IGuidProvider _guidProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
-        private readonly IAttributeMapper _attributeMapper;
-        private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
+        private readonly IMethodBuilder _methodBuilder;
 
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
-            _clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
+            var attributeMapper = new AttributeMapper();
+            
             _clientRequestExceptionFactory = new ClientRequestExceptionFactory();
             _proxyGenerator = proxyGenerator;
-            _timeoutSelector = new TimeoutSelector(_clientValidationExceptionFactory);
+            _timeoutSelector = new TimeoutSelector(clientValidationExceptionFactory);
             _guidProvider = new GuidProvider();
-            _attributeMapper = new AttributeMapper();
+            
+            _methodBuilder = new MethodBuilder(
+                new OperationAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new MetadataAttributeProvider(clientValidationExceptionFactory),
+                new TimeoutAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
         }
 
-        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(
-            Uri host,
-            ISerializerProvider serializerProvider,
-            IRequestBuilderProvider requestBuilderProvider,
-            ITransportProvider<TRequest, TResponse> transportProvider,
-            ITransportRequestBuilderProvider<TRequest, TResponse> transportRequestBuilderProvider,
-            IResponseBuilderProvider<TRequest, TResponse> responseBuilderProvider,
-            IReadOnlyCollection<IClientHandlerProvider<TRequest, TResponse>> clientHandlerProviders,
-            IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IEnumerable<IResponseMapperProvider<IRequest, IResponse>> responseMapperProviders,
-            IEnumerable<IResponseMapperProvider<TRequest, TResponse>> transportResponseMapperProviders,
-            IEnumerable<IResponseValidatorProvider<TRequest, TResponse>> responseValidatorProviders,
-            IResponseCacheProvider? responseCacheProvider,
-            IResponseCacheProvider? transportResponseCacheProvider,
-            TimeSpan? timeout,
-            ILogger<TClient>? logger = null)
+        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext)
         {
-            var methodBuilder = new MethodBuilder(
-                new OperationAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
-                new UseVersionAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
-                new PathAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
-                new MetadataAttributeProvider(_clientValidationExceptionFactory),
-                new TimeoutAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
-                new CachingAttributeProvider(_attributeMapper, _clientValidationExceptionFactory),
-                new MethodParamBuilder(new ParamAttributeProvider(_attributeMapper, _clientValidationExceptionFactory)));
-            
-            var serializer = serializerProvider.Create(logger);
+            var logger = new CompositeLogger<TClient>(builderContext.LoggerFactory is not null
+                ? builderContext.Loggers.Concat(new[] { builderContext.LoggerFactory.CreateLogger<TClient>() })
+                : builderContext.Loggers);
+
+            // TODO: Should be initialized in every request.
+            var serializer = builderContext.SerializerProvider.Create(logger);
             var toolset = new Toolset(serializer, logger);
+
+            var resiliencePolicyProvider = new StubResiliencePolicyProvider<TRequest, TResponse>();
+            var authorizationProvider = new CompositeAuthorizationProvider(builderContext.AuthorizationProviders);
+            var clientHandlerProvider = new CompositeClientHandlerProvider<TRequest, TResponse>(builderContext.ClientHandlerProviders);
+            var responseMapperProvider = new CompositeResponseMapperProvider<IRequest, IResponse>(builderContext.ResponseMapperProviders);
+            var transportResponseMapperProvider = new CompositeResponseMapperProvider<TRequest, TResponse>(builderContext.TransportResponseMapperProviders);
+            var compositeResponseValidatorProvider = new CompositeResponseValidatorProvider<TRequest, TResponse>(builderContext.ResponseValidatorProviders);
+            var methodResiliencePolicyProviderAdapter = new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
+                new StubResiliencePolicyProvider<TRequest, TResponse>(),
+                builderContext.MethodsWithResiliencePolicy.Reverse());
+            var cachingAttributeProvider = new CachingAttributeProvider(builderContext.CacheProvider);
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                host,
+                builderContext.Host,
                 _timeoutSelector,
                 _guidProvider,
-                methodBuilder,
+                _methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
-                requestBuilderProvider.Create(toolset),
+                authorizationProvider,
+                builderContext.RequestBuilderProvider,
                 new TransportNClientFactory<TRequest, TResponse>(
-                    transportProvider,
-                    transportRequestBuilderProvider,
-                    responseBuilderProvider,
-                    new ClientHandlerProviderDecorator<TRequest, TResponse>(clientHandlerProviders),
-                    new StubResiliencePolicyProvider<TRequest, TResponse>(),
-                    responseMapperProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
-                        .ToArray(),
-                    transportResponseMapperProviders
-                        .OrderByDescending(x => x is IOrderedResponseMapperProvider<TRequest, TResponse>)
-                        .ThenBy(x => (x as IOrderedResponseMapperProvider<TRequest, TResponse>)?.Order)
-                        .ToArray(),
-                    new ResponseValidatorProviderDecorator<TRequest, TResponse>(responseValidatorProviders),
-                    transportResponseCacheProvider,
+                    builderContext.TransportProvider,
+                    builderContext.TransportRequestBuilderProvider,
+                    builderContext.ResponseBuilderProvider,
+                    clientHandlerProvider,
+                    resiliencePolicyProvider,
+                    responseMapperProvider,
+                    transportResponseMapperProvider,
+                    compositeResponseValidatorProvider,
+                    cachingAttributeProvider,
                     toolset),
-                methodResiliencePolicyProvider,
+                methodResiliencePolicyProviderAdapter,
                 _clientRequestExceptionFactory,
-                responseCacheProvider?.Create(toolset),
-                timeout,
+                builderContext.Timeout,
                 toolset);
         }
     }

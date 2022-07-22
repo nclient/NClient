@@ -16,7 +16,7 @@ namespace NClient.Providers.Transport
     }
     
     /// <summary>The container for response data.</summary>
-    public interface IResponse
+    public interface IResponse : IDisposable
     {
         /// <summary>The request that the response belongs to.</summary>
         IRequest Request { get; }

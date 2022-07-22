@@ -23,7 +23,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
         private readonly IOperationAttributeProvider _operationAttributeProvider;
         private readonly IUseVersionAttributeProvider _useVersionAttributeProvider;
         private readonly IPathAttributeProvider _pathAttributeProvider;
-        private readonly IHeaderAttributeProvider _headerAttributeProvider;
+        private readonly IMetadataAttributeProvider _metadataAttributeProvider;
         private readonly ITimeoutAttributeProvider _timeoutAttributeProvider;
         private readonly ICachingAttributeProvider _cachingAttributeProvider;
         private readonly IMethodParamBuilder _methodParamBuilder;
@@ -32,7 +32,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             IOperationAttributeProvider operationAttributeProvider,
             IUseVersionAttributeProvider useVersionAttributeProvider,
             IPathAttributeProvider pathAttributeProvider,
-            IHeaderAttributeProvider headerAttributeProvider,
+            IMetadataAttributeProvider metadataAttributeProvider,
             ITimeoutAttributeProvider timeoutAttributeProvider,
             ICachingAttributeProvider cachingAttributeProvider,
             IMethodParamBuilder methodParamBuilder)
@@ -41,7 +41,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             _operationAttributeProvider = operationAttributeProvider;
             _useVersionAttributeProvider = useVersionAttributeProvider;
             _pathAttributeProvider = pathAttributeProvider;
-            _headerAttributeProvider = headerAttributeProvider;
+            _metadataAttributeProvider = metadataAttributeProvider;
             _timeoutAttributeProvider = timeoutAttributeProvider;
             _cachingAttributeProvider = cachingAttributeProvider;
             _methodParamBuilder = methodParamBuilder;
@@ -78,7 +78,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
-                MetadataAttributes = _headerAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams),
+                MetadataAttributes = _metadataAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams),
                 TimeoutAttribute = _timeoutAttributeProvider.Find(clientType, methodInfo, overridingMethods),
                 CachingAttribute = _cachingAttributeProvider.Find(clientType, methodInfo, overridingMethods)
             };

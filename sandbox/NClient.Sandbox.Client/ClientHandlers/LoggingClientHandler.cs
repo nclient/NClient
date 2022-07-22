@@ -20,10 +20,11 @@ namespace NClient.Sandbox.Client.ClientHandlers
             return Task.FromResult(request);
         }
 
-        public Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+        public async Task<HttpResponseMessage> HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("The response with the body is received: {httpRequestContent}", response.Content);
-            return Task.FromResult(response);
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            _logger.LogDebug("The response with the body is received: {ResponseContent}", responseContent);
+            return response;
         }
     }
 }

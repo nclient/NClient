@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NClient.Providers.Authorization;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api
@@ -11,8 +12,9 @@ namespace NClient.Providers.Api
         /// <summary>Builds NClient request.</summary>
         /// <param name="requestId">The unique identifier of the request.</param>
         /// <param name="host">The address of the requested resource.</param>
+        /// <param name="authorization">The authentication object for retrieving tokens for client authentication.</param>
         /// <param name="methodInvocation">The information about the invocation of the client's method.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        Task<IRequest> BuildAsync(Guid requestId, Uri host, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
+        Task<IRequest> BuildAsync(Guid requestId, Uri host, IAuthorization authorization, IMethodInvocation methodInvocation, CancellationToken cancellationToken);
     }
 }

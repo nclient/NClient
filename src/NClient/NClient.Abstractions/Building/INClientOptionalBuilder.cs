@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using NClient.Providers.Authorization;
 using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
@@ -16,6 +17,17 @@ namespace NClient
     /// <typeparam name="TResponse">The type of response that is used in the transport implementation.</typeparam>
     public interface INClientOptionalBuilder<TClient, TRequest, TResponse> where TClient : class
     {
+        #region Authorization
+
+        /// <summary>Sets access tokens for authorization.</summary>
+        /// <param name="accessTokens">The access tokens for client authorization.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens);
+
+        /// <summary>Removes authorization tokens.</summary>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutAuthorization();
+        
+        #endregion
+        
         #region Serializer
         
         /// <summary>Sets custom <see cref="ISerializerProvider"/> used to create instances of <see cref="ISerializer"/>.</summary>

@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
+using NClient.Common.Helpers;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
 using NClient.Testing.Common.Entities;
@@ -53,7 +55,7 @@ namespace NClient.Providers.Serialization.SystemTextJson.Tests
             
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(new BasicEntity());
-            result.Content.Bytes.Should().NotBeEquivalentTo(camelCaseContentBytes);
+            result.Content.Stream.ReadToEndAsync(Encoding.UTF8).Should().NotBeEquivalentTo(camelCaseContentBytes);
         }
 
         #if NET6_0_OR_GREATER
@@ -91,7 +93,7 @@ namespace NClient.Providers.Serialization.SystemTextJson.Tests
 
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(new BasicEntity());
-            result.Content.Bytes.Should().NotBeEquivalentTo(camelCaseContentBytes);
+            result.Content.Stream.ReadToEndAsync(Encoding.UTF8).Should().NotBeEquivalentTo(camelCaseContentBytes);
         }
         #endif
     }

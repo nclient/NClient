@@ -9,7 +9,7 @@ namespace NClient.Providers.Mapping.HttpResponses
         /// <param name="toolset">Tools that help implement providers.</param>
         public IResponseMapper<HttpRequestMessage, HttpResponseMessage> Create(IToolset toolset)
         {
-            return new ResponseToHttpResponseMapper();
+            return new ResponseToHttpResponseMapper(toolset);
         }
     }
 }
