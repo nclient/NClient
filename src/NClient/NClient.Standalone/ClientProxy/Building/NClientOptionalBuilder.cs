@@ -188,10 +188,10 @@ namespace NClient.Standalone.ClientProxy.Building
         public TClient Build()
         {
             _context.EnsureComplete();
-            new ClientValidator(_proxyGeneratorProvider.Value)
+            /*new ClientValidator(_proxyGeneratorProvider.Value)
                 .EnsureAsync<TClient>(_clientInterceptorFactory)
                 .GetAwaiter()
-                .GetResult();
+                .GetResult();*/
             
             var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);

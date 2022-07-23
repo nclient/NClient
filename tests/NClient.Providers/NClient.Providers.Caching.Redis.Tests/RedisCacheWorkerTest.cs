@@ -18,11 +18,6 @@ namespace NClient.Providers.Caching.Redis.Tests
         {
             const int id = 1;
             var entity = new BasicEntity { Id = 1, Value = 2 };
-            var jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            var camelCaseContentBytes = JsonSerializer.SerializeToUtf8Bytes(entity, jsonSerializerOptions);
             
             var dbMock = new Mock<IDatabaseAsync>();
             dbMock.Setup(x => x.StringGetAsync(It.IsAny<RedisKey>(), CommandFlags.None)).ReturnsAsync(It.IsAny<RedisValue>());
@@ -31,14 +26,13 @@ namespace NClient.Providers.Caching.Redis.Tests
             using var api = CachingApiMockFactory.MockGetAsyncMethod(id, entity);
             
             var result = NClientGallery.Clients.GetRest().For<ICachingStaticClientWithMetadata>(host: api.Urls.First())
-                .WithNewtonsoftJsonSerialization()
+                .WithSystemTextJsonSerialization()
                 .WithRedisCaching(dbMock.Object)
                 .Build()
                 .GetIResponse(id);
             
             result.IsSuccessful.Should().BeTrue();
             result.Data.Should().BeEquivalentTo(entity);
-            result.Content.Bytes.Should().NotBeEquivalentTo(camelCaseContentBytes);
 
             dbMock.Verify(mock => mock.StringSetAsync(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), It.IsAny<TimeSpan?>(), When.Always, CommandFlags.None), Times.Once());
         }

@@ -35,7 +35,7 @@ namespace NClient.Standalone.Client
             IResponseMapperProvider<IRequest, IResponse> responseMapperProvider,
             IResponseMapperProvider<TRequest, TResponse> transportResponseMapperProvider,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            IResponseCacheProvider? transportResponseCacheProvider,
+            //IResponseCacheProvider? transportResponseCacheProvider,
             IToolset toolset)
         {
             _transportProvider = transportProvider;
@@ -46,7 +46,7 @@ namespace NClient.Standalone.Client
             _responseMapperProvider = responseMapperProvider;
             _transportResponseMapperProvider = transportResponseMapperProvider;
             _responseValidatorProvider = responseValidatorProvider;
-            _transportResponseCacheProvider = transportResponseCacheProvider;
+            //_transportResponseCacheProvider = transportResponseCacheProvider;
             _toolset = toolset;
         }
 

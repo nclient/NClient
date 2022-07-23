@@ -51,6 +51,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new PathAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new MetadataAttributeProvider(clientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, clientValidationExceptionFactory),
+                new CachingAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
         }
 
@@ -70,11 +71,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             var responseMapperProvider = new CompositeResponseMapperProvider<IRequest, IResponse>(builderContext.ResponseMapperProviders);
             var transportResponseMapperProvider = new CompositeResponseMapperProvider<TRequest, TResponse>(builderContext.TransportResponseMapperProviders);
             var compositeResponseValidatorProvider = new CompositeResponseValidatorProvider<TRequest, TResponse>(builderContext.ResponseValidatorProviders);
+            var responseCacheWorker = builderContext.CacheProvider?.Create(toolset);
             var methodResiliencePolicyProviderAdapter = new MethodResiliencePolicyProviderAdapter<TRequest, TResponse>(
                 new StubResiliencePolicyProvider<TRequest, TResponse>(),
                 builderContext.MethodsWithResiliencePolicy.Reverse());
-            var cachingAttributeProvider = new CachingAttributeProvider(builderContext.CacheProvider);
-            
+
             return new ClientInterceptor<TClient, TRequest, TResponse>(
                 builderContext.Host,
                 _timeoutSelector,
@@ -93,10 +94,10 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     responseMapperProvider,
                     transportResponseMapperProvider,
                     compositeResponseValidatorProvider,
-                    cachingAttributeProvider,
                     toolset),
                 methodResiliencePolicyProviderAdapter,
                 _clientRequestExceptionFactory,
+                responseCacheWorker,
                 builderContext.Timeout,
                 toolset);
         }

@@ -169,7 +169,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
         }
         
-        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, ICachingAttribute? cachingAttribute = default, CancellationToken cancellationToken)
+        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, ICachingAttribute? cachingAttribute = default, CancellationToken cancellationToken = default)
         {
             if (await _responseCacheWorker.TryGet(request, cancellationToken) is { } cachedResult)
             {
