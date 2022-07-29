@@ -72,12 +72,18 @@ namespace NClient.Models
         /// <param name="cancellationToken"></param>
         public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
         {
+            #if NETSTANDARD2_0 || NETFRAMEWORK
             return _stream.CopyToAsync(target);
+            #else
+            return _stream.CopyToAsync(target, cancellationToken);
+            #endif
         }
         
+        #pragma warning disable CS8644
         private class HeaderDictionary : Dictionary<string, StringValues>, IHeaderDictionary
         {
             public long? ContentLength { get; set; }
         }
+        #pragma warning restore CS8644
     }
 }
