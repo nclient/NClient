@@ -30,6 +30,15 @@ namespace NClient.Providers.Transport
         {
             return _metadatas[name];
         }
+        
+        /// <summary>Returns metadata by name.</summary>
+        /// <param name="name">The metadata name.</param>
+        public IEnumerable<IMetadata> GetValueOrDefault(string name)
+        {
+            return _metadatas.TryGetValue(name, out var result) 
+                ? result 
+                : Array.Empty<IMetadata>();
+        }
 
         /// <summary>Adds metadata to the collection.</summary>
         /// <param name="metadata">The metadata.</param>

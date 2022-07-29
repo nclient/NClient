@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
+using NClient.Models;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -120,11 +125,7 @@ namespace NClient.Standalone.Client
             if (!_responseValidator.IsSuccess(transportResponseContext))
                 await _responseValidator.OnFailureAsync(transportResponseContext).ConfigureAwait(false);
             
-            var stringContent = await responseContext.Response.Content.Stream
-                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
-                .ConfigureAwait(false);
-            
-            return _serializer.Deserialize(stringContent, dataType);
+            return await TryGetDataObject(dataType, response.Content, cancellationToken).ConfigureAwait(false);
         }
         
         public async Task<IResponse> GetResponseAsync(IRequest request, 
@@ -158,11 +159,10 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             LogResponse(response);
 
-            var stringContent = await response.Content.Stream
-                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
-                .ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+                return BuildResponseWithData(data: null, dataType, response);
 
-            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
+            var dataObject = await TryGetDataObject(dataType, response.Content, cancellationToken).ConfigureAwait(false);
             return BuildResponseWithData(dataObject, dataType, response);
         }
         
@@ -180,11 +180,10 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             LogResponse(response);
 
-            var stringContent = await response.Content.Stream
-                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
-                .ConfigureAwait(false);
+            if (_responseValidator.IsSuccess(transportResponseContext))
+                return BuildResponseWithError(error: null, errorType, response);
             
-            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
+            var errorObject = await TryGetErrorObject(errorType, response.Content, cancellationToken).ConfigureAwait(false);
             return BuildResponseWithError(errorObject, errorType, response);
         }
         
@@ -202,13 +201,14 @@ namespace NClient.Standalone.Client
                 .ConfigureAwait(false);
             LogResponse(response);
 
-            var stringContent = await response.Content.Stream
-                .ReadToEndAsync(response.Content.Encoding, cancellationToken)
-                .ConfigureAwait(false);
+            if (!_responseValidator.IsSuccess(transportResponseContext))
+            {
+                var errorObject = await TryGetErrorObject(errorType, response.Content, cancellationToken).ConfigureAwait(false);
+                return BuildResponseWithDataOrError(data: null, dataType, errorObject, errorType, response);
+            }
             
-            var dataObject = TryGetDataObject(dataType, stringContent, transportResponseContext);
-            var errorObject = TryGetErrorObject(errorType, stringContent, transportResponseContext);
-            return BuildResponseWithDataOrError(dataObject, dataType, errorObject, errorType, response);
+            var dataObject = await TryGetDataObject(dataType, response.Content, cancellationToken).ConfigureAwait(false);
+            return BuildResponseWithDataOrError(dataObject, dataType, error: null, errorType, response);
         }
 
         private async Task<IResponseContext<TRequest, TResponse>> ExecuteAsync(IRequest request, 
@@ -254,18 +254,90 @@ namespace NClient.Standalone.Client
             return new ResponseContext<TRequest, TResponse>(transportRequest, transportResponse);
         }
 
-        private object? TryGetDataObject(Type dataType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private async Task<object?> TryGetDataObject(Type dataType, IContent content, CancellationToken cancellationToken)
         {
-            return _responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(data, dataType)
-                : null;
+            if (dataType.IsAssignableFrom(typeof(Stream)))
+                return content.Stream;
+            
+            if (dataType == typeof(IStreamContent) || dataType == typeof(StreamContent))
+            {
+                var contentTypeString = content.Metadatas.GetValueOrDefault("Content-Type").FirstOrDefault()?.Value
+                    ?? "application/octet-stream";
+                var contentDispositionString = content.Metadatas.GetValueOrDefault("Content-Disposition").FirstOrDefault()?.Value
+                    ?? "attachment";
+                var contentDisposition = new ContentDisposition(contentDispositionString);
+                
+                return new StreamContent(
+                    content.Stream, 
+                    content.Encoding, 
+                    contentTypeString,
+                    contentDisposition.FileName);
+            }
+
+            if (dataType == typeof(IFormFile) || dataType == typeof(HttpFileContent))
+            {
+                var contentTypeString = content.Metadatas.GetValueOrDefault("Content-Type").FirstOrDefault()?.Value
+                    ?? "application/octet-stream";
+                var contentDispositionString = content.Metadatas.GetValueOrDefault("Content-Disposition").FirstOrDefault()?.Value
+                    ?? "attachment";
+                var contentDisposition = new ContentDisposition(contentDispositionString);
+                
+                return new HttpFileContent(
+                    content.Stream,
+                    name: contentDisposition.FileName,
+                    fileName: contentDisposition.FileName, 
+                    contentType: contentTypeString,
+                    contentDisposition: contentDispositionString);   
+            }
+            
+            var stringContent = await content.Stream
+                .ReadToEndAsync(content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
+            
+            return _serializer.Deserialize(stringContent, dataType);
         }
 
-        private object? TryGetErrorObject(Type errorType, string data, IResponseContext<TRequest, TResponse> transportResponseContext)
+        private async Task<object?> TryGetErrorObject(Type errorType, IContent content, CancellationToken cancellationToken)
         {
-            return !_responseValidator.IsSuccess(transportResponseContext)
-                ? _serializer.Deserialize(data, errorType)
-                : null;
+            if (errorType.IsAssignableFrom(typeof(Stream)))
+                return content.Stream;
+
+            if (errorType == typeof(IStreamContent) || errorType == typeof(StreamContent))
+            {
+                var contentTypeString = content.Metadatas.GetValueOrDefault("Content-Type").FirstOrDefault()?.Value
+                    ?? "application/octet-stream";
+                var contentDispositionString = content.Metadatas.GetValueOrDefault("Content-Disposition").FirstOrDefault()?.Value
+                    ?? "attachment";
+                var contentDisposition = new ContentDisposition(contentDispositionString);
+                
+                return new StreamContent(
+                    content.Stream, 
+                    content.Encoding, 
+                    contentTypeString,
+                    contentDisposition.FileName);
+            }
+
+            if (errorType == typeof(IFormFile) || errorType == typeof(HttpFileContent))
+            {
+                var contentTypeString = content.Metadatas.GetValueOrDefault("Content-Type").FirstOrDefault()?.Value
+                    ?? "application/octet-stream";
+                var contentDispositionString = content.Metadatas.GetValueOrDefault("Content-Disposition").FirstOrDefault()?.Value
+                    ?? "attachment";
+                var contentDisposition = new ContentDisposition(contentDispositionString);
+                
+                return new HttpFileContent(
+                    content.Stream,
+                    name: contentDisposition.FileName,
+                    fileName: contentDisposition.FileName, 
+                    contentType: contentTypeString,
+                    contentDisposition: contentDispositionString);   
+            }
+
+            var stringContent = await content.Stream    
+                .ReadToEndAsync(content.Encoding, cancellationToken)
+                .ConfigureAwait(false);
+            
+            return _serializer.Deserialize(stringContent, errorType);
         }
         
         private static IResponse BuildResponseWithData(object? data, Type dataType, IResponse response)
