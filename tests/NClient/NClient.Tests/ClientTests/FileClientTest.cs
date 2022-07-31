@@ -21,8 +21,8 @@ namespace NClient.Tests.ClientTests
         private const string DefaultName = "filename";
         private const string DefaultFileName = "filename.txt";
         private const string DefaultContentType = "application/octet-stream";
-        private static readonly Encoding DefaultEncoding = Encoding.UTF8;
-        private static readonly string DefaultContentDisposition = $"attachment; name=\"{DefaultName}\"; filename=\"{DefaultFileName}\"";
+        private static readonly Encoding DefaultEncoding = Encoding.UTF32;
+        private static readonly string DefaultContentDisposition = $"attachment; name={DefaultName}; filename={DefaultFileName}";
 
         [Test]
         public async Task GetStreamAsync_WithText_ShouldReturnStream()
@@ -51,7 +51,7 @@ namespace NClient.Tests.ClientTests
             using var assertionScope = new AssertionScope();
             result.Should().NotBeNull();
             result.Value.Should().BeReadable();
-            result.Name.Should().Be(DefaultFileName);
+            result.Name.Should().Be(DefaultName);
             result.Encoding.Should().Be(DefaultEncoding);
             result.ContentType.Should().Be(DefaultContentType);
             (await result.Value.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
@@ -68,7 +68,7 @@ namespace NClient.Tests.ClientTests
 
             using var assertionScope = new AssertionScope();
             result.Should().NotBeNull();
-            result.Name.Should().Be(DefaultFileName);
+            result.Name.Should().Be(DefaultName);
             result.FileName.Should().Be(DefaultFileName);
             result.ContentType.Should().Be(DefaultContentType);
             result.ContentDisposition.Should().Be(DefaultContentDisposition);
@@ -109,7 +109,7 @@ namespace NClient.Tests.ClientTests
             result.IsSuccessful.Should().BeTrue();
             result.StatusCode.Should().Be(StatusCodes.Status200OK);
             result.Data.Should().NotBeNull();
-            result.Data!.Name.Should().Be(DefaultFileName);
+            result.Data!.Name.Should().Be(DefaultName);
             result.Data.ContentType.Should().Be(DefaultContentType);
             result.Data.Value.Should().BeReadable();
             (await result.Data!.Value.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
@@ -129,7 +129,7 @@ namespace NClient.Tests.ClientTests
             result.IsSuccessful.Should().BeTrue();
             result.StatusCode.Should().Be(StatusCodes.Status200OK);
             result.Data.Should().NotBeNull();
-            result.Data!.Name.Should().Be(DefaultFileName);
+            result.Data!.Name.Should().Be(DefaultName);
             result.Data.FileName.Should().Be(DefaultFileName);
             result.Data.ContentType.Should().Be(DefaultContentType);
             result.Data.ContentDisposition.Should().Be(DefaultContentDisposition);

@@ -18,6 +18,17 @@ namespace NClient
         {
             return optionalBuilder.WithResponseMapping(extraMappers.Concat(new[] { mapper }));
         }
+        
+        /// <summary>Sets the mappers that convert NClient responses into custom results.</summary>
+        /// <param name="optionalBuilder"></param>
+        /// <param name="mapper">The mapper that converts transport responses into custom results.</param>
+        /// <param name="extraMappers">The additional mappers that will also be set.</param>
+        public static INClientFactoryOptionalBuilder<TRequest, TResponse> WithResponseMapping<TRequest, TResponse>(
+            this INClientFactoryOptionalBuilder<TRequest, TResponse> optionalBuilder,
+            IResponseMapper<TRequest, TResponse> mapper, params IResponseMapper<TRequest, TResponse>[] extraMappers)
+        {
+            return optionalBuilder.WithResponseMapping(extraMappers.Concat(new[] { mapper }));
+        }
 
         /// <summary>Sets the mappers that convert NClient responses into custom results.</summary>
         /// <param name="responseMappingSetter"></param>

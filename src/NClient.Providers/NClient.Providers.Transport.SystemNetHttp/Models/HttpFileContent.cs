@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
@@ -85,12 +83,5 @@ namespace NClient.Models
             return _stream.CopyToAsync(target, cancellationToken);
             #endif
         }
-        
-        #pragma warning disable CS8644
-        private class HeaderDictionary : Dictionary<string, StringValues>, IHeaderDictionary
-        {
-            public long? ContentLength { get; set; }
-        }
-        #pragma warning restore CS8644
     }
 }

@@ -4,7 +4,6 @@ using System.Text;
 using NClient.Common.Helpers;
 using NClient.Providers.Transport;
 
-// ReSharper disable once CheckNamespace
 namespace NClient.Models
 {
     /// <summary>Represents a stream content uploaded/downloaded with a request.</summary>
