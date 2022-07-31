@@ -115,11 +115,14 @@ namespace NClient.Providers.Api.Rest
                 .ToArray();
             if (bodyParams.Length > 1)
                 throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
-            if (bodyParams.Length == 1)
-            {
-                var bodyParam = bodyParams.SingleOrDefault()?.Value;
+            if (bodyParams.Length == 0)
+                return request;
+            
+            var bodyParam = bodyParams.SingleOrDefault()?.Value;
 
-                if (bodyParam is IStreamContent streamContent)
+            switch (bodyParam)
+            {
+                case IStreamContent streamContent:
                 {
                     var metadata = new MetadataContainer
                     {
@@ -129,8 +132,9 @@ namespace NClient.Providers.Api.Rest
                     };
                     
                     request.Content = new Content(streamContent.Value, streamContent.Encoding.WebName, metadata);
+                    break;
                 }
-                else if (bodyParam is IFormFile formFile)
+                case IFormFile formFile:
                 {
                     var formFileHeaders = formFile.Headers
                         .SelectMany(header => header.Value
@@ -143,8 +147,9 @@ namespace NClient.Providers.Api.Rest
                     };
                     
                     request.Content = new Content(formFile.OpenReadStream(), encoding: null, metadata);
+                    break;
                 }
-                else
+                default:
                 {
                     var bodyJson = _toolset.Serializer.Serialize(bodyParam);
                     var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
@@ -156,6 +161,7 @@ namespace NClient.Providers.Api.Rest
                     };
                     
                     request.Content = new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, metadata);
+                    break;
                 }
             }
 
