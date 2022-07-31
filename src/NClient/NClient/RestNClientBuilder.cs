@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NClient.Common.Helpers;
+using NClient.Providers.Transport.SystemNetHttp.Mapping;
 
 namespace NClient
 {
@@ -84,7 +85,9 @@ namespace NClient
                 .WithResponseValidation()
                 .WithResponseToHttpResponseMapping()
                 .WithResponseToStreamMapping()
-                .WithResponseToResultMapping();
+                .WithResponseToResultMapping()
+                .WithResponseMapping(new StreamContentResponseMapper())
+                .WithResponseMapping(new HttpFileContentResponseMapper());
 
             if (builderOptions is null)
                 return optionalBuilder;

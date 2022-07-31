@@ -15,6 +15,11 @@ namespace NClient.Providers.Transport
         {
         }
         
+        public MetadataContainer(IMetadataContainer metadataContainer) 
+            : this(metadataContainer.SelectMany(x => x.Value))
+        {
+        }
+        
         public MetadataContainer(IEnumerable<IMetadata> metadatas)
         {
             _metadatas = metadatas
@@ -29,6 +34,15 @@ namespace NClient.Providers.Transport
         public IEnumerable<IMetadata> Get(string name)
         {
             return _metadatas[name];
+        }
+        
+        /// <summary>Returns metadata by name.</summary>
+        /// <param name="name">The metadata name.</param>
+        public IEnumerable<IMetadata> GetValueOrDefault(string name)
+        {
+            return _metadatas.TryGetValue(name, out var result) 
+                ? result 
+                : Array.Empty<IMetadata>();
         }
 
         /// <summary>Adds metadata to the collection.</summary>

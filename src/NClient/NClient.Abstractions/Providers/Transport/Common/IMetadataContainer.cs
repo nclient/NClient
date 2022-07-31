@@ -10,6 +10,10 @@ namespace NClient.Providers.Transport
         /// <param name="name">The metadata name.</param>
         IEnumerable<IMetadata> Get(string name);
         
+        /// <summary>Returns metadata by name.</summary>
+        /// <param name="name">The metadata name.</param>
+        IEnumerable<IMetadata> GetValueOrDefault(string name);
+        
         /// <summary>Adds metadata to the collection.</summary>
         /// <param name="metadata">The metadata.</param>
         void Add(IMetadata metadata);
