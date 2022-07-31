@@ -124,7 +124,7 @@ namespace NClient.Providers.Api.Rest
             {
                 case IStreamContent streamContent:
                 {
-                    var metadata = new MetadataContainer
+                    var metadata = new MetadataContainer(streamContent.Metadatas)
                     {
                         new Metadata("Content-Encoding", streamContent.Encoding.WebName),
                         new Metadata("Content-Type", streamContent.ContentType),

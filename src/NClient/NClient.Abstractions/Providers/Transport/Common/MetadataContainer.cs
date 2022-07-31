@@ -15,6 +15,11 @@ namespace NClient.Providers.Transport
         {
         }
         
+        public MetadataContainer(IMetadataContainer metadataContainer) 
+            : this(metadataContainer.SelectMany(x => x.Value))
+        {
+        }
+        
         public MetadataContainer(IEnumerable<IMetadata> metadatas)
         {
             _metadatas = metadatas

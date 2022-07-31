@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using NClient.Providers.Transport;
 
 namespace NClient.Models
 {
@@ -17,5 +18,8 @@ namespace NClient.Models
         
         /// <summary>Gets the raw content type of the uploaded/downloaded content.</summary>
         string ContentType { get; }
+        
+        /// <summary>Gets the metadata collection of the uploaded/downloaded file. For HTTP transport, it will be mapped to headers.</summary>
+        public IMetadataContainer Metadatas { get; }
     }
 }
