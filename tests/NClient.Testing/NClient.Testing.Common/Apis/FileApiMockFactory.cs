@@ -12,7 +12,8 @@ namespace NClient.Testing.Common.Apis
             byte[] responseBytes, 
             Encoding encoding, 
             string contentType,
-            string contentDisposition)
+            string contentDisposition,
+            (string Key, string Value) header)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -23,6 +24,7 @@ namespace NClient.Testing.Common.Apis
                     .WithHeader("Content-Encoding", encoding.WebName)
                     .WithHeader("Content-Type", contentType)
                     .WithHeader("Content-Disposition", contentDisposition)
+                    .WithHeader(header.Key, header.Value)
                     .WithBody(responseBytes));
 
             return api;
@@ -32,7 +34,8 @@ namespace NClient.Testing.Common.Apis
             byte[] responseBytes, 
             Encoding encoding, 
             string contentType,
-            string contentDisposition)
+            string contentDisposition,
+            (string Key, string Value) header)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -43,12 +46,15 @@ namespace NClient.Testing.Common.Apis
                     .WithHeader("Content-Encoding", encoding.WebName)
                     .WithHeader("Content-Type", contentType)
                     .WithHeader("Content-Disposition", contentDisposition)
+                    .WithHeader(header.Key, header.Value)
                     .WithBody(responseBytes));
 
             return api;
         }
         
-        public static IWireMockServer MockPostMethod(byte[] requestBytes)
+        public static IWireMockServer MockPostMethod(
+            byte[] requestBytes,
+            (string Key, string Value) header)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -56,6 +62,7 @@ namespace NClient.Testing.Common.Apis
                     .WithBody(requestBytes)
                     .UsingPost())
                 .RespondWith(Response.Create()
+                    .WithHeader(header.Key, header.Value)
                     .WithStatusCode(200));
 
             return api;
