@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using NClient.Common.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace NClient.Models
@@ -46,6 +47,12 @@ namespace NClient.Models
             string contentDisposition,
             IHeaderDictionary? headerDictionary = null)
         {
+            Ensure.IsNotNull(stream, nameof(stream));
+            Ensure.IsNotNullOrEmpty(name, nameof(name));
+            Ensure.IsNotNullOrEmpty(fileName, nameof(fileName));
+            Ensure.IsNotNullOrEmpty(contentType, nameof(contentType));
+            Ensure.IsNotNullOrEmpty(contentDisposition, nameof(contentDisposition));
+            
             Name = name;
             FileName = fileName;
             ContentType = contentType;
