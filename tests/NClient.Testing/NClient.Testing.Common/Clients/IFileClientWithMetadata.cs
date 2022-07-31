@@ -29,6 +29,24 @@ namespace NClient.Testing.Common.Clients
         [GetMethod]
         new Task<IResponse<IFormFile>> GetResponseWithFormFileAsync();
         
+        [GetMethod]
+        new Task<IResponseWithError<Stream>> GetErrorResponseWithStreamAsync();
+        
+        [GetMethod]
+        new Task<IResponseWithError<IStreamContent>> GetErrorResponseWithStreamContentAsync();
+        
+        [GetMethod]
+        new Task<IResponseWithError<IFormFile>> GetErrorResponseWithFormFileAsync();
+        
+        [GetMethod]
+        new Task<IResponseWithError<Stream, Stream>> GetDataErrorResponseWithStreamAsync();
+        
+        [GetMethod]
+        new Task<IResponseWithError<IStreamContent, IStreamContent>> GetDataErrorResponseWithStreamContentAsync();
+        
+        [GetMethod]
+        new Task<IResponseWithError<IFormFile, IFormFile>> GetDataErrorResponseWithFormFileAsync();
+
         [PostMethod]
         new Task<IResponse> PostStreamContentAsync(IStreamContent streamContent);
         

@@ -24,6 +24,8 @@ namespace NClient.Tests.ClientTests
         private static readonly Encoding DefaultEncoding = Encoding.UTF32;
         private static readonly string DefaultContentDisposition = $"attachment; name={DefaultName}; filename={DefaultFileName}";
 
+        #region Get result
+        
         [Test]
         public async Task GetStreamAsync_WithText_ShouldReturnStream()
         {
@@ -77,6 +79,10 @@ namespace NClient.Tests.ClientTests
             (await resultStream.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
         }
         
+        #endregion
+
+        #region Get Response with data
+
         [Test]
         public async Task GetResponseWithStreamAsync_WithText_ShouldReturnStream()
         {
@@ -137,6 +143,207 @@ namespace NClient.Tests.ClientTests
             await result.Data!.CopyToAsync(resultStream);
             (await resultStream.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
         }
+        
+        #endregion
+
+        #region Get response with error
+
+        [Test]
+        public async Task GetErrorResponseWithStreamAsync_WithText_ShouldReturnStream()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetErrorResponseWithStreamAsync();
+            
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Error.Should().NotBeNull();
+            result.Error!.Should().BeReadable();
+            (await result.Error!.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetErrorResponseWithStreamContentAsync_WithText_ShouldReturnStreamContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetErrorResponseWithStreamContentAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Error.Should().NotBeNull();
+            result.Error!.Name.Should().Be(DefaultName);
+            result.Error.ContentType.Should().Be(DefaultContentType);
+            result.Error.Value.Should().BeReadable();
+            (await result.Error!.Value.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetErrorResponseWithHttpFileContentAsync_WithText_ShouldReturnHttpFileContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetErrorResponseWithFormFileAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Error.Should().NotBeNull();
+            result.Error!.Name.Should().Be(DefaultName);
+            result.Error.FileName.Should().Be(DefaultFileName);
+            result.Error.ContentType.Should().Be(DefaultContentType);
+            result.Error.ContentDisposition.Should().Be(DefaultContentDisposition);
+            var resultStream = new MemoryStream();
+            await result.Error!.CopyToAsync(resultStream);
+            (await resultStream.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        #endregion
+
+        #region Get response with data or error
+        
+        [Test]
+        public async Task GetDataErrorResponseWithStreamAsync_WithText_ShouldReturnDataStream()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithStreamAsync();
+            
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeTrue();
+            result.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Error.Should().BeNull();
+            result.Data.Should().NotBeNull();
+            result.Data!.Should().BeReadable();
+            (await result.Data!.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetDataErrorResponseWithStreamContentAsync_WithText_ShouldReturnDataStreamContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithStreamContentAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeTrue();
+            result.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Error.Should().BeNull();
+            result.Data.Should().NotBeNull();
+            result.Data!.Name.Should().Be(DefaultName);
+            result.Data.ContentType.Should().Be(DefaultContentType);
+            result.Data.Value.Should().BeReadable();
+            (await result.Data!.Value.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetDataErrorResponseWithHttpFileContentAsync_WithText_ShouldReturnDataHttpFileContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithFormFileAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeTrue();
+            result.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.Error.Should().BeNull();
+            result.Data.Should().NotBeNull();
+            result.Data!.Name.Should().Be(DefaultName);
+            result.Data.FileName.Should().Be(DefaultFileName);
+            result.Data.ContentType.Should().Be(DefaultContentType);
+            result.Data.ContentDisposition.Should().Be(DefaultContentDisposition);
+            var resultStream = new MemoryStream();
+            await result.Data!.CopyToAsync(resultStream);
+            (await resultStream.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+
+        [Test]
+        public async Task GetDataErrorResponseWithStreamAsync_WithText_ShouldReturnErrorStream()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithStreamAsync();
+            
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Data.Should().BeNull();
+            result.Error.Should().NotBeNull();
+            result.Error!.Should().BeReadable();
+            (await result.Error!.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetDataErrorResponseWithStreamContentAsync_WithText_ShouldReturnErrorStreamContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithStreamContentAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Data.Should().BeNull();
+            result.Error.Should().NotBeNull();
+            result.Error!.Name.Should().Be(DefaultName);
+            result.Error.ContentType.Should().Be(DefaultContentType);
+            result.Error.Value.Should().BeReadable();
+            (await result.Error!.Value.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+        
+        [Test]
+        public async Task GetDataErrorResponseWithHttpFileContentAsync_WithText_ShouldReturnErrorHttpFileContent()
+        {
+            var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
+            using var api = FileApiMockFactory.MockFailureGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
+
+            var result = await NClientGallery.Clients.GetRest().For<IFileClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetDataErrorResponseWithFormFileAsync();
+
+            using var assertionScope = new AssertionScope();
+            result.Should().NotBeNull();
+            result.IsSuccessful.Should().BeFalse();
+            result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            result.Data.Should().BeNull();
+            result.Error.Should().NotBeNull();
+            result.Error!.Name.Should().Be(DefaultName);
+            result.Error.FileName.Should().Be(DefaultFileName);
+            result.Error.ContentType.Should().Be(DefaultContentType);
+            result.Error.ContentDisposition.Should().Be(DefaultContentDisposition);
+            var resultStream = new MemoryStream();
+            await result.Error!.CopyToAsync(resultStream);
+            (await resultStream.ReadToEndAsync(DefaultEncoding)).Should().Be(DefaultContent);
+        }
+
+        #endregion
+
+        #region Post
 
         [Test]
         public async Task PostStreamContentAsync_WithMemoryStream_ShouldReturnOk()
@@ -175,5 +382,7 @@ namespace NClient.Tests.ClientTests
             result.IsSuccessful.Should().BeTrue();
             result.StatusCode.Should().Be(StatusCodes.Status200OK);
         }
+        
+        #endregion
     }
 }
