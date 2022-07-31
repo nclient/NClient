@@ -40,7 +40,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task GetStreamContentAsync_WithText_ShouldReturnStream()
+        public async Task GetStreamContentAsync_WithText_ShouldReturnStreamContent()
         {
             var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
             using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
@@ -58,7 +58,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task GetFormFileAsync_WithText_ShouldReturnStream()
+        public async Task GetHttpFileContentAsync_WithText_ShouldReturnHttpFileContent()
         {
             var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
             using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
@@ -96,7 +96,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task GetResponseWithStreamContentAsync_WithText_ShouldReturnStream()
+        public async Task GetResponseWithStreamContentAsync_WithText_ShouldReturnStreamContent()
         {
             var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
             using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
@@ -116,7 +116,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task GetResponseWithFormFileAsync_WithText_ShouldReturnStream()
+        public async Task GetResponseWithHttpFileContentAsync_WithText_ShouldReturnHttpFileContent()
         {
             var responseBytes = DefaultEncoding.GetBytes(DefaultContent);
             using var api = FileApiMockFactory.MockGetMethod(responseBytes, DefaultEncoding, DefaultContentType, DefaultContentDisposition);
@@ -139,7 +139,7 @@ namespace NClient.Tests.ClientTests
         }
 
         [Test]
-        public async Task PostAsync_WithMemoryStream_ShouldReturnOk()
+        public async Task PostStreamContentAsync_WithMemoryStream_ShouldReturnOk()
         {
             var requestBytes = DefaultEncoding.GetBytes(DefaultContent);
             var streamContent = new StreamContent(
@@ -157,7 +157,7 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public async Task PostFormFileAsync_WithMemoryStream_ShouldReturnOk()
+        public async Task PostHttpFileContentAsync_WithMemoryStream_ShouldReturnOk()
         {
             var requestBytes = DefaultEncoding.GetBytes(DefaultContent);
             var fileContent = new HttpFileContent(
