@@ -1,4 +1,5 @@
-﻿using NClient.Providers;
+using NClient.Providers;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
@@ -22,6 +23,7 @@ namespace NClient.Standalone.Client
         private readonly IResponseMapperProvider<IRequest, IResponse> _responseMapperProvider;
         private readonly IResponseMapperProvider<TRequest, TResponse> _transportResponseMapperProvider;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
+        private readonly IResponseCacheProvider? _transportResponseCacheProvider;
         private readonly IToolset _toolset;
 
         public TransportNClientFactory(
@@ -33,6 +35,7 @@ namespace NClient.Standalone.Client
             IResponseMapperProvider<IRequest, IResponse> responseMapperProvider,
             IResponseMapperProvider<TRequest, TResponse> transportResponseMapperProvider,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
+            //IResponseCacheProvider? transportResponseCacheProvider,
             IToolset toolset)
         {
             _transportProvider = transportProvider;
@@ -43,6 +46,7 @@ namespace NClient.Standalone.Client
             _responseMapperProvider = responseMapperProvider;
             _transportResponseMapperProvider = transportResponseMapperProvider;
             _responseValidatorProvider = responseValidatorProvider;
+            //_transportResponseCacheProvider = transportResponseCacheProvider;
             _toolset = toolset;
         }
 
@@ -58,6 +62,7 @@ namespace NClient.Standalone.Client
                 _responseMapperProvider.Create(_toolset),
                 _transportResponseMapperProvider.Create(_toolset),
                 _responseValidatorProvider.Create(_toolset),
+                _transportResponseCacheProvider?.Create(_toolset),
                 _toolset.Logger);
         }
     }

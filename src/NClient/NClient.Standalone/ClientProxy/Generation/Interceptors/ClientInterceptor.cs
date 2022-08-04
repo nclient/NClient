@@ -5,10 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
+using NClient.Annotations;
 using NClient.Core.Helpers;
 using NClient.Exceptions;
 using NClient.Providers;
 using NClient.Providers.Api;
+using NClient.Providers.Caching;
 using NClient.Providers.Authorization;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
@@ -34,6 +36,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
+        private readonly IResponseCacheWorker? _responseCacheWorker;
         private readonly TimeSpan? _timeout;
         private readonly IToolset _toolset;
         
@@ -48,7 +51,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             IRequestBuilderProvider requestBuilderProvider,
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
-            IClientRequestExceptionFactory clientRequestExceptionFactory,
+            IClientRequestExceptionFactory clientRequestExceptionFactory, 
+            IResponseCacheWorker? responseCacheWorker,
             TimeSpan? timeout,
             IToolset toolset)
         {
@@ -63,6 +67,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
+            _responseCacheWorker = responseCacheWorker;
             _timeout = timeout;
             _toolset = toolset;
         }
@@ -128,8 +133,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, request, _toolset);
-                
-                var result = await ExecuteHttpResponseAsync(transportNClient, request, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
+
+                var result = await ExecuteHttpResponseAsync(transportNClient, request, resultType, resiliencePolicy, method.CachingAttribute, combinedCancellationToken).ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished");
                 return result;
             }
@@ -164,33 +169,59 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             }
         }
         
-        private static async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, CancellationToken cancellationToken)
+        private async Task<object?> ExecuteHttpResponseAsync(ITransportNClient<TRequest, TResponse> transportNClient, IRequest request, Type resultType, IResiliencePolicy<TRequest, TResponse>? resiliencePolicy, ICachingAttribute? cachingAttribute = default, CancellationToken cancellationToken = default)
         {
+            if (await _responseCacheWorker.TryGet(request, cancellationToken) is { } cachedResult)
+            {
+                _toolset.Logger?.LogDebug("Response received from cache. Request id: '{requestId}'.", request.Id);
+                return cachedResult;
+            }
+            
             if (resultType == typeof(TResponse))
                 return await transportNClient
                     .GetTransportResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-            
+
             if (resultType == typeof(IResponse))
-                return await transportNClient
+            {
+                var result = await transportNClient
                     .GetResponseAsync(request, resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-            
+                
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
+                return result;
+            }
+
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponse<>).GetGenericTypeDefinition())
-                return await transportNClient
+            {
+                var result = await transportNClient
                     .GetResponseWithDataAsync(request, dataType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-            
+                
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
+                return result;
+            }
+
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<>).GetGenericTypeDefinition())
-                return await transportNClient
+            {
+                var result = await transportNClient
                     .GetResponseWithErrorAsync(request, errorType: resultType.GetGenericArguments().Single(), resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-            
+                
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
+                return result;
+            }
+
             if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IResponseWithError<,>).GetGenericTypeDefinition())
-                return await transportNClient
+            {
+                var result = await transportNClient
                     .GetResponseWithDataOrErrorAsync(request, dataType: resultType.GetGenericArguments()[0], errorType: resultType.GetGenericArguments()[1], resiliencePolicy, cancellationToken)
                     .ConfigureAwait(false);
-            
+                
+                await _responseCacheWorker.Put(request, result, cachingAttribute, cancellationToken);
+                return result;
+            }
+
             if (resultType != typeof(void))
                 return await transportNClient
                     .GetResultAsync(request, resultType, resiliencePolicy, cancellationToken)
@@ -199,6 +230,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             await transportNClient
                 .GetResultAsync(request, resiliencePolicy, cancellationToken)
                 .ConfigureAwait(false);
+            
             return null;
         }
     }

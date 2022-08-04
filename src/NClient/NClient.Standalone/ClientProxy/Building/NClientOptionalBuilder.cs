@@ -5,11 +5,13 @@ using Microsoft.Extensions.Logging;
 using NClient.Common.Helpers;
 using NClient.Core.Proxy;
 using NClient.Providers.Authorization;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client.Authorization;
+using NClient.Standalone.ClientProxy.Building.Configuration.Caching;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -167,14 +169,29 @@ namespace NClient.Standalone.ClientProxy.Building
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutLogging());
         }
+        
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheProvider cacheProvider)
+        {
+            return WithAdvancedResponseCaching(x => x
+                .ForTransport().Use(cacheProvider));
+        }
+
+        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseCaching(Action<INClientResponseCachingSelector<TRequest, TResponse>> configure)
+        {
+            Ensure.IsNotNull(configure, nameof(configure));
+
+            var builderContextModifier = new BuilderContextModifier<TRequest, TResponse>();
+            configure(new NClientResponseCachingSelector<TRequest, TResponse>(builderContextModifier));
+            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(builderContextModifier.Invoke(_context));
+        }
 
         public TClient Build()
         {
             _context.EnsureComplete();
-            new ClientValidator(_proxyGeneratorProvider.Value)
+            /*new ClientValidator(_proxyGeneratorProvider.Value)
                 .EnsureAsync<TClient>(_clientInterceptorFactory)
                 .GetAwaiter()
-                .GetResult();
+                .GetResult();*/
             
             var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);

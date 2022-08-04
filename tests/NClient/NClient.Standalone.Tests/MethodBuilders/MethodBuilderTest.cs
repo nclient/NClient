@@ -31,6 +31,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var useVersionAttribute = (UseVersionAttribute) null!;
             var pathAttribute = (PathAttribute) null!;
             var timeoutAttribute = (TimeoutAttribute) null!;
+            var cachingAttribute = (CachingAttribute) null!;
             var headerAttributes = Array.Empty<HeaderAttribute>();
             var methodParams = Array.Empty<IMethodParam>();
             var methodAttributeProviderMock = new Mock<IOperationAttributeProvider>();
@@ -45,6 +46,9 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var timeoutAttributeProviderMock = new Mock<ITimeoutAttributeProvider>();
             timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(timeoutAttribute);
+            var cachingAttributeProviderMock = new Mock<ICachingAttributeProvider>();
+            cachingAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
+                .Returns(cachingAttribute);
             var headerAttributeProviderMock = new Mock<IMetadataAttributeProvider>();
             headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))
                 .Returns(headerAttributes);
@@ -57,6 +61,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
                 pathAttributeProviderMock.Object,
                 headerAttributeProviderMock.Object,
                 timeoutAttributeProviderMock.Object,
+                cachingAttributeProviderMock.Object,
                 methodParamBuilderMock.Object);
 
             var actualResult = methodBuilder.Build(clientType, methodInfo, returnType);

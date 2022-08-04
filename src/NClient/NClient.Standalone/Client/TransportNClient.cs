@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NClient.Providers.Caching;
 using NClient.Common.Helpers;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
@@ -36,6 +37,7 @@ namespace NClient.Standalone.Client
         private readonly IResponseMapper<TRequest, TResponse> _transportResponseMapper;
         private readonly IResponseMapper<IRequest, IResponse> _responseMapper;
         private readonly IResponseValidator<TRequest, TResponse> _responseValidator;
+        private readonly IResponseCacheWorker? _transportResponseCacheWorker;        
         private readonly ILogger _logger;
 
         public TimeSpan Timeout => _transport.Timeout;
@@ -49,7 +51,8 @@ namespace NClient.Standalone.Client
             IResiliencePolicy<TRequest, TResponse> resiliencePolicy,
             IResponseMapper<IRequest, IResponse> responseMapper,
             IResponseMapper<TRequest, TResponse> transportResponseMapper,
-            IResponseValidator<TRequest, TResponse> responseValidator,
+            IResponseValidator<TRequest, TResponse> responseValidator,            
+            IResponseCacheWorker? transportResponseCacheWorker,
             ILogger logger)
         {
             _serializer = serializer;
@@ -61,6 +64,7 @@ namespace NClient.Standalone.Client
             _responseMapper = responseMapper;
             _transportResponseMapper = transportResponseMapper;
             _responseValidator = responseValidator;
+            _transportResponseCacheWorker = transportResponseCacheWorker;
             _logger = logger;
         }
 

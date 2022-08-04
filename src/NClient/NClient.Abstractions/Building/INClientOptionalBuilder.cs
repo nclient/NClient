@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Authorization;
+using NClient.Providers.Caching;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
@@ -107,6 +108,17 @@ namespace NClient
         
         /// <summary>Removes logging of client actions.</summary>
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();
+        
+        #endregion
+        
+        #region Caching
+        
+        /// <summary>Sets cache workers that caching NClient responses into custom storage.</summary>
+        /// <param name="cacheProvider">The collection of cache workers that caching NClient responses into custom storage.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithResponseCaching(IResponseCacheProvider cacheProvider);
+
+        /// <summary>Sets advanced cache workers that caching NClient responses into custom storage.</summary>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithAdvancedResponseCaching(Action<INClientResponseCachingSelector<TRequest, TResponse>> configure);
         
         #endregion
 

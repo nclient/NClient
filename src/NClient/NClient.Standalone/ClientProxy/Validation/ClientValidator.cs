@@ -6,12 +6,14 @@ using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
+using NClient.Standalone.Client.Caching;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
 using NClient.Standalone.ClientProxy.Validation.Authorization;
+using NClient.Standalone.ClientProxy.Validation.Caching;
 using NClient.Standalone.ClientProxy.Validation.Handling;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
@@ -51,7 +53,9 @@ namespace NClient.Standalone.ClientProxy.Validation
                     new StubResiliencePolicyProvider<IRequest, IResponse>()))
                 .WithResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
                 .WithTransportResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
-                .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
+                .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() })
+                .WithResponseCachingProvider(new StubResponseCacheProvider())
+                .WithTransportCachingProvider(new StubResponseCacheProvider());
         }
 
         public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)

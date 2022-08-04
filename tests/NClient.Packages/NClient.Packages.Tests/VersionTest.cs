@@ -43,6 +43,10 @@ namespace NClient.Packages.Tests
         [Test]
         public void NClient_Providers_Mapping_HttpResponses() =>
             PackagesVersionProvider.GetCurrent("NClient.Providers.Mapping.HttpResponses").Should().Be(PackagesVersionProvider.GetNew());
+        
+        [Test]
+        public void NClient_Providers_Caching_Redis() =>
+            PackagesVersionProvider.GetCurrent("NClient.Providers.Caching.Redis").Should().Be(PackagesVersionProvider.GetNew());
 
         [Test]
         public void NClient_Providers_Mapping_LanguageExt() =>
