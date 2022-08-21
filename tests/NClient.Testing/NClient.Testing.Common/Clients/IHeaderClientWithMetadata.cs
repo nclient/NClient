@@ -24,5 +24,8 @@ namespace NClient.Testing.Common.Clients
         
         [GetMethod, Header("id1", "1"), Header("id2", "2")]
         new Task<int[]> GetWithMultipleStaticHeadersAsync();
+        
+        [GetMethod, Header("id1", "1"), Header("id2", "2")]
+        new Task<int[]> GetWithMultipleStaticAndParamHeadersAsync([HeaderParam] int id1, [HeaderParam] int id2);
     }
 }

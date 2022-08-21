@@ -15,5 +15,7 @@ namespace NClient.Testing.Common.Clients
         Task<int[]> GetWithMultipleStaticHeaderValuesAsync();
         
         Task<int[]> GetWithMultipleStaticHeadersAsync();
+        
+        Task<int[]> GetWithMultipleStaticAndParamHeadersAsync(int id1, int id2);
     }
 }

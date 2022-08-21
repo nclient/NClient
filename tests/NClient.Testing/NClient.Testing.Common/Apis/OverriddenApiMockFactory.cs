@@ -46,7 +46,8 @@ namespace NClient.Testing.Common.Apis
                     .WithPath("/api/overridden")
                     .WithHeader("Accept", "application/json")
                     .WithHeader("Content-Type", "application/json")
-                    .WithHeader("test", "2")
+                    // TODO: Why in single string?
+                    .WithHeader("test", "2, 1")
                     .WithBody(new JsonMatcher(entity))
                     .UsingPut())
                 .RespondWith(Response.Create()

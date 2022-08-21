@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Testing.Common.Apis;
@@ -85,6 +86,21 @@ namespace NClient.Tests.ClientTests
                 .GetWithMultipleStaticHeadersAsync();
             
             result.Should().BeEquivalentTo(new[] { id1, id2 });
+        }
+        [Test]
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public async Task GetWithMultipleStaticAndParamHeadersAsync_ShouldPassMultipleHeaders_ThenReturnIntArrayInBody()
+        {
+            const int id1_1 = 1;
+            const int id2_1 = 2;
+            const int id1_2 = 3;
+            const int id2_2 = 4;
+            using var api = HeaderApiMockFactory.MockGetMethodWithMultipleHeaders(id1_1, id2_1, id1_2, id2_2);
+
+            var result = await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
+                .GetWithMultipleStaticAndParamHeadersAsync(id1_2, id2_2);
+            
+            result.Should().BeEquivalentTo(new[] { id1_1, id2_1, id1_2, id2_2 });
         }
     }
 }
