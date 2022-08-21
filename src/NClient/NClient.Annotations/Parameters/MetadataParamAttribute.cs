@@ -7,5 +7,17 @@ namespace NClient.Annotations
     {
         /// <summary>Gets or sets parameter name.</summary>
         public string? Name { get; set; }
+
+        /// <summary>Initializes a new <see cref="MetadataParamAttribute"/>.</summary>
+        public MetadataParamAttribute()
+        {
+        }
+
+        /// <summary>Initializes a new <see cref="MetadataParamAttribute"/> with the given metadata parameter.</summary>
+        /// <param name="name">The metadata parameter name.</param>
+        public MetadataParamAttribute(string name)
+        {
+            Name = name;
+        }
     }
 }
