@@ -24,8 +24,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
     [Parallelizable]
     public class SystemNetHttpClientTest
     {
-        private static readonly Uri Host = new("http://localhost:5022");
-        private static readonly Uri Resource = new(Host, "api/method");
+        private const string Path = "/api/method";
         private static readonly Guid RequestId = Guid.Parse("55df3bb2-a254-4beb-87a8-70e18b74d995");
         private static readonly BasicEntity Data = new() { Id = 1, Value = 2 };
         private static readonly Mock<ILogger> LoggerMock = new();
@@ -44,13 +43,15 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         };
         
         [TestCaseSource(nameof(ValidTestCases))]
-        public async Task Test(IRequest request, IResponse expectedResponse, Lazy<IWireMockServer> serverFactory)
+        public async Task Test(Func<Uri, IRequest> requestFactory, Func<Uri, IResponse> expectedResponseFactory, Lazy<IWireMockServer> serverFactory)
         {
             using var server = serverFactory.Value;
             var toolset = new Toolset(Serializer, LoggerMock.Object);
             var transport = new SystemNetHttpTransportProvider().Create(toolset);
             var transportRequestBuilder = new SystemNetHttpTransportRequestBuilderProvider().Create(toolset);
             var responseBuilder = new SystemNetHttpResponseBuilderProvider().Create(toolset);
+            var request = requestFactory.Invoke(new Uri(server.Urls.First()));
+            var expectedResponse = expectedResponseFactory.Invoke(new Uri(server.Urls.First()));
 
             var httpRequestMessage = await transportRequestBuilder.BuildAsync(request, CancellationToken.None);
             var httpResponseMessage = await transport.ExecuteAsync(httpRequestMessage, CancellationToken.None);
@@ -71,42 +72,51 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         private static TestCaseData ExecutionHeadRequestTestCase()
         {
             const RequestType method = RequestType.Check;
-            var request = new Request(RequestId, Resource, method)
+            var requestFactory = new Func<Uri, IRequest>(uri =>
             {
-                Content = null
-            };
-            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
-            var finalRequest = new Request(RequestId, Resource, method)
-            {
-                Content = null
-            };
-            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
-            var response = new Response(finalRequest)
-            {
-                Content = new Content(headerContainer: new MetadataContainer(new[]
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var request = new Request(RequestId, resource, method)
                 {
-                    EmptyContentLengthMetadata
-                })),
-                StatusCode = (int) HttpStatusCode.OK,
-                StatusDescription = "OK",
-                Resource = Resource,
-                Metadatas = new MetadataContainer(new[]
+                    Content = null
+                };
+                request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+                return request;
+            });
+
+            var responseFactory = new Func<Uri, IResponse>(uri =>
+            {
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var finalRequest = new Request(RequestId, resource, method)
                 {
-                    ServerHeader
-                }),
-                ErrorMessage = null,
-                ErrorException = null,
-                ProtocolVersion = new Version(1, 1),
-                IsSuccessful = true
-            };
+                    Content = null
+                };
+                finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+
+                return new Response(finalRequest)
+                {
+                    Content = new Content(headerContainer: new MetadataContainer(new[]
+                    {
+                        EmptyContentLengthMetadata
+                    })),
+                    StatusCode = (int) HttpStatusCode.OK,
+                    StatusDescription = "OK",
+                    Resource = resource,
+                    Metadatas = new MetadataContainer(new[]
+                    {
+                        ServerHeader
+                    }),
+                    ErrorMessage = null,
+                    ErrorException = null,
+                    ProtocolVersion = new Version(1, 1),
+                    IsSuccessful = true
+                };
+            });
 
             var serverFactory = new Lazy<IWireMockServer>(() =>
             {
-                var server = WireMockServer.Start(Host.ToString());
+                var server = WireMockServer.Start();
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(Path)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingHead())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
@@ -115,53 +125,63 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory)
+            return new TestCaseData(requestFactory, responseFactory, serverFactory)
                 .SetName(nameof(ExecutionHeadRequestTestCase));
         }
         
         private static TestCaseData ExecutionGetRequestTestCase()
         {
             const RequestType method = RequestType.Read;
-            var request = new Request(RequestId, Resource, method)
-            {
-                Content = null
-            };
-            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
-            var finalRequest = new Request(RequestId, Resource, method)
-            {
-                Content = null
-            };
-            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
             var content = Serializer.Serialize(Data);
-            var bytes = Encoding.UTF8.GetBytes(content);
-            var response = new Response(finalRequest)
+            
+            var requestFactory = new Func<Uri, IRequest>(uri =>
             {
-                Content = new Content(new MemoryStream(bytes), ContentEncodingHeader.Value, new MetadataContainer(new[]
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var request = new Request(RequestId, resource, method)
                 {
-                    ContentTypeHeader,
-                    ContentEncodingHeader,
-                    new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
-                })),
-                StatusCode = (int) HttpStatusCode.OK,
-                StatusDescription = "OK",
-                Resource = Resource,
-                Metadatas = new MetadataContainer(new[]
+                    Content = null
+                };
+                request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+                return request;
+            });
+
+            var responseFactory = new Func<Uri, IResponse>(uri =>
+            {
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var finalRequest = new Request(RequestId, resource, method)
                 {
-                    ServerHeader
-                }),
-                ErrorMessage = null,
-                ErrorException = null,
-                ProtocolVersion = new Version(1, 1),
-                IsSuccessful = true
-            };
+                    Content = null
+                };
+                finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+                
+                var bytes = Encoding.UTF8.GetBytes(content);
+                return new Response(finalRequest)
+                {
+                    Content = new Content(new MemoryStream(bytes), ContentEncodingHeader.Value, new MetadataContainer(new[]
+                    {
+                        ContentTypeHeader,
+                        ContentEncodingHeader,
+                        new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
+                    })),
+                    StatusCode = (int) HttpStatusCode.OK,
+                    StatusDescription = "OK",
+                    Resource = resource,
+                    Metadatas = new MetadataContainer(new[]
+                    {
+                        ServerHeader
+                    }),
+                    ErrorMessage = null,
+                    ErrorException = null,
+                    ProtocolVersion = new Version(1, 1),
+                    IsSuccessful = true
+                };
+            });
 
             var serverFactory = new Lazy<IWireMockServer>(() =>
             {
-                var server = WireMockServer.Start(Host.ToString());
+                var server = WireMockServer.Start();
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(Path)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .UsingGet())
                     .RespondWith(WireMock.ResponseBuilders.Response.Create()
@@ -174,7 +194,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory)
+            return new TestCaseData(requestFactory, responseFactory, serverFactory)
                 .SetName(nameof(ExecutionGetRequestTestCase));
         }
         
@@ -182,59 +202,68 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
         {
             const RequestType method = RequestType.Create;
             var content = Serializer.Serialize(Data);
-            
-            var request = new Request(RequestId, Resource, method)
+
+            var requestFactory = new Func<Uri, IRequest>(uri =>
             {
-                Content = new Content(
-                    new MemoryStream(Encoding.UTF8.GetBytes(content)),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
-                    {
-                        new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
-                        new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
-                        new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
-                    }))
-            };
-            request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
-            var finalRequest = new Request(RequestId, Resource, method)
-            {
-                Content = new Content(
-                    new MemoryStream(Encoding.UTF8.GetBytes(content)),
-                    Encoding.UTF8.WebName,
-                    new MetadataContainer(new[]
-                    {
-                        new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
-                        new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
-                        new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
-                    }))
-            };
-            finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
-            
-            var response = new Response(finalRequest)
-            {
-                Content = new Content(headerContainer: new MetadataContainer(new[]
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var request = new Request(RequestId, resource, method)
                 {
-                    EmptyContentLengthMetadata
-                })),
-                StatusCode = (int) HttpStatusCode.OK,
-                StatusDescription = "OK",
-                Resource = Resource,
-                Metadatas = new MetadataContainer(new[]
+                    Content = new Content(
+                        new MemoryStream(Encoding.UTF8.GetBytes(content)),
+                        Encoding.UTF8.WebName,
+                        new MetadataContainer(new[]
+                        {
+                            new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
+                            new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
+                            new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
+                        }))
+                };
+                request.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+                return request;
+            });
+
+            var responseFactory = new Func<Uri, IResponse>(uri =>
+            {
+                var resource = new UriBuilder(uri) { Path = Path }.Uri;
+                var finalRequest = new Request(RequestId, resource, method)
                 {
-                    ServerHeader
-                }),
-                ErrorMessage = null,
-                ErrorException = null,
-                ProtocolVersion = new Version(1, 1),
-                IsSuccessful = true
-            };
+                    Content = new Content(
+                        new MemoryStream(Encoding.UTF8.GetBytes(content)),
+                        Encoding.UTF8.WebName,
+                        new MetadataContainer(new[]
+                        {
+                            new Metadata(ContentEncodingHeader.Name, Encoding.UTF8.WebName),
+                            new Metadata(ContentTypeHeader.Name, ContentTypeHeader.Value),
+                            new Metadata(EmptyContentLengthMetadata.Name, content.Length.ToString())
+                        }))
+                };
+                finalRequest.AddMetadata(AcceptHeader.Name, AcceptHeader.Value);
+
+                return new Response(finalRequest)
+                {
+                    Content = new Content(headerContainer: new MetadataContainer(new[]
+                    {
+                        EmptyContentLengthMetadata
+                    })),
+                    StatusCode = (int) HttpStatusCode.OK,
+                    StatusDescription = "OK",
+                    Resource = resource,
+                    Metadatas = new MetadataContainer(new[]
+                    {
+                        ServerHeader
+                    }),
+                    ErrorMessage = null,
+                    ErrorException = null,
+                    ProtocolVersion = new Version(1, 1),
+                    IsSuccessful = true
+                };
+            });
 
             var serverFactory = new Lazy<IWireMockServer>(() =>
             {
-                var server = WireMockServer.Start(Host.ToString());
+                var server = WireMockServer.Start();
                 server.Given(WireMock.RequestBuilders.Request.Create()
-                        .WithPath(Resource.PathAndQuery)
+                        .WithPath(Path)
                         .WithHeader(AcceptHeader.Name, AcceptHeader.Value)
                         .WithHeader(ContentTypeHeader.Name, ContentTypeHeader.Value)
                         .WithBody(new JsonMatcher(Data))
@@ -246,7 +275,7 @@ namespace NClient.Providers.Transport.SystemNetHttp.Tests
                 return server;
             });
 
-            return new TestCaseData(request, response, serverFactory)
+            return new TestCaseData(requestFactory, responseFactory, serverFactory)
                 .SetName(nameof(ExecutionPostRequestTestCase));
         }
     }
