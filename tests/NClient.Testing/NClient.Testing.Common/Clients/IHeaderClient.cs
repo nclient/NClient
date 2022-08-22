@@ -4,18 +4,18 @@ namespace NClient.Testing.Common.Clients
 {
     public interface IHeaderClient : INClient
     {
-        /// <summary>
-        /// Url: api/header
-        /// Body: empty
-        /// Headers: {id}
-        /// </summary>
-        Task<int> GetAsync(int id);
+        Task<int> GetWithSingleHeaderAsync(int id);
+        
+        Task<int[]> GetWithMultipleHeaderValuesAsync(int id1, int id2);
+        
+        Task<int[]> GetWithMultipleHeadersAsync(int id1, int id2);
 
-        /// <summary>
-        /// Url: api/header
-        /// Body: empty
-        /// Headers: {id}
-        /// </summary>
-        Task DeleteAsync(int id);
+        Task<int> GetWithSingleStaticHeaderAsync();
+        
+        Task<int[]> GetWithMultipleStaticHeaderValuesAsync();
+        
+        Task<int[]> GetWithMultipleStaticHeadersAsync();
+        
+        Task<int[]> GetWithMultipleStaticAndParamHeadersAsync(int id1, int id2);
     }
 }

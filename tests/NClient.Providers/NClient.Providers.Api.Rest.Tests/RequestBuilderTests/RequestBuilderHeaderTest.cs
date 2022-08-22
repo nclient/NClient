@@ -106,7 +106,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             await AssertHttpRequestAsync(httpRequest,
                 new Uri("http://localhost:5000/"),
                 RequestType.Read,
-                metadatas: new[] { new Metadata("id", "2") });
+                metadatas: new[] { new Metadata("id", "1"), new Metadata("id", "2") });
         }
 
         private interface IMethodHeader { [GetMethod, Header("id", "1")] int Get(); }
@@ -125,31 +125,29 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Header("id", "1")] private interface IDuplicateInClientAndParamHeaders { [GetMethod] int Get([HeaderParam] int id); }
 
         [Test]
-        public void Build_DuplicateInClientAndParamHeaders_ThrowClientValidationException()
+        public async Task Build_DuplicateInClientAndParamHeaders_ThrowClientValidationException()
         {
-            Func<IRequest> buildRequestFunc = () => BuildRequest(
+            var httpRequest = BuildRequest(
                 BuildMethod<IDuplicateInClientAndParamHeaders>(), 2);
 
-            buildRequestFunc
-                .Invoking(x => x.Invoke())
-                .Should()
-                .Throw<ClientValidationException>()
-                .WithMessage(ClientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader("id").Message);
+            await AssertHttpRequestAsync(httpRequest,
+                new Uri("http://localhost:5000/"),
+                RequestType.Read,
+                metadatas: new[] { new Metadata("id", "1"), new Metadata("id", "2") });
         }
 
         private interface IDuplicateInMethodAndParamHeaders { [GetMethod, Header("id", "1")] int Get([HeaderParam] int id); }
 
         [Test]
-        public void Build_DuplicateInMethodAndParamHeaders_ThrowClientValidationException()
+        public async Task Build_DuplicateInMethodAndParamHeaders_ThrowClientValidationException()
         {
-            Func<IRequest> buildRequestFunc = () => BuildRequest(
+            var httpRequest = BuildRequest(
                 BuildMethod<IDuplicateInMethodAndParamHeaders>(), 2);
 
-            buildRequestFunc
-                .Invoking(x => x.Invoke())
-                .Should()
-                .Throw<ClientValidationException>()
-                .WithMessage(ClientValidationExceptionFactory.HeaderParamDuplicatesStaticHeader("id").Message);
+            await AssertHttpRequestAsync(httpRequest,
+                new Uri("http://localhost:5000/"),
+                RequestType.Read,
+                metadatas: new[] { new Metadata("id", "1"), new Metadata("id", "2") });
         }
     }
 }
