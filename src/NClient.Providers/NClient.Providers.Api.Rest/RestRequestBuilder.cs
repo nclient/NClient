@@ -118,9 +118,9 @@ namespace NClient.Providers.Api.Rest
             if (bodyParams.Length == 0)
                 return request;
             
-            var bodyParam = bodyParams.SingleOrDefault()?.Value;
+            var bodyParam = bodyParams.SingleOrDefault();
 
-            switch (bodyParam)
+            switch (bodyParam?.Value)
             {
                 case IStreamContent streamContent:
                 {
@@ -149,9 +149,9 @@ namespace NClient.Providers.Api.Rest
                     request.Content = new Content(formFile.OpenReadStream(), encoding: null, metadata);
                     break;
                 }
-                default:
+                case { } customObject:
                 {
-                    var bodyJson = _toolset.Serializer.Serialize(bodyParam);
+                    var bodyJson = _toolset.Serializer.Serialize(customObject);
                     var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
                     var metadata = new MetadataContainer
                     {
