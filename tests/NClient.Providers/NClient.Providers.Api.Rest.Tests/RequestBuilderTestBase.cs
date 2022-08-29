@@ -15,6 +15,7 @@ using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
 using NClient.Core.Mappers;
 using NClient.Invocation;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
+using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
 using NClient.Providers.Serialization;
@@ -58,6 +59,7 @@ namespace NClient.Providers.Api.Rest.Tests
                 new RouteTemplateProvider(RestClientValidationExceptionFactory),
                 new RouteProvider(objectMemberManager, ClientArgumentExceptionFactory, RestClientValidationExceptionFactory),
                 new RequestTypeProvider(RestClientValidationExceptionFactory),
+                new FormUrlEncoder(),
                 new ObjectToKeyValueConverter(objectMemberManager, ObjectToKeyValueConverterExceptionFactory),
                 RestClientValidationExceptionFactory,
                 toolset);
