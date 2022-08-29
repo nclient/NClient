@@ -479,6 +479,36 @@ namespace NClient.AspNetCore.Tests.VirtualControllerGeneratorTests
             methodParamAttributes.Length.Should().Be(1);
             methodParamAttributes[0].Should().BeEquivalentTo(new FromQueryAttribute { Name = "myId" });
         }
+        
+        public interface IFormParameterAttributeController { int Get([FormParam] string name); }
+        public class FormParameterAttributeController : IFormParameterAttributeController { public int Get(string name) => 1; }
+
+        [Test]
+        public void Create_FormParameterAttributeController_AddParameterAttribute()
+        {
+            var nclientControllers = new[]
+            {
+                new NClientControllerInfo(typeof(IFormParameterAttributeController), typeof(FormParameterAttributeController))
+            };
+
+            var actualResult = _virtualControllerGenerator
+                .Create(nclientControllers)
+                .ToArray();
+
+            actualResult.Should().ContainSingle();
+            var virtualControllerType = actualResult.Single().Type;
+            var controllerAttributes = virtualControllerType.GetCustomAttributes(inherit: true);
+            controllerAttributes.Length.Should().Be(1);
+            controllerAttributes.Should().BeEquivalentTo(new[] { new ControllerAttribute() });
+            var methodInfo = virtualControllerType.GetMethod(nameof(ParameterAttributeController.Get))!;
+            var methodAttributes = methodInfo.GetCustomAttributes(inherit: true);
+            methodAttributes.Length.Should().Be(0);
+            var methodParams = methodInfo.GetParameters();
+            methodParams.Length.Should().Be(1);
+            var nameParamAttributes = methodParams[0].GetCustomAttributes(inherit: true);
+            nameParamAttributes.Length.Should().Be(1);
+            nameParamAttributes[0].Should().BeEquivalentTo(new FromFormAttribute());
+        }
 
         public interface IMultipleParameterAttributeController { int Get([QueryParam] int id, [BodyParam] string name); }
         public class MultipleParameterAttributeController : IMultipleParameterAttributeController { public int Get(int id, string name) => 1; }
