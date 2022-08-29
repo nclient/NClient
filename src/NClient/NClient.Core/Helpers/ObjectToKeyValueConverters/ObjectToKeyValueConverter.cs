@@ -10,7 +10,7 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
 {
     internal interface IObjectToKeyValueConverter
     {
-        PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector);
+        PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector, bool useRootNameAsPrefix = true);
     }
 
     internal class ObjectToKeyValueConverter : IObjectToKeyValueConverter
@@ -26,21 +26,21 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
             _objectToKeyValueConverterExceptionFactory = objectToKeyValueConverterExceptionFactory;
         }
 
-        public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector)
+        public PropertyKeyValue[] Convert(object? obj, string rootName, IMemberNameSelector memberNameSelector, bool useRootNameAsPrefix = true)
         {
             var stringValues = new List<PropertyKeyValue>();
-            return ToKeyValue(stringValues, rootName, obj, memberNameSelector).ToArray();
+            return ToKeyValue(stringValues, rootName, obj, memberNameSelector, useRootNameAsPrefix).ToArray();
         }
 
-        private List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
+        private List<PropertyKeyValue> ToKeyValue(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector, bool useKeyAsPrefix)
         {
             if (TryAddAsPrimitive(stringValues, key, value))
                 return stringValues;
 
-            if (TryAddAsEnumerable(stringValues, key, value))
+            if (TryAddAsEnumerable(stringValues, key, value, useKeyAsPrefix))
                 return stringValues;
 
-            if (TryAddAsObject(stringValues, key, value, memberNameSelector))
+            if (TryAddAsObject(stringValues, key, value, memberNameSelector, useKeyAsPrefix))
                 return stringValues;
 
             stringValues.Add(new PropertyKeyValue(key, value));
@@ -56,7 +56,7 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
             return true;
         }
 
-        private bool TryAddAsEnumerable(List<PropertyKeyValue> stringValues, string key, object? value)
+        private bool TryAddAsEnumerable(List<PropertyKeyValue> stringValues, string key, object? value, bool useKeyAsPrefix)
         {
             if (IsPrimitive(value) || value is not IEnumerable enumerable)
                 return false;
@@ -69,8 +69,9 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
                     if (!IsPrimitive(itemKey))
                         throw _objectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfKeyNotSupported();
 
+                    var itemKeyWithPrefix = useKeyAsPrefix ? $"{key}[{itemKey}]" : itemKey.ToString();
                     var itemValue = item.GetType().GetProperty("Value")!.GetValue(item, null);
-                    if (!TryAddAsPrimitive(stringValues, key: $"{key}[{itemKey}]", itemValue))
+                    if (!TryAddAsPrimitive(stringValues, itemKeyWithPrefix, itemValue))
                         throw _objectToKeyValueConverterExceptionFactory.DictionaryWithComplexTypeOfValueNotSupported();
                 }
                 else
@@ -83,14 +84,15 @@ namespace NClient.Core.Helpers.ObjectToKeyValueConverters
             return true;
         }
 
-        private bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector)
+        private bool TryAddAsObject(List<PropertyKeyValue> stringValues, string key, object? value, IMemberNameSelector memberNameSelector, bool useKeyAsPrefix)
         {
             if (IsPrimitive(value))
                 return false;
 
             foreach (var prop in GetMembers(value, memberNameSelector))
             {
-                ToKeyValue(stringValues, key: key + "." + prop.Key, prop.Value, memberNameSelector);
+                var keyWithPrefix = useKeyAsPrefix ? $"{key}.{prop.Key}" : prop.Key;
+                ToKeyValue(stringValues, keyWithPrefix, prop.Value, memberNameSelector, useKeyAsPrefix: true);
             }
 
             return true;

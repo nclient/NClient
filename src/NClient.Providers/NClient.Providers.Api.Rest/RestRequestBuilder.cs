@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,12 +10,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using NClient.Annotations;
+using NClient.Annotations.Http;
 using NClient.Core.AspNetRouting;
 using NClient.Core.Helpers;
 using NClient.Core.Helpers.ObjectMemberManagers.MemberNameSelectors;
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Models;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
+using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
@@ -29,6 +32,7 @@ namespace NClient.Providers.Api.Rest
         private readonly IRouteTemplateProvider _routeTemplateProvider;
         private readonly IRouteProvider _routeProvider;
         private readonly IRequestTypeProvider _requestTypeProvider;
+        private readonly IFormUrlEncoder _formUrlEncoder;
         private readonly IObjectToKeyValueConverter _objectToKeyValueConverter;
         private readonly IClientValidationExceptionFactory _clientValidationExceptionFactory;
         private readonly IToolset _toolset;
@@ -37,6 +41,7 @@ namespace NClient.Providers.Api.Rest
             IRouteTemplateProvider routeTemplateProvider,
             IRouteProvider routeProvider,
             IRequestTypeProvider requestTypeProvider,
+            IFormUrlEncoder formUrlEncoder,
             IObjectToKeyValueConverter objectToKeyValueConverter,
             IClientValidationExceptionFactory clientValidationExceptionFactory,
             IToolset toolset)
@@ -46,6 +51,7 @@ namespace NClient.Providers.Api.Rest
             _routeTemplateProvider = routeTemplateProvider;
             _routeProvider = routeProvider;
             _requestTypeProvider = requestTypeProvider;
+            _formUrlEncoder = formUrlEncoder;
             _objectToKeyValueConverter = objectToKeyValueConverter;
             _clientValidationExceptionFactory = clientValidationExceptionFactory;
             _toolset = toolset;
@@ -147,6 +153,22 @@ namespace NClient.Providers.Api.Rest
                     };
                     
                     request.Content = new Content(formFile.OpenReadStream(), encoding: null, metadata);
+                    break;
+                }
+                case { } customObject when bodyParam.Attribute is IFormParamAttribute:
+                {
+                    var properties = _objectToKeyValueConverter
+                        .Convert(customObject, bodyParam.Name, new BodyMemberNameSelector(), useRootNameAsPrefix: false)
+                        .Select(x => new KeyValuePair<string, string?>(x.Key, x.Value?.ToString()));
+                    var formUrlEncodedContent = _formUrlEncoder.GetContentByteArray(properties!);
+                    var metadata = new MetadataContainer
+                    {
+                        new Metadata("Content-Encoding", Encoding.UTF8.WebName),
+                        new Metadata("Content-Type", "application/x-www-form-urlencoded"),
+                        new Metadata("Content-Length", formUrlEncodedContent.Length.ToString())
+                    };
+                    
+                    request.Content = new Content(new MemoryStream(formUrlEncodedContent), Encoding.UTF8.WebName, metadata);
                     break;
                 }
                 case { } customObject:
