@@ -83,7 +83,7 @@ namespace NClient.Testing.Common.Apis
             api.Given(Request.Create()
                     .WithPath("/api/header")
                     .WithHeader("Accept", "application/json")
-                    .WithHeader(headerName, headerValue)
+                    .WithHeader(headerName, new RegexMatcher(headerValue))
                     .WithBody(new JsonMatcher(entity))
                     .UsingPost())
                 .RespondWith(Response.Create()

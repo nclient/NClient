@@ -68,7 +68,7 @@ namespace NClient.Tests.ClientTests
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             const string expectedHeaderName = "Content-Type";
-            const string expectedHeaderValue = "text/html, application/json";
+            const string expectedHeaderValue = "(text\\/html, application\\/json)|(application\\/json, text\\/html)";
             const string headerValue = "text/html";
             using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
 
@@ -146,7 +146,7 @@ namespace NClient.Tests.ClientTests
         {
             var entity = new BasicEntity { Id = 1, Value = 2 };
             const string expectedHeaderName = "Content-Type";
-            const string expectedHeaderValue = "text/html, application/json";
+            const string expectedHeaderValue = "(text\\/html, application\\/json)|(application\\/json, text\\/html)";
             using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
 
             await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
