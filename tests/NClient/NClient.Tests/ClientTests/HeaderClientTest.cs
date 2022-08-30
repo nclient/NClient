@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NClient.Testing.Common.Apis;
 using NClient.Testing.Common.Clients;
+using NClient.Testing.Common.Entities;
 using NClient.Tests.ClientTests.Helpers;
 using NUnit.Framework;
 
@@ -48,6 +49,31 @@ namespace NClient.Tests.ClientTests
                 .GetWithMultipleHeadersAsync(id1, id2);
 
             result.Should().BeEquivalentTo(new[] { id1, id2 });
+        }
+
+        [Test]
+        public async Task PostWithSingleContentHeaderAsync_ShouldPassSingleContentHeader_ThenReturnOk()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            const string expectedHeaderName = "Content-Range";
+            const string expectedHeaderValue = "items 1-1/*";
+            using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
+
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
+                .PostWithSingleContentHeaderAsync(entity, expectedHeaderValue);
+        }
+        
+        [Test]
+        public async Task PostWithSingleOverridingContentHeaderAsync_ShouldPassSingleContentHeader_ThenReturnOk()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            const string expectedHeaderName = "Content-Type";
+            const string expectedHeaderValue = "(text\\/html, application\\/json)|(application\\/json, text\\/html)";
+            const string headerValue = "text/html";
+            using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
+
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
+                .PostWithSingleOverridingContentHeaderAsync(entity, headerValue);
         }
 
         [Test]
@@ -101,6 +127,30 @@ namespace NClient.Tests.ClientTests
                 .GetWithMultipleStaticAndParamHeadersAsync(id1_2, id2_2);
             
             result.Should().BeEquivalentTo(new[] { id1_1, id2_1, id1_2, id2_2 });
+        }
+        
+        [Test]
+        public async Task PostWithSingleStaticContentHeaderAsync_ShouldPassSingleContentHeader_ThenReturnOk()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            const string expectedHeaderName = "Content-Range";
+            const string expectedHeaderValue = "items 1-1/*";
+            using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
+
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
+                .PostWithSingleStaticContentHeaderAsync(entity);
+        }
+        
+        [Test]
+        public async Task PostWithSingleStaticOverridingContentHeaderAsync_ShouldPassSingleContentHeader_ThenReturnOk()
+        {
+            var entity = new BasicEntity { Id = 1, Value = 2 };
+            const string expectedHeaderName = "Content-Type";
+            const string expectedHeaderValue = "(text\\/html, application\\/json)|(application\\/json, text\\/html)";
+            using var api = HeaderApiMockFactory.MockPostMethodWithHeader(entity, expectedHeaderName, expectedHeaderValue);
+
+            await NClientGallery.Clients.GetRest().For<IHeaderClientWithMetadata>(host: api.Urls.First()).Build()
+                .PostWithSingleStaticOverridingContentHeaderAsync(entity);
         }
     }
 }

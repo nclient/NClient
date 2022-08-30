@@ -1,4 +1,6 @@
-﻿using WireMock.RequestBuilders;
+﻿using NClient.Testing.Common.Entities;
+using WireMock.Matchers;
+using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
@@ -71,6 +73,21 @@ namespace NClient.Testing.Common.Apis
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new[] { id1_1, id2_1, id1_2, id2_2 }));
+
+            return api;
+        }
+        
+        public static IWireMockServer MockPostMethodWithHeader(BasicEntity entity, string headerName, string headerValue)
+        {
+            var api = WireMockServer.Start();
+            api.Given(Request.Create()
+                    .WithPath("/api/header")
+                    .WithHeader("Accept", "application/json")
+                    .WithHeader(headerName, new RegexMatcher(headerValue))
+                    .WithBody(new JsonMatcher(entity))
+                    .UsingPost())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200));
 
             return api;
         }
