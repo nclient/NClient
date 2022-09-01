@@ -1,5 +1,6 @@
 ﻿using NClient.Providers.Transport.RestSharp.Helpers;
 using RestSharp;
+using NClient.Providers.Transport.Common;
 
 namespace NClient.Providers.Transport.RestSharp
 {
@@ -19,5 +20,12 @@ namespace NClient.Providers.Transport.RestSharp
         {
             return new RestSharpTransportRequestBuilder(_restSharpMethodMapper, toolset);
         }
+
+        public ITransportRequestBuilder<IRestRequest, IRestResponse> Create(IToolset toolset, IPipelineCanceller pipelineCanceller)
+        {
+            return new RestSharpTransportRequestBuilder(_restSharpMethodMapper, toolset);
+        }
+
+        
     }
 }
