@@ -29,7 +29,7 @@ namespace NClient.Standalone.ClientProxy.Building
         private readonly SingletonProxyGeneratorProvider _proxyGeneratorProvider;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientProxyGenerator _clientProxyGenerator;
-        private readonly ClientValidator _clientValidator;
+        private readonly ClientValidator<TRequest, TResponse> _clientValidator;
 
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
@@ -37,7 +37,9 @@ namespace NClient.Standalone.ClientProxy.Building
             _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
             _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
             _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
-            _clientValidator = new ClientValidator(_proxyGeneratorProvider.Value);
+            _clientValidator = new ClientValidator<TRequest, TResponse>(_proxyGeneratorProvider.Value, 
+                _clientInterceptorFactory, 
+                context);
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
@@ -173,7 +175,7 @@ namespace NClient.Standalone.ClientProxy.Building
         public TClient Build()
         {
             _context.EnsureComplete();
-            _clientValidator.EnsureAsync<TClient>(_clientInterceptorFactory)
+            _clientValidator.EnsureAsync<TClient>()
                 .GetAwaiter()
                 .GetResult();
             
