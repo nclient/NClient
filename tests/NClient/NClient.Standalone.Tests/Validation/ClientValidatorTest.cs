@@ -2,8 +2,9 @@
 using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using NClient.Standalone.ClientProxy.Validation;
 using FluentAssertions;
+using System.Threading.Tasks;
+using NClient.Testing.Common.Clients;
 
 namespace NClient.Standalone.Tests.Validation
 {
@@ -12,7 +13,8 @@ namespace NClient.Standalone.Tests.Validation
     public class ClientValidatorTest
     {
         Uri _uri = new Uri("http://localhost:5000");
-        public interface IMyClient : IMyController
+
+        public interface IMyClient: IMyController
         {
         }
 
@@ -29,36 +31,40 @@ namespace NClient.Standalone.Tests.Validation
 
         }
 
-        [Test]
-        public void ClientValidator_WhenExecutingAnyInvalidMethod_BuildThrowsRelevantException()
+        public interface IControllerWithParams: IBasicClient
         {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClient>(host: _uri);
-            Func<IMyClient> buildFunc = () => optsBuilder.Build();
+            [GetMethod]
+            new Task<int> GetAsync(int id);
+        }
+
+        public interface IMyClientNoParentType
+        {
+
+            [GetMethod("{missing_get_parameter}")]
+            int[] Get();
+
+            [PutMethod("{missing_put_parameter}")]
+            int[] Put();
+
+            [PostMethod("{missing_post_parameter}")]
+            int[] Post();
+        }
+
+        //UnitOfWork_StateUnderTest_ExpectedBehavior 
+        [Test]
+        public void ClientValidator_WhenExecutingAnyInvalidMethodOnTheType_BuildThrowsTheException()
+        {
+            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClientNoParentType>(host: _uri);
+            Func<IMyClientNoParentType> buildFunc = () => optsBuilder.Build();
             buildFunc.Should().Throw<Exception>();
         }
 
         [Test]
-        public void ClientValidator_WhenExecutingAnInvalidGetMethod_DoesntThrowAfterBuild()
+        public void ClientValidator_WhenExecutingAnyInvalidMethodOnParentType_BuildThrowsTheException()
         {
             var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClient>(host: _uri);
-            Func<int[]> getFunc = () => optsBuilder.Build().Get();
-            getFunc.Should().NotThrow<Exception>();
-        }
-
-        [Test]
-        public void ClientValidator_WhenExecutingAnInvalidPostMethod_DoesntThrowAfterBuild()
-        {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClient>(host: _uri);
-            Func<int[]> getFunc = () => optsBuilder.Build().Post();
-            getFunc.Should().NotThrow<Exception>();
-        }
-
-        [Test]
-        public void ClientValidator_WhenExecutingAnInvalidPutMethod_DoesntThrowAfterBuild()
-        {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClient>(host: _uri);
-            Func<int[]> getFunc = () => optsBuilder.Build().Put();
-            getFunc.Should().NotThrow<Exception>();
+            Func<IMyClient> buildFunc = () => optsBuilder.Build();
+            buildFunc.Should().Throw<Exception>();
         }
     }
 }

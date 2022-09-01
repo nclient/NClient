@@ -20,10 +20,6 @@ using NClient.Standalone.ClientProxy.Validation.Serialization;
 using NClient.Standalone.ClientProxy.Validation.Transport;
 using NClient.Standalone.ClientProxy.Validation.Validation;
 using NClient.Standalone.Exceptions.Factories;
-using NClient.Providers.Api.Rest;
-using NClient.Providers.Api;
-using NClient.Standalone.ClientProxy.Validation.Api;
-using System.Threading;
 
 namespace NClient.Standalone.ClientProxy.Validation
 {
