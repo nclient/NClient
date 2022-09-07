@@ -6,10 +6,8 @@ namespace NClient.Standalone.ClientProxy.Validation
     internal class PipelineCanceller : IPipelineCanceller
     {
         internal CancellationTokenSource _canceller;
-        internal bool _cancellationRequested;
         public PipelineCanceller()
         {
-            _cancellationRequested = false;
             _canceller = new();
         }
         public void Renew()

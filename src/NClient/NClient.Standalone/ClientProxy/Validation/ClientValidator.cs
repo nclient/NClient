@@ -77,19 +77,22 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .WithoutLogging();
 
             _interceptor = _clientInterceptorFactory.Create<TClient, IRequest, IResponse>(validationContext);
-            TClient client = _clientProxyGenerator.CreateClient<TClient>(_interceptor);
+            var client = _clientProxyGenerator.CreateClient<TClient>(_interceptor);
 
             await EnsureValidityAsync(client).ConfigureAwait(false);
         }
         
+
+
+
         private async Task EnsureValidityAsync<T>(T client) where T : class
         {
-            MethodInfo[] methods = NClient.Core.Helpers.TypeExtensions.GetInterfaceMethods(typeof(T), true);
+            var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(T), true);
 
             foreach (var methodInfo in methods)
             {
                 var parameters = methodInfo.GetParameters().Select(GetDefaultParameter).ToArray();
-
+               
                 try
                 {
                     var result = methodInfo.Invoke(client, parameters);
@@ -98,6 +101,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                         _clientInterceptorFactory.PipelineCanceler.Renew();
                         continue;
                     }
+                    
                     if (result is Task task)
                         await task.ConfigureAwait(false);
                 }
@@ -107,14 +111,14 @@ namespace NClient.Standalone.ClientProxy.Validation
                 }
                 catch (TargetInvocationException tex)
                 {
-                    TraverseInnerExceptionGraph(tex);
+                    TraverseInnerExceptionTree(tex);
                 }
             }
         }
-
-        private void TraverseInnerExceptionGraph(Exception ex)
+        
+        private void TraverseInnerExceptionTree(Exception ex)
         {
-            Exception innerEx = ex.InnerException;
+            var innerEx = ex.InnerException;
             while(innerEx != null)
             {
                 if (innerEx.GetType() == typeof(ClientValidationException))

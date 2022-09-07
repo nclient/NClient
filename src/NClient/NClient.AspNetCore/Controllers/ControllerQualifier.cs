@@ -41,8 +41,8 @@ namespace NClient.AspNetCore.Controllers
                 
                 if (declaredInterface.IsDefined(typeof(IFacadeAttribute), inherit: true)
                     || declaredInterface.IsDefined(typeof(IPathAttribute), inherit: true)
-                    || declaredInterface.GetInterfaceMethods(inherit: true).Any(x => x.IsDefined(typeof(IOperationAttribute), inherit: true))
-                    || declaredInterface.GetInterfaceMethods(inherit: true).SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(IParamAttribute), inherit: true)))
+                    || declaredInterface.GetAllInterfaceMethods(inherit: true).Any(x => x.IsDefined(typeof(IOperationAttribute), inherit: true))
+                    || declaredInterface.GetAllInterfaceMethods(inherit: true).SelectMany(x => x.GetParameters()).Any(x => x.IsDefined(typeof(IParamAttribute), inherit: true)))
                     return true;
             }
 

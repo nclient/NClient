@@ -16,25 +16,19 @@ namespace NClient.Standalone.Tests.Validation
 
         public interface IMyClient: IMyController
         {
+            [DeleteMethod()]
+            void DeleteAsync();
+        }
+
+        public interface IHiddenMyClient : IMyController
+        {
+            [DeleteMethod()]
+            new void DeleteAsync();
         }
 
         public interface IMyController
         {
-            [GetMethod("{missing_get_parameter}")]
-            int[] Get();
-
-            [PutMethod("{missing_put_parameter}")]
-            int[] Put();
-
-            [PostMethod("{missing_post_parameter}")]
-            int[] Post();
-
-        }
-
-        public interface IControllerWithParams: IBasicClient
-        {
-            [GetMethod]
-            new Task<int> GetAsync(int id);
+            void DeleteAsync();
         }
 
         public interface IMyClientNoParentType
@@ -48,11 +42,13 @@ namespace NClient.Standalone.Tests.Validation
 
             [PostMethod("{missing_post_parameter}")]
             int[] Post();
+
+
         }
 
         //UnitOfWork_StateUnderTest_ExpectedBehavior 
         [Test]
-        public void ClientValidator_WhenExecutingAnyInvalidMethodOnTheType_BuildThrowsTheException()
+        public void ClientValidator_WhenExecutingAnyInvalidMethodOnTheType_BuildThrows()
         {
             var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClientNoParentType>(host: _uri);
             Func<IMyClientNoParentType> buildFunc = () => optsBuilder.Build();
@@ -60,11 +56,20 @@ namespace NClient.Standalone.Tests.Validation
         }
 
         [Test]
-        public void ClientValidator_WhenExecutingAnyInvalidMethodOnParentType_BuildThrowsTheException()
+        public void ClientValidator_WhenExecutingHiddenMethodOnTheChildType_InvalidParentNotCheckedNoThrow()
         {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClient>(host: _uri);
-            Func<IMyClient> buildFunc = () => optsBuilder.Build();
-            buildFunc.Should().Throw<Exception>();
+            var optsBuilder = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: _uri);
+            Func<IReturnClientWithMetadata> buildFunc = () => optsBuilder.Build();
+            buildFunc.Should().NotThrow<Exception>();
+        }
+
+        
+        [Test]
+        public void ClientValidator_WhenExecutingHiddenMethodOnTheChildType_OnlyChildMethodIsValidatedNoThrow()
+        {
+            var optsBuilder = NClientGallery.Clients.GetRest().For<IHiddenMyClient>(host: _uri);
+            Func<IHiddenMyClient> buildFunc = () => optsBuilder.Build();
+            buildFunc.Should().NotThrow<Exception>();
         }
     }
 }
