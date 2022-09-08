@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using System.Threading.Tasks;
 using NClient.Testing.Common.Clients;
+using Microsoft.Extensions.DependencyModel;
 
 namespace NClient.Standalone.Tests.Validation
 {

@@ -101,9 +101,6 @@ namespace NClient.Standalone.ClientProxy.Validation
                         _clientInterceptorFactory.PipelineCanceler.Renew();
                         continue;
                     }
-                    
-                    if (result is Task task)
-                        await task.ConfigureAwait(false);
                 }
                 catch (ClientValidationException)
                 {
