@@ -18,7 +18,7 @@ namespace NClient.Standalone.Tests.Validation
         public interface IMyClient: IMyController
         {
             [DeleteMethod()]
-            void DeleteAsync();
+            new void DeleteAsync();
         }
 
         public interface IHiddenMyClient : IMyController

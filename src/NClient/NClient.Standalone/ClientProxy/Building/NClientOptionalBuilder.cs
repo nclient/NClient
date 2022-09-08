@@ -175,9 +175,7 @@ namespace NClient.Standalone.ClientProxy.Building
         public TClient Build()
         {
             _context.EnsureComplete();
-            _clientValidator.EnsureAsync<TClient>()
-                .GetAwaiter()
-                .GetResult();
+            _clientValidator.EnsureAsync<TClient>();
             
             var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);
