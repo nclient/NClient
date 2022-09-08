@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using NClient.Annotations.Http;
 using NClient.Testing.Common.Entities;
 
 namespace NClient.Testing.Common.Clients
@@ -26,7 +25,7 @@ namespace NClient.Testing.Common.Clients
         /// Body: empty
         /// Headers: empty
         /// </summary>
-        Task<IDictionary<string, int>> GetAsync([QueryParam] IDictionary<string, int> keyValues);
+        Task<IDictionary<string, int>> GetAsync(IDictionary<string, int> keyValues);
 
         /// <summary>
         /// Url: api/simple?entity.id={id}

@@ -31,7 +31,7 @@ namespace NClient.Standalone.Tests.MethodBuilders
             var useVersionAttribute = (UseVersionAttribute) null!;
             var pathAttribute = (PathAttribute) null!;
             var timeoutAttribute = (TimeoutAttribute) null!;
-            var headerAttributes = Array.Empty<HeaderAttribute>();
+            var metadataAttributes = Array.Empty<IMetadataAttribute>();
             var methodParams = Array.Empty<IMethodParam>();
             var methodAttributeProviderMock = new Mock<IOperationAttributeProvider>();
             methodAttributeProviderMock.Setup(x => x.Get(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
@@ -46,8 +46,8 @@ namespace NClient.Standalone.Tests.MethodBuilders
             timeoutAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(timeoutAttribute);
             var headerAttributeProviderMock = new Mock<IMetadataAttributeProvider>();
-            headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>(), It.IsAny<MethodParam[]>()))
-                .Returns(headerAttributes);
+            headerAttributeProviderMock.Setup(x => x.Find(It.IsAny<Type>(), It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
+                .Returns(metadataAttributes);
             var methodParamBuilderMock = new Mock<IMethodParamBuilder>();
             methodParamBuilderMock.Setup(x => x.Build(It.IsAny<MethodInfo>(), It.IsAny<IEnumerable<MethodInfo>>()))
                 .Returns(methodParams);

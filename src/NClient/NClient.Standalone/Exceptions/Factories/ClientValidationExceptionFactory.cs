@@ -8,7 +8,6 @@ namespace NClient.Standalone.Exceptions.Factories
     {
         ClientValidationException ClientTypeIsNotInterface(Type clientType);
         ClientValidationException TransportTimeoutShouldBeInfinite(TimeSpan transportTimeout);
-        ClientValidationException HeaderParamDuplicatesStaticHeader(params string[] headerNames);
         ClientValidationException MultipleAttributeForClientNotSupported(string attributeName);
         ClientValidationException MultipleParameterAttributeNotSupported(string parameterName);
         ClientValidationException MethodAttributeNotFound(string attributeName);

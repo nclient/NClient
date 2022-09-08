@@ -75,7 +75,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
             {
                 PathAttribute = _pathAttributeProvider.Find(clientType),
                 UseVersionAttribute = _useVersionAttributeProvider.Find(clientType, methodInfo, overridingMethods),
-                MetadataAttributes = _metadataAttributeProvider.Find(clientType, methodInfo, overridingMethods, methodParams),
+                MetadataAttributes = _metadataAttributeProvider.Find(clientType, methodInfo, overridingMethods),
                 TimeoutAttribute = _timeoutAttributeProvider.Find(clientType, methodInfo, overridingMethods)
             };
 

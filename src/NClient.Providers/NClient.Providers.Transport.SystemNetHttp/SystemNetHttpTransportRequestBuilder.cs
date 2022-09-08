@@ -34,11 +34,6 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 RequestUri = uri
             };
 
-            foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
-            {
-                httpRequestMessage.Headers.Add(metadata.Name, metadata.Value);
-            }
-
             if (request.Content is not null)
             {
                 request.Content.Stream.Position = 0;
@@ -52,6 +47,13 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 {
                     httpRequestMessage.Content.Headers.Add(metadata.Name, metadata.Value);
                 }
+            }
+            
+            foreach (var metadata in request.Metadatas.SelectMany(x => x.Value))
+            {
+                var isRequestHeader = httpRequestMessage.Headers.TryAddWithoutValidation(metadata.Name, metadata.Value);
+                if (!isRequestHeader && httpRequestMessage.Content is not null)
+                    httpRequestMessage.Content.Headers.TryAddWithoutValidation(metadata.Name, metadata.Value);
             }
 
             return Task.FromResult(httpRequestMessage);
