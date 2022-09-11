@@ -109,10 +109,6 @@ namespace NClient.Tests.ClientTests
                 .ReturnsAsync(new Uri(doubleApiUri))
                 .ReturnsAsync(new Uri(squareApiUri));
 
-            var hostProviderMock = new Mock<IHostProvider>();
-            hostProviderMock.Setup(x => x.Create(It.IsAny<IToolset>()))
-                .Returns(hostMock.Object);
-
             var client = NClientGallery.Clients.GetRest()
                 .For<IHostClient>()
                 .WithHost(hostMock.Object)
