@@ -50,7 +50,6 @@ namespace NClient.Providers.Serialization.SystemTextJson.Tests
             using var api = ReturnApiMockFactory.MockGetAsyncMethod(id, entity);
 
             var result = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: api.Urls.First())
-                .WithHost(new Uri(api.Urls.First()))
                 .WithSystemTextJsonSerialization(jsonSerializerOptions)
                 .Build()
                 .GetIHttpResponse(id);

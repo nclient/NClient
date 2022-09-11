@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NClient.Exceptions;
-using NClient.Providers;
 using NClient.Providers.Host;
 using NClient.Standalone.Client.Host;
 using NClient.Testing.Common.Apis;
@@ -41,8 +40,7 @@ namespace NClient.Tests.ClientTests
             var doubleApiUri = doubleApiServer.Urls.First();
             
             var result = await NClientGallery.Clients.GetRest()
-                .For<IHostClient>()
-                .WithHost(doubleApiUri)
+                .For<IHostClient>(doubleApiUri)
                 .Build()
                 .GetAsync(id);
 
@@ -58,8 +56,7 @@ namespace NClient.Tests.ClientTests
             var doubleApiUri = doubleApiServer.Urls.First();
             
             var result = await NClientGallery.Clients.GetRest()
-                .For<IHostClient>()
-                .WithHost(new Uri(doubleApiUri))
+                .For<IHostClient>(new Uri(doubleApiUri))
                 .Build()
                 .GetAsync(id);
 
@@ -75,8 +72,7 @@ namespace NClient.Tests.ClientTests
             var doubleApiUri = doubleApiServer.Urls.First();
             
             var result = await NClientGallery.Clients.GetRest()
-                .For<IHostClient>()
-                .WithHost(new Host(new Uri(doubleApiUri)))
+                .For<IHostClient>(new Host(new Uri(doubleApiUri)))
                 .Build()
                 .GetAsync(id);
 
@@ -84,14 +80,42 @@ namespace NClient.Tests.ClientTests
         }
         
         [Test]
-        public void WithoutAnyHostOption_ShouldThrow()
+        public async Task CustomClient_WithHostParameter_NotThrow()
         {
-            var client = NClientGallery.Clients.GetRest()
-                .For<IHostClient>();
+            const int id = 1;
+            using var doubleApiServer = HostApiMockFactory.MockGetMethodDoubleServer(id);
 
-            client.Invoking(x => x.Build())
+            var doubleApiUri = doubleApiServer.Urls.First();
+            
+            var result = await NClientGallery.Clients.GetCustom()
+                .For<IHostClient>(new Host(new Uri(doubleApiUri)))
+                .UsingRestApi()
+                .UsingSystemNetHttpTransport()
+                .UsingJsonSerializer()
+                .WithAdvancedResponseValidation(x => x
+                    .ForTransport().UseSystemNetHttpResponseValidation())
+                .Build()
+                .GetAsync(id);
+
+            result.Should().Be(2 * id);
+        }
+        
+        [Test]
+        public async Task WithEmptyUri_ShouldThrow()
+        {
+            const int id = 1;
+            
+            var hostMock = new Mock<IHost>();
+            hostMock.Setup(m => m.TryGetUriAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(default(Uri));
+            
+            var client = NClientGallery.Clients.GetRest()
+                .For<IHostClient>(hostMock.Object)
+                .Build();
+
+            await client.Invoking(x => x.GetAsync(id))
                 .Should()
-                .ThrowExactly<ClientBuildException>();
+                .ThrowExactlyAsync<ClientValidationException>();
         }
         
         [Test]
@@ -110,8 +134,7 @@ namespace NClient.Tests.ClientTests
                 .ReturnsAsync(new Uri(squareApiUri));
 
             var client = NClientGallery.Clients.GetRest()
-                .For<IHostClient>()
-                .WithHost(hostMock.Object)
+                .For<IHostClient>(hostMock.Object)
                 .Build();
 
             var doubleResult = await client.GetAsync(id);

@@ -9,6 +9,10 @@ namespace NClient.Standalone.ClientProxy.Building
     {
         private readonly IHost? _host;
         
+        public NClientApiBuilder()
+        {
+        }
+        
         public NClientApiBuilder(IHost? host)
         {
             _host = host;

@@ -6,12 +6,10 @@ using NClient.Common.Helpers;
 using NClient.Core.Proxy;
 using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
-using NClient.Providers.Host;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client.Authorization;
-using NClient.Standalone.Client.Host;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
 using NClient.Standalone.ClientProxy.Building.Configuration.Mapping;
 using NClient.Standalone.ClientProxy.Building.Configuration.Resilience;
@@ -168,29 +166,6 @@ namespace NClient.Standalone.ClientProxy.Building
         {
             return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
                 .WithoutLogging());
-        }
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(string host)
-        {
-            Ensure.IsNotNullOrEmpty(host, nameof(host));
-
-            return WithHost(new Uri(host));
-        }
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(Uri uri)
-        {
-            Ensure.IsNotNull(uri, nameof(uri));
-            Ensure.IsNotNullOrEmpty(uri.Host, nameof(uri.Host));
-
-            return WithHost(new Host(uri));
-        }
-        
-        public INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(IHost host)
-        {
-            Ensure.IsNotNull(host, nameof(host));
-            
-            return new NClientOptionalBuilder<TClient, TRequest, TResponse>(_context
-                .WithHost(host));
         }
 
         public TClient Build()

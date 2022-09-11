@@ -29,7 +29,7 @@ namespace NClient
         /// <summary>Sets client interface type and web service host.</summary>
         /// <param name="host">The object with address of the web service host.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
-        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost? host = default) 
+        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost host) 
             where TClient : class;
     }
     
@@ -74,7 +74,7 @@ namespace NClient
         /// <summary>Sets client interface type and web service host.</summary>
         /// <param name="host">The address of the web service host.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
-        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost? host = default) 
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost host) 
             where TClient : class
         {
             var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitorCache<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
