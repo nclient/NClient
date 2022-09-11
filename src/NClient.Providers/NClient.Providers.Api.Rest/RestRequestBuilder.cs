@@ -81,7 +81,7 @@ namespace NClient.Providers.Api.Rest
 
             var uri = await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false);
             if (string.IsNullOrEmpty(uri?.Host))
-                throw _clientValidationExceptionFactory.HostURINotDefined();
+                throw _clientValidationExceptionFactory.HostUriNotDefined();
             
             var resource = new Uri(Path.Combine(uri.ToString(), route));
             var request = new Request(requestId, resource, requestType);
