@@ -79,15 +79,15 @@ namespace NClient.Providers.Api.Rest
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
 
-            var uri = await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(uri?.Host))
+            var uri = (await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false))?.ToString();
+            if (string.IsNullOrEmpty(uri))
                 throw _clientValidationExceptionFactory.HostUriNotDefined();
             
-            var resource = new Uri(Path.Combine(uri.ToString(), route));
+            var resource = new Uri(Path.Combine(uri, route));
             var request = new Request(requestId, resource, requestType);
 
             var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
-            var authorizationToken = authorizationTokens?.TryGet(uri);
+            var authorizationToken = authorizationTokens?.TryGet(new Uri(uri));
             if (authorizationToken is not null)
                 request.AddMetadata(
                     name: HttpRequestHeader.Authorization.ToString(), 
