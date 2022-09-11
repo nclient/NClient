@@ -17,13 +17,14 @@ namespace NClient.Standalone.Client.Host
         
         public async Task<Uri?> TryGetUriAsync(CancellationToken cancellationToken)
         {
+            Uri lastUri = null!;
             foreach (var host in _hosts)
             {
                 var uri = await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false);
                 if (uri is not null)
-                    return uri;
+                    lastUri = uri;
             }
-            return null;
+            return lastUri;
         }
     }
 }
