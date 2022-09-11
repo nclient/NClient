@@ -13,6 +13,7 @@ using NClient.Standalone.ClientProxy.Generation.Interceptors;
 using NClient.Standalone.ClientProxy.Validation.Api;
 using NClient.Standalone.ClientProxy.Validation.Authorization;
 using NClient.Standalone.ClientProxy.Validation.Handling;
+using NClient.Standalone.ClientProxy.Validation.Host;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
 using NClient.Standalone.ClientProxy.Validation.Transport;
@@ -29,7 +30,7 @@ namespace NClient.Standalone.ClientProxy.Validation
 
     internal class ClientValidator : IClientValidator
     {
-        private static readonly Uri FakeHost = new("http://localhost:5000");
+        //private static readonly Uri FakeHostUri = new("http://localhost:5000");
 
         private readonly IClientProxyGenerator _clientProxyGenerator;
         private readonly BuilderContext<IRequest, IResponse> _builderContext;
@@ -38,7 +39,7 @@ namespace NClient.Standalone.ClientProxy.Validation
         {
             _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
             _builderContext = new BuilderContext<IRequest, IResponse>()
-                .WithHost(FakeHost)
+                .WithHost(new StubHost())
                 .WithSerializer(new StubSerializerProvider())
                 .WithRequestBuilderProvider(new StubRequestBuilderProvider())
                 .WithTransport(

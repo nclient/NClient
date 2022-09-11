@@ -66,6 +66,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
             var resiliencePolicyProvider = new StubResiliencePolicyProvider<TRequest, TResponse>();
             var authorizationProvider = new CompositeAuthorizationProvider(builderContext.AuthorizationProviders);
+            var host = builderContext.Host;
             var clientHandlerProvider = new CompositeClientHandlerProvider<TRequest, TResponse>(builderContext.ClientHandlerProviders);
             var responseMapperProvider = new CompositeResponseMapperProvider<IRequest, IResponse>(builderContext.ResponseMapperProviders);
             var transportResponseMapperProvider = new CompositeResponseMapperProvider<TRequest, TResponse>(builderContext.TransportResponseMapperProviders);
@@ -75,13 +76,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 builderContext.MethodsWithResiliencePolicy.Reverse());
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
-                builderContext.Host,
                 _timeoutSelector,
                 _guidProvider,
                 _methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
                 authorizationProvider,
+                host,
                 builderContext.RequestBuilderProvider,
                 new TransportNClientFactory<TRequest, TResponse>(
                     builderContext.TransportProvider,

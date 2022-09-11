@@ -21,6 +21,7 @@ using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
+using NClient.Providers.Host;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api.Rest
@@ -57,7 +58,7 @@ namespace NClient.Providers.Api.Rest
             _toolset = toolset;
         }
         
-        public async Task<IRequest> BuildAsync(Guid requestId, Uri host, IAuthorization authorization,
+        public async Task<IRequest> BuildAsync(Guid requestId, IHost host, IAuthorization authorization,
             IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -77,12 +78,16 @@ namespace NClient.Providers.Api.Rest
                 .ToArray();
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
+
+            var uri = await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(uri?.Host))
+                throw _clientValidationExceptionFactory.HostURINotDefined();
             
-            var resource = new Uri(PathHelper.Combine(host.ToString(), route));
+            var resource = new Uri(Path.Combine(uri.ToString(), route));
             var request = new Request(requestId, resource, requestType);
 
             var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
-            var authorizationToken = authorizationTokens?.TryGet(host);
+            var authorizationToken = authorizationTokens?.TryGet(uri);
             if (authorizationToken is not null)
                 request.AddMetadata(
                     name: HttpRequestHeader.Authorization.ToString(), 

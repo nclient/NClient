@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
+using NClient.Providers.Host;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
 using NClient.Providers.Validation;
@@ -110,6 +111,22 @@ namespace NClient
         
         #endregion
 
+        #region Host
+        
+        /// <summary>Sets host object.</summary>
+        /// <param name="host">The host of service.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(string host);
+        
+        /// <summary>Sets host uri.</summary>
+        /// <param name="uri">The uri of service.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(Uri uri);
+        
+        /// <summary>Sets host provider object.</summary>
+        /// <param name="host">The host abstraction <see cref="IHost"/>.</param>
+        INClientOptionalBuilder<TClient, TRequest, TResponse> WithHost(IHost host);
+        
+        #endregion
+        
         /// <summary>Creates instance of <see cref="TClient"/>.</summary>
         TClient Build();
     }
