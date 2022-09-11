@@ -30,8 +30,6 @@ namespace NClient.Standalone.ClientProxy.Validation
 
     internal class ClientValidator : IClientValidator
     {
-        //private static readonly Uri FakeHostUri = new("http://localhost:5000");
-
         private readonly IClientProxyGenerator _clientProxyGenerator;
         private readonly BuilderContext<IRequest, IResponse> _builderContext;
 

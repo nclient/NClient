@@ -93,12 +93,12 @@ namespace NClient.Standalone.ClientProxy.Building.Context
 
         public BuilderContext<TRequest, TResponse> WithHost(IHost? host)
         {
-            //TODO: smth design is required...
-            //var uri = host?.TryGetUriAsync().GetAwaiter().GetResult();
-            return new BuilderContext<TRequest, TResponse>(this)
-            {
-                Host = host
-            };
+            return host is not null
+                ? new BuilderContext<TRequest, TResponse>(this)
+                {
+                    Host = host
+                }
+                : new BuilderContext<TRequest, TResponse>();
         }
 
         public BuilderContext<TRequest, TResponse> WithTransport(
