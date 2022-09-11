@@ -18,12 +18,12 @@ using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
+using NClient.Providers.Host;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -92,13 +92,17 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
-            return BuildRequest(host: "http://localhost:5000", method, arguments);
+            var hostMock = new Mock<IHost>();
+            hostMock
+                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<Uri?>(new Uri("http://localhost:5000")));
+            return BuildRequest(host: hostMock.Object, method, arguments);
         }
 
-        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
+        internal IRequest BuildRequest(IHost host, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, host.ToUri(), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, host, Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

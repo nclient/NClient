@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Exceptions;
+using NClient.Providers.Host;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -20,10 +23,16 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(host: "http://localhost:5000", BuildMethod<IHostAndStaticRoute>());
+            var uri = new Uri("http://localhost:5000/");
+            var hostMock = new Mock<IHost>();
+            hostMock
+                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<Uri?>(uri));
+            
+            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api"),
+                new Uri(uri, "api"),
                 RequestType.Read);
         }
 
@@ -32,10 +41,16 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(host: "http://localhost:5000/api", BuildMethod<IHostPathAndStaticRoute>());
+            var uri = new Uri("http://localhost:5000/");
+            var hostMock = new Mock<IHost>();
+            hostMock
+                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<Uri?>(new Uri(uri, "api")));
+            
+            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/controller"),
+                new Uri(uri, "api/controller"),
                 RequestType.Read);
         }
 
@@ -44,10 +59,16 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var httpRequest = BuildRequest(host: "http://localhost:5000/api/", BuildMethod<IHostPathWithSlashAndStaticRoute>());
+            var uri = new Uri("http://localhost:5000/");
+            var hostMock = new Mock<IHost>();
+            hostMock
+                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<Uri?>(new Uri(uri, "api")));
+            
+            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathWithSlashAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/controller"),
+                new Uri(uri, "api/controller"),
                 RequestType.Read);
         }
 
