@@ -83,7 +83,7 @@ namespace NClient.Providers.Api.Rest
             if (string.IsNullOrEmpty(uri))
                 throw _clientValidationExceptionFactory.HostUriNotDefined();
             
-            var resource = new Uri(Path.Combine(uri, route));
+            var resource = new Uri(PathHelper.Combine(uri, route));
             var request = new Request(requestId, resource, requestType);
 
             var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
