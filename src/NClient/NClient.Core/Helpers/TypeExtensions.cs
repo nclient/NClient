@@ -64,57 +64,18 @@ namespace NClient.Core.Helpers
         public static MethodInfo[] GetUnhiddenInterfaceMethods(this Type type, bool inherit = false)
         {
             var methods = GetAllInterfaceMethods(type, inherit);
-            var filterSet = new HashSet<MethodInfo>();
+            var filterSet = new HashSet<MethodInfo>(new OverridingMethodInfoEqualityComparer());
 
             foreach (var method in methods)
             {
                 if (method.IsHideBySig) //shadows by signature
                 {
-
-                    if (!SetContainsMethod(filterSet, method))
+                    if(!filterSet.Contains(method, new OverridingMethodInfoEqualityComparer()))
                         filterSet.Add(method);
                 }
             }
             return filterSet.ToArray(); 
         }
-
-        private static bool SetContainsMethod(HashSet<MethodInfo> set, MethodInfo method)
-        {
-            if (set.Count == 0)
-                return false;
-
-            foreach (var element in set)
-            {
-                if (method.Name == element.Name)
-                {
-                    var methodParams = method.GetParameters();
-                    var elementParams = element.GetParameters();
-
-                    if (methodParams.Length == 0)
-                        return true;
-
-                    if (methodParams.Length == elementParams.Length)
-                    {
-
-                        for (int i = 0; i < methodParams.Length; i++)
-                        {
-                            var methodParam = methodParams[i];
-                            var elementParam = elementParams[i];
-                            if (methodParam.ParameterType == elementParam.ParameterType)
-                            {
-                                if (methodParam.Name == elementParam.Name)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            }
-            return false;
-        }
-
 
         public static bool HasMultipleInheritance(this Type type)
         {
