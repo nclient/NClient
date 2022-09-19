@@ -9,5 +9,6 @@ namespace NClient.Providers.Transport.Common
         void Renew();
         void Cancel();
         bool IsCancellationRequested { get; }
+        void Dispose();
     }
 }

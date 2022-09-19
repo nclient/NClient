@@ -12,6 +12,7 @@ namespace NClient.Standalone.ClientProxy.Validation
         }
         public void Renew()
         {
+            _canceller.Dispose();
             _canceller = new();
         }
         public void Cancel()
@@ -25,6 +26,11 @@ namespace NClient.Standalone.ClientProxy.Validation
             {
                 return _canceller.IsCancellationRequested;
             }
+        }
+
+        public void Dispose()
+        {
+            _canceller.Dispose();
         }
     }
 }
