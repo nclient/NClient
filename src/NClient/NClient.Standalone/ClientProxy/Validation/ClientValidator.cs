@@ -25,7 +25,7 @@ namespace NClient.Standalone.ClientProxy.Validation
 {
     internal interface IClientValidator
     {
-        void EnsureAsync<TClient>()
+        void Ensure<TClient>()
             where TClient : class;
     }
 
@@ -61,7 +61,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                            .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
         }
 
-        public void EnsureAsync<TClient>()
+        public void Ensure<TClient>()
             where TClient : class
         {
             BuilderContext<IRequest, IResponse> validationContext = _builderContext.WithHost(FakeHost)
@@ -79,10 +79,10 @@ namespace NClient.Standalone.ClientProxy.Validation
             _interceptor = _clientInterceptorFactory.Create<TClient, IRequest, IResponse>(validationContext);
             var client = _clientProxyGenerator.CreateClient<TClient>(_interceptor);
 
-            EnsureValidityAsync(client);
+            EnsureValidity(client);
         }
         
-        private void EnsureValidityAsync<T>(T client) where T : class
+        private void EnsureValidity<T>(T client) where T : class
         {
             var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(T), true);
 
