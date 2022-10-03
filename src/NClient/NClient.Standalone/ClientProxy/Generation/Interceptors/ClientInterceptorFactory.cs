@@ -27,7 +27,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal interface IClientInterceptorFactory
     {
-        IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext);
+        IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext, IPipelineCanceller pipelineCanceler);
         IPipelineCanceller PipelineCanceler { get; set; }
     }
 
@@ -38,7 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IGuidProvider _guidProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
-        
+
         private IPipelineCanceller _pipelineCanceler;
         public IPipelineCanceller PipelineCanceler
         { 
@@ -55,7 +55,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _proxyGenerator = proxyGenerator;
             _timeoutSelector = new TimeoutSelector(clientValidationExceptionFactory);
             _guidProvider = new GuidProvider();
-            _pipelineCanceler = new PipelineCanceller();
             _methodBuilder = new MethodBuilder(
                 new OperationAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
@@ -65,8 +64,10 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
         }
 
-        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext)
+        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext,
+            IPipelineCanceller pipelineCanceler)
         {
+            _pipelineCanceler = pipelineCanceler;
             var logger = new CompositeLogger<TClient>(builderContext.LoggerFactory is not null
                 ? builderContext.Loggers.Concat(new[] { builderContext.LoggerFactory.CreateLogger<TClient>() })
                 : builderContext.Loggers);

@@ -8,6 +8,7 @@ using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
 using NClient.Providers.Mapping;
 using NClient.Providers.Serialization;
+using NClient.Providers.Transport.Common;
 using NClient.Providers.Validation;
 using NClient.Standalone.Client.Authorization;
 using NClient.Standalone.ClientProxy.Building.Configuration.Handling;
@@ -30,7 +31,7 @@ namespace NClient.Standalone.ClientProxy.Building
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientProxyGenerator _clientProxyGenerator;
         private readonly ClientValidator<TRequest, TResponse> _clientValidator;
-
+        private readonly IPipelineCanceller _pipelineCanceler;
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
@@ -40,6 +41,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _clientValidator = new ClientValidator<TRequest, TResponse>(_proxyGeneratorProvider.Value, 
                 _clientInterceptorFactory, 
                 context);
+            _pipelineCanceler = new PipelineCanceller();
         }
 
         public INClientOptionalBuilder<TClient, TRequest, TResponse> WithTokenAuthorization(IAccessTokens accessTokens)
@@ -177,7 +179,7 @@ namespace NClient.Standalone.ClientProxy.Building
             _context.EnsureComplete();
             _clientValidator.Ensure<TClient>();
             
-            var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context);
+            var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context, _pipelineCanceler);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);
         }
     }

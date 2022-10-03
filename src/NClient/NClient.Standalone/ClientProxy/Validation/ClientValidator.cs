@@ -9,6 +9,7 @@ using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
+using NClient.Providers.Transport.Common;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
@@ -37,11 +38,13 @@ namespace NClient.Standalone.ClientProxy.Validation
         private readonly BuilderContext<IRequest, IResponse> _builderContext;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private IAsyncInterceptor? _interceptor;
+        private readonly IPipelineCanceller _pipelineCanceler;
 
         public ClientValidator(IProxyGenerator proxyGenerator,
             IClientInterceptorFactory clientInterceptorFactory,
             BuilderContext<TRequest, TResponse> builderContext)
         {
+            _pipelineCanceler = new PipelineCanceller();
             _clientInterceptorFactory = clientInterceptorFactory;
             _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
             _builderContext = new BuilderContext<IRequest, IResponse>()
@@ -76,7 +79,7 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .WithoutResponseValidation()
                 .WithoutLogging();
 
-            _interceptor = _clientInterceptorFactory.Create<TClient, IRequest, IResponse>(validationContext);
+            _interceptor = _clientInterceptorFactory.Create<TClient, IRequest, IResponse>(validationContext, _pipelineCanceler);
             var client = _clientProxyGenerator.CreateClient<TClient>(_interceptor);
 
             EnsureValidity(client);

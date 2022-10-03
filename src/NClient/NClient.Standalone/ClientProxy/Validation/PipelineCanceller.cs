@@ -8,12 +8,12 @@ namespace NClient.Standalone.ClientProxy.Validation
         internal CancellationTokenSource _canceller;
         public PipelineCanceller()
         {
-            _canceller = new();
+            _canceller = new CancellationTokenSource();
         }
         public void Renew()
         {
             _canceller.Dispose();
-            _canceller = new();
+            _canceller = new CancellationTokenSource();
         }
         public void Cancel()
         {
