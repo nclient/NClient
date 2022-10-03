@@ -13,6 +13,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
 
         public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset, IPipelineCanceller pipelineCanceller)
         {
+            pipelineCanceller.Cancel();
             return new StubTransportRequestBuilder<TRequest, TResponse>();
         }
     }
