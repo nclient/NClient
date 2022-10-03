@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NClient.Testing.Common.Clients;
 using Microsoft.Extensions.DependencyModel;
 using System.Linq;
+using NClient.Exceptions;
 
 namespace NClient.Standalone.Tests.Validation
 {
@@ -18,6 +19,16 @@ namespace NClient.Standalone.Tests.Validation
 
         public interface IHiddenMyClient : IMyController
         {
+
+            [GetMethod()]
+            int[] Get();
+
+            [PutMethod()]
+            int[] Put();
+
+            [PostMethod()]
+            int[] Post();
+
             [DeleteMethod()]
             new void DeleteAsync();
         }
@@ -48,7 +59,7 @@ namespace NClient.Standalone.Tests.Validation
         {
             var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClientNoParentType>(host: _uri);
             Func<IMyClientNoParentType> buildFunc = () => optsBuilder.Build();
-            buildFunc.Should().Throw<Exception>();
+            buildFunc.Should().Throw<ClientValidationException>();
         }
 
         [Test]
@@ -71,8 +82,11 @@ namespace NClient.Standalone.Tests.Validation
         public void ClientValidator_WhenTypeHasHiddenAndUnhiddenMethods_ReturnUnhiddenMethodsOnly()
         {
             var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(IHiddenMyClient), true);
-            Assert.IsTrue(methods.Count() == 1);
-            Assert.IsTrue(methods[0].Name == "DeleteAsync");
+            Assert.IsTrue(methods.Count() == 4);
+            Assert.IsTrue(methods[0].Name == "Get");
+            Assert.IsTrue(methods[1].Name == "Put");
+            Assert.IsTrue(methods[2].Name == "Post");
+            Assert.IsTrue(methods[3].Name == "DeleteAsync");
         }
 
         [Test]
