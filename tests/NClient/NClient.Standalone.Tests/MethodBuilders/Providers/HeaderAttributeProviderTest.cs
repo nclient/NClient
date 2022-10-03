@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using NClient.Annotations.Http;
-using NClient.Exceptions;
-using NClient.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NClient.Standalone.Exceptions.Factories;
 using NUnit.Framework;
@@ -34,6 +32,8 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         private interface IClientAndMethodHeader {[Header("method-header", "value")] void Method(); }
         [Header("client-header-1", "value"), Header("client-header-2", "value")]
         private interface IClientAndMethodHeaders {[Header("method-header-1", "value"), Header("method-header-2", "value")] void Method(); }
+        [Header("header-1", "value1"), Header("header-2", "value1")]
+        private interface IDuplicateClientAndMethodHeaders {[Header("header-1", "value2"), Header("header-2", "value2")] void Method(); }
 
         [Other]
         private interface IOther { void Method(); }
@@ -53,70 +53,67 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
 
         public static IEnumerable ValidTestCases = new[]
         {
-            new TestCaseData(typeof(INoHeaders), GetMethodInfo<INoHeaders>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(INoHeaders), GetMethodInfo<INoHeaders>(),
                     Array.Empty<HeaderAttribute>())
                 .SetName("No client header"),
 
-            new TestCaseData(typeof(IClientHeader), GetMethodInfo<IClientHeader>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientHeader), GetMethodInfo<IClientHeader>(),
                     new[] { new HeaderAttribute("client-header", "value") })
                 .SetName("Client header"),
-            new TestCaseData(typeof(IClientHeaders), GetMethodInfo<IClientHeaders>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientHeaders), GetMethodInfo<IClientHeaders>(),
                     new[] { new HeaderAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value") })
                 .SetName("Client headers"),
-            new TestCaseData(typeof(IDuplicateClientHeaders), GetMethodInfo<IDuplicateClientHeaders>(), Array.Empty<MethodParam>(),
-                    new[] { new HeaderAttribute("client-header", "value2") })
+            new TestCaseData(typeof(IDuplicateClientHeaders), GetMethodInfo<IDuplicateClientHeaders>(),
+                    new[] { new HeaderAttribute("client-header", "value1"), new HeaderAttribute("client-header", "value2") })
                 .SetName("Duplicate client headers"),
 
-            new TestCaseData(typeof(IMethodHeader), GetMethodInfo<IMethodHeader>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IMethodHeader), GetMethodInfo<IMethodHeader>(),
                     new[] { new HeaderAttribute("method-header", "value") })
                 .SetName("Method header"),
-            new TestCaseData(typeof(IMethodHeaders), GetMethodInfo<IMethodHeaders>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IMethodHeaders), GetMethodInfo<IMethodHeaders>(),
                     new[] { new HeaderAttribute("method-header-1", "value"), new HeaderAttribute("method-header-2", "value") })
                 .SetName("Method headers"),
-            new TestCaseData(typeof(IDuplicateMethodHeaders), GetMethodInfo<IDuplicateMethodHeaders>(), Array.Empty<MethodParam>(),
-                    new[] { new HeaderAttribute("method-header", "value2") })
+            new TestCaseData(typeof(IDuplicateMethodHeaders), GetMethodInfo<IDuplicateMethodHeaders>(),
+                    new[] { new HeaderAttribute("method-header", "value1"), new HeaderAttribute("method-header", "value2") })
                 .SetName("Duplicate method headers"),
 
-            new TestCaseData(typeof(IClientAndMethodHeader), GetMethodInfo<IClientAndMethodHeader>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientAndMethodHeader), GetMethodInfo<IClientAndMethodHeader>(),
                     new[] { new HeaderAttribute("client-header", "value"), new HeaderAttribute("method-header", "value") })
                 .SetName("Client and method header"),
-            new TestCaseData(typeof(IClientAndMethodHeaders), GetMethodInfo<IClientAndMethodHeaders>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientAndMethodHeaders), GetMethodInfo<IClientAndMethodHeaders>(),
                     new[]
                     {
                         new HeaderAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value"),
                         new HeaderAttribute("method-header-1", "value"), new HeaderAttribute("method-header-2", "value")
                     })
                 .SetName("Client and method headers"),
+            new TestCaseData(typeof(IDuplicateClientAndMethodHeaders), GetMethodInfo<IDuplicateClientAndMethodHeaders>(),
+                    new[]
+                    {
+                        new HeaderAttribute("header-1", "value1"), new HeaderAttribute("header-2", "value1"),
+                        new HeaderAttribute("header-1", "value2"), new HeaderAttribute("header-2", "value2")
+                    })
+                .SetName("Duplicate client and method headers"),
 
-            new TestCaseData(typeof(IOther), GetMethodInfo<IOther>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IOther), GetMethodInfo<IOther>(),
                     Array.Empty<HeaderAttribute>())
                 .SetName("Other attribute"),
-            new TestCaseData(typeof(IOtherAndHeader), GetMethodInfo<IOtherAndHeader>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IOtherAndHeader), GetMethodInfo<IOtherAndHeader>(),
                     new[] { new HeaderAttribute("client-header", "value") })
                 .SetName("Other and header attribute"),
-            new TestCaseData(typeof(IInherited), GetMethodInfo<IInherited>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IInherited), GetMethodInfo<IInherited>(),
                     new[] { new InheritedAttribute("client-header", "value") })
                 .SetName("Inherited attribute"),
-            new TestCaseData(typeof(IInheritedAndHeader), GetMethodInfo<IInheritedAndHeader>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IInheritedAndHeader), GetMethodInfo<IInheritedAndHeader>(),
                     new[] { new InheritedAttribute("client-header-1", "value"), new HeaderAttribute("client-header-2", "value") })
                 .SetName("Inherited and header attribute"),
 
-            new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientInheritance), GetMethodInfo<IClientInheritance>(),
                     new[] { new HeaderAttribute("client-header-1", "value") })
                 .SetName("With inheritance"),
-            new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(), Array.Empty<MethodParam>(),
+            new TestCaseData(typeof(IClientDeepInheritance), GetMethodInfo<IClientDeepInheritance>(),
                     new[] { new HeaderAttribute("client-header-1", "value") })
                 .SetName("With deep inheritance")
-        };
-
-        public static IEnumerable InvalidTestCases = new[]
-        {
-            new TestCaseData(typeof(IClientHeader), GetMethodInfo<IClientHeader>(),
-                    new[] { new MethodParam("client-header", typeof(string), new HeaderParamAttribute { Name = "client-header" }) })
-                .SetName("Duplicate client and param headers"),
-            new TestCaseData(typeof(IMethodHeader), GetMethodInfo<IMethodHeader>(),
-                    new[] { new MethodParam("method-header", typeof(string), new HeaderParamAttribute { Name = "method-header" }) })
-                .SetName("Duplicate method and param headers")
         };
 
         private MetadataAttributeProvider _metadataAttributeProvider = null!;
@@ -129,20 +126,11 @@ namespace NClient.Standalone.Tests.MethodBuilders.Providers
         }
 
         [TestCaseSource(nameof(ValidTestCases))]
-        public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams, HeaderAttribute[] expectedAttributes)
+        public void Get_ValidTestCase_HeaderAttribute(Type clientType, MethodInfo methodInfo, HeaderAttribute[] expectedAttributes)
         {
-            var actualAttributes = _metadataAttributeProvider.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams);
+            var actualAttributes = _metadataAttributeProvider.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>());
 
             actualAttributes.Should().BeEquivalentTo(expectedAttributes, config => config.WithoutStrictOrdering());
-        }
-
-        [TestCaseSource(nameof(InvalidTestCases))]
-        public void Get_InvalidTestCase_ThrowNClientException(Type clientType, MethodInfo methodInfo, MethodParam[] methodParams)
-        {
-            _metadataAttributeProvider
-                .Invoking(x => x.Find(clientType, methodInfo, overridingMethods: Array.Empty<MethodInfo>(), methodParams))
-                .Should()
-                .Throw<NClientException>();
         }
 
         private static MethodInfo GetMethodInfo<T>()

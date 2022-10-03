@@ -52,6 +52,7 @@ namespace NClient.AspNetCore.Mappers
                 IRouteParamAttribute x => new FromRouteAttribute { Name = x.Name },
                 IQueryParamAttribute x => new FromQueryAttribute { Name = x.Name },
                 IBodyParamAttribute => new FromBodyAttribute(),
+                IFormParamAttribute => new FromFormAttribute(),
                 IHeaderParamAttribute x => new FromHeaderAttribute { Name = x.Name },
 
                 { } => attribute,

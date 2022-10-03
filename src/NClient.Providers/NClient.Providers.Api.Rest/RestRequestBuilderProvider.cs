@@ -2,6 +2,7 @@
 using NClient.Core.Helpers.ObjectToKeyValueConverters;
 using NClient.Core.Helpers.ObjectToKeyValueConverters.Factories;
 using NClient.Providers.Api.Rest.Exceptions.Factories;
+using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Providers;
 
 namespace NClient.Providers.Api.Rest
@@ -30,6 +31,7 @@ namespace NClient.Providers.Api.Rest
                 new RouteTemplateProvider(_clientValidationExceptionFactory),
                 new RouteProvider(_objectMemberManager, _clientArgumentExceptionFactory, _clientValidationExceptionFactory),
                 new RequestTypeProvider(_clientValidationExceptionFactory),
+                new FormUrlEncoder(),
                 new ObjectToKeyValueConverter(_objectMemberManager, _objectToKeyValueConverterExceptionFactory),
                 _clientValidationExceptionFactory,
                 toolset);
