@@ -11,7 +11,7 @@ namespace NClient.Providers.Transport
         Stream Stream { get; }
         
         /// <summary>Gets response content encoding.</summary>
-        Encoding Encoding { get; }
+        Encoding? Encoding { get; }
         
         /// <summary>Gets metadata returned by server with the response content.</summary>
         IMetadataContainer Metadatas { get; }

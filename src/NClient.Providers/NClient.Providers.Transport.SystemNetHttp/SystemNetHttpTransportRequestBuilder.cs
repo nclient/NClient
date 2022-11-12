@@ -34,7 +34,28 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 RequestUri = uri
             };
 
-            if (request.Content is not null)
+            if (request.Content is IEnumerable<IContent> contents)
+            {
+                var multipartContent = new System.Net.Http.MultipartContent();
+                foreach (var content in contents)
+                {
+                    content.Stream.Position = 0;
+                    #if NETSTANDARD2_0 || NETFRAMEWORK
+                    var httpContent = new LeavingOpenStreamContent(request.Content.Stream);
+                    #else
+                    var httpContent = new StreamContent(content.Stream);
+                    #endif
+                    
+                    foreach (var metadata in content.Metadatas.SelectMany(x => x.Value))
+                    {
+                        httpContent.Headers.Add(metadata.Name, metadata.Value);
+                    }
+
+                    multipartContent.Add(httpContent);
+                }
+                httpRequestMessage.Content = multipartContent;
+            }
+            else if (request.Content is not null)
             {
                 request.Content.Stream.Position = 0;
 
