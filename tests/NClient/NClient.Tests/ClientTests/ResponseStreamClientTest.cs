@@ -152,7 +152,7 @@ namespace NClient.Tests.ClientTests
             response.Content.Encoding.Should().Be(Encoding.UTF8);
             if (streamTypeName == MemoryStreamTypeName)
                 response.Content.Stream.Position.Should().Be(0);
-            (await response.Content.Stream.ReadToEndAsync(response.Content.Encoding)).Should().Be(stringContent);
+            (await response.Content.Stream.ReadToEndAsync(response.Content.Encoding!)).Should().Be(stringContent);
         }
         
         private static async Task AssertFailureResponseAsync(IResponse response, string streamTypeName, HttpStatusCode errorCode)
