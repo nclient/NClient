@@ -35,5 +35,5 @@ runs:
       run: tar -xzf build-artifacts-${{ inputs.target-framework }}.tar.gz
       shell: bash
     - name: Test with ${{ inputs.target-framework }}
-      run: dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release /p:CheckEolTargetFramework=false
+      run: dotnet test ${{ inputs.solution }} --logger trx --results-directory ./TestResults --framework ${{ inputs.target-framework }} --no-build --verbosity normal --configuration Release
       shell: bash
