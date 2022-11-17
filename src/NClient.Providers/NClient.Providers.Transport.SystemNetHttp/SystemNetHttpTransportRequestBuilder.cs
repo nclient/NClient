@@ -41,7 +41,7 @@ namespace NClient.Providers.Transport.SystemNetHttp
                 {
                     content.Stream.Position = 0;
                     #if NETSTANDARD2_0 || NETFRAMEWORK
-                    var httpContent = new LeavingOpenStreamContent(request.Content.Stream);
+                    var httpContent = new LeavingOpenStreamContent(content.Stream);
                     #else
                     var httpContent = new StreamContent(content.Stream);
                     #endif
