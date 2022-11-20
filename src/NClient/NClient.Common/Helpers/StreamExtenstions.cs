@@ -8,10 +8,12 @@ namespace NClient.Common.Helpers
     // ReSharper disable once UnusedType.Global
     internal static class ContentExtensions
     {
-        internal static async Task<string> ReadToEndAsync(this Stream stream, Encoding encoding, CancellationToken cancellationToken = default)
+        internal static async Task<string> ReadToEndAsync(this Stream stream, Encoding? encoding, CancellationToken cancellationToken = default)
         {
+            var encodingOrDefault = encoding ?? Encoding.UTF8;
+            
             if (stream is MemoryStream memoryStream)
-                return GetString(memoryStream, encoding);
+                return GetString(memoryStream, encodingOrDefault);
 
             memoryStream = new MemoryStream();
             #if NETSTANDARD2_0 || NETFRAMEWORK
@@ -19,7 +21,7 @@ namespace NClient.Common.Helpers
             #else
             await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
             #endif
-            return GetString(memoryStream, encoding);
+            return GetString(memoryStream, encodingOrDefault);
         }
 
         private static string GetString(MemoryStream memoryStream, Encoding encoding)

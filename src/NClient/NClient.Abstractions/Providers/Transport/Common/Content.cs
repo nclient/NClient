@@ -13,7 +13,7 @@ namespace NClient.Providers.Transport
         public Stream Stream { get; }
 
         /// <summary>Gets response content encoding.</summary>
-        public Encoding Encoding { get; }
+        public Encoding? Encoding { get; }
         
         /// <summary>Gets metadata returned by server with the response content.</summary>
         public IMetadataContainer Metadatas { get; }
@@ -22,7 +22,7 @@ namespace NClient.Providers.Transport
         public Content(Stream? streamContent = null, string? encoding = null, IMetadataContainer? headerContainer = null)
         {
             Stream = streamContent ?? new MemoryStream(Array.Empty<byte>());
-            Encoding = string.IsNullOrEmpty(encoding) ? Encoding.UTF8 : Encoding.GetEncoding(encoding);
+            Encoding = string.IsNullOrEmpty(encoding) ? null : Encoding.GetEncoding(encoding);
             Metadatas = headerContainer ?? new MetadataContainer(Array.Empty<IMetadata>());
         }
     }
