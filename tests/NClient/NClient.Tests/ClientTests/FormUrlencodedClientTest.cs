@@ -33,10 +33,12 @@ namespace NClient.Tests.ClientTests
         [Test]
         public async Task PostAsync_WithDictionary_ShouldReturnOk()
         {
+            const int id = 1;
+            const int value = 1;
             var keyValues = new Dictionary<string, object>
             {
-                ["id"] = 1,
-                ["value"] = "test"
+                [nameof(id)] = id,
+                [nameof(value)] = value
             };
             using var api = FormUrlencodedApiMockFactory.MockPostMethod(keyValues);
 
