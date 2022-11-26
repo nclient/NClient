@@ -23,16 +23,15 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var uri = new Uri("http://localhost:5000/");
             var hostMock = new Mock<IHost>();
             hostMock
                 .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(uri));
+                .Returns(Task.FromResult<Uri?>(RequestUri));
             
             var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(uri, "api"),
+                new Uri(RequestUri, "api"),
                 RequestType.Read);
         }
 
@@ -41,16 +40,15 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var uri = new Uri("http://localhost:5000/");
             var hostMock = new Mock<IHost>();
             hostMock
                 .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(new Uri(uri, "api")));
+                .Returns(Task.FromResult<Uri?>(new Uri(RequestUri, "api")));
             
             var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(uri, "api/controller"),
+                new Uri(RequestUri, "api/controller"),
                 RequestType.Read);
         }
 
@@ -59,16 +57,15 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var uri = new Uri("http://localhost:5000/");
             var hostMock = new Mock<IHost>();
             hostMock
                 .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(new Uri(uri, "api")));
+                .Returns(Task.FromResult<Uri?>(new Uri(RequestUri, "api")));
             
             var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathWithSlashAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(uri, "api/controller"),
+                new Uri(RequestUri, "api/controller"),
                 RequestType.Read);
         }
 
@@ -80,7 +77,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<ICommonStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api"),
+                new Uri(RequestUri, "/api"),
                 RequestType.Read);
         }
 
@@ -92,7 +89,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<ICommonStaticRouteWithControllerToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/CommonStaticRouteWithControllerToken"),
+                new Uri(RequestUri, "/api/CommonStaticRouteWithControllerToken"),
                 RequestType.Read);
         }
 
@@ -104,7 +101,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IStaticRouteWithControllerToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/StaticRouteWithControllerToken/entity"),
+                new Uri(RequestUri, "/api/StaticRouteWithControllerToken/entity"),
                 RequestType.Read);
         }
 
@@ -116,7 +113,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IStaticRouteWithControllerAndActionTokens>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/StaticRouteWithControllerAndActionTokens/Method"),
+                new Uri(RequestUri, "/api/StaticRouteWithControllerAndActionTokens/Method"),
                 RequestType.Read);
         }
 
@@ -128,7 +125,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/action"),
+                new Uri(RequestUri, "/api/action"),
                 RequestType.Read);
         }
 
@@ -140,7 +137,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IClientWithRootedRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/action"),
+                new Uri(RequestUri, "/api/action"),
                 RequestType.Read);
         }
 
@@ -152,7 +149,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IOverrideClientRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/action"),
+                new Uri(RequestUri, "/action"),
                 RequestType.Read);
         }
 
@@ -164,7 +161,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IClientRouteEndsWithSlash>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/action"),
+                new Uri(RequestUri, "/api/action"),
                 RequestType.Read);
         }
 
@@ -176,7 +173,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IMethodRouteEndsWithSlash>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/action"),
+                new Uri(RequestUri, "/api/action"),
                 RequestType.Read);
         }
 
@@ -188,7 +185,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IStaticRouteWithActionToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/action/Method"),
+                new Uri(RequestUri, "/api/action/Method"),
                 RequestType.Read);
         }
 
@@ -200,7 +197,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IApiRouteWithActionToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/Method"),
+                new Uri(RequestUri, "/Method"),
                 RequestType.Read);
         }
 
@@ -212,7 +209,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IMethodRouteWithControllerToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/MethodRouteWithControllerToken"),
+                new Uri(RequestUri, "/MethodRouteWithControllerToken"),
                 RequestType.Read);
         }
 
@@ -226,7 +223,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
                 1);
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/1"),
+                new Uri(RequestUri, "/1"),
                 RequestType.Read);
         }
 
@@ -240,7 +237,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
                 1);
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/1"),
+                new Uri(RequestUri, "/1"),
                 RequestType.Read);
         }
 
@@ -254,7 +251,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
                 1);
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/1"),
+                new Uri(RequestUri, "/1"),
                 RequestType.Read);
         }
 
@@ -346,7 +343,7 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
             var httpRequest = BuildRequest(BuildMethod<IPathWithApiVersionToken>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri("http://localhost:5000/api/v1.0"),
+                new Uri(RequestUri, "/api/v1.0"),
                 RequestType.Read);
         }
     }
