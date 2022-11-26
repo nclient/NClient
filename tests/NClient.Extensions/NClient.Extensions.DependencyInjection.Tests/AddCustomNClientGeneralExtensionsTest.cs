@@ -17,7 +17,7 @@ using NUnit.Framework;
 namespace NClient.Extensions.DependencyInjection.Tests
 {
     [Parallelizable]
-    public class AddCustomNClientExtensionsTest
+    public class AddCustomNClientGeneralExtensionsTest
     {
         [Test]
         public async Task AddCustomNClient_WithoutHttpClientAndLogging_NotThrow()
