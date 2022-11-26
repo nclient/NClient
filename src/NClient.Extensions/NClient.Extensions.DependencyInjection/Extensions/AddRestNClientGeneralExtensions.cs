@@ -8,148 +8,173 @@ using NClient.Core.Helpers;
 // ReSharper disable once CheckNamespace
 namespace NClient.Extensions.DependencyInjection
 {
-    public static class AddRestNClientExtensions
+    public static partial class AddRestNClientExtensions
     {
         internal static IGuidProvider GuidProvider { get; set; } = new GuidProvider();
 
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            string host)
+            string host, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             
-            return AddRestNClient<TClient>(serviceCollection, new Uri(host), builder => builder.Build());
+            return AddRestNClient<TClient>(serviceCollection, new Uri(host), builder => builder.Build(), serviceLifetime);
         }
         
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            Uri host)
+            Uri host, ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             
-            return AddRestNClient<TClient>(serviceCollection, host, builder => builder.Build());
+            return AddRestNClient<TClient>(serviceCollection, host, builder => builder.Build(), serviceLifetime);
         }
         
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
             string host, 
-            Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
+            Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             
-            return AddRestNClient(serviceCollection, new Uri(host), implementationFactory);
-        }
-        
-        /// <summary>Adds a NClient client to the DI container.</summary>
-        /// <param name="serviceCollection"></param>
-        /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <param name="implementationFactory">The action to configure NClient settings.</param>
-        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            Uri host, 
-            Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
-            where TClient : class
-        {
-            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(host, nameof(host));
-            
-            var internalClientName = GuidProvider.Create().ToString();
-            return serviceCollection.AddSingleton(serviceProvider =>
-            {
-                return implementationFactory(
-                    new RestNClientBuilder(internalClientName, serviceProvider)
-                        .For<TClient>(host));
-            }).AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
-        }
-        
-        /// <summary>Adds a NClient client to the DI container.</summary>
-        /// <param name="serviceCollection"></param>
-        /// <param name="host">The base address of URI used when sending requests.</param>
-        /// <param name="implementationFactory">The action to configure NClient settings.</param>
-        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
-        public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            string host, 
-            Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
-            where TClient : class
-        {
-            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
-            Ensure.IsNotNull(host, nameof(host));
-            
-            return AddRestNClient(serviceCollection, new Uri(host), implementationFactory);
+            return AddRestNClient(serviceCollection, new Uri(host), implementationFactory, serviceLifetime);
         }
 
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="host">The base address of URI used when sending requests.</param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
             Uri host, 
-            Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory)
+            Func<INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
+            where TClient : class
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(host, nameof(host));
+            var internalClientName = GuidProvider.Create().ToString();
+            
+            var serviceDescriptor = new ServiceDescriptor(typeof(TClient), serviceProvider =>
+            {
+                return implementationFactory(
+                    new RestNClientBuilder(internalClientName, serviceProvider)
+                        .For<TClient>(host));
+            }, serviceLifetime);
+            serviceCollection.Add(serviceDescriptor);
+            return serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+        }
+        
+        /// <summary>Adds a NClient client to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
+            string host, 
+            Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
+            where TClient : class
+        {
+            Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
+            Ensure.IsNotNull(host, nameof(host));
+            
+            return AddRestNClient(serviceCollection, new Uri(host), implementationFactory, serviceLifetime);
+        }
+
+        /// <summary>Adds a NClient client to the DI container.</summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="host">The base address of URI used when sending requests.</param>
+        /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
+        /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
+        public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
+            Uri host, 
+            Func<IServiceProvider, INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage>, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(host, nameof(host));
             
             var internalClientName = GuidProvider.Create().ToString();
-            return serviceCollection.AddSingleton(serviceProvider =>
+            
+            var serviceDescriptor = new ServiceDescriptor(typeof(TClient), serviceProvider =>
             {
                 return implementationFactory(serviceProvider, 
                     new RestNClientBuilder(internalClientName, serviceProvider)
                         .For<TClient>(host));
-            }).AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            }, serviceLifetime);
+            serviceCollection.Add(serviceDescriptor);
+            return serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
         
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            Func<IRestNClientBuilder, TClient> implementationFactory)
+            Func<IRestNClientBuilder, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
             var internalClientName = GuidProvider.Create().ToString();
-            return serviceCollection.AddSingleton(serviceProvider =>
+            
+            var serviceDescriptor = new ServiceDescriptor(typeof(TClient), serviceProvider =>
             {
                 return implementationFactory(new RestNClientBuilder(internalClientName, serviceProvider));
-            }).AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            }, serviceLifetime);
+            serviceCollection.Add(serviceDescriptor);
+            return serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
         
         /// <summary>Adds a NClient client to the DI container.</summary>
         /// <param name="serviceCollection"></param>
         /// <param name="implementationFactory">The action to configure NClient settings.</param>
+        /// <param name="serviceLifetime">Specifies the lifetime of a service in an <see cref="IServiceCollection"/></param>
         /// <typeparam name="TClient">The type of interface used to create the client.</typeparam>
         public static IHttpClientBuilder AddRestNClient<TClient>(this IServiceCollection serviceCollection,
-            Func<IServiceProvider, IRestNClientBuilder, TClient> implementationFactory)
+            Func<IServiceProvider, IRestNClientBuilder, TClient> implementationFactory,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
             where TClient : class
         {
             Ensure.IsNotNull(serviceCollection, nameof(serviceCollection));
             Ensure.IsNotNull(implementationFactory, nameof(implementationFactory));
             
             var internalClientName = GuidProvider.Create().ToString();
-            return serviceCollection.AddSingleton(serviceProvider =>
+            
+            var serviceDescriptor = new ServiceDescriptor(typeof(TClient), serviceProvider =>
             {
                 return implementationFactory(serviceProvider, new RestNClientBuilder(internalClientName, serviceProvider));
-            }).AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
+            }, serviceLifetime);
+            serviceCollection.Add(serviceDescriptor);
+            return serviceCollection.AddHttpClient(internalClientName).ConfigureHttpClient(ConfigureDefaultHttpClient);
         }
 
         private static void ConfigureDefaultHttpClient(HttpClient httpClient)
