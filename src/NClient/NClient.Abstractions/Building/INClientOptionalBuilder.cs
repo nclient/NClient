@@ -109,7 +109,7 @@ namespace NClient
         INClientOptionalBuilder<TClient, TRequest, TResponse> WithoutLogging();
         
         #endregion
-
+        
         /// <summary>Creates instance of <see cref="TClient"/>.</summary>
         TClient Build();
     }

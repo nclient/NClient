@@ -15,6 +15,7 @@ namespace NClient.Providers.Api.Rest.Exceptions.Factories
         ClientValidationException TemplatePartWithoutTokenOrText();
         ClientValidationException ComplexTypeInHeaderNotSupported(string parameterName);
         ClientValidationException MethodAttributeNotSupported(string attributeName);
+        ClientValidationException HostUriNotDefined();
     }
 
     internal class ClientValidationExceptionFactory : IClientValidationExceptionFactory
@@ -48,5 +49,8 @@ namespace NClient.Providers.Api.Rest.Exceptions.Factories
 
         public ClientValidationException MethodAttributeNotSupported(string attributeName) =>
             new($"The method attribute '{attributeName}' not supported.");
+
+        public ClientValidationException HostUriNotDefined() => 
+            new("The required host uri is null or empty");
     }
 }

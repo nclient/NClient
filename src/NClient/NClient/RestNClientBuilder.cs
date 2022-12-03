@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NClient.Common.Helpers;
+using NClient.Providers.Host;
 using NClient.Providers.Transport.SystemNetHttp.Mapping;
+using NClient.Standalone.Client.Host;
 
 namespace NClient
 {
@@ -22,6 +24,12 @@ namespace NClient
         /// <param name="host">The address of the web service host.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
         INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri host) 
+            where TClient : class;
+        
+        /// <summary>Sets client interface type and web service host.</summary>
+        /// <param name="host">The object with address of the web service host.</param>
+        /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
+        INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost host) 
             where TClient : class;
     }
     
@@ -55,11 +63,20 @@ namespace NClient
         /// <summary>Sets client interface type and web service host.</summary>
         /// <param name="host">The address of the web service host.</param>
         /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
-        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri host) 
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(Uri host)
             where TClient : class
         {
             Ensure.IsNotNull(host, nameof(host));
 
+            return For<TClient>(new Host(host));
+        }
+
+        /// <summary>Sets client interface type and web service host.</summary>
+        /// <param name="host">The address of the web service host.</param>
+        /// <typeparam name="TClient">The type of interface of controller used to create the client.</typeparam>
+        public INClientOptionalBuilder<TClient, HttpRequestMessage, HttpResponseMessage> For<TClient>(IHost host) 
+            where TClient : class
+        {
             var optionsMonitor = _serviceProvider?.GetService<IOptionsMonitorCache<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>();
             var defaultOptions = _serviceProvider?.GetService<IOptions<NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>>>()?.Value
                 ?? new NClientBuilderOptions<TClient, HttpRequestMessage, HttpResponseMessage>();
