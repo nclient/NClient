@@ -6,7 +6,6 @@ using NClient.Invocation;
 using NClient.Providers.Api;
 using NClient.Providers.Authorization;
 using NClient.Providers.Handling;
-using NClient.Providers.Host;
 using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
 using NClient.Providers.Serialization;
@@ -21,6 +20,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
     {
         private readonly IClientBuildExceptionFactory _clientBuildExceptionFactory;
         
+        public Uri Host { get; private set; } = null!;
+        
         public ITransportProvider<TRequest, TResponse> TransportProvider { get; private set; } = null!;
         public ITransportRequestBuilderProvider<TRequest, TResponse> TransportRequestBuilderProvider { get; private set; } = null!;
         public IResponseBuilderProvider<TRequest, TResponse> ResponseBuilderProvider { get; private set; } = null!;
@@ -30,7 +31,6 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public ISerializerProvider SerializerProvider { get; private set; } = null!;
 
         public IReadOnlyCollection<IAuthorizationProvider> AuthorizationProviders { get; private set; } = null!;
-        public IHost Host { get; private set; } = null!;
 
         public IReadOnlyCollection<IResponseValidatorProvider<TRequest, TResponse>> ResponseValidatorProviders { get; private set; }
 
@@ -62,6 +62,8 @@ namespace NClient.Standalone.ClientProxy.Building.Context
         public BuilderContext(BuilderContext<TRequest, TResponse> builderContext)
         {
             _clientBuildExceptionFactory = builderContext._clientBuildExceptionFactory;
+            
+            Host = builderContext.Host;
 
             TransportProvider = builderContext.TransportProvider;
             TransportRequestBuilderProvider = builderContext.TransportRequestBuilderProvider;
@@ -72,8 +74,6 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             SerializerProvider = builderContext.SerializerProvider;
 
             AuthorizationProviders = builderContext.AuthorizationProviders.ToArray();
-
-            Host = builderContext.Host;
             
             ResponseValidatorProviders = builderContext.ResponseValidatorProviders.ToArray();
 
@@ -91,14 +91,12 @@ namespace NClient.Standalone.ClientProxy.Building.Context
             LoggerFactory = builderContext.LoggerFactory;
         }
 
-        public BuilderContext<TRequest, TResponse> WithHost(IHost? host)
+        public BuilderContext<TRequest, TResponse> WithHost(Uri host)
         {
-            return host is not null
-                ? new BuilderContext<TRequest, TResponse>(this)
-                {
-                    Host = host
-                }
-                : new BuilderContext<TRequest, TResponse>();
+            return new BuilderContext<TRequest, TResponse>(this)
+            {
+                Host = host
+            };
         }
 
         public BuilderContext<TRequest, TResponse> WithTransport(

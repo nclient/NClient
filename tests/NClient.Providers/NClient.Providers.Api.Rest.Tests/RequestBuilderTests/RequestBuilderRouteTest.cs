@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
 using NClient.Annotations;
 using NClient.Annotations.Http;
 using NClient.Exceptions;
-using NClient.Providers.Host;
 using NClient.Providers.Transport;
 using NClient.Testing.Common.Entities;
 using NUnit.Framework;
@@ -23,15 +20,10 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var hostMock = new Mock<IHost>();
-            hostMock
-                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(RequestUri));
-            
-            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostAndStaticRoute>());
+            var httpRequest = BuildRequest(BuildMethod<IHostAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(RequestUri, "api"),
+                new Uri(RequestUri, "/api"),
                 RequestType.Read);
         }
 
@@ -40,15 +32,10 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var hostMock = new Mock<IHost>();
-            hostMock
-                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(new Uri(RequestUri, "api")));
-            
-            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathAndStaticRoute>());
+            var httpRequest = BuildRequest(path: "/api", BuildMethod<IHostPathAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(RequestUri, "api/controller"),
+                new Uri(RequestUri, "/api/controller"),
                 RequestType.Read);
         }
 
@@ -57,15 +44,10 @@ namespace NClient.Providers.Api.Rest.Tests.RequestBuilderTests
         [Test]
         public async Task Build_HostPathWithSlashAndStaticRoute_OnlyCommonStaticRoute()
         {
-            var hostMock = new Mock<IHost>();
-            hostMock
-                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(new Uri(RequestUri, "api")));
-            
-            var httpRequest = BuildRequest(host: hostMock.Object, BuildMethod<IHostPathWithSlashAndStaticRoute>());
+            var httpRequest = BuildRequest(path: "/api/", BuildMethod<IHostPathWithSlashAndStaticRoute>());
 
             await AssertHttpRequestAsync(httpRequest,
-                new Uri(RequestUri, "api/controller"),
+                new Uri(RequestUri, "/api/controller"),
                 RequestType.Read);
         }
 
