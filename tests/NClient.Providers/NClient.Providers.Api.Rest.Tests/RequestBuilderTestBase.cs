@@ -23,7 +23,6 @@ using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
-using NClient.Testing.Common.Helpers;
 using NUnit.Framework;
 using StandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.ClientValidationExceptionFactory;
 using IStandaloneClientValidationExceptionFactory = NClient.Standalone.Exceptions.Factories.IClientValidationExceptionFactory;
@@ -33,6 +32,16 @@ namespace NClient.Providers.Api.Rest.Tests
     public abstract class RequestBuilderTestBase
     {
         protected static readonly Guid RequestId = Guid.Parse("5bb86773-9999-483e-aa9a-3cce10e47fb1");
+        protected static readonly Uri RequestUri = new("http://localhost:5000");
+        protected static readonly Encoding RequestEncoding = Encoding.UTF8;
+        
+        protected Metadata AcceptMetadata = null!;
+        protected Metadata ContentEncodingMetadata = null!;
+        protected Metadata ContentTypeMetadata = null!;
+        
+        protected Metadata GetContentTypeMetadata(string contentType) => new("Content-Type", contentType);
+        protected Metadata GetContentLengthMetadata(string contentString) => new("Content-Length", contentString.Length.ToString());
+        protected Metadata GetContentDispositionMetadata(string contentDisposition) => new("Content-Disposition", contentDisposition);
 
         internal MethodBuilder MethodBuilder = null!;
         internal RestRequestBuilder RequestBuilder = null!;
@@ -78,6 +87,10 @@ namespace NClient.Providers.Api.Rest.Tests
                 .Setup(x => x.TryGetAccessTokensAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IAccessTokens?>(null));
             Authorization = authorizationMock.Object;
+
+            AcceptMetadata = new Metadata(name: "Accept", Serializer.ContentType);
+            ContentEncodingMetadata = new Metadata("Content-Encoding", RequestEncoding.WebName);
+            ContentTypeMetadata = new Metadata("Content-Type", Serializer.ContentType);
         }
 
         protected static MethodInfo GetMethodInfo<T>()
@@ -92,13 +105,13 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
-            return BuildRequest(host: "http://localhost:5000", method, arguments);
+            return BuildRequest(path: "", method, arguments);
         }
 
-        internal IRequest BuildRequest(string host, IMethod method, params object[] arguments)
+        internal IRequest BuildRequest(string path, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, host.ToUri(), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, new Uri(RequestUri, path), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }
@@ -109,9 +122,11 @@ namespace NClient.Providers.Api.Rest.Tests
             RequestType requestType,
             IEnumerable<IParameter>? parameters = null,
             IEnumerable<IMetadata>? metadatas = null,
-            object? body = null)
+            object? contentObject = null,
+            string? contentString = null,
+            string? contentType = null)
         {
-            var stringContent = Serializer.Serialize(body);
+            var expectedContentJson = contentString ?? Serializer.Serialize(contentObject);
             var acceptHeader = new Metadata("Accept", Serializer.ContentType);
             
             actualRequest.Resource.Should().Be(uri.ToString());
@@ -125,22 +140,28 @@ namespace NClient.Providers.Api.Rest.Tests
                 acceptHeader
             }, config => config.WithoutStrictOrdering());
             
-            if (body is null)
+            if (contentObject is null && contentString is null)
             {
                 actualRequest.Content.Should().BeNull();   
             }
             else
             {
                 actualRequest.Content.Should().NotBeNull();
-                (await actualRequest.Content!.Stream.ReadToEndAsync(actualRequest.Content.Encoding)).Should().BeEquivalentTo(stringContent);
+                var actualContentJson = await actualRequest.Content!.Stream.ReadToEndAsync(actualRequest.Content.Encoding);
+                actualContentJson.Should().BeEquivalentTo(expectedContentJson);
                 
-                actualRequest.Content!.Encoding.Should().BeEquivalentTo(Encoding.UTF8);
-                actualRequest.Content!.Metadatas.SelectMany(x => x.Value).Should().BeEquivalentTo(new[]
-                {
-                    new Metadata("Content-Encoding", Encoding.UTF8.WebName),
-                    new Metadata("Content-Type", Serializer.ContentType),
-                    new Metadata("Content-Length", stringContent.Length.ToString())
-                }, x => x.WithStrictOrdering());
+                if (actualRequest.Content?.Encoding is { } encoding)
+                    actualRequest.Content.Encoding.Should().BeEquivalentTo(encoding);
+                
+                if (actualRequest.Content!.Metadatas.GetValueOrDefault("Content-Encoding").SingleOrDefault() is Metadata contentEncoding)
+                    contentEncoding.Should()
+                        .BeEquivalentTo(new Metadata("Content-Encoding", Encoding.UTF8.WebName));
+                
+                actualRequest.Content!.Metadatas.GetValueOrDefault("Content-Type").Single().Should()
+                    .BeEquivalentTo(new Metadata("Content-Type", contentType ?? Serializer.ContentType));
+                
+                if (actualRequest.Content!.Metadatas.GetValueOrDefault("Content-Length").SingleOrDefault() is Metadata contentLength)
+                    contentLength.Should().BeEquivalentTo(new Metadata("Content-Length", expectedContentJson.Length.ToString()));
             }
         }
     }

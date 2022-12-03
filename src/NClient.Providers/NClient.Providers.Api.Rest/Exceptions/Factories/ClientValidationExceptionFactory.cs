@@ -13,7 +13,6 @@ namespace NClient.Providers.Api.Rest.Exceptions.Factories
         ClientValidationException UsedVersionTokenButVersionAttributeNotFound();
         ClientValidationException TokenNotMatchAnyMethodParameter(string tokenName);
         ClientValidationException TemplatePartWithoutTokenOrText();
-        ClientValidationException MultipleBodyParametersNotSupported();
         ClientValidationException ComplexTypeInHeaderNotSupported(string parameterName);
         ClientValidationException MethodAttributeNotSupported(string attributeName);
     }
@@ -43,9 +42,6 @@ namespace NClient.Providers.Api.Rest.Exceptions.Factories
 
         public ClientValidationException TemplatePartWithoutTokenOrText() =>
             new("The template part does not contain a token or text.");
-        
-        public ClientValidationException MultipleBodyParametersNotSupported() =>
-            new("Client method must contain no more than one body parameter.");
 
         public ClientValidationException ComplexTypeInHeaderNotSupported(string parameterName) =>
             new($"Headers cannot contain custom types. Parameter name: {parameterName}.");
