@@ -18,7 +18,6 @@ using NClient.Providers.Api.Rest.Exceptions.Factories;
 using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
-using NClient.Providers.Host;
 using NClient.Providers.Serialization;
 using NClient.Providers.Serialization.SystemTextJson;
 using NClient.Providers.Transport;
@@ -106,17 +105,13 @@ namespace NClient.Providers.Api.Rest.Tests
 
         internal IRequest BuildRequest(IMethod method, params object[] arguments)
         {
-            var hostMock = new Mock<IHost>();
-            hostMock
-                .Setup(x => x.TryGetUriAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult<Uri?>(RequestUri));
-            return BuildRequest(host: hostMock.Object, method, arguments);
+            return BuildRequest(path: "", method, arguments);
         }
 
-        internal IRequest BuildRequest(IHost host, IMethod method, params object[] arguments)
+        internal IRequest BuildRequest(string path, IMethod method, params object[] arguments)
         {
             return RequestBuilder
-                .BuildAsync(RequestId, host, Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
+                .BuildAsync(RequestId, new Uri(RequestUri, path), Authorization, new MethodInvocation(method, arguments), CancellationToken.None)
                 .GetAwaiter()
                 .GetResult();
         }

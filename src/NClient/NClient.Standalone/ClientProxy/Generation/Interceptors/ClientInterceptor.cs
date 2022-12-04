@@ -10,7 +10,6 @@ using NClient.Exceptions;
 using NClient.Providers;
 using NClient.Providers.Api;
 using NClient.Providers.Authorization;
-using NClient.Providers.Host;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client;
@@ -24,13 +23,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
+        private readonly Uri _host;
         private readonly ITimeoutSelector _timeoutSelector;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IExplicitMethodInvocationProvider<TRequest, TResponse> _explicitMethodInvocationProvider;
         private readonly IClientMethodInvocationProvider<TRequest, TResponse> _clientMethodInvocationProvider;
         private readonly IAuthorizationProvider _authorizationProvider;
-        private readonly IHost _host;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
@@ -39,13 +38,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IToolset _toolset;
         
         public ClientInterceptor(
+            Uri host,
             ITimeoutSelector timeoutSelector,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
             IExplicitMethodInvocationProvider<TRequest, TResponse> explicitMethodInvocationProvider,
             IClientMethodInvocationProvider<TRequest, TResponse> clientMethodInvocationProvider,
             IAuthorizationProvider authorizationProvider,
-            IHost host,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
@@ -53,13 +52,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             TimeSpan? timeout,
             IToolset toolset)
         {
+            _host = host;
             _timeoutSelector = timeoutSelector;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
             _explicitMethodInvocationProvider = explicitMethodInvocationProvider;
             _clientMethodInvocationProvider = clientMethodInvocationProvider;
             _authorizationProvider = authorizationProvider;
-            _host = host;
             _requestBuilderProvider = requestBuilderProvider;
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
@@ -108,7 +107,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 }
 
                 var authorization = _authorizationProvider.Create(_toolset);
-                
                 var timeout = _timeoutSelector.Get(transportNClient.Timeout, _timeout, TryGetFromMilliseconds(method.TimeoutAttribute?.Milliseconds));
                 
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
