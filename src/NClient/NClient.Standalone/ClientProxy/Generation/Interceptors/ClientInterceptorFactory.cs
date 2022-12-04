@@ -62,6 +62,8 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new MetadataAttributeProvider(clientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
+
+            _pipelineCanceler = default!;
         }
 
         public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext,
