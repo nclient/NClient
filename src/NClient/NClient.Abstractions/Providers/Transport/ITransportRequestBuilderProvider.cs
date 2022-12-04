@@ -1,4 +1,6 @@
-﻿namespace NClient.Providers.Transport
+﻿using NClient.Providers.Transport.Common;
+
+namespace NClient.Providers.Transport
 {
     /// <summary>The provider that can create builder for transforming a NClient request to transport request.</summary>
     /// <typeparam name="TRequest">The type of request that is used in the transport implementation.</typeparam>
@@ -8,5 +10,6 @@
         /// <summary>Creates builder for transforming a NClient request to transport request.</summary>
         /// <param name="toolset">Tools that help implement providers.</param>
         ITransportRequestBuilder<TRequest, TResponse> Create(IToolset toolset);
+        ITransportRequestBuilder<TRequest, TResponse> Create(IToolset toolset, IPipelineCanceller pipelineCanceller);
     }
 }

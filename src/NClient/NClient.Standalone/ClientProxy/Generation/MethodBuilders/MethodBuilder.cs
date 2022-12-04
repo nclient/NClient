@@ -57,7 +57,7 @@ namespace NClient.Standalone.ClientProxy.Generation.MethodBuilders
                     throw new ClientValidationException($"The {nameof(OverrideAttribute)} cannot be used if there is multiple inheritance.");
 
                 var overridingMethodInfoEqualityComparer = new OverridingMethodInfoEqualityComparer();
-                var allOverridingMethods = clientType.GetInterfaceMethods(inherit: true)
+                var allOverridingMethods = clientType.GetAllInterfaceMethods(inherit: true)
                     .Where(x => overridingMethodInfoEqualityComparer.Equals(x, methodInfo))
                     .Except(new[] { methodInfo })
                     .ToArray();
