@@ -51,6 +51,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(400)
                     .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Encoding", "utf-8")
                     .WithBodyAsJson(new HttpError { Code = HttpStatusCode.BadRequest, Message = "Error" }));
 
             return api;
@@ -99,6 +100,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(400)
                     .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Encoding", "utf-8")
                     .WithBodyAsJson(new HttpError { Code = HttpStatusCode.BadRequest, Message = "Error" }));
 
             return api;
@@ -111,6 +113,7 @@ namespace NClient.Testing.Common.Apis
                 .RespondWith(Response.Create()
                     .WithStatusCode(500)
                     .WithHeader("Content-Type", "application/json")
+                    .WithHeader("Content-Encoding", "utf-8")
                     .WithBodyAsJson(new HttpError { Code = HttpStatusCode.InternalServerError, Message = "Error" }));
 
             return api;
