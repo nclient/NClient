@@ -4,6 +4,7 @@ using NClient.Providers.Mapping;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Providers.Validation;
+using NClient.Providers.Transport.Common;
 
 namespace NClient.Standalone.Client
 {
@@ -23,6 +24,13 @@ namespace NClient.Standalone.Client
         private readonly IResponseMapperProvider<TRequest, TResponse> _transportResponseMapperProvider;
         private readonly IResponseValidatorProvider<TRequest, TResponse> _responseValidatorProvider;
         private readonly IToolset _toolset;
+        private IPipelineCanceller _pipelineCanceller;
+
+        public IPipelineCanceller PipelineCanceller
+        {
+            get { return _pipelineCanceller; }
+            set { _pipelineCanceller = value; }
+        }
 
         public TransportNClientFactory(
             ITransportProvider<TRequest, TResponse> transportProvider,
@@ -33,7 +41,8 @@ namespace NClient.Standalone.Client
             IResponseMapperProvider<IRequest, IResponse> responseMapperProvider,
             IResponseMapperProvider<TRequest, TResponse> transportResponseMapperProvider,
             IResponseValidatorProvider<TRequest, TResponse> responseValidatorProvider,
-            IToolset toolset)
+            IToolset toolset,
+            IPipelineCanceller pipelineCanceller)
         {
             _transportProvider = transportProvider;
             _transportRequestBuilderProvider = transportRequestBuilderProvider;
@@ -44,6 +53,7 @@ namespace NClient.Standalone.Client
             _transportResponseMapperProvider = transportResponseMapperProvider;
             _responseValidatorProvider = responseValidatorProvider;
             _toolset = toolset;
+            _pipelineCanceller = pipelineCanceller;
         }
 
         public ITransportNClient<TRequest, TResponse> Create()
@@ -51,7 +61,7 @@ namespace NClient.Standalone.Client
             return new TransportNClient<TRequest, TResponse>(
                 _toolset.Serializer,
                 _transportProvider.Create(_toolset),
-                _transportRequestBuilderProvider.Create(_toolset),
+                _transportRequestBuilderProvider.Create(_toolset, _pipelineCanceller),
                 _responseBuilderProvider.Create(_toolset),
                 _clientHandlerProvider.Create(_toolset),
                 _resiliencePolicyProvider.Create(_toolset),

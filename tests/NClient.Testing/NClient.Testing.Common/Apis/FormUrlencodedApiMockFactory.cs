@@ -8,7 +8,7 @@ namespace NClient.Testing.Common.Apis
 {
     public class FormUrlencodedApiMockFactory
     {
-        public static IWireMockServer MockPostMethod(int id, IDictionary<string, object> keyValues)
+        public static IWireMockServer MockPostMethod(IDictionary<string, object> keyValues)
         {
             var api = WireMockServer.Start();
             api.Given(Request.Create()
@@ -18,9 +18,7 @@ namespace NClient.Testing.Common.Apis
                     .WithBody(string.Join("&", keyValues.Select(x => $"{x.Key}={x.Value}")))
                     .UsingPost())
                 .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(id));
+                    .WithStatusCode(200));
 
             return api;
         }

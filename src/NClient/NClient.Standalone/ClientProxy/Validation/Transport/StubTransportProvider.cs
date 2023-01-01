@@ -7,7 +7,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
     {
         public ITransport<IRequest, IResponse> Create(IToolset toolset)
         {
-            return new StubTransport();
+            return new StubTransportBuilder();
         }
     }
 }

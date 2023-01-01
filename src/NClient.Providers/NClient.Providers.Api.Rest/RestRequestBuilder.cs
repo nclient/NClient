@@ -21,7 +21,6 @@ using NClient.Providers.Api.Rest.Helpers;
 using NClient.Providers.Api.Rest.Models;
 using NClient.Providers.Api.Rest.Providers;
 using NClient.Providers.Authorization;
-using NClient.Providers.Host;
 using NClient.Providers.Transport;
 
 namespace NClient.Providers.Api.Rest
@@ -58,7 +57,7 @@ namespace NClient.Providers.Api.Rest
             _toolset = toolset;
         }
         
-        public async Task<IRequest> BuildAsync(Guid requestId, IHost host, IAuthorization authorization,
+        public async Task<IRequest> BuildAsync(Guid requestId, Uri host, IAuthorization authorization,
             IMethodInvocation methodInvocation, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -78,16 +77,12 @@ namespace NClient.Providers.Api.Rest
                 .ToArray();
             var route = _routeProvider
                 .Build(routeTemplate, methodInvocation.Method.ClientName, methodInvocation.Method.Name, methodParameters, methodInvocation.Method.UseVersionAttribute);
-
-            var uri = (await host.TryGetUriAsync(cancellationToken).ConfigureAwait(false))?.ToString();
-            if (string.IsNullOrEmpty(uri))
-                throw _clientValidationExceptionFactory.HostUriNotDefined();
             
-            var resource = new Uri(PathHelper.Combine(uri!, route));
+            var resource = new Uri(PathHelper.Combine(host.ToString(), route));
             var request = new Request(requestId, resource, requestType);
 
             var authorizationTokens = await authorization.TryGetAccessTokensAsync(cancellationToken).ConfigureAwait(false);
-            var authorizationToken = authorizationTokens?.TryGet(new Uri(uri));
+            var authorizationToken = authorizationTokens?.TryGet(host);
             if (authorizationToken is not null)
                 request.AddMetadata(
                     name: HttpRequestHeader.Authorization.ToString(), 
@@ -124,75 +119,89 @@ namespace NClient.Providers.Api.Rest
             var bodyParams = methodParameters
                 .Where(x => x.Attribute is IContentParamAttribute && x.Value != null)
                 .ToArray();
-            if (bodyParams.Length > 1)
-                throw _clientValidationExceptionFactory.MultipleBodyParametersNotSupported();
             if (bodyParams.Length == 0)
                 return request;
-            
-            var bodyParam = bodyParams.SingleOrDefault();
-
-            switch (bodyParam?.Value)
-            {
-                case IStreamContent streamContent:
-                {
-                    var metadata = new MetadataContainer(streamContent.Metadatas)
-                    {
-                        new Metadata("Content-Encoding", streamContent.Encoding.WebName),
-                        new Metadata("Content-Type", streamContent.ContentType),
-                        new Metadata("Content-Disposition", $"attachment; name=\"{streamContent.Name}\"")
-                    };
-                    
-                    request.Content = new Content(streamContent.Value, streamContent.Encoding.WebName, metadata);
-                    break;
-                }
-                case IFormFile formFile:
-                {
-                    var formFileHeaders = formFile.Headers
-                        .SelectMany(header => header.Value
-                            .Select(value => new Metadata(header.Key, value)));
-                    
-                    var metadata = new MetadataContainer(formFileHeaders)
-                    {
-                        new Metadata("Content-Type", formFile.ContentType),
-                        new Metadata("Content-Disposition", $"attachment; name=\"{formFile.Name}\"; filename=\"{formFile.FileName}\"")
-                    };
-                    
-                    request.Content = new Content(formFile.OpenReadStream(), encoding: null, metadata);
-                    break;
-                }
-                case { } customObject when bodyParam.Attribute is IFormParamAttribute:
-                {
-                    var properties = _objectToKeyValueConverter
-                        .Convert(customObject, bodyParam.Name, new BodyMemberNameSelector(), useRootNameAsPrefix: false)
-                        .Select(x => new KeyValuePair<string, string?>(x.Key, x.Value?.ToString()));
-                    var formUrlEncodedContent = _formUrlEncoder.GetContentByteArray(properties!);
-                    var metadata = new MetadataContainer
-                    {
-                        new Metadata("Content-Encoding", Encoding.UTF8.WebName),
-                        new Metadata("Content-Type", "application/x-www-form-urlencoded"),
-                        new Metadata("Content-Length", formUrlEncodedContent.Length.ToString())
-                    };
-                    
-                    request.Content = new Content(new MemoryStream(formUrlEncodedContent), Encoding.UTF8.WebName, metadata);
-                    break;
-                }
-                case { } customObject:
-                {
-                    var bodyJson = _toolset.Serializer.Serialize(customObject);
-                    var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
-                    var metadata = new MetadataContainer
-                    {
-                        new Metadata("Content-Encoding", Encoding.UTF8.WebName),
-                        new Metadata("Content-Type", _toolset.Serializer.ContentType),
-                        new Metadata("Content-Length", bodyBytes.Length.ToString())
-                    };
-                    
-                    request.Content = new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, metadata);
-                    break;
-                }
-            }
+            var contents = bodyParams
+                .Select(CreateContent)
+                .ToArray();
+            request.Content = contents.Length > 1
+                ? new MultipartContent(contents)
+                : contents.Single();
 
             return request;
+        }
+
+        private IContent CreateContent(MethodParameter bodyParam)
+        {
+            return bodyParam.Value switch
+            {
+                IStreamContent streamContent
+                    => CreateStreamContent(streamContent),
+                IFormFile formFile
+                    => CreateFormFileContent(formFile),
+                { } customObject when bodyParam.Attribute is IFormParamAttribute
+                    => CreateFormContent(customObject, bodyParam.Name),
+                { } customObject
+                    => CreateJsonContent(customObject),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        private static Content CreateStreamContent(IStreamContent streamContent)
+        {
+            var metadata = new MetadataContainer(streamContent.Metadatas)
+            {
+                new Metadata("Content-Encoding", streamContent.Encoding.WebName),
+                new Metadata("Content-Type", streamContent.ContentType),
+                new Metadata("Content-Disposition", $"attachment; name=\"{streamContent.Name}\"")
+            };
+                    
+            return new Content(streamContent.Value, streamContent.Encoding.WebName, metadata);
+        }
+
+        private static Content CreateFormFileContent(IFormFile formFile)
+        {
+            var formFileHeaders = formFile.Headers
+                .SelectMany(header => header.Value
+                    .Select(value => new Metadata(header.Key, value)));
+                    
+            var metadata = new MetadataContainer(formFileHeaders)
+            {
+                new Metadata("Content-Type", formFile.ContentType),
+                new Metadata("Content-Disposition", $"attachment; name=\"{formFile.Name}\"; filename=\"{formFile.FileName}\"")
+            };
+                    
+            return new Content(formFile.OpenReadStream(), encoding: null, metadata);
+        }
+
+        private Content CreateFormContent(object customObject, string parameterName)
+        {
+            var properties = _objectToKeyValueConverter
+                .Convert(customObject, parameterName, new BodyMemberNameSelector(), useRootNameAsPrefix: false)
+                .Select(x => new KeyValuePair<string, string?>(x.Key, x.Value?.ToString()));
+            var formUrlEncodedContent = _formUrlEncoder.GetContentByteArray(properties!);
+            var metadata = new MetadataContainer
+            {
+                new Metadata("Content-Encoding", Encoding.UTF8.WebName),
+                new Metadata("Content-Type", "application/x-www-form-urlencoded"),
+                new Metadata("Content-Length", formUrlEncodedContent.Length.ToString())
+            };
+                    
+            return new Content(new MemoryStream(formUrlEncodedContent), Encoding.UTF8.WebName, metadata);
+        }
+
+        private Content CreateJsonContent(object customObject)
+        {
+            var bodyJson = _toolset.Serializer.Serialize(customObject);
+            var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
+            var metadata = new MetadataContainer
+            {
+                new Metadata("Content-Encoding", Encoding.UTF8.WebName),
+                new Metadata("Content-Type", _toolset.Serializer.ContentType),
+                new Metadata("Content-Length", bodyBytes.Length.ToString())
+            };
+                    
+            return new Content(new MemoryStream(bodyBytes), Encoding.UTF8.WebName, metadata);
         }
     }
 }

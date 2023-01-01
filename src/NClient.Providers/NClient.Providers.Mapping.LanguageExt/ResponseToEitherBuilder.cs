@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -30,7 +31,7 @@ namespace NClient.Providers.Mapping.LanguageExt
             cancellationToken.ThrowIfCancellationRequested();
 
             var stringContent = await responseContext.Response.Content.Stream
-                .ReadToEndAsync(responseContext.Response.Content.Encoding, cancellationToken)
+                .ReadToEndAsync(responseContext.Response.Content.Encoding ?? Encoding.UTF8, cancellationToken)
                 .ConfigureAwait(false);
             
             if (responseContext.Response.IsSuccessful)

@@ -1,5 +1,6 @@
 ﻿using NClient.Providers;
 using NClient.Providers.Transport;
+using NClient.Providers.Transport.Common;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
@@ -7,6 +8,12 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
     {
         public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset)
         {
+            return new StubTransportRequestBuilder();
+        }
+
+        public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset, IPipelineCanceller pipelineCanceller)
+        {
+            pipelineCanceller.Cancel();
             return new StubTransportRequestBuilder();
         }
     }

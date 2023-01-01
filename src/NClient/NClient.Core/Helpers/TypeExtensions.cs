@@ -42,7 +42,7 @@ namespace NClient.Core.Helpers
             return attributes.ToArray();
         }
 
-        public static MethodInfo[] GetInterfaceMethods(this Type type, bool inherit = false)
+        public static MethodInfo[] GetAllInterfaceMethods(this Type type, bool inherit = false)
         {
             if (!type.IsInterface)
                 throw new ArgumentException("Type is not interface.", nameof(type));
@@ -52,13 +52,27 @@ namespace NClient.Core.Helpers
             var methodInfos = new HashSet<MethodInfo>(type.GetMethods());
             foreach (var interfaceType in type.GetDeclaredInterfaces())
             {
-                foreach (var methodInfo in GetInterfaceMethods(interfaceType, inherit: true))
+                foreach (var methodInfo in GetAllInterfaceMethods(interfaceType, inherit: true))
                 {
                     methodInfos.Add(methodInfo);
                 }
             }
 
             return methodInfos.ToArray();
+        }
+
+        public static MethodInfo[] GetUnhiddenInterfaceMethods(this Type type, bool inherit = false)
+        {
+            var methods = GetAllInterfaceMethods(type, inherit);
+            var filterSet = new HashSet<MethodInfo>(new OverridingMethodInfoEqualityComparer());
+
+            foreach (var method in methods)
+            {
+                if (method.IsHideBySig) //shadows by signature
+                    if (!filterSet.Contains(method, new OverridingMethodInfoEqualityComparer()))
+                        filterSet.Add(method);
+            }
+            return filterSet.ToArray(); 
         }
 
         public static bool HasMultipleInheritance(this Type type)

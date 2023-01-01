@@ -23,6 +23,7 @@
         <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Transport.SystemNetHttp\NClient.Providers.Transport.SystemNetHttp.csproj" />
         <ProjectReference Include="..\..\..\src\NClient.Providers\NClient.Providers.Serialization.SystemTextJson\NClient.Providers.Serialization.SystemTextJson.csproj" />
         <ProjectReference Include="..\..\..\src\NClient\NClient.Standalone\NClient.Standalone.csproj" />
+        <ProjectReference Include="..\..\..\src\NClient\NClient\NClient.csproj" />
     </ItemGroup>
 
     <ItemGroup>

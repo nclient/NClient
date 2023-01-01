@@ -10,7 +10,6 @@ using NClient.Exceptions;
 using NClient.Providers;
 using NClient.Providers.Api;
 using NClient.Providers.Authorization;
-using NClient.Providers.Host;
 using NClient.Providers.Resilience;
 using NClient.Providers.Transport;
 using NClient.Standalone.Client;
@@ -19,55 +18,59 @@ using NClient.Standalone.ClientProxy.Generation.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.Exceptions.Factories;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
+using NClient.Providers.Transport.Common;
 
 namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal class ClientInterceptor<TClient, TRequest, TResponse> : AsyncInterceptorBase
     {
+        private readonly Uri _host;
         private readonly ITimeoutSelector _timeoutSelector;
         private readonly IGuidProvider _guidProvider;
         private readonly IMethodBuilder _methodBuilder;
         private readonly IExplicitMethodInvocationProvider<TRequest, TResponse> _explicitMethodInvocationProvider;
         private readonly IClientMethodInvocationProvider<TRequest, TResponse> _clientMethodInvocationProvider;
         private readonly IAuthorizationProvider _authorizationProvider;
-        private readonly IHost _host;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
         private readonly ITransportNClientFactory<TRequest, TResponse> _transportNClientFactory;
         private readonly IMethodResiliencePolicyProvider<TRequest, TResponse> _methodResiliencePolicyProvider;
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly TimeSpan? _timeout;
         private readonly IToolset _toolset;
-        
+        private readonly IPipelineCanceller _pipelineCanceler;
+
         public ClientInterceptor(
+            Uri host,
             ITimeoutSelector timeoutSelector,
             IGuidProvider guidProvider,
             IMethodBuilder methodBuilder,
             IExplicitMethodInvocationProvider<TRequest, TResponse> explicitMethodInvocationProvider,
             IClientMethodInvocationProvider<TRequest, TResponse> clientMethodInvocationProvider,
             IAuthorizationProvider authorizationProvider,
-            IHost host,
             IRequestBuilderProvider requestBuilderProvider,
             ITransportNClientFactory<TRequest, TResponse> transportNClientFactory,
             IMethodResiliencePolicyProvider<TRequest, TResponse> methodResiliencePolicyProvider,
             IClientRequestExceptionFactory clientRequestExceptionFactory,
             TimeSpan? timeout,
-            IToolset toolset)
+            IToolset toolset,
+            IPipelineCanceller pipelineCanceler)
         {
+            _host = host;
             _timeoutSelector = timeoutSelector;
             _guidProvider = guidProvider;
             _methodBuilder = methodBuilder;
             _explicitMethodInvocationProvider = explicitMethodInvocationProvider;
             _clientMethodInvocationProvider = clientMethodInvocationProvider;
             _authorizationProvider = authorizationProvider;
-            _host = host;
             _requestBuilderProvider = requestBuilderProvider;
             _transportNClientFactory = transportNClientFactory;
             _methodResiliencePolicyProvider = methodResiliencePolicyProvider;
             _clientRequestExceptionFactory = clientRequestExceptionFactory;
             _timeout = timeout;
             _toolset = toolset;
+            _pipelineCanceler = pipelineCanceler;
         }
-        
+
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
@@ -75,13 +78,15 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         }
         
         protected override async Task<TResult> InterceptAsync<TResult>(
-            IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
+            IInvocation invocation, 
+            IInvocationProceedInfo proceedInfo, 
+            Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
             #pragma warning disable 8600, 8603
             return (TResult) await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
             #pragma warning restore 8600, 8603
         }
-        
+         
         private async Task<object?> ProcessInvocationAsync(IInvocation invocation, Type resultType)
         {
             var requestId = _guidProvider.Create();
@@ -95,11 +100,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             try
             {
                 var transportNClient = _transportNClientFactory.Create();
-                
+
                 var explicitInvocation = _explicitMethodInvocationProvider.Get(typeof(TClient), invocation, resultType);
                 var method = _methodBuilder.Build(typeof(TClient), explicitInvocation.Method, explicitInvocation.ReturnType);
                 methodInvocation = _clientMethodInvocationProvider.Get(method, explicitInvocation);
-                
+
                 TimeSpan? TryGetFromMilliseconds(double? milliseconds)
                 {
                     return milliseconds.HasValue
@@ -108,29 +113,34 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 }
 
                 var authorization = _authorizationProvider.Create(_toolset);
-                
                 var timeout = _timeoutSelector.Get(transportNClient.Timeout, _timeout, TryGetFromMilliseconds(method.TimeoutAttribute?.Milliseconds));
-                
+
                 var cancellationToken = methodInvocation.CancellationToken ?? CancellationToken.None;
                 using var timeoutCancellationTokenSource = new CancellationTokenSource(timeout);
                 using var combinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCancellationTokenSource.Token);
                 var combinedCancellationToken = combinedCancellationTokenSource.Token;
                 combinedCancellationToken.ThrowIfCancellationRequested();
-                
+
                 var request = await _requestBuilderProvider
                     .Create(_toolset)
                     .BuildAsync(requestId, _host, authorization, methodInvocation, combinedCancellationToken)
                     .ConfigureAwait(false);
-                
+
+                if (_pipelineCanceler.IsCancellationRequested)
+                {
+                    _toolset.Logger?.LogDebug("Validation halting pipeline execution");
+                    return default; //return a non-null so the pipeline can exit gracefully
+                }
+
                 using var requestLogScope = _toolset.Logger?.BeginScope(new Dictionary<string, object>
                 {
                     ["RequestResource"] = request.Resource,
                     ["RequestType"] = request.Type
                 });
-                
+
                 var resiliencePolicy = methodInvocation.ResiliencePolicyProvider?.Create(_toolset)
                     ?? _methodResiliencePolicyProvider.Create(methodInvocation.Method, request, _toolset);
-                
+
                 var result = await ExecuteHttpResponseAsync(transportNClient, request, resultType, resiliencePolicy, combinedCancellationToken).ConfigureAwait(false);
                 _toolset.Logger?.LogDebug("Processing request finished");
                 return result;

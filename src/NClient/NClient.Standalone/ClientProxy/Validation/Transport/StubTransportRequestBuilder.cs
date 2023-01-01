@@ -10,8 +10,8 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
         {
             return Task.FromResult(request);
         }
-        public Task<IResponse> BuildResponseAsync(IRequest request, 
-            IResponseContext<IRequest, IResponse> responseContext, CancellationToken cancellationToken)
+        public Task<IResponse> BuildResponseAsync(IResponseContext<IRequest, IResponse> responseContext, 
+            CancellationToken cancellationToken)
         {
             return Task.FromResult(responseContext.Response);
         }

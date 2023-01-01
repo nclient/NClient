@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
+using NClient.Providers.Transport.Common;
 using NClient.Standalone.Client.Resilience;
 using NClient.Standalone.ClientProxy.Building.Context;
 using NClient.Standalone.ClientProxy.Generation;
 using NClient.Standalone.ClientProxy.Generation.Interceptors;
-using NClient.Standalone.ClientProxy.Validation.Api;
 using NClient.Standalone.ClientProxy.Validation.Authorization;
 using NClient.Standalone.ClientProxy.Validation.Handling;
-using NClient.Standalone.ClientProxy.Validation.Host;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.ClientProxy.Validation.Serialization;
 using NClient.Standalone.ClientProxy.Validation.Transport;
@@ -24,22 +22,31 @@ namespace NClient.Standalone.ClientProxy.Validation
 {
     internal interface IClientValidator
     {
-        Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+        void Ensure<TClient>()
             where TClient : class;
     }
 
-    internal class ClientValidator : IClientValidator
+    internal class ClientValidator<TRequest, TResponse> : IClientValidator
     {
+        private static readonly Uri FakeHost = new("http://localhost:5000");
+
         private readonly IClientProxyGenerator _clientProxyGenerator;
         private readonly BuilderContext<IRequest, IResponse> _builderContext;
+        private readonly IClientInterceptorFactory _clientInterceptorFactory;
+        private IAsyncInterceptor? _interceptor;
+        private readonly IPipelineCanceller _pipelineCanceler;
 
-        public ClientValidator(IProxyGenerator proxyGenerator)
+        public ClientValidator(IProxyGenerator proxyGenerator,
+            IClientInterceptorFactory clientInterceptorFactory,
+            BuilderContext<TRequest, TResponse> builderContext)
         {
+            _pipelineCanceler = new PipelineCanceller();
+            _clientInterceptorFactory = clientInterceptorFactory;
             _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
             _builderContext = new BuilderContext<IRequest, IResponse>()
-                .WithHost(new StubHost())
+                .WithHost(FakeHost)
                 .WithSerializer(new StubSerializerProvider())
-                .WithRequestBuilderProvider(new StubRequestBuilderProvider())
+                .WithRequestBuilderProvider(builderContext.RequestBuilderProvider)
                 .WithTransport(
                     new StubTransportProvider(),
                     new StubTransportRequestBuilderProvider(),
@@ -53,39 +60,61 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
         }
 
-        public async Task EnsureAsync<TClient>(IClientInterceptorFactory clientInterceptorFactory)
+        public void Ensure<TClient>()
             where TClient : class
         {
-            var interceptor = clientInterceptorFactory.Create<TClient, IRequest, IResponse>(_builderContext);
-            var client = _clientProxyGenerator.CreateClient<TClient>(interceptor);
+            var validationContext = _builderContext.WithHost(FakeHost)
+                .WithTransport(
+                    new StubTransportProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider())
+                .WithoutAuthorization()
+                .WithoutHandlers()
+                .WithoutResiliencePolicy()
+                .WithoutAllResponseMapperProviders()
+                .WithoutResponseValidation()
+                .WithoutLogging();
 
-            await EnsureValidityAsync(client).ConfigureAwait(false);
+            _interceptor = _clientInterceptorFactory.Create<TClient, IRequest, IResponse>(validationContext, _pipelineCanceler);
+            var client = _clientProxyGenerator.CreateClient<TClient>(_interceptor);
+
+            EnsureValidity(client);
         }
         
-        private static async Task EnsureValidityAsync<T>(T client) where T : class
+        private void EnsureValidity<T>(T client) where T : class
         {
-            foreach (var methodInfo in typeof(T).GetMethods())
+            var methods = Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(T), true);
+
+            foreach (var methodInfo in methods)
             {
                 var parameters = methodInfo.GetParameters().Select(GetDefaultParameter).ToArray();
-
+               
                 try
                 {
-                    var result = methodInfo.Invoke(client, parameters);
-                    if (result is Task task)
-                        await task.ConfigureAwait(false);
+                    methodInfo.Invoke(client, parameters);
+                    if (_clientInterceptorFactory.PipelineCanceler.IsCancellationRequested)
+                        _clientInterceptorFactory.PipelineCanceler.Renew();
                 }
-                catch (ClientValidationException)
+                catch (TargetInvocationException tex)
                 {
-                    throw;
-                }
-                catch
-                {
-                    // ignored
+                    TraverseInnerExceptionTree(tex);
                 }
             }
         }
+        
+        private void TraverseInnerExceptionTree(Exception ex)
+        {
+            var innerEx = ex.InnerException;
+            while (innerEx != null)
+            {
+                if (innerEx.GetType() == typeof(ClientValidationException))
+                    throw innerEx;
 
-        private static object? GetDefaultParameter(ParameterInfo parameter)
+                innerEx = innerEx.InnerException;
+            }
+        }
+
+        private object? GetDefaultParameter(ParameterInfo parameter)
         {
             return parameter.ParameterType.IsValueType
                 ? Activator.CreateInstance(parameter.ParameterType)

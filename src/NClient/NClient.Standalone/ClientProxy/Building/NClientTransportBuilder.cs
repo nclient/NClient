@@ -1,6 +1,6 @@
-﻿using NClient.Common.Helpers;
+﻿using System;
+using NClient.Common.Helpers;
 using NClient.Providers.Api;
-using NClient.Providers.Host;
 using NClient.Providers.Transport;
 using NClient.Standalone.ClientProxy.Building.Context;
 
@@ -9,10 +9,10 @@ namespace NClient.Standalone.ClientProxy.Building
     internal class NClientTransportBuilder<TClient> : INClientTransportBuilder<TClient>
         where TClient : class
     {
-        private readonly IHost? _host;
+        private readonly Uri _host;
         private readonly IRequestBuilderProvider _requestBuilderProvider;
 
-        public NClientTransportBuilder(IHost? host, IRequestBuilderProvider requestBuilderProvider)
+        public NClientTransportBuilder(Uri host, IRequestBuilderProvider requestBuilderProvider)
         {
             _host = host;
             _requestBuilderProvider = requestBuilderProvider;

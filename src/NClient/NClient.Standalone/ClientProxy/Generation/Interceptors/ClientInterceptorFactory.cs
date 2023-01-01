@@ -19,12 +19,14 @@ using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.Exceptions.Factories;
+using NClient.Providers.Transport.Common;
 
 namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 {
     internal interface IClientInterceptorFactory
     {
-        IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext);
+        IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext, IPipelineCanceller pipelineCanceler);
+        IPipelineCanceller PipelineCanceler { get; set; }
     }
 
     internal class ClientInterceptorFactory : IClientInterceptorFactory
@@ -35,6 +37,14 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly IMethodBuilder _methodBuilder;
 
+        private IPipelineCanceller _pipelineCanceler;
+
+        public IPipelineCanceller PipelineCanceler
+        { 
+            get { return _pipelineCanceler; } 
+            set { _pipelineCanceler = value; } 
+        }
+
         public ClientInterceptorFactory(IProxyGenerator proxyGenerator)
         {
             var clientValidationExceptionFactory = new ClientValidationExceptionFactory();
@@ -44,7 +54,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _proxyGenerator = proxyGenerator;
             _timeoutSelector = new TimeoutSelector(clientValidationExceptionFactory);
             _guidProvider = new GuidProvider();
-            
             _methodBuilder = new MethodBuilder(
                 new OperationAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new UseVersionAttributeProvider(attributeMapper, clientValidationExceptionFactory),
@@ -52,10 +61,14 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 new MetadataAttributeProvider(clientValidationExceptionFactory),
                 new TimeoutAttributeProvider(attributeMapper, clientValidationExceptionFactory),
                 new MethodParamBuilder(new ParamAttributeProvider(attributeMapper, clientValidationExceptionFactory)));
+
+            _pipelineCanceler = default!;
         }
 
-        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext)
+        public IAsyncInterceptor Create<TClient, TRequest, TResponse>(BuilderContext<TRequest, TResponse> builderContext,
+            IPipelineCanceller pipelineCanceler)
         {
+            _pipelineCanceler = pipelineCanceler;
             var logger = new CompositeLogger<TClient>(builderContext.LoggerFactory is not null
                 ? builderContext.Loggers.Concat(new[] { builderContext.LoggerFactory.CreateLogger<TClient>() })
                 : builderContext.Loggers);
@@ -66,7 +79,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
 
             var resiliencePolicyProvider = new StubResiliencePolicyProvider<TRequest, TResponse>();
             var authorizationProvider = new CompositeAuthorizationProvider(builderContext.AuthorizationProviders);
-            var host = builderContext.Host;
             var clientHandlerProvider = new CompositeClientHandlerProvider<TRequest, TResponse>(builderContext.ClientHandlerProviders);
             var responseMapperProvider = new CompositeResponseMapperProvider<IRequest, IResponse>(builderContext.ResponseMapperProviders);
             var transportResponseMapperProvider = new CompositeResponseMapperProvider<TRequest, TResponse>(builderContext.TransportResponseMapperProviders);
@@ -76,13 +88,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                 builderContext.MethodsWithResiliencePolicy.Reverse());
             
             return new ClientInterceptor<TClient, TRequest, TResponse>(
+                builderContext.Host,
                 _timeoutSelector,
                 _guidProvider,
                 _methodBuilder,
                 new ExplicitMethodInvocationProvider<TRequest, TResponse>(_proxyGenerator),
                 new ClientMethodInvocationProvider<TRequest, TResponse>(),
                 authorizationProvider,
-                host,
                 builderContext.RequestBuilderProvider,
                 new TransportNClientFactory<TRequest, TResponse>(
                     builderContext.TransportProvider,
@@ -93,11 +105,13 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
                     responseMapperProvider,
                     transportResponseMapperProvider,
                     compositeResponseValidatorProvider,
-                    toolset),
+                    toolset,
+                    _pipelineCanceler),
                 methodResiliencePolicyProviderAdapter,
                 _clientRequestExceptionFactory,
                 builderContext.Timeout,
-                toolset);
+                toolset,
+                _pipelineCanceler);
         }
     }
 }
