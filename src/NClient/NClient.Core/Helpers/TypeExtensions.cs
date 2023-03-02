@@ -69,10 +69,8 @@ namespace NClient.Core.Helpers
             foreach (var method in methods)
             {
                 if (method.IsHideBySig) //shadows by signature
-                {
-                    if(!filterSet.Contains(method, new OverridingMethodInfoEqualityComparer()))
+                    if (!filterSet.Contains(method, new OverridingMethodInfoEqualityComparer()))
                         filterSet.Add(method);
-                }
             }
             return filterSet.ToArray(); 
         }

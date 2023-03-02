@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using NClient.Exceptions;
 using NClient.Providers.Mapping;
@@ -30,7 +26,7 @@ namespace NClient.Standalone.ClientProxy.Validation
             where TClient : class;
     }
 
-    internal class ClientValidator<TRequest, TResponse>: IClientValidator
+    internal class ClientValidator<TRequest, TResponse> : IClientValidator
     {
         private static readonly Uri FakeHost = new("http://localhost:5000");
 
@@ -48,30 +44,30 @@ namespace NClient.Standalone.ClientProxy.Validation
             _clientInterceptorFactory = clientInterceptorFactory;
             _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
             _builderContext = new BuilderContext<IRequest, IResponse>()
-                           .WithHost(FakeHost)
-                           .WithSerializer(new StubSerializerProvider())
-                           .WithRequestBuilderProvider(builderContext.RequestBuilderProvider)
-                           .WithTransport(
-                               new StubTransportProvider<IRequest, IResponse>(),
-                               new StubTransportRequestBuilderProvider<TRequest, TResponse>(),
-                               new StubResponseBuilderProvider<IRequest, IResponse>())
-                           .WithAuthorization(new[] { new StubAuthorizationProvider() })
-                           .WithHandlers(new[] { new StubClientHandlerProvider<IRequest, IResponse>() })
-                           .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
-                               new StubResiliencePolicyProvider<IRequest, IResponse>()))
-                           .WithResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
-                           .WithTransportResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
-                           .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
+                .WithHost(FakeHost)
+                .WithSerializer(new StubSerializerProvider())
+                .WithRequestBuilderProvider(builderContext.RequestBuilderProvider)
+                .WithTransport(
+                    new StubTransportProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider())
+                .WithAuthorization(new[] { new StubAuthorizationProvider() })
+                .WithHandlers(new[] { new StubClientHandlerProvider<IRequest, IResponse>() })
+                .WithResiliencePolicy(new MethodResiliencePolicyProviderAdapter<IRequest, IResponse>(
+                    new StubResiliencePolicyProvider<IRequest, IResponse>()))
+                .WithResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
+                .WithTransportResponseMapperProviders(Array.Empty<IResponseMapperProvider<IRequest, IResponse>>())
+                .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
         }
 
         public void Ensure<TClient>()
             where TClient : class
         {
-            BuilderContext<IRequest, IResponse> validationContext = _builderContext.WithHost(FakeHost)
+            var validationContext = _builderContext.WithHost(FakeHost)
                 .WithTransport(
-                    new StubTransportProvider<TRequest, TResponse>(),
-                    new StubTransportRequestBuilderProvider<TRequest, TResponse>(),
-                    new StubResponseBuilderProvider<TRequest, TResponse>())
+                    new StubTransportProvider(),
+                    new StubTransportRequestBuilderProvider(),
+                    new StubResponseBuilderProvider())
                 .WithoutAuthorization()
                 .WithoutHandlers()
                 .WithoutResiliencePolicy()
@@ -87,7 +83,7 @@ namespace NClient.Standalone.ClientProxy.Validation
         
         private void EnsureValidity<T>(T client) where T : class
         {
-            var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(T), true);
+            var methods = Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(T), true);
 
             foreach (var methodInfo in methods)
             {
@@ -95,16 +91,9 @@ namespace NClient.Standalone.ClientProxy.Validation
                
                 try
                 {
-                    var result = methodInfo.Invoke(client, parameters);
+                    methodInfo.Invoke(client, parameters);
                     if (_clientInterceptorFactory.PipelineCanceler.IsCancellationRequested)
-                    {
                         _clientInterceptorFactory.PipelineCanceler.Renew();
-                        continue;
-                    }
-                }
-                catch (ClientValidationException)
-                {
-                    throw;
                 }
                 catch (TargetInvocationException tex)
                 {
@@ -116,7 +105,7 @@ namespace NClient.Standalone.ClientProxy.Validation
         private void TraverseInnerExceptionTree(Exception ex)
         {
             var innerEx = ex.InnerException;
-            while(innerEx != null)
+            while (innerEx != null)
             {
                 if (innerEx.GetType() == typeof(ClientValidationException))
                     throw innerEx;

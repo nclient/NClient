@@ -4,17 +4,17 @@ using NClient.Providers.Transport.Common;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
-    internal class StubTransportRequestBuilderProvider<TRequest, TResponse> : ITransportRequestBuilderProvider<IRequest, IResponse>
+    internal class StubTransportRequestBuilderProvider : ITransportRequestBuilderProvider<IRequest, IResponse>
     {
         public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset)
         {
-            return new StubTransportRequestBuilder<TRequest, TResponse>();
+            return new StubTransportRequestBuilder();
         }
 
         public ITransportRequestBuilder<IRequest, IResponse> Create(IToolset toolset, IPipelineCanceller pipelineCanceller)
         {
             pipelineCanceller.Cancel();
-            return new StubTransportRequestBuilder<TRequest, TResponse>();
+            return new StubTransportRequestBuilder();
         }
     }
 }

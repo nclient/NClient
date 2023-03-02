@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.Logging;
 using NClient.Core.Helpers;
@@ -18,7 +17,6 @@ using NClient.Standalone.ClientProxy.Generation.Helpers;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders.Providers;
-using NClient.Standalone.ClientProxy.Validation;
 using NClient.Standalone.ClientProxy.Validation.Resilience;
 using NClient.Standalone.Exceptions.Factories;
 using NClient.Providers.Transport.Common;
@@ -40,6 +38,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IMethodBuilder _methodBuilder;
 
         private IPipelineCanceller _pipelineCanceler;
+
         public IPipelineCanceller PipelineCanceler
         { 
             get { return _pipelineCanceler; } 

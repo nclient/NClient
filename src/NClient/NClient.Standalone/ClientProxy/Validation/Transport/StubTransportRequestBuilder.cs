@@ -4,7 +4,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
-    internal class StubTransportRequestBuilder<TRequest, TResponse> : ITransportRequestBuilder<IRequest, IResponse>
+    internal class StubTransportRequestBuilder : ITransportRequestBuilder<IRequest, IResponse>
     {
         public Task<IRequest> BuildAsync(IRequest request, CancellationToken cancellationToken)
         {
@@ -13,7 +13,7 @@ namespace NClient.Standalone.ClientProxy.Validation.Transport
         public Task<IResponse> BuildResponseAsync(IResponseContext<IRequest, IResponse> responseContext, 
             CancellationToken cancellationToken)
         {
-            return Task.FromResult<IResponse>(responseContext.Response);
+            return Task.FromResult(responseContext.Response);
         }
     }
 }

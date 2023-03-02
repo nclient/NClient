@@ -5,7 +5,7 @@ using NClient.Providers.Transport;
 
 namespace NClient.Standalone.ClientProxy.Validation.Transport
 {
-    internal class StubTransportBuilder<TRequest, TResponse> : ITransport<IRequest, IResponse>
+    internal class StubTransportBuilder : ITransport<IRequest, IResponse>
     {
         public TimeSpan Timeout => System.Threading.Timeout.InfiniteTimeSpan;
         

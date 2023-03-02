@@ -3,9 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using System.Threading.Tasks;
 using NClient.Testing.Common.Clients;
-using Microsoft.Extensions.DependencyModel;
 using System.Linq;
 using NClient.Exceptions;
 
@@ -15,11 +13,10 @@ namespace NClient.Standalone.Tests.Validation
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class ClientValidatorTest
     {
-        Uri _uri = new Uri("http://localhost:5000");
+        private readonly Uri _uri = new("http://localhost:5000");
 
         public interface IHiddenMyClient : IMyController
         {
-
             [GetMethod()]
             int[] Get();
 
@@ -40,7 +37,6 @@ namespace NClient.Standalone.Tests.Validation
 
         public interface IMyClientNoParentType
         {
-
             [GetMethod("{missing_get_parameter}")]
             int[] Get();
 
@@ -49,8 +45,6 @@ namespace NClient.Standalone.Tests.Validation
 
             [PostMethod("{missing_post_parameter}")]
             int[] Post();
-
-
         }
 
         //UnitOfWork_StateUnderTest_ExpectedBehavior 
@@ -81,7 +75,7 @@ namespace NClient.Standalone.Tests.Validation
         [Test]
         public void ClientValidator_WhenTypeHasHiddenAndUnhiddenMethods_ReturnUnhiddenMethodsOnly()
         {
-            var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(IHiddenMyClient), true);
+            var methods = Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(IHiddenMyClient), true);
             Assert.IsTrue(methods.Count() == 4);
             Assert.IsTrue(methods[0].Name == "Get");
             Assert.IsTrue(methods[1].Name == "Put");
@@ -92,7 +86,7 @@ namespace NClient.Standalone.Tests.Validation
         [Test]
         public void ClientValidator_WhenTypeHasOnlyUnhiddenMethods_ReturnAllUnhiddenMethods()
         {
-            var methods = NClient.Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(IMyClientNoParentType), true);
+            var methods = Core.Helpers.TypeExtensions.GetUnhiddenInterfaceMethods(typeof(IMyClientNoParentType), true);
             Assert.IsTrue(methods.Count() == 3);
             Assert.IsTrue(methods[0].Name == "Get");
             Assert.IsTrue(methods[1].Name == "Put");

@@ -16,7 +16,6 @@ using NClient.Standalone.Client;
 using NClient.Standalone.ClientProxy.Generation.Helpers;
 using NClient.Standalone.ClientProxy.Generation.Invocation;
 using NClient.Standalone.ClientProxy.Generation.MethodBuilders;
-using NClient.Standalone.ClientProxy.Validation;
 using NClient.Standalone.Exceptions.Factories;
 using AsyncInterceptorBase = NClient.Core.Castle.AsyncInterceptorBase;
 using NClient.Providers.Transport.Common;
@@ -38,7 +37,7 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         private readonly IClientRequestExceptionFactory _clientRequestExceptionFactory;
         private readonly TimeSpan? _timeout;
         private readonly IToolset _toolset;
-        private IPipelineCanceller _pipelineCanceler;
+        private readonly IPipelineCanceller _pipelineCanceler;
 
         public ClientInterceptor(
             Uri host,
@@ -72,7 +71,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             _pipelineCanceler = pipelineCanceler;
         }
 
-
         protected override async Task InterceptAsync(
             IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> _)
         {
@@ -82,11 +80,11 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
         protected override async Task<TResult> InterceptAsync<TResult>(
             IInvocation invocation, 
             IInvocationProceedInfo proceedInfo, 
-            Func<IInvocation, IInvocationProceedInfo,Task<TResult>> _)
+            Func<IInvocation, IInvocationProceedInfo, Task<TResult>> _)
         {
-#pragma warning disable 8600, 8603
+            #pragma warning disable 8600, 8603
             return (TResult) await ProcessInvocationAsync(invocation, typeof(TResult)).ConfigureAwait(false);
-#pragma warning restore 8600, 8603
+            #pragma warning restore 8600, 8603
         }
          
         private async Task<object?> ProcessInvocationAsync(IInvocation invocation, Type resultType)
@@ -101,7 +99,6 @@ namespace NClient.Standalone.ClientProxy.Generation.Interceptors
             ClientMethodInvocation<TRequest, TResponse>? methodInvocation = null;
             try
             {
-
                 var transportNClient = _transportNClientFactory.Create();
 
                 var explicitInvocation = _explicitMethodInvocationProvider.Get(typeof(TClient), invocation, resultType);
