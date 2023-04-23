@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using NClient.Core.Proxy;
 using NClient.Exceptions;
+using NClient.Providers.Api.Rest;
 using NClient.Providers.Mapping;
 using NClient.Providers.Transport;
 using NClient.Providers.Transport.Common;
@@ -20,13 +22,13 @@ using NClient.Standalone.Exceptions.Factories;
 
 namespace NClient.Standalone.ClientProxy.Validation
 {
-    internal interface IClientValidator
+    public interface IClientValidator
     {
         void Ensure<TClient>()
             where TClient : class;
     }
 
-    internal class ClientValidator<TRequest, TResponse> : IClientValidator
+    public class ClientValidator : IClientValidator
     {
         private static readonly Uri FakeHost = new("http://localhost:5000");
 
@@ -36,17 +38,17 @@ namespace NClient.Standalone.ClientProxy.Validation
         private IAsyncInterceptor? _interceptor;
         private readonly IPipelineCanceller _pipelineCanceler;
 
-        public ClientValidator(IProxyGenerator proxyGenerator,
-            IClientInterceptorFactory clientInterceptorFactory,
-            BuilderContext<TRequest, TResponse> builderContext)
+        public ClientValidator()
         {
             _pipelineCanceler = new PipelineCanceller();
-            _clientInterceptorFactory = clientInterceptorFactory;
-            _clientProxyGenerator = new ClientProxyGenerator(proxyGenerator, new ClientValidationExceptionFactory());
+            
+            var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
+            _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
+            _clientProxyGenerator = new ClientProxyGenerator(proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
             _builderContext = new BuilderContext<IRequest, IResponse>()
                 .WithHost(FakeHost)
                 .WithSerializer(new StubSerializerProvider())
-                .WithRequestBuilderProvider(builderContext.RequestBuilderProvider)
+                .WithRequestBuilderProvider(new RestRequestBuilderProvider())
                 .WithTransport(
                     new StubTransportProvider(),
                     new StubTransportRequestBuilderProvider(),

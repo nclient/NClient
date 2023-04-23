@@ -6,6 +6,7 @@ using FluentAssertions;
 using NClient.Testing.Common.Clients;
 using System.Linq;
 using NClient.Exceptions;
+using NClient.Standalone.ClientProxy.Validation;
 
 namespace NClient.Standalone.Tests.Validation
 {
@@ -13,8 +14,8 @@ namespace NClient.Standalone.Tests.Validation
     [SuppressMessage("ReSharper", "BadDeclarationBracesLineBreaks")]
     public class ClientValidatorTest
     {
-        private readonly Uri _uri = new("http://localhost:5000");
-
+        private readonly ClientValidator _validator = new();
+        
         public interface IHiddenMyClient : IMyController
         {
             [GetMethod()]
@@ -51,25 +52,22 @@ namespace NClient.Standalone.Tests.Validation
         [Test]
         public void ClientValidator_WhenExecutingAnyInvalidMethodOnTheType_BuildThrows()
         {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IMyClientNoParentType>(host: _uri);
-            Func<IMyClientNoParentType> buildFunc = () => optsBuilder.Build();
-            buildFunc.Should().Throw<ClientValidationException>();
+            Action ax = () => _validator.Ensure<IMyClientNoParentType>();
+            ax.Should().Throw<ClientValidationException>();
         }
 
         [Test]
         public void ClientValidator_WhenExecutingHiddenMethodOnTheChildType_InvalidParentNotCheckedNoThrow()
         {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IReturnClientWithMetadata>(host: _uri);
-            Func<IReturnClientWithMetadata> buildFunc = () => optsBuilder.Build();
-            buildFunc.Should().NotThrow<Exception>();
+            Action ax = () => _validator.Ensure<IReturnClientWithMetadata>();
+            ax.Should().NotThrow<Exception>();
         }
 
         [Test]
         public void ClientValidator_WhenExecutingHiddenMethodOnTheChildType_OnlyChildMethodIsValidatedNoThrow()
         {
-            var optsBuilder = NClientGallery.Clients.GetRest().For<IHiddenMyClient>(host: _uri);
-            Func<IHiddenMyClient> buildFunc = () => optsBuilder.Build();
-            buildFunc.Should().NotThrow<Exception>();
+            Action ax = () => _validator.Ensure<IHiddenMyClient>();
+            ax.Should().NotThrow<Exception>();
         }
 
         [Test]

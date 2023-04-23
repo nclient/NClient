@@ -27,20 +27,16 @@ namespace NClient.Standalone.ClientProxy.Building
         where TClient : class
     {
         private readonly BuilderContext<TRequest, TResponse> _context;
-        private readonly SingletonProxyGeneratorProvider _proxyGeneratorProvider;
         private readonly IClientInterceptorFactory _clientInterceptorFactory;
         private readonly IClientProxyGenerator _clientProxyGenerator;
-        private readonly ClientValidator<TRequest, TResponse> _clientValidator;
         private readonly IPipelineCanceller _pipelineCanceler;
         public NClientOptionalBuilder(BuilderContext<TRequest, TResponse> context)
         {
             _context = context;
-            _proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
-            _clientInterceptorFactory = new ClientInterceptorFactory(_proxyGeneratorProvider.Value);
-            _clientProxyGenerator = new ClientProxyGenerator(_proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
-            _clientValidator = new ClientValidator<TRequest, TResponse>(_proxyGeneratorProvider.Value, 
-                _clientInterceptorFactory, 
-                context);
+            
+            var proxyGeneratorProvider = new SingletonProxyGeneratorProvider();
+            _clientInterceptorFactory = new ClientInterceptorFactory(proxyGeneratorProvider.Value);
+            _clientProxyGenerator = new ClientProxyGenerator(proxyGeneratorProvider.Value, new ClientValidationExceptionFactory());
             _pipelineCanceler = new PipelineCanceller();
         }
 
@@ -177,7 +173,6 @@ namespace NClient.Standalone.ClientProxy.Building
         public TClient Build()
         {
             _context.EnsureComplete();
-            _clientValidator.Ensure<TClient>();
             
             var interceptor = _clientInterceptorFactory.Create<TClient, TRequest, TResponse>(_context, _pipelineCanceler);
             return _clientProxyGenerator.CreateClient<TClient>(interceptor);
