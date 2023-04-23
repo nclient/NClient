@@ -28,6 +28,9 @@ namespace NClient.Standalone.ClientProxy.Validation
             where TClient : class;
     }
 
+    /// <summary>
+    /// Validator used to check if a client matches the needed attribute usage in order to build a client
+    /// </summary>
     public class ClientValidator : IClientValidator
     {
         private static readonly Uri FakeHost = new("http://localhost:5000");
@@ -62,6 +65,11 @@ namespace NClient.Standalone.ClientProxy.Validation
                 .WithResponseValidation(new[] { new StubResponseValidatorProvider<IRequest, IResponse>() });
         }
 
+        /// <summary>
+        /// Checks the given TClient to see if it uses the appropriate attributes in order to successfully
+        /// build a client.
+        /// </summary>
+        /// <typeparam name="TClient"></typeparam>
         public void Ensure<TClient>()
             where TClient : class
         {
