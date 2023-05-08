@@ -63,8 +63,8 @@ By the way, you can [contribute](#contributing) to the NClient, not just use it 
 - **Easy error analysis:** your logger can be used in clients, and certainly exceptions have all the required information to investigate.
 - **Easy to use with DI:** extension methods allow to add a client to a collection of services easily.
 - **Maximum flexibility:** any step of the request execution pipeline can be replaced with your own.
-- **[WIP] All types of applications:** the library can be used on backend (ASP.NET) and frontend (Blazor), its planed tо support mobile/desktop (MAUI).
-- **[WIP] Various protocols:** REST protocol is provided as a ready-made solution, its planed to add GraphQL and RPC.
+- **[WIP] All types of applications:** the library can be used on backend (ASP.NET) and frontend (Blazor), its planned tо support mobile/desktop (MAUI).
+- **[WIP] Various protocols:** REST protocol is provided as a ready-made solution, its planned to add GraphQL and RPC.
 
 **Features:** Dynamic templated routing; Static routing; Dynamic query parameters; Collections as query parameters; Dynamic headers; Static headers; Dynamic body; Auto serialization and deserialization; HTTP/Transport context; Authentication; Asynchronous requests; Timeouts; Cancellation requests; Resilience policy; Response validation; Response mapping; File upload/download; Generic interfaces; Interface inheritance; Client factory; Versioning; Handling; Structured logging, Dependency injection support.
 
