@@ -256,9 +256,13 @@ It's worth getting in touch with us to discuss changes in case of any questions.
 - [NClient.Providers.Transport.RestSharp](https://www.nuget.org/packages/NClient.Providers.Transport.RestSharp): The provider that allows you to transport messages using RestSharp.
 - [NClient.Providers.Serialization.SystemTextJson](https://www.nuget.org/packages/NClient.Providers.Serialization.SystemTextJson): The provider that allows you to use the System.Text.Json serializer.
 - [NClient.Providers.Serialization.NewtonsoftJson](https://www.nuget.org/packages/NClient.Providers.Serialization.NewtonsoftJson): The provider that allows you to use the Newtonsoft.Json serializer.
-- [NClient.Providers.Serialization.SystemXml](https://www.nuget.org/packages/NClient.Providers.Serialization.SystemXml): The provider that allows you to use the System.Xml.XmlSerializer serializer.
+- [NClient.Providers.Serialization.SysteTmXml](https://www.nuget.org/packages/NClient.Providers.Serialization.SystemXml): The provider that allows you to use the System.Xml.XmlSerializer serializer.
 - [NClient.Providers.Serialization.MessagePack](https://www.nuget.org/packages/NClient.Providers.Serialization.MessagePack): The provider that allows you to use the MessagePackCSharp serializer.
 - [NClient.Providers.Serialization.ProtobufNet](https://www.nuget.org/packages/NClient.Providers.Serialization.ProtobufNet): The provider that allows you to use the ProtobufNet serializer.
 - [NClient.Providers.Resilience.Polly](https://www.nuget.org/packages/NClient.Providers.Resilience.Polly): The provider that allows you to implement resilience policies using the Polly library.
 - [NClient.Providers.Mapping.HttpResponses](https://www.nuget.org/packages/NClient.Providers.Mapping.HttpResponses): The provider that allows you to return native HTTP responses.
 - [NClient.Providers.Mapping.LanguageExt](https://www.nuget.org/packages/NClient.Providers.Mapping.LanguageExt): The provider that allows you to return the LanguageExt of a monad as responses.
+
+## Acknowledgements
+<a link="https://www.jetbrains.com"><img src="jetbrains.png" style="width:150px" align="left" alt="logo"></a></br>  
+The NClient wishes to thank [JetBrains](https://www.jetbrains.com) for supporting the project with free open source Rider licenses.  
